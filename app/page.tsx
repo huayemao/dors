@@ -1,20 +1,26 @@
-import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useEffect } from "react";
-import useSWR from "swr";
 import { markdownToHtml } from "@/lib/utils";
 import prisma from "@/prisma/client";
+import { cache } from "react";
+
+export const revalidate = 300;
+//https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
+
+const getArticles = cache(
+  async () =>
+    await Promise.all(
+      (
+        await prisma.articles.findMany()
+      ).map(async (e) => ({
+        ...e,
+        content: await markdownToHtml(e.content),
+      }))
+    )
+);
 
 export default async function Home() {
-  const articles = await Promise.all(
-    (
-      await prisma.articles.findMany()
-    ).map(async (e) => ({
-      ...e,
-      content: await markdownToHtml(e.content),
-    }))
-  );
+  const articles = await getArticles();
 
   //   useEffect(() => {
   //     (async () => {
