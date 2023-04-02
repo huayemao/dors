@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    serverComponentsExternalPackages: ["prisma", "@prisma/client"],
   },
   reactStrictMode: true,
   async rewrites() {
