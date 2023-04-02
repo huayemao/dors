@@ -4,24 +4,15 @@ import styles from "../styles/Home.module.css";
 import { useEffect } from "react";
 import useSWR from "swr";
 import { markdownToHtml } from "@/lib/utils";
+import prisma from "@/prisma/client";
 
 export default async function Home() {
-  let articles = await fetch("http://[2409:8a6c:368:8d01:c215:2c0b:2afd:db37]/api/articles", {
-    headers: {
-      Authorization: `Bearer ${process.env.STRAPI_TOKEN}`,
-    },
-    next: {
-      revalidate: 60,
-    },
-  }).then((res) => res.json());
-
-  articles.data = await Promise.all(
-    articles.data.map(async (e) => ({
+  const articles = await Promise.all(
+    (
+      await prisma.articles.findMany()
+    ).map(async (e) => ({
       ...e,
-      attributes: {
-        ...e.attributes,
-        content: await markdownToHtml(e.attributes.content),
-      },
+      content: await markdownToHtml(e.content),
     }))
   );
 
@@ -43,8 +34,8 @@ export default async function Home() {
 
   return (
     <div className="grid grid-cols-12 gap-6 pt-6 pb-20">
-      {articles.data?.map((e) => (
-        <div className="col-span-12 md:col-span-5" key={e.attributes.id}>
+      {articles?.map((e) => (
+        <div className="col-span-12 md:col-span-5" key={e.id}>
           <div
             className="
       h-full
@@ -72,12 +63,14 @@ export default async function Home() {
           dark:text-white
         "
               >
-                {e.attributes.title} 👋
+                {e.title} 👋
               </h2>
 
               <article
                 className="font-sans text-muted-500 prose "
-                dangerouslySetInnerHTML={{ __html: e.attributes.content }}
+                dangerouslySetInnerHTML={{
+                  __html: e.content,
+                }}
               />
               {/* <a
             href="/payments-receive.html"
