@@ -2,6 +2,7 @@ import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { remark } from "remark";
 import html from "remark-html";
+import excerpt from "strip-markdown";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,6 +11,11 @@ export function cn(...inputs: ClassValue[]) {
 export async function markdownToHtml(markdown) {
   const result = await remark().use(html).process(markdown);
   return result.toString();
+}
+
+export async function markdownExcerpt(markdown) {
+  const result = await remark().use(excerpt).process(markdown);
+  return result.toString().slice(0,100);
 }
 
 export function humanFileSize(size) {
