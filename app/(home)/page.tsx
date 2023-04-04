@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
 import prisma from "@/prisma/client";
 import { cache } from "react";
+import Link from "next/link";
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
@@ -45,7 +46,8 @@ export default async function Home() {
     <div className="grid grid-cols-12 gap-6 pt-6 pb-20">
       {articles.map((e) => (
         <div key={e.id} className="col-span-12 md:col-span-6">
-          <div
+          <Link
+            href={`/posts/${e.id}`}
             className="
                         block
                         relative
@@ -154,7 +156,7 @@ export default async function Home() {
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
       ))}
       <div className="col-span-12 md:col-span-5">
