@@ -26,6 +26,25 @@ const getArticles = cache(
 export default async function Home() {
   const articles = await getArticles();
 
+  const needImageIds = articles.filter((e) => !e.cover_image).map((e) => e.id);
+
+  if (needImageIds.length) {
+    const data = await getImages(articles.length);
+
+    for (const i in articles) {
+      const a = articles[i];
+      if (needImageIds.includes(a.id))
+        await prisma.articles.update({
+          where: {
+            id: a.id,
+          },
+          data: {
+            cover_image: data.photos[i],
+          },
+        });
+    }
+  }
+
   //   useEffect(() => {
   //     (async () => {
   //       const res = await fetch("/v1/users/login", {
@@ -357,4 +376,15 @@ export default async function Home() {
         </div> */}
     </div>
   );
+}
+async function getImages(length) {
+  return await fetch(
+    `https://api.pexels.com/v1/search?query=nature&per_page=${length}&orientation=landscape`,
+    {
+      headers: {
+        Authorization:
+          "VIIq3y6ksXWUCdBRN7xROuRE7t6FXcX34DXyiqjnsxOzuIakYACK402j",
+      },
+    }
+  ).then((res) => res.json());
 }

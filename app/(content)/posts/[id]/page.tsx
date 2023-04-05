@@ -1,5 +1,6 @@
 import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
-import prisma from "@/prisma/client";
+import prisma, { Prisma } from "@/prisma/client";
+import Image from "next/image";
 import Link from "next/link";
 import React, { cache } from "react";
 
@@ -17,6 +18,10 @@ async function page({ params }) {
 
   const article = await getArticle(Number(params.id as string));
   const content = await markdownToHtml(article?.content);
+  const coverImage = article?.cover_image
+    ? ((article.cover_image as Prisma.JsonObject as object).src
+        .medium as string)
+    : "";
 
   const excerpt = (await markdownExcerpt(article?.content || "")) + "...";
 
@@ -37,12 +42,12 @@ async function page({ params }) {
               ltablet:px-4
             "
                 >
-                  <img
+                  <Image
                     className="h-full w-full max-w-lg mx-auto object-cover rounded-3xl"
-                    src="/img/photo/600x600/5.jpg"
+                    src={coverImage}
                     alt="Featured image"
                     width="512"
-                    height="512"
+                    height="353"
                   />
                 </div>
 

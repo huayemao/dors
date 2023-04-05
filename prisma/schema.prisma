@@ -146,6 +146,7 @@ model articles {
   published_at                                    DateTime?    @db.DateTime(6)
   created_by_id                                   Int?         @db.UnsignedInt
   updated_by_id                                   Int?         @db.UnsignedInt
+  cover_image                                     Json?
   admin_users_articles_created_by_idToadmin_users admin_users? @relation("articles_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "articles_created_by_id_fk")
   admin_users_articles_updated_by_idToadmin_users admin_users? @relation("articles_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "articles_updated_by_id_fk")
 
