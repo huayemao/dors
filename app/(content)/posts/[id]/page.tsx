@@ -14,12 +14,34 @@ export async function generateStaticParams() {
   }));
 }
 
+type PexelsPhoto = {
+  id: number;
+  alt: string;
+  src: {
+    tiny: string;
+    large: string;
+    small: string;
+    medium: string;
+    large2x: string;
+    original: string;
+    portrait: string;
+    landscape: string;
+  };
+  url: string;
+  liked: boolean;
+  width: number;
+  height: number;
+  avg_color: string;
+  photographer: string;
+  photographer_id: number;
+  photographer_url: string;
+};
+
 async function page({ params }) {
   const article = await getArticle(Number(params.id as string));
   const content = await markdownToHtml(article?.content);
   const coverImage = article?.cover_image
-    ? ((article.cover_image as Prisma.JsonObject as object).src
-        .medium as string)
+    ? ((article.cover_image as PexelsPhoto).src.medium as string)
     : "";
 
   const excerpt = (await markdownExcerpt(article?.content || "")) + "...";
