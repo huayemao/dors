@@ -127,22 +127,18 @@ async function page({ params }) {
                       {excerpt}
                     </p>
                     <div className="flex items-center justify-start w-full relative">
-                      <img
-                        className="w-12 mask mask-blob"
-                        src="/img/avatars/36.jpg"
-                        alt="avatar"
-                        width="48"
-                        height="48"
-                      />
+                      <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
+                        🐈
+                      </div>
                       <div className="pl-2">
                         <h3
                           className="
-                      font-heading font-medium
+                      font-heading font-medium 
                       text-muted-800
                       dark:text-muted-50
                     "
                         >
-                          Eliza Perez
+                          花野猫
                         </h3>
                         <p className="font-sans text-sm text-muted-400">
                           {article?.published_at?.toLocaleString()}
