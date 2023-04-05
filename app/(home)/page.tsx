@@ -4,24 +4,12 @@ import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
 import prisma from "@/prisma/client";
 import { cache } from "react";
 import Link from "next/link";
+import { getArticles } from "@/lib/articles";
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
-const getArticles = cache(
-  async () =>
-    await Promise.all(
-      (
-        await prisma.articles.findMany()
-      ).map(async (e) => {
-        return {
-          ...e,
-          content: await markdownToHtml(e.content),
-          excerpt: await markdownExcerpt(e.content),
-        };
-      })
-    )
-);
+
 
 export default async function Home() {
   const articles = await getArticles();

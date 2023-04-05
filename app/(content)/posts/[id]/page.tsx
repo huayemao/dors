@@ -1,21 +1,20 @@
+import { getArticle, getArticles } from "@/lib/articles";
 import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
-import prisma, { Prisma } from "@/prisma/client";
+import { Prisma } from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { cache } from "react";
+import React from "react";
 
 export const revalidate = 600;
 
-async function page({ params }) {
-  const getArticle = cache(
-    async (id: number) =>
-      await prisma.articles.findUnique({
-        where: {
-          id: id,
-        },
-      })
-  );
+export async function generateStaticParams() {
+  const articles = await getArticles();
+  return articles.map((article) => ({
+    id: article.id,
+  }));
+}
 
+async function page({ params }) {
   const article = await getArticle(Number(params.id as string));
   const content = await markdownToHtml(article?.content);
   const coverImage = article?.cover_image
