@@ -37,12 +37,24 @@ type PexelsPhoto = {
   photographer_url: string;
 };
 
+async function getBase64Image(url) {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const base64 = buffer.toString("base64");
+  const contentType = response.headers.get("content-type");
+  const dataUrl = `data:${contentType};base64,${base64}`;
+  return dataUrl;
+}
+
 async function page({ params }) {
   const article = await getArticle(Number(params.id as string));
   const content = await markdownToHtml(article?.content);
   const coverImage = article?.cover_image
-    ? ((article.cover_image as PexelsPhoto).src.medium as string)
+    ? (article.cover_image as PexelsPhoto).src.large
     : "";
+
+  const url = await getBase64Image(coverImage);
 
   const excerpt = (await markdownExcerpt(article?.content || "")) + "...";
 
@@ -65,7 +77,7 @@ async function page({ params }) {
                 >
                   <Image
                     className="h-full w-full max-w-lg mx-auto object-cover rounded-3xl"
-                    src={coverImage}
+                    src={url}
                     alt="Featured image"
                     width="512"
                     height="353"
