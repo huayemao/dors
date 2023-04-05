@@ -162,16 +162,7 @@ async function page({ params }) {
                   <div className="space-y-4 mb-5">
                     <Link
                       href={"/"}
-                      className="
-                          flex
-                          items-center
-                          gap-2
-                          w-24
-                          h-5
-                          rounded
-                          placeload
-                          animate-placeload
-                        "
+                      className="flex items-center gap-2 font-sans font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
