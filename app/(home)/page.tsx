@@ -367,7 +367,7 @@ export default async function Home() {
 }
 async function getImages(length) {
   return await fetch(
-    `https://api.pexels.com/v1/search?query=nature&per_page=${length}&orientation=landscape`,
+    `https://api.pexels.com/v1/search?query=plain-color-background&per_page=${length}&orientation=landscape`,
     {
       headers: {
         Authorization:

@@ -15,7 +15,11 @@ export const getArticles = cache(
   async () =>
     await Promise.all(
       (
-        await prisma.articles.findMany()
+        await prisma.articles.findMany({
+          orderBy: {
+            updated_at: "desc",
+          },
+        })
       ).map(async (e) => {
         return {
           ...e,
