@@ -4,6 +4,8 @@ import { Prisma } from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { getBase64Image } from "@/lib/getBase64Image";
+import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 
 export const revalidate = 600;
 
@@ -12,39 +14,6 @@ export async function generateStaticParams() {
   return articles.map((article) => ({
     id: article.id,
   }));
-}
-
-type PexelsPhoto = {
-  id: number;
-  alt: string;
-  src: {
-    tiny: string;
-    large: string;
-    small: string;
-    medium: string;
-    large2x: string;
-    original: string;
-    portrait: string;
-    landscape: string;
-  };
-  url: string;
-  liked: boolean;
-  width: number;
-  height: number;
-  avg_color: string;
-  photographer: string;
-  photographer_id: number;
-  photographer_url: string;
-};
-
-async function getBase64Image(url) {
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const base64 = buffer.toString("base64");
-  const contentType = response.headers.get("content-type");
-  const dataUrl = `data:${contentType};base64,${base64}`;
-  return dataUrl;
 }
 
 async function page({ params }) {
@@ -154,7 +123,7 @@ async function page({ params }) {
                           花野猫
                         </h3>
                         <p className="font-sans text-sm text-muted-400">
-                          {article?.published_at?.toLocaleString()}
+                          {article?.published_at?.toLocaleString("zh-cn")}
                         </p>
                       </div>
                       <div className="block ml-auto font-sans text-sm text-muted-400">
