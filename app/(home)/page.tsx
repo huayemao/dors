@@ -384,7 +384,9 @@ export default async function Home() {
 }
 async function getImages(length) {
   return await fetch(
-    `https://api.pexels.com/v1/search?query=pure&per_page=${length}&orientation=landscape`,
+    `https://api.pexels.com/v1/search?query=pure&per_page=${length}&page=${
+      Math.floor(Math.random() * 100) + 1
+    }&orientation=landscape`,
     {
       headers: {
         Authorization:
