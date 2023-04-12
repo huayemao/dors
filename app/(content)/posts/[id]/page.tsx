@@ -1,4 +1,5 @@
 import { getArticle, getArticles } from "@/lib/articles";
+import { join } from "path";
 import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,8 @@ import { serialize } from "next-mdx-remote/serialize";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
 import rehypeRaw from "rehype-raw";
 import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
+import { languages } from "@/lib/shiki";
+const theme = require("shiki/themes/nord.json");
 
 export const revalidate = 600;
 
@@ -34,10 +37,21 @@ async function page({ params }) {
     }))
   );
 
+  const d2 = join(process.cwd(), "tmp");
+  console.log(d2);
+
   const mdxSource = await serialize(article?.content || "", {
     mdxOptions: {
       rehypePlugins: [rehypeRaw],
-      remarkPlugins: [[remarkShikiTwoslash, { theme: "dark-plus" }]], // 添加 Shiki 插件来呈现代码块高亮
+      remarkPlugins: [
+        [
+          remarkShikiTwoslash,
+          {
+            theme,
+            langs: languages,
+          },
+        ],
+      ], // 添加 Shiki 插件来呈现代码块高亮
       format: "mdx",
     },
   });

@@ -5,7 +5,7 @@ const nextConfig = {
   },
   experimental: {
     appDir: true,
-    serverComponentsExternalPackages: ["prisma", "@prisma/client"],
+    serverComponentsExternalPackages: ["prisma", "@prisma/client", "shiki", "vscode-oniguruma"],
   },
   reactStrictMode: true,
   async rewrites() {
