@@ -1,11 +1,14 @@
 import { getArticle, getArticles } from "@/lib/articles";
 import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
-import { Prisma } from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { getBase64Image } from "@/lib/getBase64Image";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import { serialize } from "next-mdx-remote/serialize";
+import remarkShikiTwoslash from "remark-shiki-twoslash";
+import rehypeRaw from "rehype-raw";
+import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
 
 export const revalidate = 600;
 
@@ -31,7 +34,14 @@ async function page({ params }) {
     }))
   );
 
-  const content = await markdownToHtml(article?.content);
+  const mdxSource = await serialize(article?.content || "", {
+    mdxOptions: {
+      rehypePlugins: [rehypeRaw],
+      remarkPlugins: [[remarkShikiTwoslash, { theme: "dark-plus" }]], // 添加 Shiki 插件来呈现代码块高亮
+      format: "mdx",
+    },
+  });
+
   const coverImage = article?.cover_image
     ? (article.cover_image as PexelsPhoto).src.large
     : "";
@@ -164,10 +174,9 @@ async function page({ params }) {
                       <span>Back to Blog</span>
                     </Link>
                   </div>
-                  <article
-                    className="prose dark:prose-dark lg:prose-xl py-6"
-                    dangerouslySetInnerHTML={{ __html: content }}
-                  />
+                  <article className="prose dark:prose-dark lg:prose-xl py-6">
+                    <MDXRemoteWrapper {...mdxSource} />
+                  </article>
                   <hr />
                 </div>
               </div>
