@@ -138,17 +138,18 @@ model admin_users_roles_links {
 }
 
 model articles {
-  id                                              Int          @id @default(autoincrement()) @db.UnsignedInt
-  content                                         String?      @db.LongText
-  title                                           String?      @db.VarChar(255)
-  created_at                                      DateTime?    @db.DateTime(6)
-  updated_at                                      DateTime?    @db.DateTime(6)
-  published_at                                    DateTime?    @db.DateTime(6)
-  created_by_id                                   Int?         @db.UnsignedInt
-  updated_by_id                                   Int?         @db.UnsignedInt
+  id                                              Int                   @id @default(autoincrement()) @db.UnsignedInt
+  content                                         String?               @db.LongText
+  title                                           String?               @db.VarChar(255)
+  created_at                                      DateTime?             @db.DateTime(6)
+  updated_at                                      DateTime?             @db.DateTime(6)
+  published_at                                    DateTime?             @db.DateTime(6)
+  created_by_id                                   Int?                  @db.UnsignedInt
+  updated_by_id                                   Int?                  @db.UnsignedInt
   cover_image                                     Json?
-  admin_users_articles_created_by_idToadmin_users admin_users? @relation("articles_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "articles_created_by_id_fk")
-  admin_users_articles_updated_by_idToadmin_users admin_users? @relation("articles_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "articles_updated_by_id_fk")
+  admin_users_articles_created_by_idToadmin_users admin_users?          @relation("articles_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "articles_created_by_id_fk")
+  admin_users_articles_updated_by_idToadmin_users admin_users?          @relation("articles_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "articles_updated_by_id_fk")
+  tags_articles_links                             tags_articles_links[]
 
   @@index([created_by_id], map: "articles_created_by_id_fk")
   @@index([updated_by_id], map: "articles_updated_by_id_fk")
@@ -513,17 +514,18 @@ model tables_categories_links {
 }
 
 model tags {
-  id                                          Int                  @id @default(autoincrement()) @db.UnsignedInt
-  name                                        String?              @db.VarChar(255)
-  color                                       String?              @db.VarChar(255)
-  created_at                                  DateTime?            @db.DateTime(6)
-  updated_at                                  DateTime?            @db.DateTime(6)
-  published_at                                DateTime?            @db.DateTime(6)
-  created_by_id                               Int?                 @db.UnsignedInt
-  updated_by_id                               Int?                 @db.UnsignedInt
+  id                                          Int                   @id @default(autoincrement()) @db.UnsignedInt
+  name                                        String?               @db.VarChar(255)
+  color                                       String?               @db.VarChar(255)
+  created_at                                  DateTime?             @db.DateTime(6)
+  updated_at                                  DateTime?             @db.DateTime(6)
+  published_at                                DateTime?             @db.DateTime(6)
+  created_by_id                               Int?                  @db.UnsignedInt
+  updated_by_id                               Int?                  @db.UnsignedInt
   entries_tags_links                          entries_tags_links[]
-  admin_users_tags_created_by_idToadmin_users admin_users?         @relation("tags_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "tags_created_by_id_fk")
-  admin_users_tags_updated_by_idToadmin_users admin_users?         @relation("tags_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "tags_updated_by_id_fk")
+  admin_users_tags_created_by_idToadmin_users admin_users?          @relation("tags_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "tags_created_by_id_fk")
+  admin_users_tags_updated_by_idToadmin_users admin_users?          @relation("tags_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "tags_updated_by_id_fk")
+  tags_articles_links                         tags_articles_links[]
 
   @@index([created_by_id], map: "tags_created_by_id_fk")
   @@index([updated_by_id], map: "tags_updated_by_id_fk")
@@ -658,4 +660,20 @@ model upload_folders_parent_links {
   @@index([folder_id], map: "upload_folders_parent_links_fk")
   @@index([inv_folder_id], map: "upload_folders_parent_links_inv_fk")
   @@index([folder_order], map: "upload_folders_parent_links_order_inv_fk")
+}
+
+model tags_articles_links {
+  id            Int       @id @default(autoincrement()) @db.UnsignedInt
+  tag_id        Int?      @db.UnsignedInt
+  article_id    Int?      @db.UnsignedInt
+  article_order Float?
+  tag_order     Float?
+  tags          tags?     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_articles_links_fk")
+  articles      articles? @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_articles_links_inv_fk")
+
+  @@unique([tag_id, article_id], map: "tags_articles_links_unique")
+  @@index([tag_id], map: "tags_articles_links_fk")
+  @@index([article_id], map: "tags_articles_links_inv_fk")
+  @@index([article_order], map: "tags_articles_links_order_fk")
+  @@index([tag_order], map: "tags_articles_links_order_inv_fk")
 }
