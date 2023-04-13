@@ -120,22 +120,31 @@ export default async function Home() {
                           "
                     >
                       <div className="w-full space-y-4">
-                        <span
-                          className="
-                                inline-block
-                                font-sans
-                                text-xs
-                                py-1.5
-                                px-3
-                                m-1
-                                rounded-lg
-                                bg-primary-100
-                                text-primary-500
-                                dark:bg-primary-500 dark:text-white
-                              "
-                        >
-                          Business
-                        </span>
+                        <div className="relative space-x-2">
+                          {!!articles[0]?.tags?.length &&
+                            articles[0].tags.map(
+                              (t) =>
+                                t && (
+                                  <span
+                                    key={t.id}
+                                    className="
+                  inline-block
+                  font-sans
+                  text-xs
+                  py-1.5
+                  px-3
+                  mb-4
+                  rounded-lg
+                  bg-primary-100
+                  text-primary-500
+                  dark:bg-primary-500 dark:text-white
+                "
+                                  >
+                                    {t.name}
+                                  </span>
+                                )
+                            )}
+                        </div>
                         <h3
                           className="
                                 font-heading
@@ -207,22 +216,31 @@ export default async function Home() {
                   >
                     <div className="h-full flex flex-col items-start gap-4 px-6 md:px-10 py-8">
                       <div className="w-full space-y-4">
-                        <span
-                          className="
-                                inline-block
-                                font-sans
-                                text-xs
-                                py-1.5
-                                px-3
-                                m-1
-                                rounded-lg
-                                bg-primary-100
-                                text-primary-500
-                                dark:bg-primary-500 dark:text-white
-                              "
-                        >
-                          Business
-                        </span>
+                        <div className="relative space-x-2">
+                          {!!articles[1]?.tags?.length &&
+                            articles[1].tags.map(
+                              (t) =>
+                                t && (
+                                  <span
+                                    key={t.id}
+                                    className="
+                  inline-block
+                  font-sans
+                  text-xs
+                  py-1.5
+                  px-3
+                  mb-4
+                  rounded-lg
+                  bg-primary-100
+                  text-primary-500
+                  dark:bg-primary-500 dark:text-white
+                "
+                                  >
+                                    {t.name}
+                                  </span>
+                                )
+                            )}
+                        </div>
                         <h3
                           className="
                                 font-heading
@@ -304,9 +322,14 @@ export default async function Home() {
                     >
                       <div className="h-full flex flex-col items-start gap-4 p-6">
                         <div className="relative w-full space-y-4">
-                          <div className="relative">
-                            <span
-                              className="
+                          <div className="relative space-x-2">
+                            {e.tags.length > 0 &&
+                              e.tags.map(
+                                (t) =>
+                                  t && (
+                                    <span
+                                      key={t.id}
+                                      className="
                                  absolute
                                  top-3
                                  left-3
@@ -321,9 +344,12 @@ export default async function Home() {
                                  text-white
                                  shadow-xl shadow-primary-500/20
                                "
-                            >
-                              Business
-                            </span>
+                                    >
+                                      {t.name}
+                                    </span>
+                                  )
+                              )}
+
                             <Image
                               className="w-full h-52 object-cover rounded-xl"
                               /* @ts-ignore */
@@ -384,7 +410,7 @@ export default async function Home() {
 }
 async function getImages(length) {
   return await fetch(
-    `https://api.pexels.com/v1/search?query=pure&per_page=${length}&page=${
+    `https://api.pexels.com/v1/search?query=pastel&per_page=${length}&page=${
       Math.floor(Math.random() * 100) + 1
     }&orientation=landscape`,
     {

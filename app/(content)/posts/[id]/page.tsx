@@ -37,8 +37,8 @@ async function page({ params }) {
     }))
   );
 
-  const d2 = join(process.cwd(), "tmp");
-  console.log(d2);
+  const tmpDir = join(process.cwd(), "tmp");
+  console.log(tmpDir);
 
   const mdxSource = await serialize(article?.content || "", {
     mdxOptions: {
@@ -91,9 +91,14 @@ async function page({ params }) {
                 </div>
 
                 <div className="h-full flex items-center ptablet:px-4 ltablet:px-6">
-                  <div className="w-full max-w-lg">
-                    <span
-                      className="
+                  <div className="w-full max-w-lg space-x-2">
+                    {!!article?.tags?.length &&
+                      article.tags.map(
+                        (t) =>
+                          t && (
+                            <span
+                              key={t.id}
+                              className="
                   inline-block
                   font-sans
                   text-xs
@@ -105,9 +110,12 @@ async function page({ params }) {
                   text-primary-500
                   dark:bg-primary-500 dark:text-white
                 "
-                    >
-                      Business
-                    </span>
+                            >
+                              {t.name}
+                            </span>
+                          )
+                      )}
+
                     <h1
                       className="
                   font-heading
@@ -191,7 +199,6 @@ async function page({ params }) {
                   <article className="prose dark:prose-dark lg:prose-xl py-6">
                     <MDXRemoteWrapper {...mdxSource} />
                   </article>
-                  <hr />
                 </div>
               </div>
               <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto">
