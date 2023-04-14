@@ -252,7 +252,12 @@ export default async function Home() {
                         </p>
                         <div className="flex items-center justify-start w-full relative">
                           <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-                            🐈
+                            <Image
+                              alt="花野猫"
+                              src={"/img/huayemao.svg"}
+                              width={44}
+                              height={44}
+                            />
                           </div>
                           <div className="pl-2">
                             <h3
@@ -262,10 +267,10 @@ export default async function Home() {
                                     dark:text-muted-50
                                   "
                             >
-                              Owen Wilson
+                              花野猫
                             </h3>
                             <p className="font-sans text-sm text-muted-400">
-                              Sep 23, 2022
+                              {articles[1].published_at?.toLocaleString()}
                             </p>
                           </div>
                           <div className="block ml-auto font-sans text-sm text-muted-400">

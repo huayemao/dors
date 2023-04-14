@@ -132,7 +132,12 @@ async function page({ params }) {
                     </p>
                     <div className="flex items-center justify-start w-full relative">
                       <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-                        🐈
+                        <Image
+                          alt="花野猫"
+                          src={"/img/huayemao.svg"}
+                          width={44}
+                          height={44}
+                        />
                       </div>
                       <div className="pl-2">
                         <h3
