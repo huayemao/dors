@@ -9,6 +9,7 @@ import { getBase64Image } from "@/lib/getBase64Image";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
 import Tag from "@/components/Tag";
+import PostTile from "@/components/PostTile";
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
@@ -282,85 +283,8 @@ export default async function Home() {
                     "
               >
                 {articles.slice(2).map((e) => (
-                  <div className="relative" key={e.id}>
-                    <Link
-                      href={"/posts/" + e.id}
-                      className="
-                         block
-                         h-full
-                         w-full
-                         rounded-2xl
-                         bg-white
-                         dark:bg-muted-800
-                         border border-muted-200
-                         dark:border-muted-700
-                         overflow-hidden
-                       "
-                    >
-                      <div className="h-full flex flex-col items-start gap-4 p-6">
-                        <div className="relative w-full space-y-4">
-                          <div className="relative space-x-2">
-                            {e.tags.length > 0 &&
-                              e.tags.map(
-                                (t) =>
-                                  t && (
-                                    <Tag
-                                      key={t.id}
-                                      type="primary"
-                                      text={t.name as string}
-                                    />
-                                  )
-                              )}
-
-                            <Image
-                              className="w-full h-52 object-cover rounded-xl"
-                              /* @ts-ignore */
-                              src={e.url}
-                              alt="Post image"
-                              width="348"
-                              height="208"
-                            />
-                          </div>
-                          <h3
-                            className="
-                               font-heading
-                               text-lg
-                               font-medium
-                               text-muted-800
-                               dark:text-white
-                               leading-6
-                             "
-                          >
-                            {e.title}
-                          </h3>
-                        </div>
-                        <div className="w-full mt-auto space-y-6">
-                          <div className="flex items-center justify-start w-full relative">
-                            <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-                              🐈
-                            </div>
-                            <div className="pl-2">
-                              <h3
-                                className="
-                                   font-heading font-medium
-                                   text-muted-800
-                                   dark:text-muted-50
-                                 "
-                              >
-                                Christina Chu
-                              </h3>
-                              <p className="font-sans text-sm text-muted-400">
-                                {e.published_at?.toLocaleString()}
-                              </p>
-                            </div>
-                            <div className="block ml-auto font-sans text-sm text-muted-400">
-                              <span>— 8 min read</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
+                  /* @ts-ignore */
+                  <PostTile article={e} url={e.url} key={e.id} />
                 ))}
               </div>
             </div>
