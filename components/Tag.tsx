@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 
 interface Props extends React.HTMLAttributes<HTMLSpanElement> {
@@ -5,7 +6,7 @@ interface Props extends React.HTMLAttributes<HTMLSpanElement> {
   text: string;
 }
 
-export default function Tag({ type, text, ...props }: Props) {
+export default function Tag({ type, text, className, ...props }: Props) {
   const baseClasses = `inline-block font-sans text-xs py-1.5 px-3 mb-4 rounded-lg`;
 
   let classes = "";
@@ -26,7 +27,10 @@ export default function Tag({ type, text, ...props }: Props) {
       break;
   }
 
-  classes = `${baseClasses} ${backgroundColorClass} ${textColorClass}`;
+  classes = clsx(
+    `${baseClasses} ${backgroundColorClass} ${textColorClass}`,
+    className
+  );
 
   return (
     <span className={classes} {...props}>

@@ -23,19 +23,22 @@ function PostTile({ article, url }: Props) {
       >
         <div className="h-full flex flex-col items-start gap-4 p-6">
           <div className="relative w-full space-y-4">
-            <div className="relative space-x-2">
-              {tags &&
-                tags?.length > 0 &&
-                (tags as { id: number; name: string }[]).map(
-                  (t) =>
-                    t && (
-                      <Tag
-                        key={t.id}
-                        type="primary"
-                        text={t.name as string}
-                      />
-                    )
-                )}
+            <div className="relative">
+              <div className="space-x-2">
+                {tags &&
+                  tags?.length > 0 &&
+                  (tags as { id: number; name: string }[]).map(
+                    (t) =>
+                      t && (
+                        <Tag
+                          className="absolute top-3 left-3 shadow-xl shadow-primary-500/20"
+                          key={t.id}
+                          type="primary"
+                          text={t.name as string}
+                        />
+                      )
+                  )}
+              </div>
               <Image
                 className="w-full h-52 object-cover rounded-xl"
                 /* @ts-ignore */
