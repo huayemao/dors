@@ -1,5 +1,6 @@
 "use client";
 import clsx from "clsx";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -59,17 +60,12 @@ export const Nav = () => {
           dark:text-muted-100
         "
           >
-            <div
-              style={{
-                color: "#666",
-                filter:
-                  "invert(74%) sepia(87%) saturate(2507%) hue-rotate(212deg) brightness(119%) contrast(107%",
-              }}
-              // style={{ color: "#666", filter: "hue-rotate(225deg)" }}
-              className=" shadow mask flex items-center justify-center mask-blob w-12 h-12 text-[36px] text-[rgb(99, 102, 241)]"
-            >
-              🐾
-            </div>
+            <Image
+              alt="花野猫"
+              src={"/img/huayemao1.svg"}
+              width={44}
+              height={44}
+            />
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
 
