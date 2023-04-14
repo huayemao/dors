@@ -12,6 +12,7 @@ import rehypeRaw from "rehype-raw";
 import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
 import { languages } from "@/lib/shiki";
 import Tag from "@/components/Tag";
+import PostTile from "@/components/PostTile";
 const theme = require("shiki/themes/nord.json");
 
 export const revalidate = 600;
@@ -374,40 +375,13 @@ async function page({ params }) {
 
                   <ul className="space-y-6">
                     {articles.map((e) => (
-                      <li key={e.id}>
-                        <a href="#" className="flex items-center">
-                          <div className="relative flex justify-start gap-2 w-full">
-                            <img
-                              className="h-12 w-12 mask mask-blob object-cover"
-                              /* @ts-ignore */
-                              src={e.url}
-                              alt="Post image"
-                              width="48"
-                              height="48"
-                            />
-                            <div>
-                              <h3
-                                className="
-                      font-heading font-medium
-                      text-muted-800
-                      dark:text-muted-50
-                      leading-snug
-                      overflow-hidden
-                      text-ellipsis
-                      max-w-3/4
-                      line-clamp-2
-                      mb-1
-                    "
-                              >
-                                {e.title}
-                              </h3>
-                              <p className="font-sans text-sm text-muted-400">
-                                {e.updated_at?.toLocaleString()}
-                              </p>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
+                      <PostTile
+                        key={e.id}
+                        type="mini"
+                        article={e}
+                        /* @ts-ignore */
+                        url={e.url}
+                      />
                     ))}
                   </ul>
                 </div>

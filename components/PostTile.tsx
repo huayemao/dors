@@ -9,10 +9,51 @@ type Article = Awaited<ReturnType<typeof getArticle>>;
 interface Props {
   article: Article;
   url: string;
+  type: "default" | "mini";
 }
 
-function PostTile({ article, url }: Props) {
+function PostTile({ article, url, type = "default" }: Props) {
   const { id, title, tags, published_at } = article;
+
+  if (type === "mini") {
+    return (
+      <li>
+        <Link href={"/posts/" + id}>
+          <a href="#" className="flex items-center">
+            <div className="relative flex justify-start gap-2 w-full">
+              <img
+                className="h-12 w-12 mask mask-blob object-cover"
+                src={url}
+                alt="Post image"
+                width="48"
+                height="48"
+              />
+              <div>
+                <h3
+                  className="
+                  font-heading font-medium
+                  text-muted-800
+                  dark:text-muted-50
+                  leading-snug
+                  overflow-hidden
+                  text-ellipsis
+                  max-w-3/4
+                  line-clamp-2
+                  mb-1
+                "
+                >
+                  {article.title}
+                </h3>
+                <p className="font-sans text-sm text-muted-400">
+                  {article.updated_at?.toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </a>
+        </Link>
+      </li>
+    );
+  }
 
   return (
     <div className="relative" key={id}>
