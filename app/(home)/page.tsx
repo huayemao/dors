@@ -8,6 +8,7 @@ import { getArticles } from "@/lib/articles";
 import { getBase64Image } from "@/lib/getBase64Image";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
+import Tag from "@/components/Tag";
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
@@ -125,23 +126,11 @@ export default async function Home() {
                             articles[0].tags.map(
                               (t) =>
                                 t && (
-                                  <span
+                                  <Tag
                                     key={t.id}
-                                    className="
-                  inline-block
-                  font-sans
-                  text-xs
-                  py-1.5
-                  px-3
-                  mb-4
-                  rounded-lg
-                  bg-primary-100
-                  text-primary-500
-                  dark:bg-primary-500 dark:text-white
-                "
-                                  >
-                                    {t.name}
-                                  </span>
+                                    type="secondary"
+                                    text={t.name as string}
+                                  />
                                 )
                             )}
                         </div>
@@ -221,23 +210,11 @@ export default async function Home() {
                             articles[1].tags.map(
                               (t) =>
                                 t && (
-                                  <span
+                                  <Tag
                                     key={t.id}
-                                    className="
-                  inline-block
-                  font-sans
-                  text-xs
-                  py-1.5
-                  px-3
-                  mb-4
-                  rounded-lg
-                  bg-primary-100
-                  text-primary-500
-                  dark:bg-primary-500 dark:text-white
-                "
-                                  >
-                                    {t.name}
-                                  </span>
+                                    type="secondary"
+                                    text={t.name as string}
+                                  />
                                 )
                             )}
                         </div>
@@ -327,26 +304,11 @@ export default async function Home() {
                               e.tags.map(
                                 (t) =>
                                   t && (
-                                    <span
+                                    <Tag
                                       key={t.id}
-                                      className="
-                                 absolute
-                                 top-3
-                                 left-3
-                                 inline-block
-                                 font-sans
-                                 text-xs
-                                 py-1.5
-                                 px-3
-                                 m-1
-                                 rounded-lg
-                                 bg-primary-500
-                                 text-white
-                                 shadow-xl shadow-primary-500/20
-                               "
-                                    >
-                                      {t.name}
-                                    </span>
+                                      type="primary"
+                                      text={t.name as string}
+                                    />
                                   )
                               )}
 

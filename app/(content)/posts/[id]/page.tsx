@@ -11,6 +11,7 @@ import remarkShikiTwoslash from "remark-shiki-twoslash";
 import rehypeRaw from "rehype-raw";
 import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
 import { languages } from "@/lib/shiki";
+import Tag from "@/components/Tag";
 const theme = require("shiki/themes/nord.json");
 
 export const revalidate = 600;
@@ -96,23 +97,11 @@ async function page({ params }) {
                       article.tags.map(
                         (t) =>
                           t && (
-                            <span
+                            <Tag
                               key={t.id}
-                              className="
-                  inline-block
-                  font-sans
-                  text-xs
-                  py-1.5
-                  px-3
-                  mb-4
-                  rounded-lg
-                  bg-primary-100
-                  text-primary-500
-                  dark:bg-primary-500 dark:text-white
-                "
-                            >
-                              {t.name}
-                            </span>
+                              type="secondary"
+                              text={t.name as string}
+                            />
                           )
                       )}
 
