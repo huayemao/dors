@@ -6,14 +6,7 @@ interface Props extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export default function Tag({ type, text, ...props }: Props) {
-  const baseClasses = `
-    inline-block
-    font-sans
-    text-xs
-    py-1.5
-    px-3
-    mb-4
-    rounded-lg`;
+  const baseClasses = `inline-block font-sans text-xs py-1.5 px-3 mb-4 rounded-lg`;
 
   let classes = "";
   let backgroundColorClass = "";
@@ -21,12 +14,12 @@ export default function Tag({ type, text, ...props }: Props) {
 
   switch (type) {
     case "primary":
-      backgroundColorClass = "bg-primary-100 dark:bg-primary-500";
-      textColorClass = "text-primary-500 dark:text-white";
+      backgroundColorClass = "bg-primary-500";
+      textColorClass = "text-white";
       break;
     case "secondary":
-      backgroundColorClass = "bg-secondary-100 dark:bg-secondary-500";
-      textColorClass = "text-secondary-500 dark:text-white";
+      backgroundColorClass = "bg-primary-100 dark:bg-primary-500";
+      textColorClass = "text-primary-500 dark:text-white";
       break;
     default:
       // handle other possible types
