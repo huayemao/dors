@@ -1,5 +1,6 @@
 import prisma from "@/prisma/client";
 import { cache } from "react";
+import { PaginateOptions } from "./paginator";
 import { markdownExcerpt, markdownToHtml } from "./utils";
 
 export const getArticle = cache(async (id: number) => {
@@ -23,8 +24,12 @@ export const getArticle = cache(async (id: number) => {
 });
 
 export const getArticles = cache(
-  async () =>
-    await Promise.all(
+  async (paginationOptions: PaginateOptions = {}) => {
+    const page = Number(paginationOptions?.page) || 1;
+    const perPage = Number(paginationOptions?.perPage) || 10;
+    const skip = page > 0 ? perPage * (page - 1) : 0;
+
+    return await Promise.all(
       (
         await prisma.articles.findMany({
           orderBy: {
@@ -37,6 +42,8 @@ export const getArticles = cache(
               },
             },
           },
+          take: perPage,
+          skip,
         })
       ).map(async (e) => {
         return {
@@ -46,5 +53,6 @@ export const getArticles = cache(
           tags: e.tags_articles_links.map((e) => e.tags),
         };
       })
-    )
+    );
+  }
 );

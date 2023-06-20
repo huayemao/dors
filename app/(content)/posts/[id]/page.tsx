@@ -1,18 +1,17 @@
+import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
+import PostTile from "@/components/PostTile";
+import Tag from "@/components/Tag";
 import { getArticle, getArticles } from "@/lib/articles";
-import { join } from "path";
-import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
+import { getBase64Image } from "@/lib/getBase64Image";
+import { languages } from "@/lib/shiki";
+import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import { markdownExcerpt } from "@/lib/utils";
+import { serialize } from "next-mdx-remote/serialize";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { getBase64Image } from "@/lib/getBase64Image";
-import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
-import { serialize } from "next-mdx-remote/serialize";
-import remarkShikiTwoslash from "remark-shiki-twoslash";
+import { join } from "path";
 import rehypeRaw from "rehype-raw";
-import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
-import { languages } from "@/lib/shiki";
-import Tag from "@/components/Tag";
-import PostTile from "@/components/PostTile";
+import remarkShikiTwoslash from "remark-shiki-twoslash";
 const theme = require("shiki/themes/nord.json");
 
 export const revalidate = 600;
@@ -31,7 +30,7 @@ async function page({ params }) {
 
   const article = await getArticle(parseInt(params.id as string));
 
-  let articles = (await getArticles()).slice(0, 5);
+  let articles = await getArticles({ perPage: 5 });
   articles = await Promise.all(
     articles.map(async (e) => ({
       ...e,

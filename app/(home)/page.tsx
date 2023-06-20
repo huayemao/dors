@@ -1,21 +1,24 @@
-import styles from "../styles/Home.module.css";
-import { useEffect } from "react";
-import { markdownExcerpt, markdownToHtml } from "@/lib/utils";
-import prisma from "@/prisma/client";
-import { cache } from "react";
-import Link from "next/link";
+import PostTile from "@/components/PostTile";
+import Tag from "@/components/Tag";
 import { getArticles } from "@/lib/articles";
 import { getBase64Image } from "@/lib/getBase64Image";
+import { PaginateOptions } from "@/lib/paginator";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import prisma from "@/prisma/client";
 import Image from "next/image";
-import Tag from "@/components/Tag";
-import PostTile from "@/components/PostTile";
+import Link from "next/link";
+
+type SearchParams = PaginateOptions;
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
-export default async function Home() {
-  const articles = await getArticles();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const articles = await getArticles(searchParams);
 
   const needImageIds = articles.filter((e) => !e.cover_image).map((e) => e.id);
 
