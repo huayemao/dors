@@ -69,17 +69,14 @@ export default async function Home({
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-7xl mx-auto">
-        <div className="w-full flex items-center overflow-hidden">
+        <div className="w-full  px-6 pt-36    lg:pt-36  pb-16">
           <div
             className="
                 w-full
                 h-full
                 flex flex-col
                 justify-between
-                px-6
-                pt-36
-                lg:pt-36
-                pb-16
+            
               "
           >
             <div className="flex flex-col gap-12 py-12">
@@ -302,11 +299,65 @@ export default async function Home({
               </div>
             </div>
           </div>
+          <Pagination />
         </div>
       </div>
     </section>
   );
 }
+
+const Pagination = () => (
+  <ul className=" bg-muted-100 dark:border-muted-600 dark:bg-muted-700 mb-4 inline-flex flex-wrap gap-2  p-1 md:mb-0 md:gap-1">
+    <li>
+      <a
+        aria-current="page"
+        href="/layouts/list-view-2"
+        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center border font-sans text-sm transition-all duration-300 bg-primary-500 border-primary-500 shadow-primary-500/50 dark:shadow-primary-500/20 text-white shadow-sm rounded-full"
+      >
+        1
+      </a>
+    </li>
+    <li>
+      <a
+        href="/layouts/list-view-2?page=2"
+        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
+      >
+        2
+      </a>
+    </li>
+    <li>
+      <a
+        href="/layouts/list-view-2?page=3"
+        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
+      >
+        3
+      </a>
+    </li>
+    <li>
+      <a
+        href="/layouts/list-view-2?page=4"
+        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
+      >
+        4
+      </a>
+    </li>
+    <li>
+      <span className="border-muted-200 text-muted-500 dark:border-muted-700 dark:bg-muted-800 flex h-10 w-10 items-center justify-center bg-white font-sans text-sm rounded-full">
+        …
+      </span>
+    </li>
+    <li>
+      <a
+        aria-current="page"
+        href="/layouts/list-view-2?page=10"
+        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
+      >
+        10
+      </a>
+    </li>
+  </ul>
+);
+
 async function getImages(length) {
   return await fetch(
     `https://api.pexels.com/v1/search?query=pastel&per_page=${length}&page=${
