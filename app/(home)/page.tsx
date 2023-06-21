@@ -1,3 +1,4 @@
+import { Pagination } from "@/components/Pagination";
 import PostTile from "@/components/PostTile";
 import Tag from "@/components/Tag";
 import { getArticles } from "@/lib/articles";
@@ -7,11 +8,17 @@ import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import prisma from "@/prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { cache } from "react";
 
 type SearchParams = PaginateOptions;
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
+
+const getPageCount = cache(async (perPage: number) => {
+  const itemCount = await prisma.articles.count();
+  return itemCount / (perPage || 10);
+});
 
 export default async function Home({
   searchParams,
@@ -19,6 +26,7 @@ export default async function Home({
   searchParams: SearchParams;
 }) {
   const articles = await getArticles(searchParams);
+  const pageCount = await getPageCount(Number(searchParams.perPage));
 
   const needImageIds = articles.filter((e) => !e.cover_image).map((e) => e.id);
 
@@ -49,22 +57,6 @@ export default async function Home({
       (a.cover_image as PexelsPhoto).src.large
     );
   }
-
-  //   useEffect(() => {
-  //     (async () => {
-  //       const res = await fetch("/v1/users/login", {
-  //         headers: {
-  //           "content-type": "application/json",
-  //         },
-  //         body: '{"username":"huayemao","password":"huayemao123"}',
-  //         method: "POST",
-  //         mode: "cors",
-  //         credentials: "include",
-  //       }).then((r) => r.json());
-
-  //       localStorage.setItem("access_token", res.data.token.access_token);
-  //     })();
-  //   });
 
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
@@ -299,64 +291,12 @@ export default async function Home({
               </div>
             </div>
           </div>
-          <Pagination />
+          <Pagination pageCount={pageCount} />
         </div>
       </div>
     </section>
   );
 }
-
-const Pagination = () => (
-  <ul className=" bg-muted-100 dark:border-muted-600 dark:bg-muted-700 mb-4 inline-flex flex-wrap gap-2  p-1 md:mb-0 md:gap-1">
-    <li>
-      <a
-        aria-current="page"
-        href="/layouts/list-view-2"
-        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center border font-sans text-sm transition-all duration-300 bg-primary-500 border-primary-500 shadow-primary-500/50 dark:shadow-primary-500/20 text-white shadow-sm rounded-full"
-      >
-        1
-      </a>
-    </li>
-    <li>
-      <a
-        href="/layouts/list-view-2?page=2"
-        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
-      >
-        2
-      </a>
-    </li>
-    <li>
-      <a
-        href="/layouts/list-view-2?page=3"
-        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
-      >
-        3
-      </a>
-    </li>
-    <li>
-      <a
-        href="/layouts/list-view-2?page=4"
-        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
-      >
-        4
-      </a>
-    </li>
-    <li>
-      <span className="border-muted-200 text-muted-500 dark:border-muted-700 dark:bg-muted-800 flex h-10 w-10 items-center justify-center bg-white font-sans text-sm rounded-full">
-        …
-      </span>
-    </li>
-    <li>
-      <a
-        aria-current="page"
-        href="/layouts/list-view-2?page=10"
-        className="router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900 text-muted-500 hover:text-muted-700 dark:hover:text-muted-400 bg-white rounded-full"
-      >
-        10
-      </a>
-    </li>
-  </ul>
-);
 
 async function getImages(length) {
   return await fetch(
