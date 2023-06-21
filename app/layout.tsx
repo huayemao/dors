@@ -17,14 +17,17 @@ export default function RootLayout({
   return (
     <html>
       <head>
-        <Script strategy="beforeInteractive">
+        <Script id="darkMode" strategy="beforeInteractive">
           {`if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.classList.add('dark')
 } else {
   document.documentElement.classList.remove('dark')
 }`}
         </Script>
-        <Script src="http://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"></Script>
+        <Script
+          id="tencentShare"
+          src="http://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
+        ></Script>
       </head>
       <body>{children}</body>
     </html>

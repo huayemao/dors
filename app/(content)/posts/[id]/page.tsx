@@ -222,7 +222,7 @@ async function page({ params }) {
 
                     <div className="flex gap-4">
                       <button
-                        onChange={share}
+                        onClick={share}
                         className="
               flex-1
               inline-flex
