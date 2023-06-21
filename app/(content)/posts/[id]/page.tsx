@@ -66,6 +66,14 @@ async function page({ params }) {
 
   const excerpt = (await markdownExcerpt(article?.content || "")) + "...";
 
+  const share = () => {
+    /* @ts-ignore */
+    window.setShareInfo({
+      title: article.title,
+      url: window.location.href,
+    });
+  };
+
   return (
     <main className="w-full">
       <div>
@@ -214,6 +222,7 @@ async function page({ params }) {
 
                     <div className="flex gap-4">
                       <button
+                        onChange={share}
                         className="
               flex-1
               inline-flex

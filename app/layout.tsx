@@ -24,6 +24,7 @@ export default function RootLayout({
   document.documentElement.classList.remove('dark')
 }`}
         </Script>
+        <Script src="http://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"></Script>
       </head>
       <body>{children}</body>
     </html>
