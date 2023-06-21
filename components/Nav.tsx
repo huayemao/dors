@@ -20,7 +20,6 @@ export const Nav = () => {
     e
   ) => {
     const v = e.target.checked;
-    console.log(111, v);
     localStorage.theme = v ? "light" : "dark";
 
     if (
