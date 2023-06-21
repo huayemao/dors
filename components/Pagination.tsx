@@ -16,7 +16,7 @@ export function Pagination({ pageCount }) {
   const items = Array.from({ length: pageCount }, (e, i) => i + 1);
 
   return (
-    <ul className=" bg-muted-100 dark:border-muted-600 dark:bg-muted-700 mb-4 inline-flex flex-wrap gap-2  p-1 md:mb-0 md:gap-1">
+    <ul className="bg-muted-100 rounded-full px-1 dark:border-muted-600 dark:bg-muted-700 mb-4 inline-flex flex-wrap gap-2  p-1 md:mb-0 md:gap-1">
       {items.slice(begin, begin + 10).map((e, i) => (
         <li key={e}>
           <Link

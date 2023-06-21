@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { InputHTMLAttributes, useEffect, useState } from "react";
 
 export const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -15,6 +15,27 @@ export const Nav = () => {
       setScrolled(true);
     } else setScrolled(false);
   }
+
+  const toggleDarkMode: InputHTMLAttributes<HTMLInputElement>["onChange"] = (
+    e
+  ) => {
+    const v = e.target.checked;
+    console.log(111, v);
+    localStorage.theme = v ? "light" : "dark";
+
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    // Whenever the user explicitly chooses to respect the OS preference
+    // localStorage.removeItem('theme')
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", scrollHeader);
@@ -1299,6 +1320,7 @@ export const Nav = () => {
             >
               <input
                 type="checkbox"
+                onChange={toggleDarkMode}
                 className="absolute top-0 left-0 z-[2] w-full h-full opacity-0 cursor-pointer"
               />
               <span
