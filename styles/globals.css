@@ -113,7 +113,6 @@ a {
   outline-color: #475569;
 }
 
-
 .peer:checked ~ .peer-checked\:ml-\[45\%\] {
   margin-left: 45%;
 }
@@ -1035,4 +1034,9 @@ a {
     :where(.lg\:prose-xl > :last-child):not(:where([class~="not-prose"] *)) {
     margin-bottom: 0;
   }
+}
+
+/** Don't show the language identifiers */
+pre.shiki .language-id {
+  display: none;
 }
