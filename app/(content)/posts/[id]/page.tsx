@@ -18,9 +18,10 @@ export const revalidate = 600;
 
 export async function generateStaticParams() {
   const articles = await getArticles();
-  return articles.map((article) => ({
-    id: article.id,
+  const ids = articles.map((article) => ({
+    id: String(article.id),
   }));
+  return ids;
 }
 
 async function page({ params }) {
