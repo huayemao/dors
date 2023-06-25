@@ -56,32 +56,17 @@ export default async function Home({
     );
   }
 
+  const isFirstPage = !searchParams.page || Number(searchParams.page) <= 1;
+
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-7xl mx-auto">
         <div className="w-full  px-6 pt-24 lg:pt-24  pb-16">
-          <div
-            className="
-                w-full
-                h-full
-                flex flex-col
-                justify-between
-            
-              "
-          >
+          <div className="w-full h-full flex flex-col justify-between">
             <div className="flex flex-col gap-12 py-12">
-              <FeaturedPosts articles={articles}></FeaturedPosts>
-              <div
-                className="
-                      grid
-                      ptablet:grid-cols-2
-                      ltablet:grid-cols-3
-                      lg:grid-cols-3
-                      gap-6
-                      -m-3
-                    "
-              >
-                {articles.slice(2).map((e) => (
+              {isFirstPage && <FeaturedPosts articles={articles} />}
+              <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
+                {(isFirstPage ? articles.slice(2) : articles).map((e) => (
                   /* @ts-ignore */
                   <PostTile article={e} url={e.url} key={e.id} />
                 ))}

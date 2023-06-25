@@ -14,19 +14,7 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
       <div className="w-full ltablet:w-2/3 lg:w-2/3">
         <Link
           href={"/posts/" + articles[0].id}
-          className="
-            h-full
-            grid
-            md:grid-cols-2
-            rounded-xl
-            bg-white
-            dark:bg-muted-800
-            border border-muted-200
-            dark:border-muted-700
-            w-full
-            max-w-4xl
-            mx-auto
-            overflow-hidden
+          className="h-full grid md:grid-cols-2 rounded-xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 w-full max-w-4xl mx-auto overflow-hidden
           "
         >
           <div className="h-full p-5">
@@ -39,18 +27,7 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
               height="356"
             />
           </div>
-          <div
-            className="
-              flex flex-col
-              items-start
-              gap-4
-              px-6
-              md:px-10
-              py-8
-              -mt-8
-              md:mt-0 md:-ml-5
-            "
-          >
+          <div className=" flex flex-col items-start gap-4 px-6 md:px-10 py-8 -mt-8 md:mt-0 md:-ml-5">
             <div className="w-full space-y-4">
               <div className="relative space-x-2">
                 {!!articles[0]?.tags?.length &&
@@ -65,28 +42,14 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
                       )
                   )}
               </div>
-              <h3
-                className="
-                  font-heading
-                  text-2xl
-                  font-semibold
-                  text-muted-800
-                  dark:text-white
-                  leading-8
-                "
-              >
+              <h3 className=" font-heading text-2xl font-semibold text-muted-800 dark:text-white leading-8">
                 {articles[0].title}
               </h3>
             </div>
 
             <div className="w-full mt-auto space-y-6">
               <p
-                className="
-                  text-base
-                  mt-auto
-                  text-muted-600
-                  dark:text-muted-400
-                  leading-6
+                className=" text-base mt-auto text-muted-600 dark:text-muted-400 leading-6
                 "
               >
                 {articles[0].excerpt}
