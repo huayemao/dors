@@ -1,4 +1,6 @@
 import { Nav } from "@/components/Nav";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default function MainLayout({
   children,
@@ -10,7 +12,9 @@ export default function MainLayout({
   return (
     <>
       <Nav></Nav>
-      <main>{children}</main>
+      <main>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
+      </main>
     </>
   );
 }
