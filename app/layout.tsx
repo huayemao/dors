@@ -1,8 +1,6 @@
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import Script from "next/script";
-import { Suspense } from "react";
-import Loading from "./loading";
 
 export const metadata: Metadata = {
   title: "花野猫的个人空间",
@@ -31,9 +29,7 @@ export default function RootLayout({
           src="http://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
         ></Script>
       </head>
-      <body>
-        <Suspense fallback={<Loading></Loading>}>{children}</Suspense>
-      </body>
+      <body className="bg-muted-100">{children}</body>
     </html>
   );
 }

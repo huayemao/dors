@@ -1,6 +1,4 @@
 import { Nav } from "@/components/Nav";
-import { Suspense } from "react";
-import Loading from "./loading";
 
 export default function ContentLayout({
   children,
@@ -12,7 +10,6 @@ export default function ContentLayout({
   return (
     <>
       <Nav></Nav>
-      <Suspense fallback={<Loading />}></Suspense>
       {children}
     </>
   );

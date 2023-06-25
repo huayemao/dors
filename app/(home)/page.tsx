@@ -61,7 +61,7 @@ export default async function Home({
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-7xl mx-auto">
-        <div className="w-full  px-6 pt-36    lg:pt-36  pb-16">
+        <div className="w-full  px-6 pt-24 lg:pt-24  pb-16">
           <div
             className="
                 w-full
