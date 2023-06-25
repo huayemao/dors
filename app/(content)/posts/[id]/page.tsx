@@ -6,6 +6,7 @@ import { getBase64Image } from "@/lib/getBase64Image";
 import { languages } from "@/lib/shiki";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
+import huayemao from "@/public/img/huayemao.svg";
 import { Metadata } from "next";
 import { serialize } from "next-mdx-remote/serialize";
 import Image from "next/image";
@@ -153,7 +154,7 @@ export default async function page({ params }) {
                       <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
                         <Image
                           alt="花野猫"
-                          src={"/img/huayemao.svg"}
+                          src={huayemao}
                           width={44}
                           height={44}
                         />
