@@ -1,6 +1,7 @@
 import FeaturedPosts from "@/components/FeaturedPosts";
 import { Pagination } from "@/components/Pagination";
 import PostTile from "@/components/PostTile";
+import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { getArticles } from "@/lib/articles";
 import { getBase64Image } from "@/lib/getBase64Image";
 import { PaginateOptions } from "@/lib/paginator";
@@ -15,7 +16,7 @@ export const revalidate = 300;
 
 const getPageCount = cache(async (perPage: number) => {
   const itemCount = await prisma.articles.count();
-  return itemCount / (perPage || 10);
+  return itemCount / (perPage || POSTS_COUNT_PER_PAGE);
 });
 
 export default async function Home({

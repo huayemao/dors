@@ -1,3 +1,4 @@
+import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma from "@/prisma/client";
 import { cache } from "react";
 import { PaginateOptions } from "./paginator";
@@ -26,7 +27,7 @@ export const getArticle = cache(async (id: number) => {
 export const getArticles = cache(
   async (paginationOptions: PaginateOptions = {}) => {
     const page = Number(paginationOptions?.page) || 1;
-    const perPage = Number(paginationOptions?.perPage) || 10;
+    const perPage = Number(paginationOptions?.perPage) || POSTS_COUNT_PER_PAGE;
     const skip = page > 0 ? perPage * (page - 1) : 0;
 
     return await Promise.all(
