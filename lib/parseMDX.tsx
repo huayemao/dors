@@ -2,6 +2,7 @@ import { languages } from "@/lib/shiki";
 import { Prisma, tags, tags_articles_links } from "@prisma/client";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
 const theme = require("shiki/themes/nord.json");
 
@@ -27,6 +28,7 @@ export async function parseMDX(article: {
       rehypePlugins: [rehypeRaw],
       remarkPlugins: [
         [
+          remarkGfm,
           remarkShikiTwoslash,
           {
             theme,
