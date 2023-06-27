@@ -23,13 +23,14 @@ const PostHead = ({ article, url, avatar }: Props) => {
       <div className="w-full max-w-7xl mx-auto">
         <div className="py-14 px-4 relative">
           <div className="mt-4 w-full mx-auto grid md:grid-cols-2 gap-2">
-            <div className=" bg-cover bg-center w-full mb-5 md:mb-0 ptablet:px-5 ltablet:px-4">
+            <div className="bg-cover bg-center w-full mb-5 md:mb-0 ptablet:px-5 ltablet:px-4">
+              {/* todo: 图片的齿唇其实需要优化 */}
               <Image
-                className="max-w-lg mx-auto object-cover rounded-3xl w-[512px] h-[353px]"
+                className="lg:w-[512px] lg:h-[373px] mx-auto object-cover rounded-3xl"
                 src={url}
                 alt="Featured image"
-                width="512"
-                height="353"
+                width={512}
+                height={373}
                 quality={80}
               />
             </div>

@@ -10,7 +10,7 @@ export default async function About() {
         avatar={{ alt: "花野猫", src: huayemao }}
         url={photo1}
       />
-      <article className="prose dark:prose-dark lg:prose-xl py-6 lg:pt-12 mx-auto lg:max-w-6xl">
+      <article className="prose dark:prose-dark lg:prose-xl py-6 lg:pt-12 mx-auto lg:max-w-6xl px-4">
         <h2>何以解忧，唯有米线</h2>
         <p>
           米线是云南的特色美食，作为地道的云南人，米线成为了花野猫生活记忆中抹不去的元素。关于我，就从来到昆明开始吧。
