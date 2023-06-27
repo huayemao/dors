@@ -5,6 +5,10 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "花野猫的个人空间",
   description: "花野猫的个人空间",
+  authors: {
+    url: "dors.huayemao.run",
+    name: "花野猫",
+  },
 };
 
 export default function RootLayout({

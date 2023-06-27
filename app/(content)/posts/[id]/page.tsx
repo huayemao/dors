@@ -1,21 +1,16 @@
 import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
+import PostHead from "@/components/PostHead";
 import PostTile from "@/components/PostTile";
-import Tag from "@/components/Tag";
+import { ShareButton } from "@/components/ShareButton";
 import { getArticle, getArticles } from "@/lib/articles";
 import { getBase64Image } from "@/lib/getBase64Image";
-import { languages } from "@/lib/shiki";
+import { parseMDX } from "@/lib/parseMDX";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { Metadata } from "next";
-import { serialize } from "next-mdx-remote/serialize";
-import Image from "next/image";
 import Link from "next/link";
 import { join } from "path";
-import rehypeRaw from "rehype-raw";
-import remarkShikiTwoslash from "remark-shiki-twoslash";
-import { ShareButton } from "../../../../components/ShareButton";
-const theme = require("shiki/themes/nord.json");
 
 export const revalidate = 600;
 
@@ -34,7 +29,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   // read route params
   const id = params.id;
-  const article = await getArticle(parseInt(params.id as string));
+  const article = await getArticle(parseInt(id as string));
 
   return {
     title: article.title,
@@ -62,21 +57,7 @@ export default async function page({ params }) {
   const tmpDir = join(process.cwd(), "tmp");
   console.log(tmpDir);
 
-  const mdxSource = await serialize(article?.content || "", {
-    mdxOptions: {
-      rehypePlugins: [rehypeRaw],
-      remarkPlugins: [
-        [
-          remarkShikiTwoslash,
-          {
-            theme,
-            langs: languages,
-          },
-        ],
-      ], // 添加 Shiki 插件来呈现代码块高亮
-      format: "mdx",
-    },
-  });
+  const mdxSource = await parseMDX(article);
 
   const coverImage = article?.cover_image
     ? (article.cover_image as PexelsPhoto).src.large
@@ -89,100 +70,11 @@ export default async function page({ params }) {
   return (
     <main className="w-full">
       <div>
-        <section className="w-full bg-muted-100 dark:bg-muted-900">
-          <div className="w-full max-w-7xl mx-auto">
-            <div className="py-14 px-4 relative">
-              <div className="mt-12 w-full mx-auto grid md:grid-cols-2 gap-2">
-                <div
-                  className="
-              bg-cover bg-center
-              w-full
-              mb-5
-              md:mb-0
-              ptablet:px-5
-              ltablet:px-4
-            "
-                >
-                  <Image
-                    className="h-full w-full max-w-lg mx-auto object-cover rounded-3xl"
-                    src={url}
-                    alt="Featured image"
-                    width="512"
-                    height="353"
-                  />
-                </div>
-
-                <div className="h-full flex items-center ptablet:px-4 ltablet:px-6">
-                  <div className="w-full max-w-lg space-x-2">
-                    {!!article?.tags?.length &&
-                      article.tags.map(
-                        (t) =>
-                          t && (
-                            <Tag
-                              key={t.id}
-                              type="secondary"
-                              text={t.name as string}
-                            />
-                          )
-                      )}
-
-                    <h1
-                      className="
-                  font-heading
-                  text-muted-800
-                  dark:text-white
-                  font-extrabold
-                  text-3xl
-                  ltablet:text-4xl
-                  lg:text-4xl
-                "
-                    >
-                      {article?.title}
-                    </h1>
-                    <p
-                      className="
-                  font-sans
-                  text-base text-muted-500
-                  dark:text-muted-400
-                  max-w-md
-                  my-4
-                "
-                    >
-                      {excerpt}
-                    </p>
-                    <div className="flex items-center justify-start w-full relative">
-                      <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-                        <Image
-                          alt="花野猫"
-                          src={huayemao}
-                          width={44}
-                          height={44}
-                        />
-                      </div>
-                      <div className="pl-2">
-                        <h3
-                          className="
-                      font-heading font-medium 
-                      text-muted-800
-                      dark:text-muted-50
-                    "
-                        >
-                          花野猫
-                        </h3>
-                        <p className="font-sans text-sm text-muted-400">
-                          {article?.published_at?.toLocaleString("zh-cn")}
-                        </p>
-                      </div>
-                      <div className="block ml-auto font-sans text-sm text-muted-400">
-                        <span>— 5 min read</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <PostHead
+          article={{ ...article, excerpt }}
+          avatar={{ alt: "花野猫", src: huayemao }}
+          url={url}
+        />
         <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 overflow-hidden">
           <div className="w-full max-w-7xl mx-auto">
             <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
@@ -220,13 +112,7 @@ export default async function page({ params }) {
                 <div className="mt-10">
                   <div>
                     <h3
-                      className="
-            font-heading
-            text-muted-800
-            dark:text-white
-            font-semibold
-            text-xl
-            mb-6
+                      className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6
           "
                     >
                       分享文章
@@ -237,27 +123,9 @@ export default async function page({ params }) {
                         options={{
                           title: article.title,
                         }}
-                      ></ShareButton>
-
+                      />
                       <button
-                        className="
-              flex-1
-              inline-flex
-              justify-center
-              items-center
-              py-4
-              px-5
-              rounded
-              bg-muted-200
-              dark:bg-muted-700
-              hover:bg-muted-100
-              dark:hover:bg-muted-600
-              text-muted-600
-              dark:text-muted-400
-              transition-colors
-              duration-300
-              cursor-pointer
-              tw-accessibility
+                        className="flex-1 inline-flex justify-center items-center py-4 px-5 rounded bg-muted-200 dark:bg-muted-700 hover:bg-muted-100 dark:hover:bg-muted-600 text-muted-600 dark:text-muted-400 transition-colors duration-300 cursor-pointer tw-accessibility
             "
                       >
                         <svg
@@ -280,16 +148,7 @@ export default async function page({ params }) {
                   </div>
                   <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
 
-                  <h3
-                    className="
-            font-heading
-            text-muted-800
-            dark:text-white
-            font-semibold
-            text-xl
-            mb-6
-          "
-                  >
+                  <h3 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
                     最近文章
                   </h3>
 

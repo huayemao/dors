@@ -298,6 +298,8 @@ model files_related_morphs {
   files        files?  @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "files_related_morphs_fk")
 
   @@index([file_id], map: "files_related_morphs_fk")
+  @@index([related_id], map: "files_related_morphs_id_column_index")
+  @@index([order], map: "files_related_morphs_order_index")
 }
 
 model i18n_locale {

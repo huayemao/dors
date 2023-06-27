@@ -1216,38 +1216,16 @@ export const Nav = () => {
                 </span>
               </label>
             </div>
-            <a
-              href="/signup.html"
-              className="
-            relative
-            w-full
-            font-sans font-normal
-            inline-flex
-            items-center
-            justify-center
-            leading-5
-            no-underline
-            min-w-[130px]
-            space-x-1
-            text-white
-            bg-primary-500
-            h-12
-            px-5
-            py-3
-            text-base
-            rounded-xl
-            hover:bg-primary-600 hover:shadow-xl hover:shadow-primary-500/20
-            tw-accessibility
-            transition-all
-            duration-300
-          "
-            >
-              Get Started
-            </a>
           </div>
         </div>
 
         <div className="hidden lg:flex lg:w-1/5 lg:justify-end lg:gap-x-4">
+          <Link
+            href="/about"
+            className="inline-flex items-center justify-center text-slate-500"
+          >
+            关于
+          </Link>
           <button
             type="button"
             className="
@@ -1404,33 +1382,6 @@ export const Nav = () => {
               </span>
             </label>
           </div>
-          <a
-            href="/signup.html"
-            className="
-          relative
-          font-sans font-normal
-          inline-flex
-          items-center
-          justify-center
-          leading-5
-          no-underline
-          min-w-[130px]
-          space-x-1
-          text-white
-          bg-primary-500
-          h-12
-          px-5
-          py-3
-          text-base
-          rounded-xl
-          hover:bg-primary-600 hover:shadow-xl hover:shadow-primary-500/20
-          tw-accessibility
-          transition-all
-          duration-300
-        "
-          >
-            Get Started
-          </a>
         </div>
       </div>
     </nav>
