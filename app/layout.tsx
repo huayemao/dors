@@ -33,7 +33,9 @@ export default function RootLayout({
           src="http://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
         ></Script>
       </head>
-      <body className="bg-muted-100">{children}</body>
+      <body className="bg-muted-100 transition-all duration-300">
+        {children}
+      </body>
     </html>
   );
 }

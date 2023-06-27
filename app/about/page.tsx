@@ -4,7 +4,7 @@ import huayemao from "@/public/img/huayemao.svg";
 
 export default async function About() {
   return (
-    <main className="w-full  bg-white">
+    <main className="w-full bg-white dark:bg-muted-900">
       <PostHead
         article={{ title: "花野猫何许人也", excerpt: "花野猫的独白" }}
         avatar={{ alt: "花野猫", src: huayemao }}

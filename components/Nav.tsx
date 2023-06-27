@@ -52,8 +52,7 @@ export const Nav = () => {
         {
           "bg-white dark:bg-muted-800 shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10":
             scrolled || megamenuOpened,
-          "": !scrolled || !megamenuOpened,
-          "bg-white dark:bg-muted-800": mobileOpen,
+          "dark:bg-muted-900": !scrolled && !megamenuOpened,
         }
       )}
     >
