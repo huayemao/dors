@@ -32,6 +32,7 @@ const PostHead = ({ article, url, avatar }: Props) => {
                 width={512}
                 height={373}
                 quality={80}
+                placeholder={typeof url === "string" ? undefined : "blur"}
               />
             </div>
 
