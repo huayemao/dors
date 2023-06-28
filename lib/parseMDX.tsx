@@ -28,13 +28,13 @@ export async function parseMDX(article: {
       rehypePlugins: [rehypeRaw],
       remarkPlugins: [
         [
-          remarkGfm,
           remarkShikiTwoslash,
           {
             theme,
             langs: languages,
           },
         ],
+        remarkGfm,
       ],
       format: "mdx",
     },
