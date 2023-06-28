@@ -1,4 +1,5 @@
 import { getArticle } from "@/lib/articles";
+import { getDateString } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import Image from "next/image";
 import Link from "next/link";
@@ -116,9 +117,7 @@ function PostTile({ article, url, type = "default" }: Props) {
                   花野猫
                 </h3>
                 <p className="font-sans text-sm text-muted-400">
-                  {
-                    published_at?.toLocaleString() /* Need to check if it's not undefined before accessing its method */
-                  }
+                  {published_at ? getDateString(published_at) : ""}
                 </p>
               </div>
               <div className="block ml-auto font-sans text-sm text-muted-400">

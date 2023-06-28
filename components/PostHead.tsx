@@ -1,4 +1,5 @@
 import { getArticle } from "@/lib/articles";
+import { getDateString } from "@/lib/utils";
 import Image, { ImageProps } from "next/image";
 import Tag from "./Tag";
 
@@ -76,7 +77,9 @@ const PostHead = ({ article, url, avatar }: Props) => {
                       {avatar.alt}
                     </h3>
                     <p className="font-sans text-sm text-muted-400">
-                      {article?.published_at?.toLocaleString("zh-cn")}
+                      {article?.published_at
+                        ? getDateString(article?.published_at)
+                        : ""}
                     </p>
                   </div>
                   <div className="block ml-auto font-sans text-sm text-muted-400">

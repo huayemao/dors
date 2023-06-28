@@ -1,4 +1,5 @@
 import { getArticles } from "@/lib/articles";
+import { getDateString } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,7 +70,9 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
                     花野猫
                   </h3>
                   <p className="font-sans text-sm text-muted-400">
-                    {articles?.[0]?.published_at?.toLocaleString()}
+                    {articles?.[0]?.published_at
+                      ? getDateString(articles?.[0]?.published_at)
+                      : ""}
                   </p>
                 </div>
                 <div className="block ml-auto font-sans text-sm text-muted-400">
@@ -83,18 +86,7 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
       <div className="w-full ltablet:w-1/3 lg:w-1/3">
         <Link
           href={"/posts/" + articles[1].id}
-          className="
-            block
-            h-full
-            rounded-xl
-            bg-white
-            dark:bg-muted-800
-            border border-muted-200
-            dark:border-muted-700
-            w-full
-            max-w-4xl
-            mx-auto
-            overflow-hidden
+          className="block h-full rounded-xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 w-full max-w-4xl mx-auto overflow-hidden
           "
         >
           <div className="h-full flex flex-col items-start gap-4 px-6 md:px-10 py-8">
@@ -113,13 +105,7 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
                   )}
               </div>
               <h3
-                className="
-                  font-heading
-                  text-2xl
-                  font-semibold
-                  text-muted-800
-                  dark:text-white
-                  leading-8
+                className="font-heading text-2xl font-semibold text-muted-800 dark:text-white leading-8
                 "
               >
                 {articles[1].title}
@@ -127,15 +113,7 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
             </div>
 
             <div className="w-full mt-auto space-y-6">
-              <p
-                className="
-                  text-base
-                  mt-auto
-                  text-muted-600
-                  dark:text-muted-400
-                  leading-6
-                "
-              >
+              <p className="text-base mt-auto text-muted-600 dark:text-muted-400 leading-6">
                 {articles[1].excerpt}
               </p>
               <div className="flex items-center justify-start w-full relative">
@@ -144,16 +122,15 @@ const FeaturedPosts: React.FC<Props> = ({ articles }) => {
                 </div>
                 <div className="pl-2">
                   <h3
-                    className="
-                      font-heading font-medium
-                      text-muted-800
-                      dark:text-muted-50
+                    className=" font-heading font-medium text-muted-800 dark:text-muted-50
                     "
                   >
                     花野猫
                   </h3>
                   <p className="font-sans text-sm text-muted-400">
-                    {articles[1].published_at?.toLocaleString()}
+                    {articles?.[1]?.published_at
+                      ? getDateString(articles?.[1]?.published_at)
+                      : ""}
                   </p>
                 </div>
                 <div className="block ml-auto font-sans text-sm text-muted-400">
