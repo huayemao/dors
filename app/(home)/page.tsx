@@ -65,9 +65,9 @@ export default async function Home({
         <div className="w-full  px-6 pt-24 lg:pt-24  pb-16">
           <div className="w-full h-full flex flex-col justify-between">
             <div className="flex flex-col gap-12 py-12">
-              {isFirstPage && <FeaturedPosts articles={articles} />}
+              {isFirstPage && <FeaturedPosts articles={[articles[0]]} />}
               <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
-                {(isFirstPage ? articles.slice(2) : articles).map((e) => (
+                {articles.map((e) => (
                   /* @ts-ignore */
                   <PostTile article={e} url={e.url} key={e.id} />
                 ))}
