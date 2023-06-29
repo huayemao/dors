@@ -31,7 +31,7 @@ export default function RootLayout({
         </Script>
         <Script
           id="tencentShare"
-          src="http://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
+          src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
         ></Script>
       </head>
       <body className="bg-muted-100 transition-all duration-300">

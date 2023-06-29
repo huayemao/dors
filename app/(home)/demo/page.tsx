@@ -7,8 +7,7 @@ export default function Demo() {
   return (
     <div className={styles.container}>
       <details>
-        <summary>问题</summary>
-        回答
+        <summary>问题</summary>回答
       </details>
       <div
         dangerouslySetInnerHTML={{
