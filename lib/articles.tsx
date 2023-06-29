@@ -2,7 +2,13 @@ import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma from "@/prisma/client";
 import { cache } from "react";
 import { PaginateOptions } from "./paginator";
-import { markdownExcerpt, markdownToHtml } from "./utils";
+import { PexelsPhoto } from "./types/PexelsPhoto";
+import {
+  getBase64Image,
+  getPexelImages,
+  markdownExcerpt,
+  markdownToHtml,
+} from "./utils";
 
 export const getArticle = cache(async (id: number) => {
   const res = await prisma.articles.findUnique({
@@ -57,3 +63,39 @@ export const getArticles = cache(
     );
   }
 );
+
+export async function getProcessedArticles(
+  articles: Awaited<ReturnType<typeof getArticles>>
+) {
+  const needImageIds = articles.filter((e) => !e.cover_image).map((e) => e.id);
+
+  let imageData;
+
+  if (needImageIds.length) {
+    imageData = await getPexelImages(articles.length);
+  }
+
+  for (const i in articles) {
+    const a = articles[i];
+
+    if (needImageIds.includes(a.id)) {
+      await prisma.articles.update({
+        where: {
+          id: a.id,
+        },
+        data: {
+          cover_image: imageData.photos[i],
+        },
+      });
+
+      a.cover_image = imageData.photos[i];
+    }
+
+    // @ts-ignore
+    articles[i].url = await getBase64Image(
+      (a.cover_image as PexelsPhoto).src.large
+    );
+  }
+
+  return articles;
+}

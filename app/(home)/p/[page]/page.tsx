@@ -12,6 +12,14 @@ type SearchParams = PaginateOptions;
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
+export async function generateStaticParams() {
+  const count = await getPageCount(POSTS_COUNT_PER_PAGE);
+  const params = Array.from({ length: count }, (_, i) => ({
+    page: String(i + 1),
+  }));
+  return params;
+}
+
 const getPageCount = cache(async (perPage: number) => {
   const itemCount = await prisma.articles.count();
   return itemCount / (perPage || POSTS_COUNT_PER_PAGE);
@@ -19,11 +27,23 @@ const getPageCount = cache(async (perPage: number) => {
 
 export default async function Home({
   searchParams,
+  params,
 }: {
   searchParams: SearchParams;
+
+  params: {
+    page: string | number | undefined;
+  };
 }) {
-  const articles = await getProcessedArticles(await getArticles(searchParams));
-  const pageCount = await getPageCount(Number(searchParams.perPage));
+  const articles = await getProcessedArticles(
+    await getArticles({ page: params.page })
+  );
+
+  const pageCount = await getPageCount(
+    searchParams.perPage ? Number(searchParams.perPage) : POSTS_COUNT_PER_PAGE
+  );
+
+  const isFirstPage = !(params.page && Number(params.page) > 1);
 
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
@@ -39,7 +59,7 @@ export default async function Home({
               </p>
             </div>
             <div className="flex flex-col gap-12 py-12">
-              <FeaturedPosts articles={[articles[0]]} />
+              {isFirstPage && <FeaturedPosts articles={[articles[0]]} />}
               <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
                 {articles.map((e) => (
                   /* @ts-ignore */

@@ -5,15 +5,14 @@ import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
 import { SITE_META } from "@/constants";
 import { getArticle, getArticles } from "@/lib/articles";
-import { getBase64Image } from "@/lib/getBase64Image";
 import { parseMDX } from "@/lib/parseMDX";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
-import { markdownExcerpt } from "@/lib/utils";
+import { getBase64Image, markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { Metadata } from "next";
 import { join } from "path";
 
-export const revalidate = 600;
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const articles = await getArticles();

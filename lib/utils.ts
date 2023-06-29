@@ -8,6 +8,30 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export async function getBase64Image(url) {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const base64 = buffer.toString("base64");
+  const contentType = response.headers.get("content-type");
+  const dataUrl = `data:${contentType};base64,${base64}`;
+  return dataUrl;
+}
+
+export async function getPexelImages(length) {
+  return await fetch(
+    `https://api.pexels.com/v1/search?query=pastel&per_page=${length}&page=${
+      Math.floor(Math.random() * 100) + 1
+    }&orientation=landscape`,
+    {
+      headers: {
+        Authorization:
+          "VIIq3y6ksXWUCdBRN7xROuRE7t6FXcX34DXyiqjnsxOzuIakYACK402j",
+      },
+    }
+  ).then((res) => res.json());
+}
+
 export async function markdownToHtml(markdown) {
   const result = await remark().use(html).process(markdown);
   return result.toString();
