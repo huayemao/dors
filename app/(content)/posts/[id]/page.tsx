@@ -2,6 +2,7 @@ import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
 import PostHead from "@/components/PostHead";
 import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
+import { SITE_META } from "@/constants";
 import { getArticle, getArticles } from "@/lib/articles";
 import { getBase64Image } from "@/lib/getBase64Image";
 import { parseMDX } from "@/lib/parseMDX";
@@ -32,7 +33,7 @@ export async function generateMetadata({
   const article = await getArticle(parseInt(id as string));
 
   return {
-    title: article.title,
+    title: `${article.title}|${SITE_META.name}——${SITE_META.description}`,
     openGraph: {
       images: [(article.cover_image as PexelsPhoto).src.small],
     },

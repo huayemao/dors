@@ -1,10 +1,11 @@
+import { SITE_META } from "@/constants";
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "花野猫的个人空间",
-  description: "花野猫的个人空间",
+  title: SITE_META.name,
+  description: SITE_META.description,
   authors: {
     url: "dors.huayemao.run",
     name: "花野猫",
