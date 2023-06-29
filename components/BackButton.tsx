@@ -1,10 +1,16 @@
+import clsx from "clsx";
 import Link from "next/link";
+interface Props extends React.HTMLAttributes<HTMLAnchorElement> {
+  children?: JSX.Element;
+}
 
-export const BackButton = (
+export const BackButton = ({ children, className }: Props) => (
   <Link
     href={"/"}
-    replace
-    className="flex items-center gap-2 font-sans font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
+    className={clsx(
+      "flex items-center gap-2 font-sans font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300",
+      className
+    )}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -21,6 +27,6 @@ export const BackButton = (
         d="m1.027 11.993l4.235 4.25L6.68 14.83l-1.821-1.828L22.974 13v-2l-18.12.002L6.69 9.174L5.277 7.757l-4.25 4.236Z"
       ></path>
     </svg>
-    <span>返回</span>
+    <span>{children || "返回"}</span>
   </Link>
 );

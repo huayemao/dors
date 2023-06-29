@@ -81,7 +81,9 @@ export default async function page({ params }) {
             <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
               <div className="w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto">
                 <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
-                  <div className="space-y-4 mb-5">{BackButton}</div>
+                  <div className="space-y-4 mb-5">
+                    <BackButton />
+                  </div>
                   <article className="prose dark:prose-dark lg:prose-xl py-6">
                     <MDXRemoteWrapper {...mdxSource} />
                   </article>
