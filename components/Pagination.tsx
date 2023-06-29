@@ -23,10 +23,10 @@ export function Pagination({ pageCount }) {
             href={`/p/${e}`}
             shallow
             className={clsx(
-              "router-link-active router-link-exact-active flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900  hover:text-muted-700 dark:hover:text-muted-400  rounded-full",
+              "border flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900  hover:text-muted-700 dark:hover:text-muted-400  rounded-full",
               {
                 "bg-white text-muted-500": !(pageNum ? pageNum === e : e === 1),
-                "border bg-primary-500 border-primary-500 shadow-primary-500/50 dark:shadow-primary-500/20 text-white shadow-sm":
+                "bg-primary-500 border-primary-500 shadow-primary-500/50 dark:shadow-primary-500/20 text-white shadow-sm":
                   pageNum ? pageNum === e : e === 1,
               }
             )}
