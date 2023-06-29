@@ -1,4 +1,5 @@
 "use client";
+import Carousel from "@/components/Carousel";
 import styles from "@/styles/Home.module.css";
 
 export default function Demo() {
@@ -19,7 +20,9 @@ export default function Demo() {
         }}
       ></div>
 
-      <main className={styles.main}></main>
+      <main className={styles.main}>
+        <Carousel></Carousel>
+      </main>
     </div>
   );
 }

@@ -52,6 +52,16 @@ const Carousel = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    }, 3000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [slides.length]);
+
   return (
     <section className="box w-fit">
       <div className="relative overflow-hidden w-96 h-72 mx-auto">
