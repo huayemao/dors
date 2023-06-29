@@ -1,5 +1,6 @@
 "use client";
 import Carousel from "@/components/Carousel";
+import { slides } from "@/constants";
 import styles from "@/styles/Home.module.css";
 
 export default function Demo() {
@@ -21,7 +22,10 @@ export default function Demo() {
       ></div>
 
       <main className={styles.main}>
-        <Carousel></Carousel>
+        <Carousel
+          items={slides}
+          className="w-[800px] h-[520px] rounded-lg shadow"
+        ></Carousel>
       </main>
     </div>
   );

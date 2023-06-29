@@ -1,11 +1,18 @@
 "use client";
-import { slides } from "@/constants";
+import { SlideItem } from "@/constants";
+import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import Loading from "./loading";
 
-const Carousel = () => {
+type Props = {
+  className: string;
+  items: SlideItem[];
+};
+
+const Carousel = ({ className, items }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [imageLoadedArr, setImageLoadedArr] = useState(slides.map(() => false));
+  const [imageLoadedArr, setImageLoadedArr] = useState(items.map(() => false));
 
   const jumpTo = (to) => {
     setCurrentIndex(to);
@@ -54,32 +61,31 @@ const Carousel = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 3000);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [slides.length]);
+  }, [items.length]);
 
   return (
-    <section className="box w-fit">
-      <div className="relative overflow-hidden w-96 h-72 mx-auto">
+    <>
+      <div
+        className={cn("relative overflow-hidden w-96 h-72 mx-auto", className)}
+      >
         <div
           className="flex transition-transform duration-300 ease-in-out h-full"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {slides.map((item, index) => (
+          {items.map((item, index) => (
             <div
               key={index}
               className="relative flex-none w-full h-full bg-slate-200"
             >
-              <div
-                className="absolute inset-0 flex justify-center items-center text-slate-700"
-                style={{ display: imageLoadedArr[index] ? "none" : "flex" }}
-              >
-                加载中...
-              </div>
+              {!imageLoadedArr[index] && (
+                <Loading className="absolute w-full h-full" />
+              )}
               <img
                 alt={item.caption}
                 loading="lazy"
@@ -100,13 +106,13 @@ const Carousel = () => {
         </div>
       </div>
       <div className="controls">
-        {slides.map((item, index) => (
+        {items.map((item, index) => (
           <button key={index} onClick={() => jumpTo(index)}>
             {index}
           </button>
         ))}
       </div>
-    </section>
+    </>
   );
 };
 

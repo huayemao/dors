@@ -27,19 +27,4 @@ export const slides: SlideItem[] = [
       "https://www.peugeot.com.cn/Cg/Upload/www.peugeot.com.cn/image/230428/2023042822591769064.jpg",
     caption: "Slide 3",
   },
-  {
-    image:
-      "https://www.peugeot.com.cn/Cg/Upload/www.peugeot.com.cn/image/230428/2023042822591769064.jpg",
-    caption: "Slide 3",
-  },
-  {
-    image:
-      "https://www.peugeot.com.cn/Cg/Upload/www.peugeot.com.cn/image/230428/2023042822591769064.jpg",
-    caption: "Slide 3",
-  },
-  {
-    image:
-      "https://www.peugeot.com.cn/Cg/Upload/www.peugeot.com.cn/image/230428/2023042822591769064.jpg",
-    caption: "Slide 3",
-  },
 ];
