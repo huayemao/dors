@@ -56,46 +56,20 @@ export const Nav = () => {
       )}
     >
       <div
-        className="
-      w-full
-      max-w-7xl
-      mx-auto
-      flex flex-wrap
-      py-3
-      flex-row
-      items-center
-      sm:justify-between
+        className="w-full max-w-7xl mx-auto flex flex-wrap py-3 flex-row items-center sm:justify-between
     "
       >
         <div className="flex justify-between items-center w-full lg:w-1/5">
           <Link
             href="/"
-            className="
-          flex
-          title-font
-          font-medium
-          items-center
-          text-muted-900
-          dark:text-muted-100
+            className="flex title-font font-medium items-center text-muted-900 dark:text-muted-100
         "
           >
             <Avatar alt />
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
 
-          <button
-            className="
-          flex
-          relative
-          justify-center
-          items-center
-          ml-auto
-          w-10
-          h-10
-          focus:outline-none
-          lg:hidden
-        "
-          >
+          <button className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden">
             <div className="block top-1/2 left-6 w-4 -translate-x-1/2 -translate-y-1/2">
               <span className="block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out -translate-y-2"></span>
               <span className="block absolute w-5 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out"></span>

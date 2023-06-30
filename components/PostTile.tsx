@@ -30,19 +30,7 @@ function PostTile({ article, url, type = "default" }: Props) {
               height="48"
             />
             <div>
-              <h3
-                className="
-                  font-heading font-medium
-                  text-muted-800
-                  dark:text-muted-50
-                  leading-snug
-                  overflow-hidden
-                  text-ellipsis
-                  max-w-3/4
-                  line-clamp-2
-                  mb-1
-                "
-              >
+              <h3 className="font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1">
                 {article.title}
               </h3>
               <p className="font-sans text-sm text-muted-400">
@@ -86,19 +74,13 @@ function PostTile({ article, url, type = "default" }: Props) {
                 className="w-full h-52 object-cover rounded-xl"
                 /* @ts-ignore */
                 src={url}
-                alt="Post image"
+                alt={article.title || SITE_META.name}
                 width="348"
                 height="208"
               />
             </div>
             <h3
-              className="
-                 font-heading
-                 text-lg
-                 font-medium
-                 text-muted-800
-                 dark:text-white
-                 leading-6
+              className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6
                "
             >
               {title}
@@ -110,13 +92,7 @@ function PostTile({ article, url, type = "default" }: Props) {
                 <Avatar />
               </div>
               <div className="pl-2">
-                <h3
-                  className="
-                     font-heading font-medium
-                     text-muted-800
-                     dark:text-muted-50
-                   "
-                >
+                <h3 className="font-heading font-medium text-muted-800 dark:text-muted-50">
                   {SITE_META.author.name}
                 </h3>
                 <p className="font-sans text-sm text-muted-400">
