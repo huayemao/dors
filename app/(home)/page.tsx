@@ -38,6 +38,50 @@ export default async function Home({
                 {SITE_META.introduction}
               </p>
             </div>
+            <div className="w-full max-w-lg mx-auto my-4 space-y-4 text-center">
+              {/* <div className="w-full relative">
+                <label className="hidden font-alt text-sm text-muted-400">
+                  Search
+                </label>
+                <div className="group relative">
+                  <input
+                    type="text"
+                    className=" pl-16 pr-5 py-3 h-16 text-base leading-5 font-sans w-full rounded-xl bg-white text-muted-600 border border-muted-300 focus:border-muted-300 focus:shadow-lg focus:shadow-muted-300/50 dark:focus:shadow-muted-800/50 placeholder:text-muted-300 dark:placeholder:text-muted-500 dark:bg-muted-800 dark:text-muted-200 dark:border-muted-700 dark:focus:border-muted-600 transition-all duration-300 tw-accessibility
+                      "
+                    placeholder="Search blog articles..."
+                  />
+                  <div
+                    className=" absolute top-0 left-0 h-16 w-16 flex justify-center items-center text-muted-400 group-focus-within:text-primary-500 transition-colors duration-300
+                      "
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                      role="img"
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                      data-icon="lucide:search"
+                      className="iconify w-6 h-6 iconify--lucide"
+                    >
+                      <g
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      >
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21l-4.35-4.35"></path>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className="relative w-full flex justify-center gap-4 flex-wrap">
+                <Category active>xxx</Category>
+              </div> */}
+            </div>
             <div className="flex flex-col gap-12 py-12">
               <FeaturedPosts articles={[articles[0]]} />
               <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
