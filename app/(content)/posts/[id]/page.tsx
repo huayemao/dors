@@ -32,7 +32,7 @@ export async function generateMetadata({
   const article = await getArticle(parseInt(id as string));
 
   return {
-    title: `${article.title}|${SITE_META.name}——${SITE_META.description}`,
+    title: `${article.title} | ${SITE_META.name}——${SITE_META.description}`,
     openGraph: {
       images: [(article.cover_image as PexelsPhoto).src.small],
     },
