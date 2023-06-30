@@ -7,8 +7,9 @@ export function Avatar({ alt = false }: { alt?: boolean }) {
     <Image
       alt="花野猫"
       src={alt ? huayemaoAlt : huayemao}
-      width={44}
-      height={44}
+      width={42}
+      height={42}
+      placeholder="blur"
     />
   );
 }
