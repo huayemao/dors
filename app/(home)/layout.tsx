@@ -33,8 +33,19 @@ export default async function MainLayout({
                 </div>
                 <div className="w-full max-w-lg mx-auto my-4 space-y-4 text-center">
                   <div className="relative w-full flex justify-center gap-4 flex-wrap">
+                    <Category
+                      href={`/`}
+                      name={"全部"}
+                      key={9999}
+                      active={!params?.tagId}
+                    />
                     {tags.map((tag) => (
-                      <Category data={tag} key={tag.id} />
+                      <Category
+                        href={`/categories/${tag.id}`}
+                        name={tag.name as string}
+                        key={tag.id}
+                        active={params?.tagId === tag.id}
+                      />
                     ))}
                   </div>
                 </div>

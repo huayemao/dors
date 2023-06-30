@@ -1,15 +1,19 @@
 import { cn } from "@/lib/utils";
-import { tags } from "@prisma/client";
 import Link from "next/link";
 
 type CategoryProps = {
   active?: boolean;
-  data: tags;
+  name: string;
+  href: string;
 };
 
-export const Category: React.FC<CategoryProps> = ({ data, active = false }) => (
+export const Category: React.FC<CategoryProps> = ({
+  name,
+  active = false,
+  href,
+}) => (
   <Link
-    href={`/categories/${data.id}`}
+    href={href}
     className={cn(
       "flex-1 inline-flex justify-center items-center py-2 px-4 font-sans text-sm",
       "rounded-lg  dark:bg-muted-800 text-muted-500  dark:hover:bg-muted-700 dark:hover:text-muted-200",
@@ -20,6 +24,6 @@ export const Category: React.FC<CategoryProps> = ({ data, active = false }) => (
       }
     )}
   >
-    {data.name}
+    {name}
   </Link>
 );
