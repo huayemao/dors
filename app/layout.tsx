@@ -6,10 +6,7 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: SITE_META.name,
   description: SITE_META.description,
-  authors: {
-    url: "dors.huayemao.run",
-    name: "花野猫",
-  },
+  authors: SITE_META.author,
 };
 
 export default function RootLayout({

@@ -1,11 +1,12 @@
+import { SITE_META } from "@/constants";
 import { getArticles } from "@/lib/articles";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";
-import huayemao from "@/public/img/huayemao.svg";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Avatar } from "./Avatar";
 import Tag from "./Tag";
 interface Props {
   articles: Awaited<ReturnType<typeof getArticles>>;
@@ -74,7 +75,7 @@ const Hero = ({
           </p>
           <div className="flex items-center justify-start w-full relative">
             <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-              <Image alt="花野猫" src={huayemao} width={44} height={44} />
+              <Avatar />
             </div>
             <div className="pl-2">
               <h3
@@ -84,7 +85,7 @@ const Hero = ({
             dark:text-muted-50
           "
               >
-                花野猫
+                {SITE_META.author.name}
               </h3>
               <p className="font-sans text-sm text-muted-400">
                 {published_at ? getDateString(published_at) : ""}
@@ -138,14 +139,14 @@ const SubHero = ({
           </p>
           <div className="flex items-center justify-start w-full relative">
             <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-              <Image alt="花野猫" src={huayemao} width={44} height={44} />
+              <Avatar />
             </div>
             <div className="pl-2">
               <h3
                 className=" font-heading font-medium text-muted-800 dark:text-muted-50
               "
               >
-                花野猫
+                {SITE_META.author.name}
               </h3>
               <p className="font-sans text-sm text-muted-400">
                 {published_at ? getDateString(published_at) : ""}

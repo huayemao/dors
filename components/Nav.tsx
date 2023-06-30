@@ -1,9 +1,8 @@
 "use client";
-import huayemaoAlt from "@/public/img/huayemao1.svg";
 import clsx from "clsx";
-import Image from "next/image";
 import Link from "next/link";
 import { InputHTMLAttributes, useEffect, useState } from "react";
+import { Avatar } from "./Avatar";
 
 export const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -80,7 +79,7 @@ export const Nav = () => {
           dark:text-muted-100
         "
           >
-            <Image alt="花野猫" src={huayemaoAlt} width={44} height={44} />
+            <Avatar alt />
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
 
