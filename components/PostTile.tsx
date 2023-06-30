@@ -45,7 +45,9 @@ function PostTile({ article, url, type = "default" }: Props) {
                 {article.title}
               </h3>
               <p className="font-sans text-sm text-muted-400">
-                {article.updated_at?.toLocaleString()}
+                {article.updated_at
+                  ? "更新于 " + getDateString(article.updated_at)
+                  : ""}
               </p>
             </div>
           </div>
