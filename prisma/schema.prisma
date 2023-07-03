@@ -82,8 +82,8 @@ model admin_users {
   admin_users_admin_users_updated_by_idToadmin_users                                             admin_users?                        @relation("admin_users_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "admin_users_updated_by_id_fk")
   other_admin_users_admin_users_updated_by_idToadmin_users                                       admin_users[]                       @relation("admin_users_updated_by_idToadmin_users")
   admin_users_roles_links                                                                        admin_users_roles_links[]
-  articles_articles_created_by_idToadmin_users                                                   posts[]                          @relation("articles_created_by_idToadmin_users")
-  articles_articles_updated_by_idToadmin_users                                                   posts[]                          @relation("articles_updated_by_idToadmin_users")
+  articles_articles_created_by_idToadmin_users                                                   articles[]                          @relation("articles_created_by_idToadmin_users")
+  articles_articles_updated_by_idToadmin_users                                                   articles[]                          @relation("articles_updated_by_idToadmin_users")
   categories_categories_created_by_idToadmin_users                                               categories[]                        @relation("categories_created_by_idToadmin_users")
   categories_categories_updated_by_idToadmin_users                                               categories[]                        @relation("categories_updated_by_idToadmin_users")
   entries_entries_created_by_idToadmin_users                                                     entries[]                           @relation("entries_created_by_idToadmin_users")
@@ -92,10 +92,6 @@ model admin_users {
   files_files_updated_by_idToadmin_users                                                         files[]                             @relation("files_updated_by_idToadmin_users")
   i18n_locale_i18n_locale_created_by_idToadmin_users                                             i18n_locale[]                       @relation("i18n_locale_created_by_idToadmin_users")
   i18n_locale_i18n_locale_updated_by_idToadmin_users                                             i18n_locale[]                       @relation("i18n_locale_updated_by_idToadmin_users")
-  kv_stores_kv_stores_created_by_idToadmin_users                                                 kv_stores[]                         @relation("kv_stores_created_by_idToadmin_users")
-  kv_stores_kv_stores_updated_by_idToadmin_users                                                 kv_stores[]                         @relation("kv_stores_updated_by_idToadmin_users")
-  profiles_profiles_created_by_idToadmin_users                                                   profiles[]                          @relation("profiles_created_by_idToadmin_users")
-  profiles_profiles_updated_by_idToadmin_users                                                   profiles[]                          @relation("profiles_updated_by_idToadmin_users")
   strapi_api_token_permissions_strapi_api_token_permissions_created_by_idToadmin_users           strapi_api_token_permissions[]      @relation("strapi_api_token_permissions_created_by_idToadmin_users")
   strapi_api_token_permissions_strapi_api_token_permissions_updated_by_idToadmin_users           strapi_api_token_permissions[]      @relation("strapi_api_token_permissions_updated_by_idToadmin_users")
   strapi_api_tokens_strapi_api_tokens_created_by_idToadmin_users                                 strapi_api_tokens[]                 @relation("strapi_api_tokens_created_by_idToadmin_users")
@@ -104,8 +100,6 @@ model admin_users {
   strapi_transfer_token_permissions_strapi_transfer_token_permissions_updated_by_idToadmin_users strapi_transfer_token_permissions[] @relation("strapi_transfer_token_permissions_updated_by_idToadmin_users")
   strapi_transfer_tokens_strapi_transfer_tokens_created_by_idToadmin_users                       strapi_transfer_tokens[]            @relation("strapi_transfer_tokens_created_by_idToadmin_users")
   strapi_transfer_tokens_strapi_transfer_tokens_updated_by_idToadmin_users                       strapi_transfer_tokens[]            @relation("strapi_transfer_tokens_updated_by_idToadmin_users")
-  tables_tables_created_by_idToadmin_users                                                       tables[]                            @relation("tables_created_by_idToadmin_users")
-  tables_tables_updated_by_idToadmin_users                                                       tables[]                            @relation("tables_updated_by_idToadmin_users")
   tags_tags_created_by_idToadmin_users                                                           tags[]                              @relation("tags_created_by_idToadmin_users")
   tags_tags_updated_by_idToadmin_users                                                           tags[]                              @relation("tags_updated_by_idToadmin_users")
   up_permissions_up_permissions_created_by_idToadmin_users                                       up_permissions[]                    @relation("up_permissions_created_by_idToadmin_users")
@@ -137,89 +131,40 @@ model admin_users_roles_links {
   @@index([user_order], map: "admin_users_roles_links_order_inv_fk")
 }
 
-model posts {
-  id                                              Int                   @id @default(autoincrement()) @db.UnsignedInt
-  content                                         String?               @db.LongText
-  title                                           String?               @db.VarChar(255)
-  created_at                                      DateTime?             @db.DateTime(6)
-  updated_at                                      DateTime?             @db.DateTime(6)
-  published_at                                    DateTime?             @db.DateTime(6)
-  created_by_id                                   Int?                  @db.UnsignedInt
-  updated_by_id                                   Int?                  @db.UnsignedInt
-  cover_image                                     Json?
-  admin_users_articles_created_by_idToadmin_users admin_users?          @relation("articles_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "articles_created_by_id_fk")
-  admin_users_articles_updated_by_idToadmin_users admin_users?          @relation("articles_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "articles_updated_by_id_fk")
-  tags_articles_links                             tags_articles_links[]
-
-  @@index([created_by_id], map: "articles_created_by_id_fk")
-  @@index([updated_by_id], map: "articles_updated_by_id_fk")
-}
-
 model categories {
   id                                                Int                       @id @default(autoincrement()) @db.UnsignedInt
   name                                              String?                   @db.VarChar(255)
-  layout                                            String?                   @db.VarChar(255)
   slug                                              String?                   @unique(map: "categories_slug_unique") @db.VarChar(255)
   created_at                                        DateTime?                 @db.DateTime(6)
   updated_at                                        DateTime?                 @db.DateTime(6)
   published_at                                      DateTime?                 @db.DateTime(6)
   created_by_id                                     Int?                      @db.UnsignedInt
   updated_by_id                                     Int?                      @db.UnsignedInt
+  articles_category_links                           articles_category_links[]
   admin_users_categories_created_by_idToadmin_users admin_users?              @relation("categories_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "categories_created_by_id_fk")
   admin_users_categories_updated_by_idToadmin_users admin_users?              @relation("categories_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "categories_updated_by_id_fk")
-  categories_user_links                             categories_user_links[]
-  tables_categories_links                           tables_categories_links[]
 
   @@index([created_by_id], map: "categories_created_by_id_fk")
   @@index([updated_by_id], map: "categories_updated_by_id_fk")
 }
 
-model categories_user_links {
-  id             Int         @id @default(autoincrement()) @db.UnsignedInt
-  category_id    Int?        @db.UnsignedInt
-  user_id        Int?        @db.UnsignedInt
-  category_order Float?
-  categories     categories? @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "categories_user_links_fk")
-  up_users       up_users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "categories_user_links_inv_fk")
-
-  @@unique([category_id, user_id], map: "categories_user_links_unique")
-  @@index([category_id], map: "categories_user_links_fk")
-  @@index([user_id], map: "categories_user_links_inv_fk")
-  @@index([category_order], map: "categories_user_links_order_inv_fk")
-}
-
 model entries {
-  id                                             Int                   @id @default(autoincrement()) @db.UnsignedInt
-  name                                           String?               @db.VarChar(255)
-  content                                        String?               @db.LongText
-  slug                                           String?               @unique(map: "entries_slug_unique") @db.VarChar(255)
+  id                                             Int                  @id @default(autoincrement()) @db.UnsignedInt
+  name                                           String?              @db.VarChar(255)
+  content                                        String?              @db.LongText
+  slug                                           String?              @unique(map: "entries_slug_unique") @db.VarChar(255)
   value                                          Json?
-  created_at                                     DateTime?             @db.DateTime(6)
-  updated_at                                     DateTime?             @db.DateTime(6)
-  published_at                                   DateTime?             @db.DateTime(6)
-  created_by_id                                  Int?                  @db.UnsignedInt
-  updated_by_id                                  Int?                  @db.UnsignedInt
-  admin_users_entries_created_by_idToadmin_users admin_users?          @relation("entries_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "entries_created_by_id_fk")
-  admin_users_entries_updated_by_idToadmin_users admin_users?          @relation("entries_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "entries_updated_by_id_fk")
-  entries_table_links                            entries_table_links[]
+  created_at                                     DateTime?            @db.DateTime(6)
+  updated_at                                     DateTime?            @db.DateTime(6)
+  published_at                                   DateTime?            @db.DateTime(6)
+  created_by_id                                  Int?                 @db.UnsignedInt
+  updated_by_id                                  Int?                 @db.UnsignedInt
+  admin_users_entries_created_by_idToadmin_users admin_users?         @relation("entries_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "entries_created_by_id_fk")
+  admin_users_entries_updated_by_idToadmin_users admin_users?         @relation("entries_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "entries_updated_by_id_fk")
   entries_tags_links                             entries_tags_links[]
 
   @@index([created_by_id], map: "entries_created_by_id_fk")
   @@index([updated_by_id], map: "entries_updated_by_id_fk")
-}
-
-model entries_table_links {
-  id          Int      @id @default(autoincrement()) @db.UnsignedInt
-  entry_id    Int?     @db.UnsignedInt
-  table_id    Int?     @db.UnsignedInt
-  entry_order Float?
-  entries     entries? @relation(fields: [entry_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "entries_table_links_fk")
-  tables      tables?  @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "entries_table_links_inv_fk")
-
-  @@unique([entry_id, table_id], map: "entries_table_links_unique")
-  @@index([entry_id], map: "entries_table_links_fk")
-  @@index([table_id], map: "entries_table_links_inv_fk")
-  @@index([entry_order], map: "entries_table_links_order_inv_fk")
 }
 
 model entries_tags_links {
@@ -298,8 +243,6 @@ model files_related_morphs {
   files        files?  @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "files_related_morphs_fk")
 
   @@index([file_id], map: "files_related_morphs_fk")
-  @@index([related_id], map: "files_related_morphs_id_column_index")
-  @@index([order], map: "files_related_morphs_order_index")
 }
 
 model i18n_locale {
@@ -315,39 +258,6 @@ model i18n_locale {
 
   @@index([created_by_id], map: "i18n_locale_created_by_id_fk")
   @@index([updated_by_id], map: "i18n_locale_updated_by_id_fk")
-}
-
-model kv_stores {
-  id                                               Int          @id @default(autoincrement()) @db.UnsignedInt
-  key                                              String?      @db.VarChar(255)
-  value                                            Json?
-  created_at                                       DateTime?    @db.DateTime(6)
-  updated_at                                       DateTime?    @db.DateTime(6)
-  published_at                                     DateTime?    @db.DateTime(6)
-  created_by_id                                    Int?         @db.UnsignedInt
-  updated_by_id                                    Int?         @db.UnsignedInt
-  admin_users_kv_stores_created_by_idToadmin_users admin_users? @relation("kv_stores_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "kv_stores_created_by_id_fk")
-  admin_users_kv_stores_updated_by_idToadmin_users admin_users? @relation("kv_stores_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "kv_stores_updated_by_id_fk")
-
-  @@index([created_by_id], map: "kv_stores_created_by_id_fk")
-  @@index([updated_by_id], map: "kv_stores_updated_by_id_fk")
-}
-
-model profiles {
-  id                                              Int                      @id @default(autoincrement()) @db.UnsignedInt
-  bio                                             String?                  @db.LongText
-  location                                        String?                  @db.VarChar(255)
-  created_at                                      DateTime?                @db.DateTime(6)
-  updated_at                                      DateTime?                @db.DateTime(6)
-  published_at                                    DateTime?                @db.DateTime(6)
-  created_by_id                                   Int?                     @db.UnsignedInt
-  updated_by_id                                   Int?                     @db.UnsignedInt
-  admin_users_profiles_created_by_idToadmin_users admin_users?             @relation("profiles_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "profiles_created_by_id_fk")
-  admin_users_profiles_updated_by_idToadmin_users admin_users?             @relation("profiles_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "profiles_updated_by_id_fk")
-  up_users_profile_links                          up_users_profile_links[]
-
-  @@index([created_by_id], map: "profiles_created_by_id_fk")
-  @@index([updated_by_id], map: "profiles_updated_by_id_fk")
 }
 
 model strapi_api_token_permissions {
@@ -480,54 +390,19 @@ model strapi_webhooks {
   enabled Boolean?
 }
 
-model tables {
-  id                                            Int                       @id @default(autoincrement()) @db.UnsignedInt
-  name                                          String?                   @db.VarChar(255)
-  description                                   String?                   @db.LongText
-  slug                                          String?                   @unique(map: "tables_slug_unique") @db.VarChar(255)
-  created_at                                    DateTime?                 @db.DateTime(6)
-  updated_at                                    DateTime?                 @db.DateTime(6)
-  published_at                                  DateTime?                 @db.DateTime(6)
-  created_by_id                                 Int?                      @db.UnsignedInt
-  updated_by_id                                 Int?                      @db.UnsignedInt
-  entries_table_links                           entries_table_links[]
-  admin_users_tables_created_by_idToadmin_users admin_users?              @relation("tables_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "tables_created_by_id_fk")
-  admin_users_tables_updated_by_idToadmin_users admin_users?              @relation("tables_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "tables_updated_by_id_fk")
-  tables_categories_links                       tables_categories_links[]
-
-  @@index([created_by_id], map: "tables_created_by_id_fk")
-  @@index([updated_by_id], map: "tables_updated_by_id_fk")
-}
-
-model tables_categories_links {
-  id             Int         @id @default(autoincrement()) @db.UnsignedInt
-  table_id       Int?        @db.UnsignedInt
-  category_id    Int?        @db.UnsignedInt
-  category_order Float?
-  table_order    Float?
-  tables         tables?     @relation(fields: [table_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tables_categories_links_fk")
-  categories     categories? @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tables_categories_links_inv_fk")
-
-  @@unique([table_id, category_id], map: "tables_categories_links_unique")
-  @@index([table_id], map: "tables_categories_links_fk")
-  @@index([category_id], map: "tables_categories_links_inv_fk")
-  @@index([category_order], map: "tables_categories_links_order_fk")
-  @@index([table_order], map: "tables_categories_links_order_inv_fk")
-}
-
 model tags {
-  id                                          Int                   @id @default(autoincrement()) @db.UnsignedInt
-  name                                        String?               @db.VarChar(255)
-  color                                       String?               @db.VarChar(255)
-  created_at                                  DateTime?             @db.DateTime(6)
-  updated_at                                  DateTime?             @db.DateTime(6)
-  published_at                                DateTime?             @db.DateTime(6)
-  created_by_id                               Int?                  @db.UnsignedInt
-  updated_by_id                               Int?                  @db.UnsignedInt
+  id                                          Int                  @id @default(autoincrement()) @db.UnsignedInt
+  name                                        String?              @db.VarChar(255)
+  color                                       String?              @db.VarChar(255)
+  created_at                                  DateTime?            @db.DateTime(6)
+  updated_at                                  DateTime?            @db.DateTime(6)
+  published_at                                DateTime?            @db.DateTime(6)
+  created_by_id                               Int?                 @db.UnsignedInt
+  updated_by_id                               Int?                 @db.UnsignedInt
   entries_tags_links                          entries_tags_links[]
-  admin_users_tags_created_by_idToadmin_users admin_users?          @relation("tags_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "tags_created_by_id_fk")
-  admin_users_tags_updated_by_idToadmin_users admin_users?          @relation("tags_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "tags_updated_by_id_fk")
-  tags_articles_links                         tags_articles_links[]
+  admin_users_tags_created_by_idToadmin_users admin_users?         @relation("tags_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "tags_created_by_id_fk")
+  admin_users_tags_updated_by_idToadmin_users admin_users?         @relation("tags_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "tags_updated_by_id_fk")
+  tags_posts_links                            tags_posts_links[]
 
   @@index([created_by_id], map: "tags_created_by_id_fk")
   @@index([updated_by_id], map: "tags_updated_by_id_fk")
@@ -581,40 +456,26 @@ model up_roles {
 }
 
 model up_users {
-  id                                              Int                      @id @default(autoincrement()) @db.UnsignedInt
-  username                                        String?                  @db.VarChar(255)
-  email                                           String?                  @db.VarChar(255)
-  provider                                        String?                  @db.VarChar(255)
-  password                                        String?                  @db.VarChar(255)
-  reset_password_token                            String?                  @db.VarChar(255)
-  confirmation_token                              String?                  @db.VarChar(255)
+  id                                              Int                   @id @default(autoincrement()) @db.UnsignedInt
+  username                                        String?               @db.VarChar(255)
+  email                                           String?               @db.VarChar(255)
+  provider                                        String?               @db.VarChar(255)
+  password                                        String?               @db.VarChar(255)
+  reset_password_token                            String?               @db.VarChar(255)
+  confirmation_token                              String?               @db.VarChar(255)
   confirmed                                       Boolean?
   blocked                                         Boolean?
-  login                                           String?                  @unique(map: "up_users_login_unique") @db.VarChar(255)
-  created_at                                      DateTime?                @db.DateTime(6)
-  updated_at                                      DateTime?                @db.DateTime(6)
-  created_by_id                                   Int?                     @db.UnsignedInt
-  updated_by_id                                   Int?                     @db.UnsignedInt
-  categories_user_links                           categories_user_links[]
-  admin_users_up_users_created_by_idToadmin_users admin_users?             @relation("up_users_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "up_users_created_by_id_fk")
-  admin_users_up_users_updated_by_idToadmin_users admin_users?             @relation("up_users_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "up_users_updated_by_id_fk")
-  up_users_profile_links                          up_users_profile_links[]
+  login                                           String?               @unique(map: "up_users_login_unique") @db.VarChar(255)
+  created_at                                      DateTime?             @db.DateTime(6)
+  updated_at                                      DateTime?             @db.DateTime(6)
+  created_by_id                                   Int?                  @db.UnsignedInt
+  updated_by_id                                   Int?                  @db.UnsignedInt
+  admin_users_up_users_created_by_idToadmin_users admin_users?          @relation("up_users_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "up_users_created_by_id_fk")
+  admin_users_up_users_updated_by_idToadmin_users admin_users?          @relation("up_users_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "up_users_updated_by_id_fk")
   up_users_role_links                             up_users_role_links[]
 
   @@index([created_by_id], map: "up_users_created_by_id_fk")
   @@index([updated_by_id], map: "up_users_updated_by_id_fk")
-}
-
-model up_users_profile_links {
-  id         Int       @id @default(autoincrement()) @db.UnsignedInt
-  user_id    Int?      @db.UnsignedInt
-  profile_id Int?      @db.UnsignedInt
-  up_users   up_users? @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "up_users_profile_links_fk")
-  profiles   profiles? @relation(fields: [profile_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "up_users_profile_links_inv_fk")
-
-  @@unique([user_id, profile_id], map: "up_users_profile_links_unique")
-  @@index([user_id], map: "up_users_profile_links_fk")
-  @@index([profile_id], map: "up_users_profile_links_inv_fk")
 }
 
 model up_users_role_links {
@@ -664,18 +525,51 @@ model upload_folders_parent_links {
   @@index([folder_order], map: "upload_folders_parent_links_order_inv_fk")
 }
 
-model tags_articles_links {
+model articles {
+  id                                              Int                       @id @default(autoincrement()) @db.UnsignedInt
+  content                                         String?                   @db.LongText
+  title                                           String?                   @db.VarChar(255)
+  created_at                                      DateTime?                 @db.DateTime(6)
+  updated_at                                      DateTime?                 @db.DateTime(6)
+  published_at                                    DateTime?                 @db.DateTime(6)
+  created_by_id                                   Int?                      @db.UnsignedInt
+  updated_by_id                                   Int?                      @db.UnsignedInt
+  cover_image                                     Json?
+  admin_users_articles_created_by_idToadmin_users admin_users?              @relation("articles_created_by_idToadmin_users", fields: [created_by_id], references: [id], onUpdate: NoAction, map: "articles_created_by_id_fk")
+  admin_users_articles_updated_by_idToadmin_users admin_users?              @relation("articles_updated_by_idToadmin_users", fields: [updated_by_id], references: [id], onUpdate: NoAction, map: "articles_updated_by_id_fk")
+  articles_category_links                         articles_category_links[]
+  tags_posts_links                                tags_posts_links[]
+
+  @@index([created_by_id], map: "articles_created_by_id_fk")
+  @@index([updated_by_id], map: "articles_updated_by_id_fk")
+}
+
+model articles_category_links {
+  id            Int         @id @default(autoincrement()) @db.UnsignedInt
+  article_id    Int?        @db.UnsignedInt
+  category_id   Int?        @db.UnsignedInt
+  article_order Float?
+  articles      articles?   @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "articles_category_links_fk")
+  categories    categories? @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "articles_category_links_inv_fk")
+
+  @@unique([article_id, category_id], map: "articles_category_links_unique")
+  @@index([article_id], map: "articles_category_links_fk")
+  @@index([category_id], map: "articles_category_links_inv_fk")
+  @@index([article_order], map: "articles_category_links_order_inv_fk")
+}
+
+model tags_posts_links {
   id            Int       @id @default(autoincrement()) @db.UnsignedInt
   tag_id        Int?      @db.UnsignedInt
   article_id    Int?      @db.UnsignedInt
   article_order Float?
   tag_order     Float?
-  tags          tags?     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_articles_links_fk")
-  posts      posts? @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_articles_links_inv_fk")
+  tags          tags?     @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_posts_links_fk")
+  articles      articles? @relation(fields: [article_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tags_posts_links_inv_fk")
 
-  @@unique([tag_id, article_id], map: "tags_articles_links_unique")
-  @@index([tag_id], map: "tags_articles_links_fk")
-  @@index([article_id], map: "tags_articles_links_inv_fk")
-  @@index([article_order], map: "tags_articles_links_order_fk")
-  @@index([tag_order], map: "tags_articles_links_order_inv_fk")
+  @@unique([tag_id, article_id], map: "tags_posts_links_unique")
+  @@index([tag_id], map: "tags_posts_links_fk")
+  @@index([article_id], map: "tags_posts_links_inv_fk")
+  @@index([article_order], map: "tags_posts_links_order_fk")
+  @@index([tag_order], map: "tags_posts_links_order_inv_fk")
 }
