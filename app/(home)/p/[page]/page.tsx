@@ -1,8 +1,8 @@
 import FeaturedPosts from "@/components/FeaturedPosts";
 import PostTile from "@/components/PostTile";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
-import { getArticles, getProcessedArticles } from "@/lib/articles";
 import { PaginateOptions } from "@/lib/paginator";
+import { getArticles, getProcessedArticles } from "@/lib/posts";
 import prisma from "@/prisma/client";
 import { cache } from "react";
 
@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 }
 
 const getPageCount = cache(async (perPage: number) => {
-  const itemCount = await prisma.articles.count();
+  const itemCount = await prisma.posts.count();
   return itemCount / (perPage || POSTS_COUNT_PER_PAGE);
 });
 
@@ -34,7 +34,7 @@ export default async function Home({
     page: string | number | undefined;
   };
 }) {
-  const articles = await getProcessedArticles(
+  const posts = await getProcessedArticles(
     await getArticles({ page: params.page })
   );
 
@@ -46,11 +46,11 @@ export default async function Home({
 
   return (
     <>
-      {isFirstPage && <FeaturedPosts articles={[articles[0]]} />}
+      {isFirstPage && <FeaturedPosts posts={[posts[0]]} />}
       <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
-        {articles.map((e) => (
+        {posts.map((e) => (
           /* @ts-ignore */
-          <PostTile article={e} url={e.url} key={e.id} />
+          <PostTile post={e} url={e.url} key={e.id} />
         ))}
       </div>
     </>

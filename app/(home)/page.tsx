@@ -1,10 +1,10 @@
 import FeaturedPosts from "@/components/FeaturedPosts";
 import PostTile from "@/components/PostTile";
-import { getArticles, getProcessedArticles } from "@/lib/articles";
+import { getArticles, getProcessedArticles } from "@/lib/posts";
 import { PaginateOptions } from "@/lib/paginator";
 
 type SearchParams = PaginateOptions;
-type Articles = Awaited<ReturnType<typeof getProcessedArticles>>;
+type Posts = Awaited<ReturnType<typeof getProcessedArticles>>;
 
 export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
@@ -14,19 +14,19 @@ export default async function Home({
 }: {
   searchParams: SearchParams;
 }) {
-  const articles = await getProcessedArticles(await getArticles(searchParams));
+  const posts = await getProcessedArticles(await getArticles(searchParams));
 
-  return <Articles data={articles} />;
+  return <Posts data={posts} />;
 }
 
-function Articles({ data }: { data: Articles }) {
+function Posts({ data }: { data: Posts }) {
   return (
     <div className="flex flex-col gap-12 py-12">
-      <FeaturedPosts articles={[data[0]]} />
+      <FeaturedPosts posts={[data[0]]} />
       <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
         {data.map((e) => (
           /* @ts-ignore */
-          <PostTile article={e} url={e.url} key={e.id} />
+          <PostTile post={e} url={e.url} key={e.id} />
         ))}
       </div>
     </div>

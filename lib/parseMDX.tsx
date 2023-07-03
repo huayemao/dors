@@ -6,10 +6,10 @@ import remarkGfm from "remark-gfm";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
 const theme = require("shiki/themes/nord.json");
 
-export async function parseMDX(article: {
+export async function parseMDX(post: {
   content?: string | null | undefined;
 }) {
-  return await serialize(article?.content || "", {
+  return await serialize(post?.content || "", {
     mdxOptions: {
       rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }]],
       remarkPlugins: [

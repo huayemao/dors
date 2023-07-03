@@ -11,7 +11,7 @@ import {
 } from "./utils";
 
 export const getArticle = cache(async (id: number) => {
-  const res = await prisma.articles.findUnique({
+  const res = await prisma.posts.findUnique({
     where: {
       id: id,
     },
@@ -38,7 +38,7 @@ export const getArticles = cache(
 
     return await Promise.all(
       (
-        await prisma.articles.findMany({
+        await prisma.posts.findMany({
           where: options.tagId
             ? {
                 tags_articles_links: {
@@ -74,21 +74,21 @@ export const getArticles = cache(
 );
 
 export async function getProcessedArticles(
-  articles: Awaited<ReturnType<typeof getArticles>>
+  posts: Awaited<ReturnType<typeof getArticles>>
 ) {
-  const needImageIds = articles.filter((e) => !e.cover_image).map((e) => e.id);
+  const needImageIds = posts.filter((e) => !e.cover_image).map((e) => e.id);
 
   let imageData;
 
   if (needImageIds.length) {
-    imageData = await getPexelImages(articles.length);
+    imageData = await getPexelImages(posts.length);
   }
 
-  for (const i in articles) {
-    const a = articles[i];
+  for (const i in posts) {
+    const a = posts[i];
 
     if (needImageIds.includes(a.id)) {
-      await prisma.articles.update({
+      await prisma.posts.update({
         where: {
           id: a.id,
         },
@@ -101,17 +101,17 @@ export async function getProcessedArticles(
     }
 
     // @ts-ignore
-    articles[i].url = await getBase64Image(
+    posts[i].url = await getBase64Image(
       (a.cover_image as PexelsPhoto).src.large
     );
   }
 
-  return articles;
+  return posts;
 }
 
 export const getPageCount = cache(
   async (perPage: number = POSTS_COUNT_PER_PAGE) => {
-    const itemCount = await prisma.articles.count();
+    const itemCount = await prisma.posts.count();
     return itemCount / (perPage || POSTS_COUNT_PER_PAGE);
   }
 );

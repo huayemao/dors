@@ -4,8 +4,8 @@ import PostHead from "@/components/PostHead";
 import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
 import { SITE_META } from "@/constants";
-import { getArticle, getArticles } from "@/lib/articles";
 import { parseMDX } from "@/lib/parseMDX";
+import { getArticle, getArticles } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getBase64Image, markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
@@ -15,9 +15,9 @@ import { join } from "path";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const articles = await getArticles();
-  const params = articles.map((article) => ({
-    id: String(article.id),
+  const posts = await getArticles();
+  const params = posts.map((post) => ({
+    id: String(post.id),
   }));
   return params;
 }
@@ -29,12 +29,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   // read route params
   const id = params.id;
-  const article = await getArticle(parseInt(id as string));
+  const post = await getArticle(parseInt(id as string));
 
   return {
-    title: `${article.title} | ${SITE_META.name}——${SITE_META.description}`,
+    title: `${post.title} | ${SITE_META.name}——${SITE_META.description}`,
     openGraph: {
-      images: [(article.cover_image as PexelsPhoto).src.small],
+      images: [(post.cover_image as PexelsPhoto).src.small],
     },
   };
 }
@@ -44,11 +44,11 @@ export default async function page({ params }) {
     return;
   }
 
-  const article = await getArticle(parseInt(params.id as string));
+  const post = await getArticle(parseInt(params.id as string));
 
-  let articles = await getArticles({ perPage: 5 });
-  articles = await Promise.all(
-    articles.map(async (e) => ({
+  let posts = await getArticles({ perPage: 5 });
+  posts = await Promise.all(
+    posts.map(async (e) => ({
       ...e,
       url: await getBase64Image((e.cover_image as PexelsPhoto).src.small),
     }))
@@ -57,21 +57,21 @@ export default async function page({ params }) {
   const tmpDir = join(process.cwd(), "tmp");
   console.log(tmpDir);
 
-  const mdxSource = await parseMDX(article);
+  const mdxSource = await parseMDX(post);
 
-  const coverImage = article?.cover_image
-    ? (article.cover_image as PexelsPhoto).src.large
+  const coverImage = post?.cover_image
+    ? (post.cover_image as PexelsPhoto).src.large
     : "";
 
   const url = await getBase64Image(coverImage);
 
-  const excerpt = (await markdownExcerpt(article?.content || "")) + "...";
+  const excerpt = (await markdownExcerpt(post?.content || "")) + "...";
 
   return (
     <main className="w-full">
       <div>
         <PostHead
-          article={{ ...article, excerpt }}
+          post={{ ...post, excerpt }}
           avatar={{ alt: "花野猫", src: huayemao }}
           url={url}
         />
@@ -83,9 +83,9 @@ export default async function page({ params }) {
                   <div className="space-y-4 mb-5">
                     <BackButton />
                   </div>
-                  <article className="prose dark:prose-dark lg:prose-xl py-6">
+                  <post className="prose dark:prose-dark lg:prose-xl py-6">
                     <MDXRemoteWrapper {...mdxSource} />
-                  </article>
+                  </post>
                 </div>
               </div>
               <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto">
@@ -101,7 +101,7 @@ export default async function page({ params }) {
                     <div className="flex gap-4">
                       <ShareButton
                         options={{
-                          title: article.title,
+                          title: post.title,
                         }}
                       />
                       <button
@@ -133,11 +133,11 @@ export default async function page({ params }) {
                   </h3>
 
                   <ul className="space-y-6">
-                    {articles.map((e) => (
+                    {posts.map((e) => (
                       <PostTile
                         key={e.id}
                         type="mini"
-                        article={e}
+                        post={e}
                         /* @ts-ignore */
                         url={e.url}
                       />

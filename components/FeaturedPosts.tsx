@@ -1,5 +1,5 @@
 import { SITE_META } from "@/constants";
-import { getArticles } from "@/lib/articles";
+import { getArticles } from "@/lib/posts";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";
@@ -9,7 +9,7 @@ import React from "react";
 import { Avatar } from "./Avatar";
 import Tag from "./Tag";
 interface Props {
-  articles: Awaited<ReturnType<typeof getArticles>>;
+  posts: Awaited<ReturnType<typeof getArticles>>;
 }
 
 interface TileProps {
@@ -162,7 +162,7 @@ const SubHero = ({
   );
 };
 
-const FeaturedPosts: React.FC<Props> = ({ articles }) => {
+const FeaturedPosts: React.FC<Props> = ({ posts }) => {
   return (
     <div className="flex flex-col ltablet:flex-row lg:flex-row gap-6 -m-3">
       <div className="w-full ltablet:w-2/3 lg:w-2/3">

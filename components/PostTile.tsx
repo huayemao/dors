@@ -1,21 +1,21 @@
 import { SITE_META } from "@/constants";
-import { getArticle } from "@/lib/articles";
+import { getArticle } from "@/lib/posts";
 import { getDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "./Avatar";
 import Tag from "./Tag";
 
-type Article = Awaited<ReturnType<typeof getArticle>>;
+type Post = Awaited<ReturnType<typeof getArticle>>;
 
 interface Props {
-  article: Article;
+  post: Post;
   url: string;
   type: "default" | "mini";
 }
 
-function PostTile({ article, url, type = "default" }: Props) {
-  const { id, title, tags, published_at } = article;
+function PostTile({ post, url, type = "default" }: Props) {
+  const { id, title, tags, published_at } = post;
 
   if (type === "mini") {
     return (
@@ -31,11 +31,11 @@ function PostTile({ article, url, type = "default" }: Props) {
             />
             <div>
               <h3 className="font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1">
-                {article.title}
+                {post.title}
               </h3>
               <p className="font-sans text-sm text-muted-400">
-                {article.updated_at
-                  ? "更新于 " + getDateString(article.updated_at)
+                {post.updated_at
+                  ? "更新于 " + getDateString(post.updated_at)
                   : ""}
               </p>
             </div>
@@ -74,7 +74,7 @@ function PostTile({ article, url, type = "default" }: Props) {
                 className="w-full h-52 object-cover rounded-xl"
                 /* @ts-ignore */
                 src={url}
-                alt={article.title || SITE_META.name}
+                alt={post.title || SITE_META.name}
                 width="348"
                 height="208"
               />

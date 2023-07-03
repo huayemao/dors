@@ -1,4 +1,4 @@
-import { getArticle } from "@/lib/articles";
+import { getArticle } from "@/lib/posts";
 import { getDateString } from "@/lib/utils";
 import Image, { ImageProps } from "next/image";
 import Tag from "./Tag";
@@ -8,17 +8,17 @@ type Avatar = {
   src: ImageProps["src"];
 };
 
-type Article = Partial<Awaited<ReturnType<typeof getArticle>>> & {
+type Post = Partial<Awaited<ReturnType<typeof getArticle>>> & {
   excerpt?: string;
 };
 
 interface Props {
-  article: Article;
+  post: Post;
   url: ImageProps["src"];
   avatar: Avatar;
 }
 
-const PostHead = ({ article, url, avatar }: Props) => {
+const PostHead = ({ post, url, avatar }: Props) => {
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-7xl mx-auto">
@@ -39,8 +39,8 @@ const PostHead = ({ article, url, avatar }: Props) => {
 
             <div className="h-full flex items-center ptablet:px-4 ltablet:px-6">
               <div className="w-full max-w-lg space-x-2">
-                {!!article?.tags?.length &&
-                  article.tags.map(
+                {!!post?.tags?.length &&
+                  post.tags.map(
                     (t) =>
                       t && (
                         <Tag
@@ -52,10 +52,10 @@ const PostHead = ({ article, url, avatar }: Props) => {
                   )}
 
                 <h1 className="font-heading text-muted-800 dark:text-white font-extrabold text-3xl ltablet:text-4xl lg:text-4xl">
-                  {article?.title}
+                  {post?.title}
                 </h1>
                 <p className=" font-sans text-base text-muted-500 dark:text-muted-400 max-w-md my-4">
-                  {article?.excerpt}
+                  {post?.excerpt}
                 </p>
                 <div className="flex items-center justify-start w-full relative">
                   <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
@@ -77,8 +77,8 @@ const PostHead = ({ article, url, avatar }: Props) => {
                       {avatar.alt}
                     </h3>
                     <p className="font-sans text-sm text-muted-400">
-                      {article?.published_at
-                        ? getDateString(article?.published_at)
+                      {post?.published_at
+                        ? getDateString(post?.published_at)
                         : ""}
                     </p>
                   </div>

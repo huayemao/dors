@@ -2,7 +2,7 @@ import { Category } from "@/components/Category";
 import { Nav } from "@/components/Nav";
 import { Pagination } from "@/components/Pagination";
 import { SITE_META } from "@/constants";
-import { getPageCount } from "@/lib/articles";
+import { getPageCount } from "@/lib/posts";
 import { getTags } from "@/lib/tags";
 
 export default async function MainLayout({
