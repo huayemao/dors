@@ -83,9 +83,9 @@ export default async function page({ params }) {
                   <div className="space-y-4 mb-5">
                     <BackButton />
                   </div>
-                  <post className="prose dark:prose-dark lg:prose-xl py-6">
+                  <article className="prose dark:prose-dark lg:prose-xl py-6">
                     <MDXRemoteWrapper {...mdxSource} />
-                  </post>
+                  </article>
                 </div>
               </div>
               <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto">

@@ -16,7 +16,7 @@ export default async function About() {
         <BackButton className="mb-8 ">
           <>返回博客首页</>
         </BackButton>
-        <post className="prose dark:prose-dark lg:prose-xl lg:max-w-6xl">
+        <article className="prose dark:prose-dark lg:prose-xl lg:max-w-6xl">
           <h2>何以解忧，唯有米线</h2>
           <p>
             米线是云南的特色美食，作为地道的云南人，米线成为了花野猫生活记忆中抹不去的元素。关于我，就从来到昆明开始吧。
@@ -101,7 +101,7 @@ export default async function About() {
             <li>在 B 站观看我的视频</li>
             <li>官网建设、数据处理和分析、博客建设、系统搭建、系统部署</li>
           </ul>
-        </post>
+        </article>
       </div>
     </main>
   );
