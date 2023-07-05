@@ -1,9 +1,5 @@
-"use client";
-
 import clsx from "clsx";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
 import { UrlObject } from "url";
 
 type Url = string | UrlObject;
@@ -11,15 +7,11 @@ type Url = string | UrlObject;
 type Props = {
   pageCount: number;
   buildHref: (p: number) => Url;
+  pageNum: number;
 };
 
-export function Pagination({ pageCount, buildHref }: Props) {
-  const params = useParams();
-  const pageNumRaw = params?.["page"] || "0";
-
-  const pageNum = Number(pageNumRaw as string);
-
-  const [begin, setBegin] = useState(pageNum - 5 > 0 ? pageNum - 5 : 0);
+export function Pagination({ pageNum, pageCount, buildHref }: Props) {
+  const begin = pageNum - 5 > 0 ? pageNum - 5 : 0;
 
   const items = Array.from({ length: pageCount }, (e, i) => i + 1);
 

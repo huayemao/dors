@@ -1,7 +1,7 @@
-import { Pagination } from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
+import Pagination from "./Pagination";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -20,7 +20,7 @@ export default async function Home({
   return (
     <>
       <Posts showFeature data={posts} />
-      <Pagination pageCount={pageCount} buildHref={(e) => `/p/${e}`} />
+      <Pagination pageCount={pageCount}></Pagination>
     </>
   );
 }
