@@ -1,5 +1,4 @@
-import FeaturedPosts from "@/components/FeaturedPosts";
-import PostTile from "@/components/PostTile";
+import { Posts } from "@/components/Posts";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
@@ -29,30 +28,17 @@ export default async function Home({
   params,
 }: {
   searchParams: SearchParams;
-
   params: {
     page: string | number | undefined;
   };
 }) {
-  const posts = await getProcessedPosts(
-    await getPosts({ page: params.page })
-  );
-
-  const pageCount = await getPageCount(
-    searchParams.perPage ? Number(searchParams.perPage) : POSTS_COUNT_PER_PAGE
-  );
+  const posts = await getProcessedPosts(await getPosts({ page: params.page }));
 
   const isFirstPage = !(params.page && Number(params.page) > 1);
 
   return (
     <>
-      {isFirstPage && <FeaturedPosts posts={[posts[0]]} />}
-      <div className="grid ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-6 -m-3">
-        {posts.map((e) => (
-          /* @ts-ignore */
-          <PostTile post={e} url={e.url} key={e.id} />
-        ))}
-      </div>
+      <Posts data={posts} showFeature={isFirstPage} />
     </>
   );
 }

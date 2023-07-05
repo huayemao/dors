@@ -1,8 +1,6 @@
 import { Nav } from "@/components/Nav";
-import { Pagination } from "@/components/Pagination";
 import { SITE_META } from "@/constants";
 import { getAllCategories } from "@/lib/categories";
-import { getPageCount } from "@/lib/posts";
 import { getTags } from "@/lib/tags";
 import { Categories } from "../../components/Categories";
 
@@ -16,7 +14,6 @@ export default async function MainLayout({
   const tags = await getTags();
 
   const categories = await getAllCategories();
-  const pageCount = await getPageCount();
 
   return (
     <>
@@ -39,8 +36,6 @@ export default async function MainLayout({
                 </div>
                 {children}
               </div>
-              {/* todo: 分页组件需要放到具体页面，而且需要根据 searchParams 来查询 */}
-              <Pagination pageCount={pageCount} />
             </div>
           </div>
         </section>

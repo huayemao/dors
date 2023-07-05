@@ -4,8 +4,16 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { UrlObject } from "url";
 
-export function Pagination({ pageCount }) {
+type Url = string | UrlObject;
+
+type Props = {
+  pageCount: number;
+  buildHref: (p: number) => Url;
+};
+
+export function Pagination({ pageCount, buildHref }: Props) {
   const params = useParams();
   const pageNumRaw = params?.["page"] || "0";
 
@@ -20,7 +28,7 @@ export function Pagination({ pageCount }) {
       {items.slice(begin, begin + 10).map((e, i) => (
         <li key={e}>
           <Link
-            href={`/p/${e}`}
+            href={buildHref(e)}
             shallow
             className={clsx(
               "border flex h-10 w-10 items-center justify-center font-sans text-sm transition-all duration-300 dark:bg-muted-800 border-muted-200 dark:border-muted-700 hover:bg-muted-100 dark:hover:bg-muted-900  hover:text-muted-700 dark:hover:text-muted-400  rounded-full",

@@ -1,5 +1,5 @@
 import { SITE_META } from "@/constants";
-import { getPosts } from "@/lib/posts";
+import { Posts } from "@/lib/posts";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";
@@ -9,7 +9,7 @@ import React from "react";
 import { Avatar } from "./Avatar";
 import Tag from "./Tag";
 interface Props {
-  posts: Awaited<ReturnType<typeof getPosts>>;
+  posts: Posts;
 }
 
 interface TileProps {

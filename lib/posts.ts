@@ -4,10 +4,10 @@ import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
-    getBase64Image,
-    getPexelImages,
-    markdownExcerpt,
-    markdownToHtml,
+  getBase64Image,
+  getPexelImages,
+  markdownExcerpt,
+  markdownToHtml,
 } from "./utils";
 
 export const getPost = cache(async (id: number) => {
@@ -148,3 +148,5 @@ export const getPageCount = cache(
     return itemCount / (perPage || POSTS_COUNT_PER_PAGE);
   }
 );
+
+export type Posts = Awaited<ReturnType<typeof getPosts>>;
