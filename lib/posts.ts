@@ -37,7 +37,11 @@ export interface FindManyArgs {
 
 export const getPosts = cache(
   async (
-    options: PaginateOptions & { tagId?: number; categoryId?: number } = {}
+    options: PaginateOptions & {
+      tagId?: number;
+      categoryId?: number;
+      unCategorized?: boolean;
+    } = {}
   ) => {
     return await Promise.all(
       (
@@ -55,7 +59,11 @@ export const getPosts = cache(
 );
 
 async function getAllPosts(
-  options: PaginateOptions & { tagId?: number; categoryId?: number } = {}
+  options: PaginateOptions & {
+    tagId?: number;
+    categoryId?: number;
+    unCategorized?: boolean;
+  } = {}
 ) {
   const { perPage, skip } = getPrismaPaginationParams(options);
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
@@ -75,6 +83,16 @@ async function getAllPosts(
       posts_category_links: {
         some: {
           category_id: options.categoryId,
+        },
+      },
+    });
+  }
+
+  if (options.unCategorized) {
+    whereInput.push({
+      posts_category_links: {
+        none: {
+          id: undefined,
         },
       },
     });

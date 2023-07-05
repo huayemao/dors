@@ -14,6 +14,7 @@ export const Category: React.FC<CategoryProps> = ({
 }) => (
   <Link
     href={href}
+    style={{ whiteSpace: "nowrap" }}
     className={cn(
       "flex-1 inline-flex justify-center items-center py-2 px-4 font-sans text-sm",
       "rounded-lg  dark:bg-muted-800 text-muted-500  dark:hover:bg-muted-700 dark:hover:text-muted-200",
