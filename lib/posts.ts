@@ -4,10 +4,10 @@ import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
-  getBase64Image,
-  getPexelImages,
-  markdownExcerpt,
-  markdownToHtml,
+    getBase64Image,
+    getPexelImages,
+    markdownExcerpt,
+    markdownToHtml,
 } from "./utils";
 
 export const getPost = cache(async (id: number) => {
@@ -30,58 +30,18 @@ export const getPost = cache(async (id: number) => {
   };
 });
 
+export interface FindManyArgs {
+  take?: number;
+  skip?: number;
+}
+
 export const getPosts = cache(
   async (
     options: PaginateOptions & { tagId?: number; categoryId?: number } = {}
   ) => {
-    const { perPage, skip } = getPrismaPaginationParams(options);
-    const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
-
-    if (options.tagId) {
-      whereInput.push({
-        tags_posts_links: {
-          some: {
-            id: options.tagId,
-          },
-        },
-      });
-    }
-
-    if (options.categoryId) {
-      whereInput.push({
-        posts_category_links: {
-          some: {
-            id: options.categoryId,
-          },
-        },
-      });
-    }
-
     return await Promise.all(
       (
-        await prisma.posts.findMany({
-          where: {
-            AND: whereInput,
-          },
-
-          orderBy: {
-            updated_at: "desc",
-          },
-          include: {
-            posts_category_links: {
-              include: {
-                categories: true,
-              },
-            },
-            tags_posts_links: {
-              include: {
-                tags: true,
-              },
-            },
-          },
-          take: perPage,
-          skip,
-        })
+        await getAllPosts(options)
       ).map(async (e) => {
         return {
           ...e,
@@ -93,6 +53,58 @@ export const getPosts = cache(
     );
   }
 );
+
+async function getAllPosts(
+  options: PaginateOptions & { tagId?: number; categoryId?: number } = {}
+) {
+  const { perPage, skip } = getPrismaPaginationParams(options);
+  const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
+
+  if (options.tagId) {
+    whereInput.push({
+      tags_posts_links: {
+        some: {
+          id: options.tagId,
+        },
+      },
+    });
+  }
+
+  if (options.categoryId) {
+    whereInput.push({
+      posts_category_links: {
+        some: {
+          id: options.categoryId,
+        },
+      },
+    });
+  }
+
+  return await prisma.posts.findMany({
+    where: {
+      AND: whereInput,
+    },
+
+    orderBy: {
+      updated_at: "desc",
+    },
+    include: {
+      posts_category_links: {
+        include: {
+          categories: true,
+        },
+      },
+      tags_posts_links: {
+        include: {
+          tags: true,
+        },
+      },
+      _count: true,
+    },
+    take: perPage,
+    skip,
+  });
+}
 
 export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>
