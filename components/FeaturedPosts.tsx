@@ -91,9 +91,9 @@ const Hero = ({
                 {published_at ? getDateString(published_at) : ""}
               </p>
             </div>
-            <div className="block ml-auto font-sans text-sm text-muted-400">
+            {/* <div className="block ml-auto font-sans text-sm text-muted-400">
               <span>— 5 min read</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -152,9 +152,9 @@ const SubHero = ({
                 {published_at ? getDateString(published_at) : ""}
               </p>
             </div>
-            <div className="block ml-auto font-sans text-sm text-muted-400">
+            {/* <div className="block ml-auto font-sans text-sm text-muted-400">
               <span>— 3 min read</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

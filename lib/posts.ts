@@ -6,6 +6,7 @@ import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
   getBase64Image,
   getPexelImages,
+  getWordCount,
   markdownExcerpt,
   markdownToHtml,
 } from "./utils";
@@ -24,9 +25,16 @@ export const getPost = cache(async (id: number) => {
     },
   });
 
+  if (!res) {
+    return null;
+  }
+
+  const html = await markdownToHtml(res.content);
+  const wordCount = getWordCount(html);
   return {
     ...res,
     tags: res?.tags_posts_links.map((e) => e.tags),
+    wordCount,
   };
 });
 
@@ -51,7 +59,9 @@ export const getPosts = cache(
           ...e,
           content: await markdownToHtml(e.content),
           excerpt: await markdownExcerpt(e.content),
+          wordCount: getWordCount(e.content),
           tags: e.tags_posts_links.map((e) => e.tags),
+          category: e.posts_category_links?.[0]?.categories,
         };
       })
     );

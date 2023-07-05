@@ -83,7 +83,7 @@ const PostHead = ({ post, url, avatar }: Props) => {
                     </p>
                   </div>
                   <div className="block ml-auto font-sans text-sm text-muted-400">
-                    <span>— 5 min read</span>
+                    <span>— {post.wordCount} 字</span>
                   </div>
                 </div>
               </div>

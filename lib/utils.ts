@@ -42,6 +42,15 @@ export async function markdownExcerpt(markdown) {
   return result.toString().slice(0, 100);
 }
 
+export function getWordCount(htmlContent) {
+  // 去除 HTML 标签
+  const textContent = htmlContent.replace(/<[^>]+>/g, "");
+  // 统计字数，汉字不以空格分隔
+  const wordCount = textContent.trim().replaceAll(/\s+/g, "").length;
+  // const wordCount = textContent.trim().split(/\s+/).length;
+  return wordCount;
+}
+
 export function humanFileSize(size) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let i = 0;

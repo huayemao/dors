@@ -101,7 +101,7 @@ function PostTile({ post, url, type = "default" }: Props) {
                 </p>
               </div>
               <div className="block ml-auto font-sans text-sm text-muted-400">
-                <span>— 8 min read</span>
+                <span>— {post?.wordCount} 字</span>
               </div>
             </div>
           </div>
