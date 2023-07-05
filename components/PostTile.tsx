@@ -15,6 +15,8 @@ interface Props {
 }
 
 function PostTile({ post, url, type = "default" }: Props) {
+  if (!post) return null;
+
   const { id, title, tags, published_at } = post;
 
   if (type === "mini") {

@@ -10,6 +10,7 @@ import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getBase64Image, markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { join } from "path";
 
 export const revalidate = 300;
@@ -31,6 +32,10 @@ export async function generateMetadata({
   const id = params.id;
   const post = await getPost(parseInt(id as string));
 
+  if (!post) {
+    return notFound();
+  }
+
   return {
     title: `${post.title} | ${SITE_META.name}——${SITE_META.description}`,
     openGraph: {
@@ -45,6 +50,10 @@ export default async function page({ params }) {
   }
 
   const post = await getPost(parseInt(params.id as string));
+
+  if (!post) {
+    return notFound();
+  }
 
   let posts = await getPosts({ perPage: 5 });
   posts = await Promise.all(
