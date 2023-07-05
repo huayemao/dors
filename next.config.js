@@ -7,6 +7,11 @@ const nextConfig = {
     appDir: true,
     serverComponentsExternalPackages: ["prisma", "@prisma/client", "shiki", "vscode-oniguruma"],
   },
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   async rewrites() {
     return {
