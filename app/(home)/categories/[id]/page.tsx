@@ -21,7 +21,6 @@ export default async function PostsByCategory({
   const posts = await getProcessedPosts(
     await getPosts({ ...searchParams, categoryId: Number(params.id) })
   );
-
   return <Posts data={posts} />;
 }
 

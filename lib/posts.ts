@@ -64,7 +64,7 @@ async function getAllPosts(
     whereInput.push({
       tags_posts_links: {
         some: {
-          id: options.tagId,
+          tag_id: options.tagId,
         },
       },
     });
@@ -74,7 +74,7 @@ async function getAllPosts(
     whereInput.push({
       posts_category_links: {
         some: {
-          id: options.categoryId,
+          category_id: options.categoryId,
         },
       },
     });
