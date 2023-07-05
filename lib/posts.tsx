@@ -16,7 +16,7 @@ export const getArticle = cache(async (id: number) => {
       id: id,
     },
     include: {
-      tags_articles_links: {
+      tags_posts_links: {
         include: {
           tags: true,
         },
@@ -26,7 +26,7 @@ export const getArticle = cache(async (id: number) => {
 
   return {
     ...res,
-    tags: res?.tags_articles_links.map((e) => e.tags),
+    tags: res?.tags_posts_links.map((e) => e.tags),
   };
 });
 
@@ -41,7 +41,7 @@ export const getArticles = cache(
         await prisma.posts.findMany({
           where: options.tagId
             ? {
-                tags_articles_links: {
+                tags_posts_links: {
                   some: {
                     tag_id: options.tagId,
                   },
@@ -52,7 +52,7 @@ export const getArticles = cache(
             updated_at: "desc",
           },
           include: {
-            tags_articles_links: {
+            tags_posts_links: {
               include: {
                 tags: true,
               },
@@ -66,7 +66,7 @@ export const getArticles = cache(
           ...e,
           content: await markdownToHtml(e.content),
           excerpt: await markdownExcerpt(e.content),
-          tags: e.tags_articles_links.map((e) => e.tags),
+          tags: e.tags_posts_links.map((e) => e.tags),
         };
       })
     );

@@ -11,7 +11,7 @@ export const getTags = cache(async () => {
         updated_at: "desc",
       },
       include: {
-        tags_articles_links: {
+        tags_posts_links: {
           include: {
             // 这里取出文章 title，用来搜索
             posts: {
