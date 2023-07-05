@@ -1,7 +1,7 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
-import prisma from "@/prisma/client";
+import prisma, { Prisma } from "@/prisma/client";
 import { cache } from "react";
-import { PaginateOptions } from "./paginator";
+import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
   getBase64Image,
@@ -31,27 +31,48 @@ export const getPost = cache(async (id: number) => {
 });
 
 export const getPosts = cache(
-  async (options: PaginateOptions & { tagId?: number } = {}) => {
-    const page = Number(options?.page) || 1;
-    const perPage = Number(options?.perPage) || POSTS_COUNT_PER_PAGE;
-    const skip = page > 0 ? perPage * (page - 1) : 0;
+  async (
+    options: PaginateOptions & { tagId?: number; categoryId?: number } = {}
+  ) => {
+    const { perPage, skip } = getPrismaPaginationParams(options);
+    const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
+
+    if (options.tagId) {
+      whereInput.push({
+        tags_posts_links: {
+          some: {
+            id: options.tagId,
+          },
+        },
+      });
+    }
+
+    if (options.categoryId) {
+      whereInput.push({
+        posts_category_links: {
+          some: {
+            id: options.categoryId,
+          },
+        },
+      });
+    }
 
     return await Promise.all(
       (
         await prisma.posts.findMany({
-          where: options.tagId
-            ? {
-                tags_posts_links: {
-                  some: {
-                    tag_id: options.tagId,
-                  },
-                },
-              }
-            : undefined,
+          where: {
+            AND: whereInput,
+          },
+
           orderBy: {
             updated_at: "desc",
           },
           include: {
+            posts_category_links: {
+              include: {
+                categories: true,
+              },
+            },
             tags_posts_links: {
               include: {
                 tags: true,

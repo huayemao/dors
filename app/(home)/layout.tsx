@@ -1,9 +1,10 @@
-import { Category } from "@/components/Category";
 import { Nav } from "@/components/Nav";
 import { Pagination } from "@/components/Pagination";
 import { SITE_META } from "@/constants";
+import { getAllCategories } from "@/lib/categories";
 import { getPageCount } from "@/lib/posts";
 import { getTags } from "@/lib/tags";
+import { Categories } from "../../components/Categories";
 
 export default async function MainLayout({
   children,
@@ -13,6 +14,8 @@ export default async function MainLayout({
   params: any;
 }) {
   const tags = await getTags();
+
+  const categories = await getAllCategories();
   const pageCount = await getPageCount();
 
   return (
@@ -32,22 +35,7 @@ export default async function MainLayout({
                   </p>
                 </div>
                 <div className="w-full max-w-lg mx-auto my-4 space-y-4 text-center">
-                  <div className="relative w-full flex justify-center gap-4 flex-wrap">
-                    <Category
-                      href={`/`}
-                      name={"全部"}
-                      key={9999}
-                      active={!params?.tagId}
-                    />
-                    {tags.map((tag) => (
-                      <Category
-                        href={`/categories/${tag.id}`}
-                        name={tag.name as string}
-                        key={tag.id}
-                        active={params?.tagId === tag.id}
-                      />
-                    ))}
-                  </div>
+                  <Categories categories={categories} />
                 </div>
                 {children}
               </div>
@@ -60,3 +48,4 @@ export default async function MainLayout({
     </>
   );
 }
+
