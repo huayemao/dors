@@ -4,6 +4,7 @@ import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
 import prisma from "@/prisma/client";
 import { cache } from "react";
+import Pagination from "../../Pagination";
 
 type SearchParams = PaginateOptions;
 
@@ -33,12 +34,14 @@ export default async function Home({
   };
 }) {
   const posts = await getProcessedPosts(await getPosts({ page: params.page }));
+  const pageCount = await getPageCount(POSTS_COUNT_PER_PAGE);
 
   const isFirstPage = !(params.page && Number(params.page) > 1);
 
   return (
     <>
       <Posts data={posts} showFeature={isFirstPage} />
+      <Pagination pageCount={pageCount} />
     </>
   );
 }
