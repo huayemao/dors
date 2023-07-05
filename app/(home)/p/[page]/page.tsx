@@ -2,7 +2,7 @@ import FeaturedPosts from "@/components/FeaturedPosts";
 import PostTile from "@/components/PostTile";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
-import { getArticles, getProcessedArticles } from "@/lib/posts";
+import { getPosts, getProcessedPosts } from "@/lib/posts";
 import prisma from "@/prisma/client";
 import { cache } from "react";
 
@@ -34,8 +34,8 @@ export default async function Home({
     page: string | number | undefined;
   };
 }) {
-  const posts = await getProcessedArticles(
-    await getArticles({ page: params.page })
+  const posts = await getProcessedPosts(
+    await getPosts({ page: params.page })
   );
 
   const pageCount = await getPageCount(

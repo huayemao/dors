@@ -5,7 +5,7 @@ import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
 import { SITE_META } from "@/constants";
 import { parseMDX } from "@/lib/parseMDX";
-import { getArticle, getArticles } from "@/lib/posts";
+import { getPost, getPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getBase64Image, markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
@@ -15,7 +15,7 @@ import { join } from "path";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const posts = await getArticles();
+  const posts = await getPosts();
   const params = posts.map((post) => ({
     id: String(post.id),
   }));
@@ -29,7 +29,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   // read route params
   const id = params.id;
-  const post = await getArticle(parseInt(id as string));
+  const post = await getPost(parseInt(id as string));
 
   return {
     title: `${post.title} | ${SITE_META.name}——${SITE_META.description}`,
@@ -44,9 +44,9 @@ export default async function page({ params }) {
     return;
   }
 
-  const post = await getArticle(parseInt(params.id as string));
+  const post = await getPost(parseInt(params.id as string));
 
-  let posts = await getArticles({ perPage: 5 });
+  let posts = await getPosts({ perPage: 5 });
   posts = await Promise.all(
     posts.map(async (e) => ({
       ...e,

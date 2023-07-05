@@ -1,12 +1,12 @@
 import { SITE_META } from "@/constants";
-import { getArticle } from "@/lib/posts";
+import { getPost } from "@/lib/posts";
 import { getDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "./Avatar";
 import Tag from "./Tag";
 
-type Post = Awaited<ReturnType<typeof getArticle>>;
+type Post = Awaited<ReturnType<typeof getPost>>;
 
 interface Props {
   post: Post;

@@ -1,4 +1,4 @@
-import { getArticle } from "@/lib/posts";
+import { getPost } from "@/lib/posts";
 import { getDateString } from "@/lib/utils";
 import Image, { ImageProps } from "next/image";
 import Tag from "./Tag";
@@ -8,7 +8,7 @@ type Avatar = {
   src: ImageProps["src"];
 };
 
-type Post = Partial<Awaited<ReturnType<typeof getArticle>>> & {
+type Post = Partial<Awaited<ReturnType<typeof getPost>>> & {
   excerpt?: string;
 };
 

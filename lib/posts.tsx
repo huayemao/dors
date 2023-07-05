@@ -10,7 +10,7 @@ import {
   markdownToHtml,
 } from "./utils";
 
-export const getArticle = cache(async (id: number) => {
+export const getPost = cache(async (id: number) => {
   const res = await prisma.posts.findUnique({
     where: {
       id: id,
@@ -30,7 +30,7 @@ export const getArticle = cache(async (id: number) => {
   };
 });
 
-export const getArticles = cache(
+export const getPosts = cache(
   async (options: PaginateOptions & { tagId?: number } = {}) => {
     const page = Number(options?.page) || 1;
     const perPage = Number(options?.perPage) || POSTS_COUNT_PER_PAGE;
@@ -73,8 +73,8 @@ export const getArticles = cache(
   }
 );
 
-export async function getProcessedArticles(
-  posts: Awaited<ReturnType<typeof getArticles>>
+export async function getProcessedPosts(
+  posts: Awaited<ReturnType<typeof getPosts>>
 ) {
   const needImageIds = posts.filter((e) => !e.cover_image).map((e) => e.id);
 
