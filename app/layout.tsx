@@ -4,8 +4,8 @@ import { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: SITE_META.name,
-  description: SITE_META.description,
+  title: SITE_META.name + "——" + SITE_META.description,
+  description: SITE_META.description + SITE_META.introduction,
   authors: SITE_META.author,
 };
 
