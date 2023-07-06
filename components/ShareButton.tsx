@@ -1,6 +1,9 @@
 "use client";
 export const ShareButton = ({ options }) => {
-  const share = () => {
+  const share = async () => {
+    try {
+      await navigator.share({ ...options, url: window.location.href });
+    } catch (err) {}
     /* @ts-ignore */
     window.setShareInfo({ ...options, url: window.location.href });
   };
