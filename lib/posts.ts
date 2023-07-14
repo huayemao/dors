@@ -145,27 +145,29 @@ export async function getProcessedPosts(
     imageData = await getPexelImages(posts.length);
   }
 
-  for (const i in posts) {
-    const a = posts[i];
+  await Promise.all(
+    Object.keys(posts).map(async (i) => {
+      const a = posts[i];
 
-    if (needImageIds.includes(a.id)) {
-      await prisma.posts.update({
-        where: {
-          id: a.id,
-        },
-        data: {
-          cover_image: imageData.photos[i],
-        },
-      });
+      if (needImageIds.includes(a.id)) {
+        await prisma.posts.update({
+          where: {
+            id: a.id,
+          },
+          data: {
+            cover_image: imageData.photos[i],
+          },
+        });
 
-      a.cover_image = imageData.photos[i];
-    }
+        a.cover_image = imageData.photos[i];
+      }
 
-    // @ts-ignore
-    posts[i].url = await getBase64Image(
-      (a.cover_image as PexelsPhoto).src.large
-    );
-  }
+      // @ts-ignore
+      posts[i].url = await getBase64Image(
+        (a.cover_image as PexelsPhoto).src.large
+      );
+    })
+  );
 
   return posts;
 }
