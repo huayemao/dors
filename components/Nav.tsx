@@ -11,7 +11,7 @@ export const Nav = () => {
 
   function scrollHeader() {
     // When the scroll is greater than 60 viewport height, add the scroll-header class to the header tag
-    if (this.scrollY >= 60 && !scrolled) {
+    if (window.scrollY >= 60 && !scrolled) {
       setScrolled(true);
     } else setScrolled(false);
   }
@@ -37,6 +37,7 @@ export const Nav = () => {
   };
 
   useEffect(() => {
+    scrollHeader()
     window.addEventListener("scroll", scrollHeader);
 
     return () => {
