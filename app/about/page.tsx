@@ -7,7 +7,10 @@ export default async function About() {
   return (
     <main className="w-full bg-white dark:bg-muted-900">
       <PostHead
-        post={{ title: "花野猫何许人也", excerpt: "花野猫的独白" }}
+        post={{
+          title: "花野猫何许人也",
+          excerpt: "花野猫的独白，关于我，和我是如何成为我",
+        }}
         avatar={{ alt: "花野猫", src: huayemao }}
         url={photo1}
       />
@@ -84,7 +87,6 @@ export default async function About() {
             谈及国内的工作环境，花野猫的二十余年的见闻令其尚不成熟的内心近年内产生了一下粗浅的观点（具体原因不便赘述）：
             体制外劳动者是为体制内服务的（这句话来自知乎的一个回答，现已被和谐），
             ●考到 35 岁
-
             一位家乡县城体制内颇为风生水起的长者曾规劝我道：学成屠龙技，卖给帝王家。包含了他对中国社会的深刻认识
           </p>
           <p>
