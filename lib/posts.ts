@@ -162,6 +162,7 @@ export async function getProcessedPosts(
         a.cover_image = imageData.photos[i];
       }
 
+      // todo: 其实这个应该存在库里面，不要每次都去读
       // @ts-ignore
       posts[i].url = await getBase64Image(
         (a.cover_image as PexelsPhoto).src.large
