@@ -1,5 +1,7 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
-module.exports = {
+const { withShurikenUI } = require("@shuriken-ui/tailwind")
+
+module.exports = withShurikenUI({
   mode: 'jit',
   content: [
     "app/**/*.{ts,tsx}",
@@ -28,6 +30,7 @@ module.exports = {
       },
       colors: {
         muted: {
+          50: 'rgb(248, 250, 252)',
           100: 'rgb(241, 245, 249)',
           200: 'rgb(226, 232, 240)',
           300: 'rgb(203, 213, 225)',
@@ -39,15 +42,21 @@ module.exports = {
           900: 'rgb(15, 23, 42)'
         },
         primary: {
+          50: 'rgb(238, 242, 255)',
           100: 'rgb(224,231,255)',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
           400: 'rgb(129,140,248)',
           500: 'rgb(99,102,241)',
           600: 'rgb(79,70,229)',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81'
         },
       }
     },
   },
   plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
-}
+})
 
 
