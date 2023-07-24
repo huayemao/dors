@@ -33,8 +33,11 @@ export default function QA({
 export function QuestionList({ data }: { data: Question[] }) {
   return (
     <>
-      {data.map((e) => (
-        <QA key={e.content} data={e} />
+      {data.map((e, i, arr) => (
+        <div key={e.content}>
+          <QA data={e} />
+          {i !== arr.length - 1 && <hr className="mb-4" />}
+        </div>
       ))}
     </>
   );

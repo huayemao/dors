@@ -4,7 +4,7 @@ import QA from "@/components/Question";
 import { useStorageState } from "@/lib/hooks/localstorage";
 import { Question } from "@/lib/types/Question";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
-import { DOMAttributes, useMemo, useState } from "react";
+import { DOMAttributes, useState } from "react";
 
 // todo: 允许取消
 
@@ -46,10 +46,7 @@ export default function QInput() {
     ? Math.max(...itemList?.map((e) => Number(e.seq)))
     : -1;
 
-  const options = useMemo(
-    () => currentItem?.options || DEFAULT_OPTIONS,
-    [currentItem]
-  );
+  const options = currentItem?.options || DEFAULT_OPTIONS;
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
     e.preventDefault();
@@ -84,8 +81,9 @@ export default function QInput() {
       if (!itemList) {
         throw new Error("错误");
       }
-      itemList[targetItemIndex] = question;
-      mutate(itemList);
+      const newList = [...itemList];
+      newList[targetItemIndex] = question;
+      mutate(newList);
     } else {
       mutate(itemList ? itemList.concat(question) : [question]);
     }
