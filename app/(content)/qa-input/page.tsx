@@ -6,7 +6,6 @@ import { Question } from "@/lib/types/Question";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import { DOMAttributes, useMemo, useState } from "react";
 
-// todo: defaultValue
 // todo: 允许取消
 
 const DEFAULT_OPTIONS = [
@@ -29,6 +28,8 @@ const DEFAULT_OPTIONS = [
 ];
 
 export default function QInput() {
+  const [, forceUpdate] = useState(0);
+
   const { data: collectionList } = useStorageState("collectionList", [
     { id: new Date().toLocaleDateString() },
   ]);
@@ -89,7 +90,7 @@ export default function QInput() {
       mutate(itemList ? itemList.concat(question) : [question]);
     }
 
-    setCurrentItemId(0);
+    forceUpdate(1);
   };
 
   const removeItem = (id: number) => {
@@ -149,13 +150,12 @@ export default function QInput() {
                       </label>
                       <div className="group/nui-select relative">
                         <select
+                          defaultValue={"single"}
                           id="type"
                           name="type"
                           className="pl-10 nui-focus border-muted-300 text-muted-600 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-600 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full cursor-pointer appearance-none border bg-white font-sans focus:shadow-lg px-2 pe-9 h-10 py-2 text-sm leading-5 pe-4 ps-9 rounded pe-4 ps-9"
                         >
-                          <option value="single" selected>
-                            单选
-                          </option>
+                          <option value="single">单选</option>
                           <option value="multiple">多选</option>
                           <option value="judge">判断</option>
                           <option value="subjective">主管</option>
@@ -254,17 +254,18 @@ export default function QInput() {
 
                           <div className="group/nui-input relative">
                             <select
+                              defaultValue={
+                                currentItem?.options.find(
+                                  (e) => currentItem.answer === e.label
+                                )?.label
+                              }
                               key={currentItem?.id}
                               id="answer"
                               name="answer"
                               className="nui-focus border-muted-300 text-muted-600 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-600 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full cursor-pointer appearance-none border bg-white font-sans focus:shadow-lg px-2 pe-9 h-10 py-2 text-sm leading-5 pe-4 ps-9 rounded pe-4 ps-9"
                             >
                               {options.map((e) => (
-                                <option
-                                  selected={currentItem?.answer === e.label}
-                                  key={e.label}
-                                  value={e.label}
-                                >
+                                <option key={e.label} value={e.label}>
                                   {e.label}
                                 </option>
                               ))}
