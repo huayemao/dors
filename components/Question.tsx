@@ -17,3 +17,13 @@ export default function QA({ data }: { data: Question }) {
     </>
   );
 }
+
+export function QuestionList({ data }: { data: Question[] }) {
+  return (
+    <>
+      {data.map((e) => (
+        <QA key={e.content} data={e} />
+      ))}
+    </>
+  );
+}

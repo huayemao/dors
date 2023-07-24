@@ -5,6 +5,11 @@ import { useStorageState } from "@/lib/hooks/localstorage";
 import { Question } from "@/lib/types/Question";
 import { DOMAttributes, useState } from "react";
 
+// todo: defaultValue
+// todo: 维护一个 currentItemId，如果是 null，就是新建
+// todo: 允许取消
+// id 用当前时间
+
 const DEFAULT_OPTIONS = [
   {
     label: "A",
@@ -29,11 +34,17 @@ export default function QInput() {
     { id: new Date().toLocaleDateString() },
   ]);
 
-  const [options, setOptions] = useState(DEFAULT_OPTIONS);
-
   const { data: itemList, mutate } = useStorageState<Question[]>(
     new Date().toLocaleDateString(),
     []
+  );
+
+  const [currentItemId, setCurrentItemId] = useState(0);
+
+  const currentItem = itemList?.find((e) => e.id === currentItemId);
+
+  const [options, setOptions] = useState(
+    currentItem?.options || DEFAULT_OPTIONS
   );
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
@@ -42,7 +53,7 @@ export default function QInput() {
     const formData = new FormData(formEl);
     const obj = Object.fromEntries(formData.entries()) as Omit<
       Question,
-      "options"
+      "options" | "id"
     >;
 
     for (const key in obj) {
@@ -56,11 +67,26 @@ export default function QInput() {
       }
     }
 
+    const targetItemIndex = itemList?.findIndex((e) => e.id === currentItemId);
+    const isEditing = targetItemIndex != undefined && targetItemIndex != -1;
+
     const question = {
+      id: isEditing ? currentItemId : Date.now(),
       ...obj,
       options,
     };
-    mutate(itemList ? itemList.concat(question) : [question]);
+
+    if (isEditing) {
+      if (!itemList) {
+        throw new Error("错误");
+      }
+      itemList[targetItemIndex] = question;
+      mutate(itemList);
+    } else {
+      mutate(itemList ? itemList.concat(question) : [question]);
+    }
+
+    setCurrentItemId(0);
   };
 
   return (
@@ -85,7 +111,13 @@ export default function QInput() {
                 <div className="grid grid-cols-12 gap-4">
                   <div className="col-span-12 md:col-span-6">
                     <div className="relative">
-                      <Input label="题号" type="number" id="seq" />
+                      <Input
+                        key={currentItem?.id}
+                        label="题号"
+                        type="number"
+                        id="seq"
+                        defaultValue={currentItem?.seq || 0}
+                      />
                     </div>
                   </div>
                   <div className="col-span-12 md:col-span-6">
@@ -159,12 +191,13 @@ export default function QInput() {
                       </label>
                       <div className="group/nui-textarea relative flex flex-col">
                         <textarea
+                          key={currentItem?.id}
                           id="content"
                           name="content"
                           className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
-                          placeholder="Ex: General Orthopedic Surgery, Foot & Ankle Surgery"
+                          placeholder="输入题目文本"
                           rows={3}
-                          defaultValue={""}
+                          defaultValue={currentItem?.content || ""}
                         />
                       </div>
                     </div>
@@ -177,6 +210,7 @@ export default function QInput() {
                     <div key={e.label} className="col-span-6">
                       <div className="flex items-center gap-4">
                         <Input
+                          defaultValue={e.value}
                           label={e.label}
                           labelClassName="w-fit"
                           inputContainerClassName="w-full flex-1"
@@ -200,6 +234,13 @@ export default function QInput() {
 
                           <div className="group/nui-input relative">
                             <select
+                              defaultValue={
+                                options.find(
+                                  (option) =>
+                                    option.label === currentItem?.answer
+                                )?.label
+                              }
+                              key={currentItem?.id}
                               id="answer"
                               name="answer"
                               className="nui-focus border-muted-300 text-muted-600 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-600 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full cursor-pointer appearance-none border bg-white font-sans focus:shadow-lg px-2 pe-9 h-10 py-2 text-sm leading-5 pe-4 ps-9 rounded pe-4 ps-9"
@@ -259,6 +300,7 @@ export default function QInput() {
                         </label>
                         <div className="group/nui-textarea relative flex flex-col">
                           <textarea
+                            key={currentItem?.id}
                             id="solution"
                             name="solution"
                             className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
@@ -283,12 +325,11 @@ export default function QInput() {
                     Cancel{" "}
                   </button>
                   <button
-                    data-v-71bb21a6
                     type="submit"
                     className="is-button rounded bg-primary-500 dark:bg-primary-500 hover:enabled:bg-primary-400 dark:hover:enabled:bg-primary-400 text-white hover:enabled:shadow-lg hover:enabled:shadow-primary-500/50 dark:hover:enabled:shadow-primary-800/20 focus-visible:outline-primary-400/70 focus-within:outline-primary-400/70 focus-visible:bg-primary-500 active:enabled:bg-primary-500 dark:focus-visible:outline-primary-400 dark:focus-within:outline-primary-400 dark:focus-visible:bg-primary-500 dark:active:enabled:bg-primary-500 !h-12 w-full sm:w-40"
                   >
                     {" "}
-                    Submit{" "}
+                    确定{" "}
                   </button>
                 </div>
               </div>
@@ -297,8 +338,22 @@ export default function QInput() {
         </div>
         <div className="ltablet:col-span-6 col-span-12 lg:col-span-6">
           <div className="prose space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            {itemList?.map((e, i) => (
-              <QA key={i} data={e} />
+            {itemList?.map((e, i, arr) => (
+              <>
+                <div className="relative" key={i}>
+                  <QA data={e} />
+                  <button
+                    className="absolute bottom-4 right-4"
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      setCurrentItemId(e.id);
+                    }}
+                  >
+                    编辑
+                  </button>
+                </div>
+                {i !== arr.length - 1 && <hr />}
+              </>
             ))}
           </div>
         </div>

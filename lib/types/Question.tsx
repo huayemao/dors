@@ -1,4 +1,5 @@
 export type Question = {
+  id: number;
   seq: string;
   type: string;
   content: string;
