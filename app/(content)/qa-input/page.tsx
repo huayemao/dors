@@ -89,6 +89,17 @@ export default function QInput() {
     setCurrentItemId(0);
   };
 
+  const removeItem = (id: number) => {
+    const targetItemIndex = itemList?.findIndex((e) => e.id === id);
+    const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
+    if (hasTarget) {
+      if (!itemList) {
+        throw Error("");
+      }
+      mutate(itemList?.filter((_, i) => i != targetItemIndex));
+    }
+  };
+
   return (
     <div className="py-4 px-12">
       <form
@@ -342,15 +353,17 @@ export default function QInput() {
               <>
                 <div className="relative" key={i}>
                   <QA data={e} />
-                  <button
-                    className="absolute bottom-4 right-4"
-                    onClick={(ev) => {
-                      ev.preventDefault();
-                      setCurrentItemId(e.id);
-                    }}
-                  >
-                    编辑
-                  </button>
+                  <div className="absolute bottom-4 right-4 space-x-2">
+                    <button
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                        setCurrentItemId(e.id);
+                      }}
+                    >
+                      编辑
+                    </button>
+                    <button onClick={() => removeItem(e.id)}>删除</button>
+                  </div>
                 </div>
                 {i !== arr.length - 1 && <hr />}
               </>
