@@ -6,9 +6,7 @@ import { Question } from "@/lib/types/Question";
 import { DOMAttributes, useState } from "react";
 
 // todo: defaultValue
-// todo: 维护一个 currentItemId，如果是 null，就是新建
 // todo: 允许取消
-// id 用当前时间
 
 const DEFAULT_OPTIONS = [
   {
@@ -42,6 +40,9 @@ export default function QInput() {
   const [currentItemId, setCurrentItemId] = useState(0);
 
   const currentItem = itemList?.find((e) => e.id === currentItemId);
+  const maxSeq = itemList?.length
+    ? Math.max(...itemList?.map((e) => Number(e.seq)))
+    : -1;
 
   const [options, setOptions] = useState(
     currentItem?.options || DEFAULT_OPTIONS
@@ -127,7 +128,7 @@ export default function QInput() {
                         label="题号"
                         type="number"
                         id="seq"
-                        defaultValue={currentItem?.seq || 0}
+                        defaultValue={currentItem?.seq || maxSeq + 1}
                       />
                     </div>
                   </div>
