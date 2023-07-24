@@ -3,7 +3,8 @@ import Input from "@/components/Base/Input";
 import QA from "@/components/Question";
 import { useStorageState } from "@/lib/hooks/localstorage";
 import { Question } from "@/lib/types/Question";
-import { DOMAttributes, useState } from "react";
+import { copyToClipboard } from "@/lib/utils/copyToClipboard";
+import { DOMAttributes, useMemo, useState } from "react";
 
 // todo: defaultValue
 // todo: 允许取消
@@ -44,8 +45,9 @@ export default function QInput() {
     ? Math.max(...itemList?.map((e) => Number(e.seq)))
     : -1;
 
-  const [options, setOptions] = useState(
-    currentItem?.options || DEFAULT_OPTIONS
+  const options = useMemo(
+    () => currentItem?.options || DEFAULT_OPTIONS,
+    [currentItem]
   );
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
@@ -99,6 +101,11 @@ export default function QInput() {
       }
       mutate(itemList?.filter((_, i) => i != targetItemIndex));
     }
+  };
+
+  const copy = (e) => {
+    e.preventDefault();
+    copyToClipboard(JSON.stringify(itemList));
   };
 
   return (
@@ -222,6 +229,7 @@ export default function QInput() {
                     <div key={e.label} className="col-span-6">
                       <div className="flex items-center gap-4">
                         <Input
+                          key={currentItem?.id + e.label}
                           defaultValue={e.value}
                           label={e.label}
                           labelClassName="w-fit"
@@ -246,19 +254,17 @@ export default function QInput() {
 
                           <div className="group/nui-input relative">
                             <select
-                              defaultValue={
-                                options.find(
-                                  (option) =>
-                                    option.label === currentItem?.answer
-                                )?.label
-                              }
                               key={currentItem?.id}
                               id="answer"
                               name="answer"
                               className="nui-focus border-muted-300 text-muted-600 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-600 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full cursor-pointer appearance-none border bg-white font-sans focus:shadow-lg px-2 pe-9 h-10 py-2 text-sm leading-5 pe-4 ps-9 rounded pe-4 ps-9"
                             >
                               {options.map((e) => (
-                                <option key={e.label} value="0-5">
+                                <option
+                                  selected={currentItem?.answer === e.label}
+                                  key={e.label}
+                                  value={e.label}
+                                >
                                   {e.label}
                                 </option>
                               ))}
@@ -351,9 +357,9 @@ export default function QInput() {
         <div className="ltablet:col-span-6 col-span-12 lg:col-span-6">
           <div className="prose space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
             {itemList?.map((e, i, arr) => (
-              <>
-                <div className="relative" key={i}>
-                  <QA data={e} />
+              <div key={i}>
+                <div className="relative">
+                  <QA data={e} preview />
                   <div className="absolute bottom-4 right-4 space-x-2">
                     <button
                       onClick={(ev) => {
@@ -367,8 +373,11 @@ export default function QInput() {
                   </div>
                 </div>
                 {i !== arr.length - 1 && <hr />}
-              </>
+              </div>
             ))}
+          </div>
+          <div className="prose space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
+            <button onClick={copy}>复制</button>
           </div>
         </div>
       </form>
