@@ -3,6 +3,7 @@ import { remark } from "remark";
 import html from "remark-html";
 import excerpt from "strip-markdown";
 import { twMerge } from "tailwind-merge";
+import { PexelsPhoto } from "./types/PexelsPhoto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,7 +19,9 @@ export async function getBase64Image(url) {
   return dataUrl;
 }
 
-export async function getPexelImages(length) {
+export async function getPexelImages(
+  length
+): Promise<{ photos: PexelsPhoto[] }> {
   return await fetch(
     `https://api.pexels.com/v1/search?query=pastel&per_page=${length}&page=${
       Math.floor(Math.random() * 100) + 1

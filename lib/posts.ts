@@ -137,38 +137,49 @@ async function getAllPosts(
 export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>
 ) {
-  const needImageIds = posts.filter((e) => !e.cover_image).map((e) => e.id);
+  const needImageIds = posts
+    .filter((e) => !e.cover_image?.dataURLs)
+    .map((e) => e.id);
 
-  let imageData;
+  let imageData: { photos: PexelsPhoto[] };
 
   if (needImageIds.length) {
     imageData = await getPexelImages(posts.length);
+
+    await Promise.all(
+      Object.keys(posts).map(async (i) => {
+        const a = posts[i];
+
+        const imageJson = imageData.photos[i] as PexelsPhoto;
+
+        if (needImageIds.includes(a.id)) {
+          const dataURLs = {
+            large: await getBase64Image((imageJson as PexelsPhoto).src.large),
+            small: await getBase64Image((imageJson as PexelsPhoto).src.small),
+          };
+
+          await prisma.posts.update({
+            where: {
+              id: a.id,
+            },
+            data: {
+              cover_image: {
+                ...imageJson,
+                dataURLs,
+              },
+            },
+          });
+
+          a.cover_image = imageJson;
+        }
+      })
+    );
   }
 
-  await Promise.all(
-    Object.keys(posts).map(async (i) => {
-      const a = posts[i];
-
-      if (needImageIds.includes(a.id)) {
-        await prisma.posts.update({
-          where: {
-            id: a.id,
-          },
-          data: {
-            cover_image: imageData.photos[i],
-          },
-        });
-
-        a.cover_image = imageData.photos[i];
-      }
-
-      // todo: 其实这个应该存在库里面，不要每次都去读
-      // @ts-ignore
-      posts[i].url = await getBase64Image(
-        (a.cover_image as PexelsPhoto).src.large
-      );
-    })
-  );
+  posts.forEach((p) => {
+    /* @ts-ignore */
+    p.url = p.cover_image.dataURLs.large;
+  });
 
   return posts;
 }
