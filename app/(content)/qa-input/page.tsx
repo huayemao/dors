@@ -271,6 +271,7 @@ export default function QInput() {
                   <QA data={e} preview />
                   <div className="absolute bottom-4 right-4 space-x-2">
                     <button
+                      type="button"
                       onClick={(ev) => {
                         ev.preventDefault();
                         setCurrentItemId(e.id);
@@ -278,7 +279,15 @@ export default function QInput() {
                     >
                       编辑
                     </button>
-                    <button onClick={() => removeItem(e.id)}>删除</button>
+                    <button
+                      type="button"
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                        removeItem(e.id);
+                      }}
+                    >
+                      删除
+                    </button>
                   </div>
                 </div>
                 {i !== arr.length - 1 && <hr />}
