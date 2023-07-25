@@ -77,6 +77,7 @@ export default function QInput() {
       Question,
       "options" | "id"
     >;
+    obj.answer = formData.getAll("answer").join("");
 
     for (const key in obj) {
       if (key.startsWith("option-")) {
@@ -243,18 +244,21 @@ export default function QInput() {
 
                   <div className="col-span-12">
                     <div className="bg-muted-100 dark:bg-muted-700/70 space-y-2 rounded-lg p-4">
-                      <div className="w-24 sm:col-span-4">
+                      <div className="w-48 sm:col-span-4">
                         <div className="relative">
                           <Select
+                            className="h-24"
+                            multiple
                             label="答案"
                             id="answer"
                             name="answer"
                             key={currentItem?.id}
-                            defaultValue={
-                              currentItem?.options.find(
-                                (e) => currentItem.answer === e.label
-                              )?.label || "A"
-                            }
+                            /* @ts-ignore */
+                            defaultValue={currentItem?.options
+                              .filter((e) =>
+                                currentItem.answer.includes(e.label)
+                              )
+                              .map((e) => e.label)}
                             data={options.map((e) => ({
                               value: e.label,
                               label: e.label,
@@ -274,9 +278,9 @@ export default function QInput() {
                             key={currentItem?.id}
                             id="solution"
                             name="solution"
-                            className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
+                            className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded p-2"
                             placeholder="Ex: General Orthopedic Surgery, Foot & Ankle Surgery"
-                            rows={3}
+                            rows={4}
                             defaultValue={currentItem?.solution}
                           />
                         </div>
