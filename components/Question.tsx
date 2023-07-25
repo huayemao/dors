@@ -23,6 +23,7 @@ export default function QA({
           <details>
             <summary>答案</summary>
             {data.answer}
+            {data.solution && <blockquote>{data.solution}</blockquote>}
           </details>
         </>
       )}

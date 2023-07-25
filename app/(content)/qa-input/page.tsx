@@ -87,8 +87,7 @@ export default function QInput() {
     } else {
       mutate(itemList ? itemList.concat(question) : [question]);
     }
-
-    forceUpdate(1);
+    cancel();
   };
 
   const removeItem = (id: number) => {
@@ -100,6 +99,11 @@ export default function QInput() {
       }
       mutate(itemList?.filter((_, i) => i != targetItemIndex));
     }
+  };
+
+  const cancel = () => {
+    // forceUpdate(1);
+    setCurrentItemId(0);
   };
 
   const copy = (e) => {
@@ -156,7 +160,7 @@ export default function QInput() {
                           <option value="single">单选</option>
                           <option value="multiple">多选</option>
                           <option value="judge">判断</option>
-                          <option value="subjective">主管</option>
+                          <option value="subjective">主观</option>
                         </select>
                         <div className="text-muted-400 group-focus-within/nui-select:text-primary-500 absolute start-0 top-0 flex items-center justify-center transition-colors duration-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-75 h-10 w-10">
                           <svg
@@ -323,7 +327,7 @@ export default function QInput() {
                             className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
                             placeholder="Ex: General Orthopedic Surgery, Foot & Ankle Surgery"
                             rows={3}
-                            defaultValue={""}
+                            defaultValue={currentItem?.solution}
                           />
                         </div>
                       </div>
@@ -331,22 +335,24 @@ export default function QInput() {
                   </div>
                 </div>
               </fieldset>
-              <div className="text-right md:col-span-5">
-                <div className="-mt-4 inline-flex w-full items-center justify-end gap-2 sm:w-auto">
+              <div className="p-4 text-right md:col-span-5">
+                <div className=" inline-flex w-full items-center justify-end gap-2 sm:w-auto">
                   <button
                     data-v-71bb21a6
                     type="button"
                     className="is-button rounded is-button-default !h-12 w-full sm:w-40"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      cancel();
+                    }}
                   >
-                    {" "}
-                    Cancel{" "}
+                    取消
                   </button>
                   <button
                     type="submit"
                     className="is-button rounded bg-primary-500 dark:bg-primary-500 hover:enabled:bg-primary-400 dark:hover:enabled:bg-primary-400 text-white hover:enabled:shadow-lg hover:enabled:shadow-primary-500/50 dark:hover:enabled:shadow-primary-800/20 focus-visible:outline-primary-400/70 focus-within:outline-primary-400/70 focus-visible:bg-primary-500 active:enabled:bg-primary-500 dark:focus-visible:outline-primary-400 dark:focus-within:outline-primary-400 dark:focus-visible:bg-primary-500 dark:active:enabled:bg-primary-500 !h-12 w-full sm:w-40"
                   >
-                    {" "}
-                    确定{" "}
+                    确定
                   </button>
                 </div>
               </div>
