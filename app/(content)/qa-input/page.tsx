@@ -260,6 +260,11 @@ export default function QInput() {
                   </button>
                 </div>
               </div>
+              <textarea
+                onPaste={(e) => {
+                  mutate(JSON.parse(e.target.value));
+                }}
+              />
             </div>
           </div>
         </div>
