@@ -1,4 +1,5 @@
 import { Question } from "@/lib/types/Question";
+import { cn } from "@/lib/utils";
 export default function QA({
   data,
   preview = false,
@@ -6,6 +7,8 @@ export default function QA({
   data: Question;
   preview?: boolean;
 }) {
+  const options = data.options.map((e) => e.value);
+  const optionsHorizontal = options.join("").length < 24;
   return (
     <section className="mb-4">
       <p>
@@ -13,7 +16,11 @@ export default function QA({
       </p>
       {!preview && (
         <>
-          <ul>
+          <ul
+            className={cn({
+              "flex gap-6": optionsHorizontal,
+            })}
+          >
             {data.options.map((e) => (
               <li style={{ listStyle: "none" }} key={e.label}>
                 {e.label}. {e.value}
