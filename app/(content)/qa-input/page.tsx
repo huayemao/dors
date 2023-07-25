@@ -7,7 +7,6 @@ import { Question } from "@/lib/types/Question";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import { DOMAttributes, useEffect, useState } from "react";
 
-// todo: 允许取消
 
 const DEFAULT_OPTIONS = [
   {
