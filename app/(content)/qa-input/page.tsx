@@ -5,7 +5,7 @@ import QA from "@/components/Question";
 import { useStorageState } from "@/lib/hooks/localstorage";
 import { Question } from "@/lib/types/Question";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
-import { DOMAttributes, useState } from "react";
+import { DOMAttributes, useEffect, useState } from "react";
 
 // todo: 允许取消
 
@@ -28,6 +28,19 @@ const DEFAULT_OPTIONS = [
   },
 ];
 
+const DEFAULT_ITEM = {
+  seq: "0",
+  id: Date.now(),
+  content: "",
+  type: "single",
+  solution: "",
+  answer: "A",
+  options: ["A", "B", "C", "D"].map((e) => ({
+    label: e,
+    value: "",
+  })),
+};
+
 export default function QInput() {
   const [, forceUpdate] = useState(0);
 
@@ -40,12 +53,19 @@ export default function QInput() {
     []
   );
 
-  const [currentItemId, setCurrentItemId] = useState(0);
+  const [currentItem, setCurrentItem] = useState<Question>(DEFAULT_ITEM);
 
-  const currentItem = itemList?.find((e) => e.id === currentItemId);
-  const maxSeq = itemList?.length
-    ? Math.max(...itemList?.map((e) => Number(e.seq)))
-    : -1;
+  useEffect(() => {
+    const maxSeq = itemList?.length
+      ? Math.max(...itemList?.map((e) => Number(e.seq)))
+      : -1;
+    setCurrentItem((prev) => {
+      return {
+        ...prev,
+        seq: String(maxSeq + 1),
+      };
+    });
+  }, [itemList?.length]);
 
   const options = currentItem?.options || DEFAULT_OPTIONS;
 
@@ -69,11 +89,11 @@ export default function QInput() {
       }
     }
 
-    const targetItemIndex = itemList?.findIndex((e) => e.id === currentItemId);
+    const targetItemIndex = itemList?.findIndex((e) => e.id === currentItem.id);
     const isEditing = targetItemIndex != undefined && targetItemIndex != -1;
 
     const question = {
-      id: isEditing ? currentItemId : Date.now(),
+      id: isEditing ? currentItem.id : Date.now(),
       ...obj,
       options,
     };
@@ -104,12 +124,37 @@ export default function QInput() {
 
   const cancel = () => {
     // forceUpdate(1);
-    setCurrentItemId(0);
+    setCurrentItem(DEFAULT_ITEM);
   };
 
   const copy = (e) => {
     e.preventDefault();
     copyToClipboard(JSON.stringify(itemList));
+  };
+
+  const handlePasteInput: DOMAttributes<HTMLInputElement>["onPaste"] = (e) => {
+    /* @ts-ignore */
+    const inputString = e.clipboardData.getData("text");
+
+    const regex = /([A-D])([,:.、])(.*)/g;
+    const options: Question["options"] = [];
+
+    let match;
+    while ((match = regex.exec(inputString)) !== null) {
+      const option = {
+        label: match[1],
+        value: match[3],
+      };
+      options.push(option);
+    }
+
+    setCurrentItem((prev) => {
+      return {
+        ...prev,
+        options,
+      };
+    });
+    e.preventDefault();
   };
 
   return (
@@ -139,7 +184,7 @@ export default function QInput() {
                         label="题号"
                         type="number"
                         id="seq"
-                        defaultValue={currentItem?.seq || maxSeq + 1}
+                        defaultValue={currentItem?.seq}
                       />
                     </div>
                   </div>
@@ -183,6 +228,7 @@ export default function QInput() {
                     <div key={e.label} className="col-span-6">
                       <div className="flex items-center gap-4">
                         <Input
+                          onPaste={handlePasteInput}
                           key={currentItem?.id + e.label}
                           defaultValue={e.value}
                           label={e.label}
@@ -262,7 +308,8 @@ export default function QInput() {
               </div>
               <textarea
                 onPaste={(e) => {
-                  mutate(JSON.parse(e.target.value));
+                  const target = e.target as HTMLTextAreaElement;
+                  mutate(JSON.parse(target.value));
                 }}
               />
             </div>
@@ -279,7 +326,7 @@ export default function QInput() {
                       type="button"
                       onClick={(ev) => {
                         ev.preventDefault();
-                        setCurrentItemId(e.id);
+                        setCurrentItem(e);
                       }}
                     >
                       编辑

@@ -39,7 +39,9 @@ const SelectComponent: React.FC<Props> = ({
           onChange={handleChange}
         >
           {data.map((e) => (
-            <option value={e.value}>{e.label}</option>
+            <option value={e.value} key={e.value}>
+              {e.label}
+            </option>
           ))}
         </select>
         <div className="text-muted-400 group-focus-within/nui-select:text-primary-500 absolute start-0 top-0 flex items-center justify-center transition-colors duration-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-75 h-10 w-10">
