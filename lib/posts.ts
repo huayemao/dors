@@ -138,6 +138,7 @@ export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>
 ) {
   const needImageIds = posts
+    /* @ts-ignore */
     .filter((e) => !e.cover_image?.dataURLs)
     .map((e) => e.id);
 
@@ -170,7 +171,10 @@ export async function getProcessedPosts(
             },
           });
 
-          a.cover_image = imageJson;
+          posts[i].cover_image = {
+            ...imageJson,
+            dataURLs,
+          };
         }
       })
     );
@@ -178,7 +182,7 @@ export async function getProcessedPosts(
 
   posts.forEach((p) => {
     /* @ts-ignore */
-    p.url = p.cover_image.dataURLs.large;
+    p.url = p.cover_image?.dataURLs?.large;
   });
 
   return posts;
