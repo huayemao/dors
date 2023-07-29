@@ -37,7 +37,7 @@ const PostHead = ({ post, url, avatar }: Props) => {
               />
             </div>
 
-            <div className="h-full flex items-center ptablet:px-4 ltablet:px-6">
+            <div className="h-full flex items-center ptablet:px-4 ltablet:px-6 break-words">
               <div className="w-full max-w-lg space-x-2">
                 {!!post?.tags?.length &&
                   post.tags.map(
@@ -54,7 +54,10 @@ const PostHead = ({ post, url, avatar }: Props) => {
                 <h1 className="font-heading text-muted-800 dark:text-white font-extrabold text-3xl ltablet:text-4xl lg:text-4xl">
                   {post?.title}
                 </h1>
-                <p className=" font-sans text-base text-muted-500 dark:text-muted-400 max-w-md my-4">
+                <p
+                  className=" font-sans text-base text-muted-500 dark:text-muted-400 max-w-md my-4"
+                  style={{ wordBreak: "break-word" }}
+                >
                   {post?.excerpt}
                 </p>
                 <div className="flex items-center justify-start w-full relative">
