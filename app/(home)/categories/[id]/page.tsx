@@ -6,7 +6,7 @@ import { getPosts, getProcessedPosts } from "@/lib/posts";
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-export const revalidate = 300;
+// export const revalidate = 300;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export default async function PostsByCategory({
