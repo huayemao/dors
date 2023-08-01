@@ -43,6 +43,17 @@ export interface FindManyArgs {
   skip?: number;
 }
 
+export const getPostIds = cache(async () => {
+  return await prisma.posts.findMany({
+    orderBy: {
+      updated_at: "desc",
+    },
+    select: {
+      id: true,
+    },
+  });
+});
+
 export const getPosts = cache(
   async (
     options: PaginateOptions & {
