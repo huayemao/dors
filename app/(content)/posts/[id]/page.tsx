@@ -13,9 +13,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { join } from "path";
 
-
 export async function generateStaticParams() {
-  const posts = await getPosts();
+  const posts = await getPosts({ perPage: 1000 });
   const params = posts.map((post) => ({
     id: String(post.id),
   }));
