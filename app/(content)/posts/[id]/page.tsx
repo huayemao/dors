@@ -7,7 +7,7 @@ import { SITE_META } from "@/constants";
 import { parseMDX } from "@/lib/parseMDX";
 import { getPost, getPosts, getProcessedPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
-import { getBase64Image, markdownExcerpt } from "@/lib/utils";
+import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -55,9 +55,10 @@ export default async function page({ params }) {
 
   let posts = await getPosts({ perPage: 5 });
   posts = await Promise.all(
-    posts.map(async (e) => ({
-      ...e,
-      url: await getBase64Image((e.cover_image as PexelsPhoto).src.small),
+    posts.map(async (p) => ({
+      ...p,
+      /* @ts-ignore */
+      url: p.cover_image?.dataURLs?.large,
     }))
   );
 
@@ -66,11 +67,8 @@ export default async function page({ params }) {
 
   const mdxSource = await parseMDX(post);
 
-  const coverImage = post?.cover_image
-    ? (post.cover_image as PexelsPhoto).src.large
-    : "";
-
-  const url = await getBase64Image(coverImage);
+  /* @ts-ignore */
+  const url = post.cover_image?.dataURLs?.small;
 
   const excerpt = (await markdownExcerpt(post?.content || "")) + "...";
 
