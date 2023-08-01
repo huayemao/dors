@@ -17,7 +17,8 @@ export default async function PostsByCategory({
   };
 }) {
   const posts = await getProcessedPosts(
-    await getPosts({ categoryId: Number(params.id), perPage: 600 })
+    await getPosts({ categoryId: Number(params.id), perPage: 600 }),
+    { imageSize: "small" }
   );
   return <Posts mini data={posts} />;
 }
