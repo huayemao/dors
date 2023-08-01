@@ -135,7 +135,8 @@ async function getAllPosts(
 }
 
 export async function getProcessedPosts(
-  posts: Awaited<ReturnType<typeof getPosts>>
+  posts: Awaited<ReturnType<typeof getPosts>>,
+  options?: { imageSize: "large" | "small" }
 ) {
   const needImageIds = posts
     /* @ts-ignore */
@@ -182,7 +183,7 @@ export async function getProcessedPosts(
 
   posts.forEach((p) => {
     /* @ts-ignore */
-    p.url = p.cover_image?.dataURLs?.large;
+    p.url = p.cover_image?.dataURLs?.[options?.imageSize || "large"];
   });
 
   return posts;

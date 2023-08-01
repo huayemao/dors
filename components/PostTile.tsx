@@ -1,6 +1,6 @@
 import { SITE_META } from "@/constants";
 import { getPost } from "@/lib/posts";
-import { getDateString } from "@/lib/utils";
+import { cn, getDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "./Avatar";
@@ -12,16 +12,20 @@ interface Props {
   post: Post;
   url: string;
   type: "default" | "mini";
+  rounded?: boolean;
 }
 
-function PostTile({ post, url, type = "default" }: Props) {
+function PostTile({ post, url, type = "default", rounded = false }: Props) {
   if (!post) return null;
 
   const { id, title, tags, published_at } = post;
 
   if (type === "mini") {
     return (
-      <li>
+      <li
+        style={{ listStyle: "none" }}
+        className={cn({ "bg-white p-2 rounded-lg border": rounded })}
+      >
         <Link href={"/posts/" + id} className="flex items-center">
           <div className="relative flex justify-start gap-2 w-full">
             <Image

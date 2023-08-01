@@ -10,18 +10,16 @@ type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export default async function PostsByCategory({
-  searchParams,
   params,
 }: {
-  searchParams: SearchParams;
   params: {
     id: string;
   };
 }) {
   const posts = await getProcessedPosts(
-    await getPosts({ ...searchParams, categoryId: Number(params.id) })
+    await getPosts({ categoryId: Number(params.id), perPage: 600 })
   );
-  return <Posts data={posts} />;
+  return <Posts mini data={posts} />;
 }
 
 export async function generateStaticParams() {
