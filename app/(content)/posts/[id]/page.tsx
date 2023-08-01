@@ -53,14 +53,7 @@ export default async function page({ params }) {
     return notFound();
   }
 
-  let posts = await getPosts({ perPage: 5 });
-  posts = await Promise.all(
-    posts.map(async (p) => ({
-      ...p,
-      /* @ts-ignore */
-      url: p.cover_image?.dataURLs?.large,
-    }))
-  );
+  let posts = await getRecentPosts();
 
   const tmpDir = join(process.cwd(), "tmp");
   console.log(tmpDir);
@@ -68,7 +61,7 @@ export default async function page({ params }) {
   const mdxSource = await parseMDX(post);
 
   /* @ts-ignore */
-  const url = post.cover_image?.dataURLs?.small;
+  const url = post.cover_image?.dataURLs?.large;
 
   const excerpt = (await markdownExcerpt(post?.content || "")) + "...";
 
@@ -137,17 +130,7 @@ export default async function page({ params }) {
                     最近文章
                   </h3>
 
-                  <ul className="space-y-6">
-                    {posts.map((e) => (
-                      <PostTile
-                        key={e.id}
-                        type="mini"
-                        post={e}
-                        /* @ts-ignore */
-                        url={e.url}
-                      />
-                    ))}
-                  </ul>
+                  <RecentPosts posts={posts} />
                 </div>
               </div>
             </div>
@@ -155,5 +138,37 @@ export default async function page({ params }) {
         </section>
       </div>
     </main>
+  );
+}
+
+async function getRecentPosts() {
+  let posts = await getPosts({ perPage: 5 });
+  posts = await Promise.all(
+    posts.map(async (p) => ({
+      ...p,
+      /* @ts-ignore */
+      url: p.cover_image?.dataURLs?.small,
+    }))
+  );
+  return posts;
+}
+
+function RecentPosts({
+  posts,
+}: {
+  posts: Awaited<ReturnType<typeof getPosts>>;
+}) {
+  return (
+    <ul className="space-y-6">
+      {posts.map((e) => (
+        <PostTile
+          key={e.id}
+          type="mini"
+          post={e}
+          /* @ts-ignore */
+          url={e.url}
+        />
+      ))}
+    </ul>
   );
 }
