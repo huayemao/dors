@@ -5,7 +5,7 @@ import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
 import { SITE_META } from "@/constants";
 import { parseMDX } from "@/lib/parseMDX";
-import { getPost, getPosts } from "@/lib/posts";
+import { getPost, getPosts, getProcessedPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getBase64Image, markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
@@ -14,7 +14,7 @@ import { notFound } from "next/navigation";
 import { join } from "path";
 
 export async function generateStaticParams() {
-  const posts = await getPosts({ perPage: 1000 });
+  const posts = await getProcessedPosts(await getPosts({ perPage: 1000 }));
   const params = posts.map((post) => ({
     id: String(post.id),
   }));
