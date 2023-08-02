@@ -174,7 +174,7 @@ const FeaturedPosts: React.FC<Props> = ({ posts }) => {
         />
       </div>
       <div className="w-full ltablet:w-1/3 lg:w-1/3">
-        <SubHero title="花野猫何许人也" href="/about" excerpt="" />
+        <SubHero title="简历看这里" href="/CV_2023_08.html" excerpt="佛系求职中。。。" />
       </div>
     </div>
   );
