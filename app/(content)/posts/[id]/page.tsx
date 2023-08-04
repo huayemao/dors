@@ -5,7 +5,7 @@ import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
 import { SITE_META } from "@/constants";
 import { parseMDX } from "@/lib/parseMDX";
-import { getPost, getPostIds, getPosts } from "@/lib/posts";
+import { getPost, getPostIds, getPosts, getProcessedPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
@@ -28,7 +28,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   // read route params
   const id = params.id;
-  const post = await getPost(parseInt(id as string));
+  const post = await getProcessedPosts([
+    /* @ts-ignore */
+    await getPost(parseInt(id as string)),
+  ])[0];
 
   if (!post) {
     return notFound();
