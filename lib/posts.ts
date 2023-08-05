@@ -29,6 +29,36 @@ export const getPost = cache(async (id: number) => {
     return null;
   }
 
+  /* @ts-ignore */
+  if (!res.cover_image?.dataURLs) {
+    const imageData = await getPexelImages(1);
+    // imageData.photos 有可能为空数组
+    const imageJson = imageData.photos[0] as PexelsPhoto;
+
+    const dataURLs = {
+      large: await getBase64Image((imageJson as PexelsPhoto).src.large),
+      small: await getBase64Image((imageJson as PexelsPhoto).src.small),
+    };
+
+    await prisma.posts.update({
+      where: {
+        id,
+      },
+      data: {
+        cover_image: {
+          ...imageJson,
+          dataURLs,
+        },
+      },
+    });
+
+    /* @ts-ignore */
+    res.cover_image = {
+      ...imageJson,
+      dataURLs,
+    };
+  }
+
   const html = await markdownToHtml(res.content);
   const wordCount = getWordCount(html);
   return {
@@ -157,37 +187,35 @@ export async function getProcessedPosts(
   let imageData: { photos: PexelsPhoto[] };
 
   if (needImageIds.length) {
-    imageData = await getPexelImages(posts.length);
+    imageData = await getPexelImages(needImageIds.length);
 
     await Promise.all(
-      Object.keys(posts).map(async (i) => {
-        const a = posts[i];
+      needImageIds.map(async (id, i) => {
+        const post = posts.find((e) => e.id === id) as (typeof posts)[0];
 
         const imageJson = imageData.photos[i] as PexelsPhoto;
 
-        if (needImageIds.includes(a.id)) {
-          const dataURLs = {
-            large: await getBase64Image((imageJson as PexelsPhoto).src.large),
-            small: await getBase64Image((imageJson as PexelsPhoto).src.small),
-          };
+        const dataURLs = {
+          large: await getBase64Image((imageJson as PexelsPhoto).src.large),
+          small: await getBase64Image((imageJson as PexelsPhoto).src.small),
+        };
 
-          await prisma.posts.update({
-            where: {
-              id: a.id,
+        await prisma.posts.update({
+          where: {
+            id,
+          },
+          data: {
+            cover_image: {
+              ...imageJson,
+              dataURLs,
             },
-            data: {
-              cover_image: {
-                ...imageJson,
-                dataURLs,
-              },
-            },
-          });
+          },
+        });
 
-          posts[i].cover_image = {
-            ...imageJson,
-            dataURLs,
-          };
-        }
+        post.cover_image = {
+          ...imageJson,
+          dataURLs,
+        };
       })
     );
   }

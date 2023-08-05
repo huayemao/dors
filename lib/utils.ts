@@ -24,7 +24,7 @@ export async function getPexelImages(
 ): Promise<{ photos: PexelsPhoto[] }> {
   return await fetch(
     `https://api.pexels.com/v1/search?query=pastel&per_page=${length}&page=${
-      Math.floor(Math.random() * 100) + 1
+      Math.floor(Math.random() * 888) + 1
     }&orientation=landscape`,
     {
       headers: {
