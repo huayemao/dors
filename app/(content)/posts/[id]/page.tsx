@@ -15,9 +15,11 @@ import { join } from "path";
 
 export async function generateStaticParams() {
   const posts = await getPostIds();
-  const params = posts.map((post) => ({
-    id: String(post.id),
-  }));
+  const params = posts
+    .map((post) => ({
+      id: String(post.id),
+    }))
+    .slice(0, 50);
   return params;
 }
 
