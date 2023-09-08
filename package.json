@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.12.0",
+    "@plaiceholder/next": "^3.0.0",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "localforage": "^1.10.0",
