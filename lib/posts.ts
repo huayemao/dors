@@ -1,15 +1,24 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma, { Prisma } from "@/prisma/client";
+import { getPlaiceholder } from "plaiceholder";
 import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
-  getBase64Image,
   getPexelImages,
   getWordCount,
   markdownExcerpt,
   markdownToHtml,
 } from "./utils";
+
+async function getBase64Image(url) {
+  const buffer = await fetch(url).then(async (res) =>
+    Buffer.from(await res.arrayBuffer())
+  );
+
+  const { base64 } = await getPlaiceholder(buffer);
+  return base64;
+}
 
 export const getPost = cache(async (id: number) => {
   const res = await prisma.posts.findUnique({

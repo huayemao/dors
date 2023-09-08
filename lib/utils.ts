@@ -1,5 +1,4 @@
 import { ClassValue, clsx } from "clsx";
-import { getPlaiceholder } from "plaiceholder";
 import { remark } from "remark";
 import html from "remark-html";
 import excerpt from "strip-markdown";
@@ -8,15 +7,6 @@ import { PexelsPhoto } from "./types/PexelsPhoto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export async function getBase64Image(url) {
-  const buffer = await fetch(url).then(async (res) =>
-    Buffer.from(await res.arrayBuffer())
-  );
-
-  const { base64 } = await getPlaiceholder(buffer);
-  return base64;
 }
 
 export async function getPexelImages(
