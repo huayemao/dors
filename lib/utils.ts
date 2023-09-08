@@ -22,9 +22,10 @@ export async function getBase64Image(url) {
 export async function getPexelImages(
   length
 ): Promise<{ photos: PexelsPhoto[] }> {
+  const query = Math.random() < 0.5 ? "pastel" : "pure";
   return await fetch(
-    `https://api.pexels.com/v1/search?query=pastel&per_page=${length}&page=${
-      Math.floor(Math.random() * 888) + 1
+    `https://api.pexels.com/v1/search?query=${query}&per_page=${length}&page=${
+      Math.floor(Math.random() * (888 / length)) + 1
     }&orientation=landscape`,
     {
       headers: {

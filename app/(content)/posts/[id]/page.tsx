@@ -5,7 +5,7 @@ import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
 import { SITE_META } from "@/constants";
 import { parseMDX } from "@/lib/parseMDX";
-import { getPost, getPostIds, getPosts } from "@/lib/posts";
+import { getPost, getPostIds, getPosts, getProcessedPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
@@ -144,21 +144,16 @@ export default async function page({ params }) {
 }
 
 async function getRecentPosts() {
-  let posts = await getPosts({ perPage: 5 });
-  posts = await Promise.all(
-    posts.map(async (p) => ({
-      ...p,
-      /* @ts-ignore */
-      url: p.cover_image?.dataURLs?.small,
-    }))
-  );
+  let posts = await getProcessedPosts(await getPosts({ perPage: 5 }), {
+    imageSize: "small",
+  });
   return posts;
 }
 
 function RecentPosts({
   posts,
 }: {
-  posts: Awaited<ReturnType<typeof getPosts>>;
+  posts: Awaited<ReturnType<typeof getProcessedPosts>>;
 }) {
   return (
     <ul className="space-y-6">
@@ -167,8 +162,8 @@ function RecentPosts({
           key={e.id}
           type="mini"
           post={e}
-          /* @ts-ignore */
           url={e.url}
+          blurDataURL={e.blurDataURL}
         />
       ))}
     </ul>

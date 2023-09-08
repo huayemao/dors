@@ -175,22 +175,29 @@ async function getAllPosts(
   });
 }
 
+type ProcessedPost = Awaited<ReturnType<typeof getPosts>>[0] & {
+  url: string;
+  blurDataURL: string;
+};
+
 export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>,
   options?: { imageSize: "large" | "small" }
-): Promise<
-  Awaited<ReturnType<typeof getPosts>> & { url: string; blurDataURL: string }
-> {
+): Promise<ProcessedPost[]> {
   const needImageIds = posts
     /* @ts-ignore */
     .filter(
       (e) =>
-        !e.cover_image?.dataURLs || e.cover_image.dataURLs?.large.length > 20000
+        /* @ts-ignore */
+        !e.cover_image?.dataURLs ||
+        /* @ts-ignore */
+        e.cover_image?.dataURLs.large?.length > 10000
     )
     .map((e) => e.id);
 
   let imageData: { photos: PexelsPhoto[] };
 
+  console.log(1999, needImageIds);
   if (needImageIds.length) {
     imageData = await getPexelImages(needImageIds.length);
 
@@ -199,6 +206,9 @@ export async function getProcessedPosts(
         const post = posts.find((e) => e.id === id) as (typeof posts)[0];
 
         const imageJson = imageData.photos[i] as PexelsPhoto;
+        if (!imageJson) {
+          console.log(imageData.photos.length, id, 88889999);
+        }
 
         const dataURLs = {
           large: await getBase64Image((imageJson as PexelsPhoto).src.large),
@@ -225,14 +235,21 @@ export async function getProcessedPosts(
     );
   }
 
-  posts.forEach((p) => {
+  const postsWithImageURLs = posts.map((p) => {
     /* @ts-ignore */
-    p.url = p.cover_image?.src?.[options?.imageSize || "large"];
-    /* @ts-ignore */
-    p.blurDataURL = p.cover_image?.dataURLs?.[options?.imageSize || "large"];
+    if (!p.cover_image) {
+      console.log(p.id, 88889999);
+    }
+    return {
+      ...p,
+      /* @ts-ignore */
+      url: p.cover_image?.src?.[options?.imageSize || "large"],
+      /* @ts-ignore */
+      blurDataURL: p.cover_image?.dataURLs?.[options?.imageSize || "large"],
+    };
   });
 
-  return posts;
+  return postsWithImageURLs;
 }
 
 export const getPageCount = cache(
