@@ -178,10 +178,15 @@ async function getAllPosts(
 export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>,
   options?: { imageSize: "large" | "small" }
-) {
+): Promise<
+  Awaited<ReturnType<typeof getPosts>> & { url: string; blurDataURL: string }
+> {
   const needImageIds = posts
     /* @ts-ignore */
-    .filter((e) => !e.cover_image?.dataURLs)
+    .filter(
+      (e) =>
+        !e.cover_image?.dataURLs || e.cover_image.dataURLs?.large.length > 20000
+    )
     .map((e) => e.id);
 
   let imageData: { photos: PexelsPhoto[] };
@@ -222,7 +227,9 @@ export async function getProcessedPosts(
 
   posts.forEach((p) => {
     /* @ts-ignore */
-    p.url = p.cover_image?.dataURLs?.[options?.imageSize || "large"];
+    p.url = p.cover_image?.src?.[options?.imageSize || "large"];
+    /* @ts-ignore */
+    p.blurDataURL = p.cover_image?.dataURLs?.[options?.imageSize || "large"];
   });
 
   return posts;
@@ -235,4 +242,4 @@ export const getPageCount = cache(
   }
 );
 
-export type Posts = Awaited<ReturnType<typeof getPosts>>;
+export type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;

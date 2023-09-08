@@ -1,4 +1,5 @@
 import { ClassValue, clsx } from "clsx";
+import { getPlaiceholder } from "plaiceholder";
 import { remark } from "remark";
 import html from "remark-html";
 import excerpt from "strip-markdown";
@@ -10,13 +11,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function getBase64Image(url) {
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const base64 = buffer.toString("base64");
-  const contentType = response.headers.get("content-type");
-  const dataUrl = `data:${contentType};base64,${base64}`;
-  return dataUrl;
+  const buffer = await fetch(url).then(async (res) =>
+    Buffer.from(await res.arrayBuffer())
+  );
+
+  const { base64 } = await getPlaiceholder(buffer);
+  return base64;
 }
 
 export async function getPexelImages(

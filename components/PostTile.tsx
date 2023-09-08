@@ -11,11 +11,18 @@ type Post = Awaited<ReturnType<typeof getPost>>;
 interface Props {
   post: Post;
   url: string;
+  blurDataURL: string;
   type: "default" | "mini";
   rounded?: boolean;
 }
 
-function PostTile({ post, url, type = "default", rounded = false }: Props) {
+function PostTile({
+  post,
+  url,
+  blurDataURL,
+  type = "default",
+  rounded = false,
+}: Props) {
   if (!post) return null;
 
   const { id, title, tags, published_at } = post;
@@ -78,9 +85,11 @@ function PostTile({ post, url, type = "default", rounded = false }: Props) {
                   )}
               </div>
               <Image
-                className="w-full h-52 object-cover rounded-xl"
+                className="w-full rounded-xl"
                 /* @ts-ignore */
                 src={url}
+                placeholder="blur"
+                blurDataURL={blurDataURL}
                 alt={post.title || SITE_META.name}
                 width="348"
                 height="208"

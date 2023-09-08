@@ -21,6 +21,7 @@ export function Posts({
               rounded={mini}
               post={e}
               /* @ts-ignore */
+              blurDataURL={e.blurDataURL}
               url={e.url}
               key={e.id}
               type={mini ? "mini" : "default"}
