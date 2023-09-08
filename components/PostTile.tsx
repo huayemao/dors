@@ -85,8 +85,7 @@ function PostTile({
                   )}
               </div>
               <Image
-                className="w-full rounded-xl"
-                /* @ts-ignore */
+                className="rounded-xl w-[348px] h-[208px] object-cover"
                 src={url}
                 placeholder="blur"
                 blurDataURL={blurDataURL}
