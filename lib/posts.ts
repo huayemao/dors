@@ -206,7 +206,6 @@ export async function getProcessedPosts(
 
   let imageData: { photos: PexelsPhoto[] };
 
-  console.log(1999, needImageIds);
   if (needImageIds.length) {
     imageData = await getPexelImages(needImageIds.length);
 
@@ -215,9 +214,6 @@ export async function getProcessedPosts(
         const post = posts.find((e) => e.id === id) as (typeof posts)[0];
 
         const imageJson = imageData.photos[i] as PexelsPhoto;
-        if (!imageJson) {
-          console.log(imageData.photos.length, id, 88889999);
-        }
 
         const dataURLs = {
           large: await getBase64Image((imageJson as PexelsPhoto).src.large),
@@ -245,10 +241,6 @@ export async function getProcessedPosts(
   }
 
   const postsWithImageURLs = posts.map((p) => {
-    /* @ts-ignore */
-    if (!p.cover_image) {
-      console.log(p.id, 88889999);
-    }
     return {
       ...p,
       /* @ts-ignore */
