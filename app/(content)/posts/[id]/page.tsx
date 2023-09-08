@@ -1,5 +1,4 @@
 import { BackButton } from "@/components/BackButton";
-import MDXRemoteWrapper from "@/components/MDXRemoteWrapper";
 import PostHead from "@/components/PostHead";
 import PostTile from "@/components/PostTile";
 import { ShareButton } from "@/components/ShareButton";
@@ -60,7 +59,7 @@ export default async function page({ params }) {
   const tmpDir = join(process.cwd(), "tmp");
   console.log(tmpDir);
 
-  const mdxSource = await parseMDX(post);
+  const { content } = await parseMDX(post);
 
   /* @ts-ignore */
   const url = post.cover_image?.src?.large;
@@ -87,7 +86,7 @@ export default async function page({ params }) {
                     <BackButton />
                   </div>
                   <article className="prose dark:prose-dark lg:prose-xl py-6">
-                    <MDXRemoteWrapper {...mdxSource} />
+                    {content}
                   </article>
                 </div>
               </div>

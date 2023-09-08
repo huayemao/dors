@@ -1,6 +1,6 @@
 import { Question } from "@/lib/types/Question";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+
 export default function QA({
   data,
   preview = false,
@@ -8,8 +8,6 @@ export default function QA({
   data: Question;
   preview?: boolean;
 }) {
-  const [sources, setSources] = useState<any>({});
-
   const options = data.options.map((e) => e.value);
   const optionsHorizontal = options.join("").length < 24;
   return (
