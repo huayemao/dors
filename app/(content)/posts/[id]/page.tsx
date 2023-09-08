@@ -63,7 +63,9 @@ export default async function page({ params }) {
   const mdxSource = await parseMDX(post);
 
   /* @ts-ignore */
-  const url = post.cover_image?.dataURLs?.large;
+  const url = post.cover_image?.src?.large;
+  /* @ts-ignore */
+  const blurDataURL = post.cover_image?.dataURLs?.large;
 
   const excerpt = (await markdownExcerpt(post?.content || "")) + "...";
 
@@ -74,6 +76,7 @@ export default async function page({ params }) {
           post={{ ...post, excerpt }}
           avatar={{ alt: "花野猫", src: huayemao }}
           url={url}
+          blurDataURL={blurDataURL}
         />
         <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 overflow-hidden">
           <div className="w-full max-w-7xl mx-auto">

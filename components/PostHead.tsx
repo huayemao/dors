@@ -15,10 +15,11 @@ type Post = Partial<Awaited<ReturnType<typeof getPost>>> & {
 interface Props {
   post: Post;
   url: ImageProps["src"];
+  blurDataURL?: string;
   avatar: Avatar;
 }
 
-const PostHead = ({ post, url, avatar }: Props) => {
+const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-7xl mx-auto">
@@ -33,7 +34,8 @@ const PostHead = ({ post, url, avatar }: Props) => {
                 width={512}
                 height={373}
                 quality={80}
-                placeholder={typeof url === "string" ? undefined : "blur"}
+                blurDataURL={typeof url === "string" ? blurDataURL : undefined}
+                placeholder={"blur"}
               />
             </div>
 
