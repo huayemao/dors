@@ -19,7 +19,7 @@ export async function generateStaticParams() {
     .map((post) => ({
       id: String(post.id),
     }))
-    .slice(0, 50);
+    .slice(0, 20);
   return params;
 }
 
