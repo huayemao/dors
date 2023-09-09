@@ -1,10 +1,12 @@
 import prisma from "@/prisma/client";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
-  const content = formData.get("content");
   const id = formData.get("id");
+  const content = formData.get("content");
+  const title = formData.get("title");
 
   if (!Number.isNaN(parseInt(id as string))) {
     NextResponse.error();
@@ -16,8 +18,13 @@ export async function POST(request: Request) {
     },
     data: {
       content: content as string,
+      title: title as string,
     },
   });
 
-  return NextResponse.json(request);
+  const path = new URL(("/posts/" + id) as string, request.url);
+
+  revalidatePath(("/posts/" + id) as string);
+
+  return NextResponse.redirect(path);
 }
