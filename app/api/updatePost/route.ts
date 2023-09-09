@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const content = formData.get("content");
   const title = formData.get("title");
   const changePhoto = formData.get("changePhoto");
+  const categoryId = formData.get("category");
 
   if (!Number.isNaN(parseInt(id as string))) {
     NextResponse.error();
@@ -21,6 +22,12 @@ export async function POST(request: Request) {
       content: content as string,
       title: title as string,
       cover_image: changePhoto === "on" ? {} : undefined,
+      posts_category_links: {
+        deleteMany: { post_id: parseInt(id as string) },
+        create: {
+          category_id: parseInt(categoryId as string),
+        },
+      },
     },
   });
 

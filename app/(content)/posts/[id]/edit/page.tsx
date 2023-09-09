@@ -1,4 +1,6 @@
 import Input from "@/components/Base/Input";
+import Select from "@/components/Base/Select";
+import { getAllCategories } from "@/lib/categories";
 import { getPost } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
@@ -11,9 +13,13 @@ export default async function page({ params }) {
 
   const post = await getPost(parseInt(params.id as string));
 
+  const categories = await getAllCategories();
+
   if (!post) {
     return notFound();
   }
+
+  const categoryId = post.posts_category_links[0]?.category_id;
 
   return (
     <main className="w-full px-8 py-4">
@@ -29,6 +35,16 @@ export default async function page({ params }) {
             id={"title"}
             defaultValue={post.title || ""}
             name="title"
+          />
+          <Select
+            label="分类"
+            id="category"
+            name="category"
+            defaultValue={categoryId ? String(categoryId) : undefined}
+            data={categories.map((e) => ({
+              value: String(e.id),
+              label: e.name as string,
+            }))}
           />
           <div className="flex gap-2">
             <Image
