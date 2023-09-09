@@ -8,6 +8,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
     serverComponentsExternalPackages: ["prisma", "@prisma/client", "shiki", "vscode-oniguruma"],
+    serverActions: true,
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
