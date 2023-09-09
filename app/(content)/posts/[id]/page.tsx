@@ -12,13 +12,15 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { join } from "path";
 
+export const revalidate = 300;
+
 export async function generateStaticParams() {
   const posts = await getPostIds();
   const params = posts
     .map((post) => ({
       id: String(post.id),
     }))
-    .slice(0, 20);
+    .slice(0, 15);
   return params;
 }
 
