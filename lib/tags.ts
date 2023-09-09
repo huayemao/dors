@@ -1,4 +1,4 @@
-import prisma from "@/prisma/client";
+import prisma from "@/lib/prisma";
 import { cache } from "react";
 
 // todo: 如果要能检索全部文章的话，摘要得单独拿出来，方便用来渲染文章

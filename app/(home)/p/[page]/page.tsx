@@ -2,7 +2,7 @@ import { Posts } from "@/components/Posts";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
-import prisma from "@/prisma/client";
+import prisma from "@/lib/prisma";
 import { cache } from "react";
 import Pagination from "../../Pagination";
 

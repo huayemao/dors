@@ -1,14 +1,14 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
-import prisma, { Prisma } from "@/prisma/client";
+import prisma, { Prisma } from "@/lib/prisma";
 import { getPlaiceholder } from "plaiceholder";
 import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
-  getPexelImages,
-  getWordCount,
-  markdownExcerpt,
-  markdownToHtml,
+    getPexelImages,
+    getWordCount,
+    markdownExcerpt,
+    markdownToHtml,
 } from "./utils";
 
 async function getBase64Image(url) {
