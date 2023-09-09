@@ -5,17 +5,25 @@ const [AUTH_USER, AUTH_PASS] = (process.env.HTTP_BASIC_AUTH || ":").split(":");
 
 // Step 1. HTTP Basic Auth Middleware for Challenge
 export function middleware(req: NextRequest) {
-  if (!isAuthenticated(req)) {
-    return new NextResponse("Authentication required", {
-      status: 401,
-      headers: { "WWW-Authenticate": "Basic" },
-    });
+  if (req.nextUrl.pathname.startsWith("/api")) {
+    if (!isAuthenticated(req)) {
+      return new NextResponse("Authentication required", {
+        status: 401,
+        headers: { "WWW-Authenticate": "Basic" },
+      });
+    }
+  } else if (
+    req.method === "POST" &&
+    !req.nextUrl.pathname.startsWith("/api")
+  ) {
+    // Redirect to the correct static page using semantic 303
+    // ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/303
+    return NextResponse.redirect(req.nextUrl.clone(), 303);
   }
 
   return NextResponse.next();
 }
 
-// Step 2. Check HTTP Basic Auth header if present
 function isAuthenticated(req: NextRequest) {
   const authheader =
     req.headers.get("authorization") || req.headers.get("Authorization");
@@ -36,8 +44,3 @@ function isAuthenticated(req: NextRequest) {
     return false;
   }
 }
-
-// Step 3. Configure "Matching Paths" below to protect routes with HTTP Basic Auth
-export const config = {
-  matcher: "/api/updatePost",
-};
