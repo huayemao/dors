@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
   const path = ("/posts/" + id) as string;
 
-  revalidatePath(path);
+  revalidatePath('/');
 
   return NextResponse.redirect(new URL(path, request.url));
 }
