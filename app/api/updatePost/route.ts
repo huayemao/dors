@@ -7,6 +7,7 @@ export async function POST(request: Request) {
   const id = formData.get("id");
   const content = formData.get("content");
   const title = formData.get("title");
+  const changePhoto = formData.get("changePhoto");
 
   if (!Number.isNaN(parseInt(id as string))) {
     NextResponse.error();
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
     data: {
       content: content as string,
       title: title as string,
+      cover_image: changePhoto === "on",
     },
   });
 

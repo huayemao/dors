@@ -1,5 +1,7 @@
 import Input from "@/components/Base/Input";
 import { getPost } from "@/lib/posts";
+import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 export default async function page({ params }) {
@@ -21,13 +23,29 @@ export default async function page({ params }) {
         className="grid grid-cols-1 md:grid-cols-12 gap-4"
       >
         <input hidden name="id" defaultValue={post.id} />
-        <div className="col-span-4">
+        <div className="col-span-4 space-y-4">
           <Input
             label="标题"
             id={"title"}
             defaultValue={post.title || ""}
             name="title"
           />
+          <div className="flex gap-2">
+            <Image
+              width={300}
+              height={240}
+              alt={(post.cover_image as PexelsPhoto).alt}
+              src={(post.cover_image as PexelsPhoto).src.medium}
+            />
+            <label>
+              更换图片
+              <input
+                type="checkbox"
+                name="changePhoto"
+                defaultChecked={false}
+              />
+            </label>
+          </div>
         </div>
         <div className="relative col-span-8">
           <label htmlFor="content" className="nui-label pb-1 text-[0.825rem]">
