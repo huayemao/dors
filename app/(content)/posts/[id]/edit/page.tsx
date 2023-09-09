@@ -1,8 +1,6 @@
 import Input from "@/components/Base/Input";
 import { getPost } from "@/lib/posts";
-import prisma from "@/prisma/client";
-import { revalidatePath } from "next/cache";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function page({ params }) {
   if (!params.id) {
@@ -15,35 +13,11 @@ export default async function page({ params }) {
     return notFound();
   }
 
-  async function update(formData: FormData) {
-    "use server";
-
-    const id = formData.get("id");
-    const content = formData.get("content");
-    const title = formData.get("title");
-
-    await prisma.posts.update({
-      where: {
-        id: parseInt(id as string),
-      },
-      data: {
-        content: content as string,
-        title: title as string,
-      },
-    });
-
-    revalidatePath(("/posts/" + id) as string);
-    redirect(("/posts/" + id) as string);
-
-    // mutate data
-    // revalidate cache
-  }
-
   return (
     <main className="w-full px-8 py-4">
       <form
-        action={update}
-        method="POST"
+        action="/api/updatePost"
+        method="post"
         className="grid grid-cols-1 md:grid-cols-12 gap-4"
       >
         <input hidden name="id" defaultValue={post.id} />
