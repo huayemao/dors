@@ -24,7 +24,8 @@ export async function POST(request: Request) {
 
   const path = new URL(("/posts/" + id) as string, request.url);
 
-  revalidatePath('/posts/[id]');
+  revalidatePath("/posts/[id]");
+  revalidatePath("/(content)/posts/[id]");
 
   return NextResponse.redirect(path);
 }

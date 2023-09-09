@@ -9,6 +9,7 @@ import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { join } from "path";
 
@@ -84,8 +85,14 @@ export default async function page({ params }) {
             <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
               <div className="w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto">
                 <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
-                  <div className="space-y-4 mb-5">
+                  <div className="flex justify-between w-full mb-5">
                     <BackButton />
+                    <Link
+                      href={`/posts/${params.id}/edit`}
+                      className="mr-4 md:mr-8 font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
+                    >
+                      编辑
+                    </Link>
                   </div>
                   <article className="prose dark:prose-dark lg:prose-xl py-6">
                     {content}
@@ -108,26 +115,6 @@ export default async function page({ params }) {
                           title: post.title,
                         }}
                       />
-                      <button
-                        className="flex-1 inline-flex justify-center items-center py-4 px-5 rounded bg-muted-200 dark:bg-muted-700 hover:bg-muted-100 dark:hover:bg-muted-600 text-muted-600 dark:text-muted-400 transition-colors duration-300 cursor-pointer tw-accessibility
-            "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                          role="img"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 512 512"
-                          data-icon="fa6-brands:twitter"
-                          className="iconify w-4 h-4 iconify--fa6-brands"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M459.37 151.716c.325 4.548.325 9.097.325 13.645c0 138.72-105.583 298.558-298.558 298.558c-59.452 0-114.68-17.219-161.137-47.106c8.447.974 16.568 1.299 25.34 1.299c49.055 0 94.213-16.568 130.274-44.832c-46.132-.975-84.792-31.188-98.112-72.772c6.498.974 12.995 1.624 19.818 1.624c9.421 0 18.843-1.3 27.614-3.573c-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319c-28.264-18.843-46.781-51.005-46.781-87.391c0-19.492 5.197-37.36 14.294-52.954c51.655 63.675 129.3 105.258 216.365 109.807c-1.624-7.797-2.599-15.918-2.599-24.04c0-57.828 46.782-104.934 104.934-104.934c30.213 0 57.502 12.67 76.67 33.137c23.715-4.548 46.456-13.32 66.599-25.34c-7.798 24.366-24.366 44.833-46.132 57.827c21.117-2.273 41.584-8.122 60.426-16.243c-14.292 20.791-32.161 39.308-52.628 54.253z"
-                          ></path>
-                        </svg>
-                      </button>
                     </div>
                   </div>
                   <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
