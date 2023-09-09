@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     data: {
       content: content as string,
       title: title as string,
-      cover_image: changePhoto === "on",
+      cover_image: changePhoto === "on" ? {} : undefined,
     },
   });
 
