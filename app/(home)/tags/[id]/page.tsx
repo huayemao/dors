@@ -6,7 +6,7 @@ import { getTags } from "@/lib/tags";
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-// export const revalidate = 300;
+export const revalidate = 120;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export default async function PostsByTag({
@@ -26,7 +26,7 @@ export default async function PostsByTag({
 }
 
 export async function generateStaticParams() {
-  const tags = await getTags();
+  const tags = (await getTags()).slice(0, 5);
   const params = tags.map((tag) => ({
     id: String(tag.id),
   }));
