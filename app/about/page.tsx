@@ -19,7 +19,7 @@ export default async function About() {
         <BackButton className="mb-8 ">
           <>返回博客首页</>
         </BackButton>
-        <article className="prose dark:prose-dark lg:prose-xl lg:max-w-6xl">
+        <article className="prose dark:prose-invert lg:prose-xl lg:max-w-6xl">
           <h2>足迹——我居住过的城市</h2>
           在花野猫高中毕业后不长的旅居生涯里，居住过半年以上的城市有：
           <ul>

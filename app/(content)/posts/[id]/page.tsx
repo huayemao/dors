@@ -94,7 +94,7 @@ export default async function page({ params }) {
                       编辑
                     </Link>
                   </div>
-                  <article className="prose dark:prose-invert lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium">
+                  <article className="dark:prose-invert  prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium">
                     {content}
                   </article>
                 </div>
