@@ -13,8 +13,8 @@ export async function POST(request: Request) {
   if (!Number.isNaN(parseInt(id as string))) {
     NextResponse.error();
   }
-
-  await prisma.posts.update({
+  // todo: 应该有 diff 的
+  const res = await prisma.posts.update({
     where: {
       id: parseInt(id as string),
     },
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
 
   const path = new URL(("/posts/" + id) as string, request.url);
 
+  revalidatePath("/");
   revalidatePath("/posts/[id]");
   revalidatePath("/(content)/posts/[id]");
 

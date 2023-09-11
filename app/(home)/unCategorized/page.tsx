@@ -17,3 +17,5 @@ export default async function UnCategorizedPosts({
   );
   return <Posts data={posts} />;
 }
+
+export const revalidate = 120;
