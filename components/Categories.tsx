@@ -25,12 +25,6 @@ export function Categories({ categories }) {
           active={Number(id) === cat.id && segments.includes("categories")}
         />
       ))}
-      <Category
-        href={`/unCategorized`}
-        name={"未分类"}
-        key={9991}
-        active={segments.includes("unCategorized")}
-      />
     </div>
   );
 }
