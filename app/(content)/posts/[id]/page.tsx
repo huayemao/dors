@@ -88,7 +88,7 @@ export default async function page({ params }) {
                   <div className="flex justify-between w-full mb-5">
                     <BackButton />
                     <Link
-                      href={`/posts/${params.id}/edit`}
+                      href={`/admin/posts/${params.id}/edit`}
                       className="mr-4 md:mr-8 font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
                     >
                       编辑
