@@ -27,6 +27,14 @@ function PostTile({
 
   const { id, title, tags, published_at } = post;
 
+  const isFirstCreated =
+    post.updated_at?.toString() === post.created_at?.toString();
+  const timeLabel = isFirstCreated ? "创建于" : "更新于";
+
+  const updatedOrcreatedAtText = post.created_at
+    ? timeLabel + getDateString(post.updated_at as Date)
+    : "";
+
   if (type === "mini") {
     return (
       <li
@@ -48,9 +56,7 @@ function PostTile({
                 {post.title}
               </h3>
               <p className="font-sans text-sm text-muted-400">
-                {post.updated_at
-                  ? "更新于 " + getDateString(post.updated_at)
-                  : ""}
+                {updatedOrcreatedAtText}
               </p>
             </div>
           </div>
