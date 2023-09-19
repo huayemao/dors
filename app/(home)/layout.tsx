@@ -1,3 +1,4 @@
+import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { SITE_META } from "@/constants";
 import { getAllCategories } from "@/lib/categories";
@@ -40,7 +41,7 @@ export default async function MainLayout({
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }
-
