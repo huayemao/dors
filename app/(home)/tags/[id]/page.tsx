@@ -1,7 +1,7 @@
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
-import { getTags } from "@/lib/tags";
+import { getTagIds } from "@/lib/tags";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -26,7 +26,7 @@ export default async function PostsByTag({
 }
 
 export async function generateStaticParams() {
-  const tags = (await getTags()).slice(0, 5);
+  const tags = (await getTagIds()).slice(0, 5);
   const params = tags.map((tag) => ({
     id: String(tag.id),
   }));

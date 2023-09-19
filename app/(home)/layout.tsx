@@ -2,7 +2,6 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { SITE_META } from "@/constants";
 import { getAllCategories } from "@/lib/categories";
-import { getTags } from "@/lib/tags";
 import { Categories } from "../../components/Categories";
 
 export default async function MainLayout({
@@ -12,14 +11,12 @@ export default async function MainLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const tags = await getTags();
-
   const categories = await getAllCategories();
 
   return (
     <>
       <Nav></Nav>
-      <main>
+      <main className="flex-1">
         <section className="w-full bg-muted-100 dark:bg-muted-900">
           <div className="w-full max-w-7xl mx-auto">
             <div className="w-full">
@@ -32,7 +29,7 @@ export default async function MainLayout({
                     {SITE_META.introduction}
                   </p>
                 </div>
-                <div className="w-full max-w-lg mx-auto my-4 space-y-4 text-center">
+                <div className="w-full max-w-lg mx-auto my-4 space-y-8 text-center">
                   <Categories categories={categories} />
                 </div>
                 {children}

@@ -852,6 +852,24 @@ export const Nav = () => {
               </Link>
             </li>
             <li>
+              <Link
+                href="/tags"
+                className="
+                block
+                text-base
+                font-sans
+                text-muted-600
+                hover:text-primary-500
+                dark:text-muted-200 dark:hover:text-primary-400
+                py-2
+                md:mx-2
+                tw-accessibility
+              "
+              >
+                标签
+              </Link>
+            </li>
+            <li>
               <a
                 href="/admin"
                 className="
