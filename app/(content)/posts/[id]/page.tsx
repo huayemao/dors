@@ -87,12 +87,12 @@ export default async function page({ params }) {
                 <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
                   <div className="flex justify-between w-full mb-5">
                     <BackButton />
-                    <Link
+                    <a
                       href={`/admin/posts/${params.id}/edit`}
                       className="mr-4 md:mr-8 font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
                     >
                       编辑
-                    </Link>
+                    </a>
                   </div>
                   <article className="dark:prose-invert  prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium">
                     {content}
