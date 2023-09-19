@@ -1,13 +1,13 @@
 "use client";
 import clsx from "clsx";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Avatar } from "./Avatar";
 
 const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
-})
+});
 
 export const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -1078,6 +1078,12 @@ export const Nav = () => {
           >
             关于
           </Link>
+          <a
+            href="/admin"
+            className="inline-flex items-center justify-center text-slate-500"
+          >
+            管理
+          </a>
           <button
             type="button"
             className="
