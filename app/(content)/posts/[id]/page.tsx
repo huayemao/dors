@@ -8,8 +8,8 @@ import { getPost, getPostIds, getPosts, getProcessedPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
+import c from "@/styles/post.module.css";
 import { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { join } from "path";
 
@@ -94,7 +94,13 @@ export default async function page({ params }) {
                       编辑
                     </a>
                   </div>
-                  <article className="dark:prose-invert  prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium">
+                  <article
+                    className={
+                      c.content +
+                      " " +
+                      "dark:prose-invert  prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium"
+                    }
+                  >
                     {content}
                   </article>
                 </div>
