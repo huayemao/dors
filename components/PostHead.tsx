@@ -24,7 +24,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-7xl mx-auto">
         <div className="py-14 px-4 relative">
-          <div className="mt-4 w-full mx-auto grid md:grid-cols-2 gap-2">
+          <div className="mt-12 w-full mx-auto grid md:grid-cols-2 gap-2">
             <div className="bg-cover bg-center w-full mb-5 md:mb-0 ptablet:px-5 ltablet:px-4">
               {/* todo: 图片的齿唇其实需要优化 */}
               <Image

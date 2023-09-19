@@ -21,8 +21,8 @@ export default async function MainLayout({
       <main>
         <section className="w-full bg-muted-100 dark:bg-muted-900">
           <div className="w-full max-w-7xl mx-auto">
-            <div className="w-full  px-6 pt-24 lg:pt-24  pb-16">
-              <div className="w-full h-full flex flex-col justify-between">
+            <div className="w-full">
+              <div className="w-full h-full flex flex-col justify-between pt-36 px-6">
                 <div className="w-full max-w-3xl mx-auto space-y-4 text-center">
                   <h1 className="font-heading font-extrabold text-5xl md:text-5xl text-muted-800 dark:text-white">
                     {SITE_META.name}

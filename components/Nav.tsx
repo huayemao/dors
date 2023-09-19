@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -11,8 +12,7 @@ const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
 
 export const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
-  const megamenuOpened = false;
-  const mobileOpen = false;
+  const [megamenuOpened, setMegamenuOpened] = useState(false);
 
   function scrollHeader() {
     // When the scroll is greater than 60 viewport height, add the scroll-header class to the header tag
@@ -33,7 +33,7 @@ export const Nav = () => {
   return (
     <nav
       className={clsx(
-        "sticky top-0 w-full  z-50 transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5",
+        "fixed top-0 w-full  z-50 transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5",
         {
           "bg-white dark:bg-muted-800 shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10":
             scrolled || megamenuOpened,
@@ -55,7 +55,10 @@ export const Nav = () => {
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
 
-          <button className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden">
+          <button
+            onClick={() => setMegamenuOpened((open) => !open)}
+            className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden"
+          >
             <div className="block top-1/2 left-6 w-4 -translate-x-1/2 -translate-y-1/2">
               <span className="block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out -translate-y-2"></span>
               <span className="block absolute w-5 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out"></span>
@@ -63,8 +66,15 @@ export const Nav = () => {
             </div>
           </button>
         </div>
-        <div className="hidden text-center lg:text-left lg:flex flex-grow">
-          {/* <ul
+        <div
+          className={cn(
+            {
+              hidden: !megamenuOpened,
+            },
+            "text-center lg:text-left lg:flex flex-grow"
+          )}
+        >
+          <ul
             className="
             flex flex-col
             mt-3
@@ -72,9 +82,7 @@ export const Nav = () => {
             lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4
           "
           >
-            <li
-              className="relative"
-            >
+            {/* <li className="relative">
               <button
                 type="button"
                 className="relative inline-flex items-center gap-1 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility z-50"
@@ -100,7 +108,7 @@ export const Nav = () => {
                   ></path>
                 </svg>
               </button>
-  
+
               <div className="fixed lg:absolute top-0 lg:top-14 inset-x-0 lg:left-0 w-full lg:w-[640px] h-screen lg:h-auto pt-2 lg:-translate-x-1/4 transition-all duration-300 opacity-0 translate-y-1 pointer-events-none z-0">
                 <div
                   className="
@@ -155,7 +163,7 @@ export const Nav = () => {
                       ></path>
                     </svg>
                   </button>
-  
+
                   <div
                     className="
                     grid
@@ -399,146 +407,6 @@ export const Nav = () => {
                         w-10
                         min-w-[2.5rem]
                         h-10
-                        bg-yellow-100
-                        dark:bg-yellow-500
-                        text-yellow-500
-                        dark:text-white
-                        mask mask-hexed
-                      "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                          role="img"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 256 256"
-                          data-icon="ph:note-duotone"
-                          className="iconify w-5 h-5 iconify--ph"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M216 160h-56v56l56-56z"
-                            opacity=".2"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M96 104h64a8 8 0 0 0 0-16H96a8 8 0 0 0 0 16Zm0 32h64a8 8 0 0 0 0-16H96a8 8 0 0 0 0 16Zm32 16H96a8 8 0 0 0 0 16h32a8 8 0 0 0 0-16Z"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M224 156.7V48a16 16 0 0 0-16-16H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h108.7a15.9 15.9 0 0 0 11.3-4.7l51.3-51.3a16.3 16.3 0 0 0 3.3-4.9h.1a17.4 17.4 0 0 0 1.3-6.4ZM48 48h160v104h-48a8 8 0 0 0-8 8v48H48Zm148.7 120L168 196.7V168Z"
-                          ></path>
-                        </svg>
-                      </div>
-                      <div>
-                        <h4
-                          className="
-                          font-heading font-semibold
-                          text-sm text-muted-800
-                          dark:text-white
-                        "
-                        >
-                          Resume builder
-                        </h4>
-                        <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit tum Torquatus.
-                        </p>
-                      </div>
-                    </a>
-                    <a
-                      href="/product.html"
-                      className="
-                      relative
-                      flex
-                      gap-2
-                      p-4
-                      rounded-xl
-                      hover:bg-muted-100
-                      dark:hover:bg-muted-900
-                      z-10
-                      transition-colors
-                      duration-300
-                    "
-                    >
-                      <div
-                        className="
-                        relative
-                        inline-flex
-                        items-center
-                        justify-center
-                        w-10
-                        min-w-[2.5rem]
-                        h-10
-                        bg-fuchsia-100
-                        dark:bg-fuchsia-500
-                        text-fuchsia-500
-                        dark:text-white
-                        mask mask-hexed
-                      "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                          role="img"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 256 256"
-                          data-icon="ph:envelope-duotone"
-                          className="iconify w-5 h-5 iconify--ph"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="m224 56l-96 88l-96-88Z"
-                            opacity=".2"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8Zm-83.9 74L128 133.1L52.6 64h150.8Zm-41.4 6L40 181.8V74.2Zm11.8 10.9l12.1 11a8 8 0 0 0 10.8 0l12.1-11l57.9 53.1H52.6Zm46.8-10.9L216 74.2v107.6Z"
-                          ></path>
-                        </svg>
-                      </div>
-                      <div>
-                        <h4
-                          className="
-                          font-heading font-semibold
-                          text-sm text-muted-800
-                          dark:text-white
-                        "
-                        >
-                          Email integration
-                        </h4>
-                        <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit tum Torquatus.
-                        </p>
-                      </div>
-                    </a>
-                    <a
-                      href="/product.html"
-                      className="
-                      relative
-                      flex
-                      gap-2
-                      p-4
-                      rounded-xl
-                      hover:bg-muted-100
-                      dark:hover:bg-muted-900
-                      z-10
-                      transition-colors
-                      duration-300
-                    "
-                    >
-                      <div
-                        className="
-                        relative
-                        inline-flex
-                        items-center
-                        justify-center
-                        w-10
-                        min-w-[2.5rem]
-                        h-10
                         bg-teal-100
                         dark:bg-teal-500
                         text-teal-500
@@ -738,8 +606,8 @@ export const Nav = () => {
                   </div>
                 </div>
               </div>
-            </li>
-            <li className="relative">
+            </li> */}
+            {/* <li className="relative">
               <button
                 type="button"
                 className="relative inline-flex items-center gap-1 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility z-50"
@@ -821,7 +689,7 @@ export const Nav = () => {
                       ></path>
                     </svg>
                   </button>
-  
+
                   <div className="grid gap-1 text-left">
                     <a
                       href="/about.html"
@@ -961,80 +829,13 @@ export const Nav = () => {
                         </p>
                       </div>
                     </a>
-                    <a
-                      href="/contact.html"
-                      className="
-                      relative
-                      flex
-                      gap-2
-                      p-4
-                      rounded-xl
-                      hover:bg-muted-100
-                      dark:hover:bg-muted-900
-                      z-10
-                      transition-colors
-                      duration-300
-                    "
-                    >
-                      <div
-                        className="
-                        relative
-                        inline-flex
-                        items-center
-                        justify-center
-                        w-10
-                        min-w-[2.5rem]
-                        h-10
-                        bg-primary-100
-                        dark:bg-primary-500
-                        text-primary-500
-                        dark:text-white
-                        mask mask-hexed
-                      "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                          role="img"
-                          width="1em"
-                          height="1em"
-                          viewBox="0 0 256 256"
-                          data-icon="ph:envelope-duotone"
-                          className="iconify w-5 h-5 iconify--ph"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="m224 56l-96 88l-96-88Z"
-                            opacity=".2"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8Zm-83.9 74L128 133.1L52.6 64h150.8Zm-41.4 6L40 181.8V74.2Zm11.8 10.9l12.1 11a8 8 0 0 0 10.8 0l12.1-11l57.9 53.1H52.6Zm46.8-10.9L216 74.2v107.6Z"
-                          ></path>
-                        </svg>
-                      </div>
-                      <div>
-                        <h4
-                          className="
-                          font-heading font-semibold
-                          text-sm text-muted-800
-                          dark:text-white
-                        "
-                        >
-                          Contact Us
-                        </h4>
-                        <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                          Want to reach out? It's here
-                        </p>
-                      </div>
-                    </a>
                   </div>
                 </div>
               </div>
-            </li>
+            </li> */}
             <li>
-              <a
-                href="/pricing.html"
+              <Link
+                href="/about"
                 className="
                 block
                 text-base
@@ -1047,12 +848,12 @@ export const Nav = () => {
                 tw-accessibility
               "
               >
-                Pricing
-              </a>
+                关于
+              </Link>
             </li>
             <li>
               <a
-                href="/login.html"
+                href="/admin"
                 className="
                 block
                 text-base
@@ -1065,25 +866,16 @@ export const Nav = () => {
                 tw-accessibility
               "
               >
-                Sign In
+                管理
               </a>
             </li>
-          </ul> */}
+            <li className="lg:hidden flex justify-center">
+              <ThemeButton />
+            </li>
+          </ul>
         </div>
 
         <div className="hidden lg:flex lg:w-1/5 lg:justify-end lg:gap-x-4">
-          <Link
-            href="/about"
-            className="inline-flex items-center justify-center text-slate-500"
-          >
-            关于
-          </Link>
-          <a
-            href="/admin"
-            className="inline-flex items-center justify-center text-slate-500"
-          >
-            管理
-          </a>
           <button
             type="button"
             className="
