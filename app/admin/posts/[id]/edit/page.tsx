@@ -31,12 +31,14 @@ export default async function page({ params }) {
         <input hidden name="id" defaultValue={post.id} />
         <div className="col-span-4 space-y-4">
           <Input
+            required
             label="标题"
             id={"title"}
             defaultValue={post.title || ""}
             name="title"
           />
           <Select
+            required
             label="分类"
             id="category"
             name="category"
@@ -62,6 +64,12 @@ export default async function page({ params }) {
               />
             </label>
           </div>
+          <Input
+            type="datetime-local"
+            label="自定义修改时间"
+            id={"updated_at"}
+            name="updated_at"
+          />
         </div>
         <div className="relative col-span-8">
           <label htmlFor="content" className="nui-label pb-1 text-[0.825rem]">
@@ -69,6 +77,7 @@ export default async function page({ params }) {
           </label>
           <div className="group/nui-textarea relative flex flex-col">
             <textarea
+              required
               id="content"
               name="content"
               className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
