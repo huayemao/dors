@@ -15,11 +15,11 @@ export default async function PostsByTag({
 }: {
   searchParams: SearchParams;
   params: {
-    tagId: string;
+    id: string;
   };
 }) {
   const posts = await getProcessedPosts(
-    await getPosts({ ...searchParams, tagId: Number(params.tagId) })
+    await getPosts({ ...searchParams, tagId: Number(params.id) })
   );
 
   return <Posts data={posts} />;
