@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -34,10 +33,6 @@ export async function POST(request: Request) {
   });
 
   const path = new URL(("/posts/" + id) as string, request.url);
-
-  revalidatePath("/");
-  revalidatePath("/posts/[id]");
-  revalidatePath("/(content)/posts/[id]");
 
   return NextResponse.redirect(path);
 }
