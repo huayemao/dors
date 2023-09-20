@@ -3,7 +3,6 @@ import React, { InputHTMLAttributes } from "react";
 
 interface Props extends InputHTMLAttributes<HTMLSelectElement> {
   label: string;
-  defaultValue?: string;
   id: string;
   labelClassName?: string;
   inputContainerClassName?: string;

@@ -1,10 +1,18 @@
 import Input from "@/components/Base/Input";
 import Select from "@/components/Base/Select";
+import { getAllCategories } from "@/lib/categories";
+import { getPost } from "@/lib/posts";
+import { getTags } from "@/lib/tags";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
-import { PostFormProps } from "../app/admin/posts/[id]/edit/page";
 
-export function PostForm({ post, categories }: PostFormProps) {
+export type PostFormProps = {
+  post: Awaited<ReturnType<typeof getPost>>;
+  categories: Awaited<ReturnType<typeof getAllCategories>>;
+  tags: Awaited<ReturnType<typeof getTags>>;
+};
+
+export function PostForm({ post, categories, tags }: PostFormProps) {
   if (!post) {
     return (
       <form
@@ -23,7 +31,8 @@ export function PostForm({ post, categories }: PostFormProps) {
             data={categories.map((e) => ({
               value: String(e.id),
               label: e.name as string,
-            }))} />
+            }))}
+          />
         </div>
         <div className="relative col-span-8">
           <label htmlFor="content" className="nui-label pb-1 text-[0.825rem]">
@@ -36,7 +45,8 @@ export function PostForm({ post, categories }: PostFormProps) {
               name="content"
               className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
               placeholder="输入文章内容"
-              rows={26} />
+              rows={26}
+            />
           </div>
         </div>
         <button
@@ -64,7 +74,8 @@ export function PostForm({ post, categories }: PostFormProps) {
           label="标题"
           id={"title"}
           defaultValue={post.title || ""}
-          name="title" />
+          name="title"
+        />
         <Select
           required
           label="分类"
@@ -74,13 +85,29 @@ export function PostForm({ post, categories }: PostFormProps) {
           data={categories.map((e) => ({
             value: String(e.id),
             label: e.name as string,
-          }))} />
+          }))}
+        />
+        <Select
+          multiple
+          height={90}
+          required
+          label="标签"
+          id="tags"
+          name="tags"
+          defaultValue={post.tags.map((e) => String(e?.name))}
+          data={tags.map((e) => ({
+            value: String(e.name),
+            label: e.name as string,
+          }))}
+          className="h-[180px]"
+        />
         <div className="flex gap-2">
           <Image
             width={300}
             height={240}
             alt={(post.cover_image as PexelsPhoto).alt}
-            src={(post.cover_image as PexelsPhoto).src.medium} />
+            src={(post.cover_image as PexelsPhoto).src.medium}
+          />
           <label>
             更换图片
             <input type="checkbox" name="changePhoto" defaultChecked={false} />
@@ -90,7 +117,8 @@ export function PostForm({ post, categories }: PostFormProps) {
           type="datetime-local"
           label="自定义修改时间"
           id={"updated_at"}
-          name="updated_at" />
+          name="updated_at"
+        />
       </div>
       <div className="relative col-span-8">
         <label htmlFor="content" className="nui-label pb-1 text-[0.825rem]">
@@ -104,7 +132,8 @@ export function PostForm({ post, categories }: PostFormProps) {
             className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
             placeholder="输入文章内容"
             rows={26}
-            defaultValue={post.content || ""} />
+            defaultValue={post.content || ""}
+          />
         </div>
       </div>
       <button
