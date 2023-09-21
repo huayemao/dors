@@ -38,9 +38,9 @@ export async function markdownExcerpt(markdown) {
 
 export function getWordCount(htmlContent) {
   // 去除 HTML 标签
-  const textContent = htmlContent.replace(/<[^>]+>/g, "");
+  const textContent = htmlContent?.replace(/<[^>]+>/g, "");
   // 统计字数，汉字不以空格分隔
-  const wordCount = textContent.trim().replaceAll(/\s+/g, "").length;
+  const wordCount = textContent?.trim().replaceAll(/\s+/g, "").length;
   // const wordCount = textContent.trim().split(/\s+/).length;
   return wordCount;
 }

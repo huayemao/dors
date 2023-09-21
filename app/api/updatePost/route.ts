@@ -11,9 +11,7 @@ export async function POST(request: Request) {
   const changePhoto = formData.get("changePhoto");
   const categoryId = formData.get("category");
   const updated_at = formData.get("updated_at");
-  const tags = formData.getAll("tags");
-
-  console.log(1999, id);
+  const tags = formData.get("tags") ? formData.getAll("tags") : undefined;
 
   if (Number.isNaN(parseInt(id as string))) {
     return new NextResponse(
@@ -42,11 +40,12 @@ export async function POST(request: Request) {
   }
 
   if (
+    tags &&
     tags.sort().toString() !==
-    post.tags
-      .map((e) => e?.name)
-      .sort()
-      .toString()
+      post.tags
+        .map((e) => e?.name)
+        .sort()
+        .toString()
   ) {
     const existedTags = await prisma.tags.findMany({
       where: {
@@ -89,17 +88,19 @@ export async function POST(request: Request) {
       id: parseInt(id as string),
     },
     data: {
-      content: content as string,
-      title: title as string,
+      content: content ? (content as string) : undefined,
+      title: title ? (title as string) : undefined,
       cover_image: changePhoto === "on" ? {} : undefined,
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       tags_posts_links: {},
-      posts_category_links: {
-        deleteMany: { post_id: parseInt(id as string) },
-        create: {
-          category_id: parseInt(categoryId as string),
-        },
-      },
+      posts_category_links: categoryId
+        ? {
+            deleteMany: { post_id: parseInt(id as string) },
+            create: {
+              category_id: parseInt(categoryId as string),
+            },
+          }
+        : undefined,
     },
   });
 

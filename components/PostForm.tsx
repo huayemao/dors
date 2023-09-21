@@ -1,3 +1,5 @@
+"use client";
+
 import Input from "@/components/Base/Input";
 import Select from "@/components/Base/Select";
 import { getAllCategories } from "@/lib/categories";
@@ -5,11 +7,46 @@ import { getPost } from "@/lib/posts";
 import { getTags } from "@/lib/tags";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
+import { FormEventHandler } from "react";
 
 export type PostFormProps = {
   post: Awaited<ReturnType<typeof getPost>>;
   categories: Awaited<ReturnType<typeof getAllCategories>>;
   tags: Awaited<ReturnType<typeof getTags>>;
+};
+
+const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const changedFields = [];
+  const formData = new FormData(e.target as HTMLFormElement);
+  (e.target as HTMLFormElement)
+    .querySelectorAll("input, select, textarea")
+    .forEach((el) => {
+      // @ts-ignore
+      const formDataValue = el.multiple
+        ? // @ts-ignore
+          formData.getAll(el.name).sort().join(",")
+        : // @ts-ignore
+          formData.get(el.name);
+      // @ts-ignore
+      const originalValue = el.dataset.originalValue;
+      if (String(originalValue) === String(formDataValue)) {
+        // @ts-ignore
+        el.disabled = true;
+      } else {
+        // @ts-ignore
+        changedFields.push(el.name);
+      }
+    });
+
+  if (changedFields.length < 2) {
+    e.preventDefault();
+    (e.target as HTMLFormElement)
+      .querySelectorAll("input, select, textarea")
+      .forEach((el) => {
+        // @ts-ignore
+        el.disabled = false;
+      });
+  }
 };
 
 export function PostForm({ post, categories, tags }: PostFormProps) {
@@ -65,60 +102,94 @@ export function PostForm({ post, categories, tags }: PostFormProps) {
     <form
       action="/api/updatePost"
       method="post"
-      className="grid grid-cols-1 md:grid-cols-12 gap-4"
+      className="grid grid-cols-1 md:grid-cols-12 gap-8"
+      onSubmit={handleOnSubmit}
     >
-      <input hidden name="id" defaultValue={post.id} />
       <div className="col-span-4 space-y-4">
+        <input hidden name="id" id="id" defaultValue={post.id} />
+        <div className="py-6">
+          <Image
+            width={300}
+            height={240}
+            className="w-full"
+            alt={(post.cover_image as PexelsPhoto).alt}
+            src={(post.cover_image as PexelsPhoto).src.medium}
+          />
+          <label>
+            更换图片
+            <input
+              type="checkbox"
+              id="changePhoto"
+              name="changePhoto"
+              defaultChecked={false}
+              data-original-value={"null"}
+            />
+          </label>
+        </div>
         <Input
           required
           label="标题"
           id={"title"}
           defaultValue={post.title || ""}
           name="title"
+          data-original-value={post.title}
         />
-        <Select
-          required
-          label="分类"
-          id="category"
-          name="category"
-          defaultValue={categoryId ? String(categoryId) : undefined}
-          data={categories.map((e) => ({
-            value: String(e.id),
-            label: e.name as string,
-          }))}
-        />
-        <Select
-          multiple
-          height={90}
-          required
-          label="标签"
-          id="tags"
-          name="tags"
-          defaultValue={post.tags.map((e) => String(e?.name))}
-          data={tags.map((e) => ({
-            value: String(e.name),
-            label: e.name as string,
-          }))}
-          className="h-[180px]"
-        />
-        <div className="flex gap-2">
-          <Image
-            width={300}
-            height={240}
-            alt={(post.cover_image as PexelsPhoto).alt}
-            src={(post.cover_image as PexelsPhoto).src.medium}
-          />
-          <label>
-            更换图片
-            <input type="checkbox" name="changePhoto" defaultChecked={false} />
-          </label>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Select
+              required
+              label="分类"
+              id="category"
+              name="category"
+              defaultValue={categoryId ? String(categoryId) : undefined}
+              data-original-value={categoryId ? String(categoryId) : undefined}
+              data={categories.map((e) => ({
+                value: String(e.id),
+                label: e.name as string,
+              }))}
+            />
+          </div>
+          <div>
+            <Select
+              multiple
+              height={90}
+              label="标签"
+              id="tags"
+              name="tags"
+              defaultValue={post.tags.map((e) => String(e?.name)).sort()}
+              data-original-value={post.tags.map((e) => String(e?.name)).sort()}
+              data={tags.map((e) => ({
+                value: String(e.name),
+                label: e.name as string,
+              }))}
+              className="lg:h-[180px]"
+            />
+          </div>
         </div>
-        <Input
-          type="datetime-local"
-          label="自定义修改时间"
-          id={"updated_at"}
-          name="updated_at"
-        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Input
+              type="datetime-local"
+              label="自定义修改时间"
+              id={"updated_at"}
+              name="updated_at"
+              // 不传修改为当前时间
+              defaultValue={""}
+              data-original-value={""}
+            />
+          </div>
+          <div>
+            <Input
+              type="datetime-local"
+              label="自定义创建时间"
+              id={"created_at"}
+              name="created_at"
+              defaultValue={post.created_at?.toISOString().slice(0, 16)}
+              data-original-value={post.created_at?.toISOString().slice(0, 16)}
+            />
+          </div>
+        </div>
       </div>
       <div className="relative col-span-8">
         <label htmlFor="content" className="nui-label pb-1 text-[0.825rem]">
@@ -133,15 +204,18 @@ export function PostForm({ post, categories, tags }: PostFormProps) {
             placeholder="输入文章内容"
             rows={26}
             defaultValue={post.content || ""}
+            data-original-value={post.content}
           />
         </div>
       </div>
-      <button
-        className="relative inline-flex items-center justify-center leading-5 no-underline w-full md:w-auto min-w-[130px] space-x-1 text-white bg-primary-500 h-12 px-5 py-3 text-base rounded-xl hover:bg-primary-600 hover:shadow-xl hover:shadow-primary-500/20 tw-accessibility transition-all duration-300"
-        type="submit"
-      >
-        保存
-      </button>
+      <div className="w-full col-span-12 text-right">
+        <button
+          className="ml-auto relative inline-flex items-center justify-center leading-5 no-underline w-full md:w-auto min-w-[130px] space-x-1 text-white bg-primary-500 h-12 px-5 py-3 text-base rounded-xl hover:bg-primary-600 hover:shadow-xl hover:shadow-primary-500/20 tw-accessibility transition-all duration-300"
+          type="submit"
+        >
+          保存
+        </button>
+      </div>
     </form>
   );
 }
