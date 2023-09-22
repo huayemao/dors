@@ -59,17 +59,34 @@ export function PostForm({ post, categories, tags }: PostFormProps) {
       >
         <div className="col-span-4 space-y-4">
           <Input required label="标题" id={"title"} name="title" />
-          <Select
-            required
-            label="分类"
-            id="category"
-            name="category"
-            defaultValue={undefined}
-            data={categories.map((e) => ({
-              value: String(e.id),
-              label: e.name as string,
-            }))}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Select
+                required
+                label="分类"
+                id="category"
+                name="category"
+                data={categories.map((e) => ({
+                  value: String(e.id),
+                  label: e.name as string,
+                }))}
+              />
+            </div>
+            <div>
+              <Select
+                multiple
+                height={90}
+                label="标签"
+                id="tags"
+                name="tags"
+                data={tags.map((e) => ({
+                  value: String(e.name),
+                  label: e.name as string,
+                }))}
+                className="lg:h-[180px]"
+              />
+            </div>
+          </div>
         </div>
         <div className="relative col-span-8">
           <label htmlFor="content" className="nui-label pb-1 text-[0.825rem]">
