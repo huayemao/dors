@@ -49,6 +49,13 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   }
 };
 
+const syncUpdateTime = (e: Event) => {
+  e.preventDefault();
+  (document.querySelector("#updated_at") as HTMLInputElement).value = (
+    document.querySelector("#created_at") as HTMLInputElement
+  ).value;
+};
+
 export function PostForm({ post, categories, tags }: PostFormProps) {
   if (!post) {
     return (
@@ -206,6 +213,7 @@ export function PostForm({ post, categories, tags }: PostFormProps) {
               data-original-value={post.created_at?.toISOString().slice(0, 16)}
             />
           </div>
+          <button onClick={syncUpdateTime}>修改时间使用创建时间</button>
         </div>
       </div>
       <div className="relative col-span-8">
