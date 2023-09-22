@@ -7,7 +7,7 @@ import { getPost } from "@/lib/posts";
 import { getTags } from "@/lib/tags";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
-import { FormEventHandler } from "react";
+import { FormEventHandler, MouseEventHandler } from "react";
 
 export type PostFormProps = {
   post: Awaited<ReturnType<typeof getPost>>;
@@ -49,7 +49,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   }
 };
 
-const syncUpdateTime = (e: Event) => {
+const syncUpdateTime: MouseEventHandler<HTMLButtonElement> = (e) => {
   e.preventDefault();
   (document.querySelector("#updated_at") as HTMLInputElement).value = (
     document.querySelector("#created_at") as HTMLInputElement
