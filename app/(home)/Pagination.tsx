@@ -1,10 +1,12 @@
 "use client";
 import { Pagination } from "@/components/Pagination";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
+// eslint-disable-next-line react/display-name
 export default function ({ pageCount }) {
   const params = useParams();
-  const pageNumRaw = params?.["page"] || "0";
+  const searchParams = useSearchParams();
+  const pageNumRaw = params?.["page"] || searchParams?.get("page") || "0";
 
   const pageNum = Number(pageNumRaw as string);
 
