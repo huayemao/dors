@@ -119,6 +119,17 @@ export const getPosts = cache(
   }
 );
 
+export async function getFeaturedPostIds() {
+  const res = await prisma.settings.findUnique({
+    where: {
+      key: "feature_posts",
+    },
+  });
+
+  const postIds = JSON.parse(res?.value || "");
+  return postIds;
+}
+
 async function getAllPosts(
   options: PaginateOptions & {
     tagId?: number;
@@ -126,6 +137,7 @@ async function getAllPosts(
     unCategorized?: boolean;
   } = {}
 ) {
+  const featurePosts = await getFeaturedPostIds();
   const { perPage, skip } = getPrismaPaginationParams(options);
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
 
@@ -162,6 +174,11 @@ async function getAllPosts(
   return await prisma.posts.findMany({
     where: {
       AND: whereInput,
+      NOT: {
+        id: {
+          in: featurePosts,
+        },
+      },
     },
 
     orderBy: {
@@ -262,3 +279,10 @@ export const getPageCount = cache(
 );
 
 export type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
+
+export async function getRecentPosts() {
+  let posts = await getProcessedPosts(await getPosts({ perPage: 5 }), {
+    imageSize: "small",
+  });
+  return posts;
+}

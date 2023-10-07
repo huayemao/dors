@@ -572,3 +572,8 @@ model posts_category_links {
   @@index([category_id], map: "posts_category_links_inv_fk")
   @@index([post_order], map: "posts_category_links_order_inv_fk")
 }
+
+model settings {
+  key   String @id
+  value String
+}
