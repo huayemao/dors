@@ -1,2 +1,9 @@
 [functions]
   included_files = ["node_modules/sharp/**/*"]
+
+
+[[redirects]]
+  from = "/*"
+  to = "https://dors-huayemao.vercel.app/:splat"
+  status = 200
+  force = true
