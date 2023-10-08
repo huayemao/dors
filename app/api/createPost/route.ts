@@ -70,7 +70,9 @@ export async function POST(request: Request) {
     });
   }
 
-  const path = new URL(("/posts/" + post.id) as string, request.url);
+  const origin = request.headers.get("Origin");
+
+  const path = new URL(("/posts/" + post.id) as string, origin || request.url);
 
   return NextResponse.redirect(path);
 }
