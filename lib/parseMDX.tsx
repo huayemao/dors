@@ -8,6 +8,7 @@ import remarkShikiTwoslash from "remark-shiki-twoslash";
 const theme = require("shiki/themes/nord.json");
 
 import Carousel from "@/components/Carousel";
+import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { PersonList } from "@/components/Person";
 import { QuestionList } from "@/components/Question";
@@ -22,6 +23,7 @@ const components = {
   Word: (props) => <Word {...props} />,
   Carousel: (props) => <Carousel {...props} />,
   DigitsHighlightButton: (props) => <DigitsHighlightButton {...props} />,
+  DataList:(props) => <DataList {...props} />,
 };
 
 export default function MDXRemoteWrapper(props: MDXRemoteProps) {
