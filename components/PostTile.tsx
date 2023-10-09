@@ -51,8 +51,8 @@ function PostTile({
               height="48"
               quality={60}
             />
-            <div>
-              <h3 className="truncate font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1">
+            <div className="truncate">
+              <h3 title={post.title as string} className="truncate font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1">
                 {post.title}
               </h3>
               <p className="font-sans text-sm text-muted-400">
