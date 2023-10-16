@@ -82,8 +82,8 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                       {avatar.alt}
                     </h3>
                     <p className="font-sans text-sm text-muted-400">
-                      {post?.published_at
-                        ? getDateString(post?.published_at)
+                      {post?.updated_at
+                        ? "更新于 " + getDateString(post?.updated_at)
                         : ""}
                     </p>
                   </div>

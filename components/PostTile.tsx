@@ -25,7 +25,7 @@ function PostTile({
 }: Props) {
   if (!post) return null;
 
-  const { id, title, tags, published_at } = post;
+  const { id, title, tags, updated_at } = post;
 
   const isFirstCreated =
     post.updated_at?.toString() === post.created_at?.toString();
@@ -117,7 +117,7 @@ function PostTile({
                   {SITE_META.author.name}
                 </h3>
                 <p className="font-sans text-sm text-muted-400">
-                  {published_at ? getDateString(published_at) : ""}
+                  {updatedOrcreatedAtText}
                 </p>
               </div>
               <div className="block ml-auto font-sans text-sm text-muted-400">
