@@ -13,6 +13,7 @@ import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { PersonList } from "@/components/Person";
 import { QuestionList } from "@/components/Question";
 import Tag from "@/components/Tag";
+import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 
@@ -24,6 +25,7 @@ const components = {
   Carousel: (props) => <Carousel {...props} />,
   DigitsHighlightButton: (props) => <DigitsHighlightButton {...props} />,
   DataList:(props) => <DataList {...props} />,
+  ToolBox:(props) => <ToolBox {...props} />,
 };
 
 export default function MDXRemoteWrapper(props: MDXRemoteProps) {
