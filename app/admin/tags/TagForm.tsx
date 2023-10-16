@@ -1,22 +1,37 @@
 "use client";
 import Input from "@/components/Base/Input";
-import { useEffect } from "react";
+import { ChangeEventHandler, FormEventHandler } from "react";
 import { Props } from "./page";
 
 export function TagForm({ id, isEditing, tags }: Props) {
-  useEffect(() => {
-    const nameInput = document.getElementById("name") as HTMLInputElement;
-    nameInput.addEventListener("input", (event) => {
-      if (tags.map((e) => e.name).includes(nameInput.value)) {
-        nameInput.setCustomValidity("该标签已存在！");
-      } else {
-        nameInput.setCustomValidity("");
-      }
-    });
-  }, [id]);
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    if (tags.map((e) => e.name).includes(event.target.value)) {
+      event.target.setCustomValidity("该标签已存在！");
+    } else {
+      event.target.setCustomValidity("");
+    }
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    const nameInput: HTMLInputElement = (
+      event.target as HTMLFormElement
+    ).querySelector("#name") as HTMLInputElement;
+    if (tags.map((e) => e.name).includes(nameInput.value)) {
+      nameInput.setCustomValidity("该标签已存在！");
+    } else {
+      nameInput.setCustomValidity("");
+    }
+
+    const form = event.target as HTMLFormElement;
+    form.reportValidity();
+    if (!form.checkValidity()) {
+      event.preventDefault();
+    }
+  };
 
   return (
     <form
+      onSubmit={handleSubmit}
       action={"/api/createTag"}
       method="POST"
       className="w-96 rounded  bg-white p-8 mx-auto space-y-4"
@@ -66,6 +81,7 @@ export function TagForm({ id, isEditing, tags }: Props) {
         id="name"
         required
         defaultValue={tags.find((t) => t.id == id)?.name || ""}
+        onChange={handleInputChange}
       />
       <div className="w-full text-right">
         {" "}
