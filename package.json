@@ -11,8 +11,8 @@
     "db:pull": "prisma db pull --schema=./prisma/schema.prisma"
   },
   "dependencies": {
-    "@prisma/client": "^4.12.0",
     "@plaiceholder/next": "^3.0.0",
+    "@prisma/client": "^4.12.0",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "localforage": "^1.10.0",
@@ -34,7 +34,7 @@
     "tailwindcss-animate": "^1.0.5"
   },
   "devDependencies": {
-    "@shuriken-ui/tailwind": "^0.1.1",
+    "@shuriken-ui/tailwind": "^1.2.6",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "^18.15.10",
     "@types/react": "18.0.31",
@@ -43,7 +43,7 @@
     "eslint-config-next": "^13.4.6",
     "postcss": "^8.4.21",
     "prisma": "^4.12.0",
-    "tailwindcss": "^3.2.7",
+    "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2"
   }
 }
