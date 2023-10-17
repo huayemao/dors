@@ -176,8 +176,8 @@ export default function CV() {
                 <h1 className="section-header mb-5">所获荣誉和证书</h1>
                 <div className="my-2">
                   <li>软件设计师证书（中级职称）</li>
-                  <li>CET6（575 分，大一上学期）</li>
-                  <li>CET4（577 分，大一下学期）</li>
+                  <li>CET6（575 分，大一下学期）</li>
+                  <li>CET4（577 分，大一上学期）</li>
                   <li>2019 年全国大学生英语竞赛（NECCS）三等奖</li>
                   <li>第二届湖南省医学科技创新创业大赛三等奖</li>
                 </div>
