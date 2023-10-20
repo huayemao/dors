@@ -13,6 +13,7 @@ import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { PersonList } from "@/components/Person";
 import { QuestionList } from "@/components/Question";
+import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
@@ -28,6 +29,7 @@ const components = {
   DataList: (props) => <DataList {...props} />,
   ToolBox: (props) => <ToolBox {...props} />,
   Annotate: (props) => <Annotate {...props}></Annotate>,
+  Raw:(props)=><Raw {...props}></Raw>
 };
 
 export default function MDXRemoteWrapper(props: MDXRemoteProps) {
