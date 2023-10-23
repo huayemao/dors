@@ -1,6 +1,7 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
 const { withShurikenUI } = require("@shuriken-ui/tailwind")
 
+/** @type {import('tailwindcss').Config} */
 module.exports = withShurikenUI({
   mode: 'jit',
   content: [
@@ -11,6 +12,24 @@ module.exports = withShurikenUI({
   darkMode: ['class'],
   theme: {
     extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            tr: {
+              th: {
+                '&:first-child': {
+                  whiteSpace:'nowrap'
+                }
+              },
+              td: {
+                '&:first-child': {
+                  whiteSpace:'nowrap'
+                },
+              }
+            },
+          }
+        }
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
