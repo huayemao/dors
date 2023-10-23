@@ -5,7 +5,7 @@ function Annotate({ source, children, danger }) {
     <>
       <span
         className={cn(
-          "leading-5 lg:leading-6 inline-block border-2 border-violet-600 px-1",
+          "leading-5 lg:leading-6 inline-block outline outline-2 outline-violet-600 px-1",
           { "ml-1": children, "border-rose-700": danger }
         )}
       >
