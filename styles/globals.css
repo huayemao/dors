@@ -8,6 +8,15 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  scroll-margin-top: 80px;
 }
 
 a {
@@ -87,4 +96,8 @@ a {
   font-size: 1.1rem;
   quotes: "\201c""\201d""\2018""\2019";
   @apply bg-slate-50 p-6 mt-4 leading-[1.4] text-slate-600 dark:bg-slate-800 dark:text-slate-100;
+}
+
+.not-prose {
+  font-size: unset;
 }

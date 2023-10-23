@@ -29,7 +29,11 @@ const components = {
   DataList: (props) => <DataList {...props} />,
   ToolBox: (props) => <ToolBox {...props} />,
   Annotate: (props) => <Annotate {...props}></Annotate>,
-  Raw:(props)=><Raw {...props}></Raw>
+  Raw:(props)=><Raw {...props}></Raw>,
+  h1:(props)=><h1 id={props.children} {...props}></h1>,
+  h2:(props)=><h2 id={props.children} {...props}></h2>,
+  h3:(props)=><h3 id={props.children} {...props}></h3>,
+  h4:(props)=><h4 id={props.children} {...props}></h4>,
 };
 
 export default function MDXRemoteWrapper(props: MDXRemoteProps) {
