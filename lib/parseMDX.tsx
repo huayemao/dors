@@ -18,6 +18,7 @@ import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
+import Image from "next/image";
 
 const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
@@ -29,11 +30,25 @@ const components = {
   DataList: (props) => <DataList {...props} />,
   ToolBox: (props) => <ToolBox {...props} />,
   Annotate: (props) => <Annotate {...props}></Annotate>,
-  Raw:(props)=><Raw {...props}></Raw>,
-  h1:(props)=><h1 id={props.children} {...props}></h1>,
-  h2:(props)=><h2 id={props.children} {...props}></h2>,
-  h3:(props)=><h3 id={props.children} {...props}></h3>,
-  h4:(props)=><h4 id={props.children} {...props}></h4>,
+  Raw: (props) => <Raw {...props}></Raw>,
+  h1: (props) => <h1 id={props.children} {...props}></h1>,
+  h2: (props) => <h2 id={props.children} {...props}></h2>,
+  h3: (props) => <h3 id={props.children} {...props}></h3>,
+  h4: (props) => <h4 id={props.children} {...props}></h4>,
+  img: (props) => (
+    <a href={props.src}>
+      <figure>
+        <Image
+          sizes="100vw"
+          style={{ width: "100%", height: "auto" }}
+          width={800}
+          height={600}
+          {...props}
+        />
+        <figcaption>{props.alt}</figcaption>
+      </figure>
+    </a>
+  ),
 };
 
 export default function MDXRemoteWrapper(props: MDXRemoteProps) {
