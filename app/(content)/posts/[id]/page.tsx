@@ -2,6 +2,7 @@ import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
 import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { join } from "path";
@@ -10,11 +11,11 @@ export const revalidate = 300;
 
 export async function generateStaticParams() {
   const posts = await getPostIds();
-  const params = posts
-    .map((post) => ({
-      id: String(post.id),
-    }))
-    .slice(0, 15);
+  const allPostIds = posts.map((post) => ({
+    id: String(post.id),
+  }));
+  const params =
+    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 15);
   return params;
 }
 
@@ -44,7 +45,13 @@ export default async function page({ params }) {
     return;
   }
 
-  const post = await getPost(parseInt(params.id as string));
+  const id = parseInt(params.id as string);
+
+  if (Number.isNaN(id)) {
+    return notFound();
+  }
+
+  const post = await getPost(id);
 
   if (!post) {
     return notFound();
@@ -62,4 +69,3 @@ export default async function page({ params }) {
     </main>
   );
 }
-

@@ -3,6 +3,7 @@ import { Posts } from "@/lib/posts";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";
+import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -40,6 +41,7 @@ const Hero = ({
     >
       <div className="h-full p-5">
         <Image
+          unoptimized={config.output === "export"}
           className="block h-full w-full object-cover rounded-xl "
           /* @ts-ignore */
           src={imageSrc}
@@ -174,7 +176,11 @@ const FeaturedPosts: React.FC<Props> = ({ posts }) => {
         />
       </div>
       <div className="w-full ltablet:w-1/3 lg:w-1/3">
-        <SubHero title="简历看这里" href="/CV_2023_08.html" excerpt="佛系求职中。。。" />
+        <SubHero
+          title="简历看这里"
+          href="/CV_2023_08.html"
+          excerpt="佛系求职中。。。"
+        />
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 import { SITE_META } from "@/constants";
 import { getPost } from "@/lib/posts";
 import { cn, getDateString } from "@/lib/utils";
+import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "./Avatar";
 import Tag from "./Tag";
-
 type Post = Awaited<ReturnType<typeof getPost>>;
 
 interface Props {
@@ -39,20 +39,28 @@ function PostTile({
     return (
       <li
         style={{ listStyle: "none" }}
-        className={cn({ "bg-white p-2 rounded-lg border dark:bg-muted-800 dark:border-muted-700": rounded })}
+        className={cn({
+          "bg-white p-2 rounded-lg border dark:bg-muted-800 dark:border-muted-700":
+            rounded,
+        })}
       >
         <Link href={"/posts/" + id} className="flex items-center">
           <div className="relative flex justify-start gap-2 w-full">
             <Image
+              unoptimized={config.output === "export"}
               className="h-12 w-12 mask mask-blob object-cover"
               src={url}
-              alt="Post image"
+              alt={post.title || "Post image"}
               width="48"
               height="48"
               quality={60}
+              blurDataURL={blurDataURL}
             />
             <div className="truncate">
-              <h3 title={post.title as string} className="truncate font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1">
+              <h3
+                title={post.title as string}
+                className="truncate font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1"
+              >
                 {post.title}
               </h3>
               <p className="font-sans text-sm text-muted-400">
@@ -94,6 +102,7 @@ function PostTile({
                 className="rounded-xl w-[348px] h-[208px] object-cover"
                 src={url}
                 placeholder="blur"
+                unoptimized={config.output === "export"}
                 blurDataURL={blurDataURL}
                 alt={post.title || SITE_META.name}
                 width="348"

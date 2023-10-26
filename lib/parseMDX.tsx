@@ -17,6 +17,7 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
+import nextConfig from "@/next.config.mjs";
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 import Image from "next/image";
 
@@ -39,10 +40,12 @@ const components = {
     <a href={props.src}>
       <figure>
         <Image
+          unoptimized={nextConfig.output==='export'}
           sizes="100vw"
           style={{ width: "100%", height: "auto" }}
           width={800}
           height={600}
+          referrerPolicy="origin"
           {...props}
         />
         <figcaption>{props.alt}</figcaption>

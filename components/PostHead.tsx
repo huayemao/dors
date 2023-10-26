@@ -1,5 +1,6 @@
 import { getPost } from "@/lib/posts";
 import { getDateString } from "@/lib/utils";
+import nextConfig from "@/next.config.mjs";
 import Image, { ImageProps } from "next/image";
 import Tag from "./Tag";
 
@@ -30,10 +31,11 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
               <Image
                 className="lg:w-[512px] lg:h-[373px] mx-auto object-cover rounded-3xl"
                 src={url}
-                alt="Featured image"
+                alt={post.title || "featured image"}
                 width={512}
                 height={373}
                 quality={80}
+                unoptimized={nextConfig.output === "export"}
                 blurDataURL={typeof url === "string" ? blurDataURL : undefined}
                 placeholder={"blur"}
               />

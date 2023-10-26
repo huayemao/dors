@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { PostForm } from "../../../../../components/PostForm";
 
 export default async function page({ params }) {
-  if (!params.id) {
-    return;
+  if (!params.id || Number.isNaN(parseInt(params.id))) {
+    return notFound();
   }
 
   const post = await getPost(parseInt(params.id as string));

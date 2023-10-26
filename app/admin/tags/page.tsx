@@ -2,11 +2,8 @@ import { getTags } from "@/lib/tags";
 import Link from "next/link";
 import { TagForm } from "./TagForm";
 
-async function Tags({ searchParams }) {
-  const { id } = searchParams;
-  const tagId = parseInt(id);
+async function Tags() {
   const tags = await getTags();
-  const isEditing = !Number.isNaN(tagId);
 
   return (
     <div className="space-y-8 p-8">
@@ -23,7 +20,8 @@ async function Tags({ searchParams }) {
           );
         })}
       </div>
-      {<TagForm id={id} isEditing={isEditing} tags={tags}></TagForm>}
+      {/* todo: 这里改造掉 */}
+      {<TagForm id={1} isEditing={false} tags={tags}></TagForm>}
     </div>
   );
 }
