@@ -2,6 +2,8 @@ import { languages } from "@/lib/shiki";
 import { nodeTypes } from "@mdx-js/mdx";
 // import { serialize } from "next-mdx-remote/serialize";
 import { compileMDX } from "next-mdx-remote/rsc";
+//@ts-ignore
+import rehypeMathjax from "rehype-mathjax";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
@@ -18,8 +20,8 @@ import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import nextConfig from "@/next.config.mjs";
-import { MDXRemote, MDXRemoteProps } from "next-mdx-remote";
 import Image from "next/image";
+import remarkMath from "remark-math";
 
 const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
@@ -36,40 +38,37 @@ const components = {
   h2: (props) => <h2 id={props.children} {...props}></h2>,
   h3: (props) => <h3 id={props.children} {...props}></h3>,
   h4: (props) => <h4 id={props.children} {...props}></h4>,
-  img: (props) => (
-    <a href={props.src}>
-      <figure>
-        <Image
-          unoptimized={nextConfig.output==='export'}
-          sizes="100vw"
-          style={{ width: "100%", height: "auto" }}
-          width={800}
-          height={600}
-          referrerPolicy="origin"
-          {...props}
-        />
-        <figcaption>{props.alt}</figcaption>
-      </figure>
-    </a>
-  ),
+  img: async (props) => {
+    return (
+      <a suppressHydrationWarning href={props.src}>
+        <figure suppressHydrationWarning>
+          <Image
+            unoptimized={nextConfig.output === "export"}
+            sizes="100vw"
+            style={{ width: "100%", height: "auto" }}
+            width={800}
+            height={600}
+            referrerPolicy="origin"
+            {...props}
+          />
+          <figcaption>{props.alt}</figcaption>
+        </figure>
+      </a>
+    );
+  },
 };
-
-export default function MDXRemoteWrapper(props: MDXRemoteProps) {
-  return (
-    <MDXRemote
-      {...props}
-      components={{ ...(props.components || {}), ...components }}
-    />
-  );
-}
 
 export async function parseMDX(post: { content?: string | null | undefined }) {
   return await compileMDX({
     source: post?.content || "",
+    //@ts-ignore
     components,
     options: {
       mdxOptions: {
-        rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }]],
+        remarkRehypeOptions: {
+          allowDangerousHtml: true,
+        },
+        rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }],rehypeMathjax],
         remarkPlugins: [
           [
             remarkShikiTwoslash,
@@ -79,6 +78,7 @@ export async function parseMDX(post: { content?: string | null | undefined }) {
             },
           ],
           remarkGfm,
+          remarkMath,
         ],
         format: "mdx",
       },
