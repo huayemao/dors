@@ -33,6 +33,7 @@ const components = {
   DataList: (props) => <DataList {...props} />,
   ToolBox: (props) => <ToolBox {...props} />,
   Annotate: (props) => <Annotate {...props}></Annotate>,
+  Note: (props) => <Annotate {...props} source={props.children}>{props.description}</Annotate>,
   Raw: (props) => <Raw {...props}></Raw>,
   h1: (props) => <h1 id={props.children} {...props}></h1>,
   h2: (props) => <h2 id={props.children} {...props}></h2>,
@@ -40,8 +41,8 @@ const components = {
   h4: (props) => <h4 id={props.children} {...props}></h4>,
   img: async (props) => {
     return (
-      <a suppressHydrationWarning href={props.src}>
-        <figure suppressHydrationWarning>
+      <figure suppressHydrationWarning>
+        <a suppressHydrationWarning href={props.src}>
           <Image
             unoptimized={nextConfig.output === "export"}
             sizes="100vw"
@@ -50,10 +51,10 @@ const components = {
             height={600}
             referrerPolicy="origin"
             {...props}
-          />
-          <figcaption>{props.alt}</figcaption>
-        </figure>
-      </a>
+          />{" "}
+        </a>
+        <figcaption>{props.alt}</figcaption>
+      </figure>
     );
   },
 };
@@ -68,7 +69,7 @@ export async function parseMDX(post: { content?: string | null | undefined }) {
         remarkRehypeOptions: {
           allowDangerousHtml: true,
         },
-        rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }],rehypeMathjax],
+        rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }], rehypeMathjax],
         remarkPlugins: [
           [
             remarkShikiTwoslash,
