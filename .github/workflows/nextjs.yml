@@ -28,10 +28,6 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-    env:
-      OUTPUT_MODE: export
-      DATABASE_URL: ${{ vars.DATABASE_URL }}
-      HTTP_BASIC_AUTH: casual
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,9 +35,9 @@ jobs:
         id: detect-package-manager
         run: |
           if [ -f "${{ github.workspace }}/yarn.lock" ]; then
-            echo "${{ vars }}"
+            echo "${{ secrets.DATABASE_URL }}"
             echo "111"
-            echo "${{ vars.DATABASE_URL }}"
+            echo "${{ secrets.DATABASE_URL }}"
             echo "manager=yarn" >> $GITHUB_OUTPUT
             echo "command=install" >> $GITHUB_OUTPUT
             echo "runner=yarn" >> $GITHUB_OUTPUT
@@ -82,6 +78,10 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        env:
+          OUTPUT_MODE: export
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          HTTP_BASIC_AUTH: casual
       # - name: Static HTML export with Next.js
       #   run: ${{ steps.detect-package-manager.outputs.runner }} next export
       - name: Upload artifact
