@@ -35,9 +35,6 @@ jobs:
         id: detect-package-manager
         run: |
           if [ -f "${{ github.workspace }}/yarn.lock" ]; then
-            echo "${{ secrets.DATABASE_URL }}"
-            echo "111"
-            echo "${{ secrets.DATABASE_URL }}"
             echo "manager=yarn" >> $GITHUB_OUTPUT
             echo "command=install" >> $GITHUB_OUTPUT
             echo "runner=yarn" >> $GITHUB_OUTPUT
@@ -80,16 +77,15 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
           OUTPUT_MODE: export
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
           HTTP_BASIC_AUTH: casual
-      # - name: Static HTML export with Next.js
-      #   run: ${{ steps.detect-package-manager.outputs.runner }} next export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./out
+          name: dors
+          path: ./out/
 
-  # Deployment job
+            # Deployment job
   deploy:
     environment:
       name: github-pages
@@ -98,7 +94,5 @@ jobs:
     needs: build
     steps:
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+        id: deployment
+        uses: actions/deploy-pages@v2
