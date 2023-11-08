@@ -14,20 +14,28 @@ module.exports = withShurikenUI({
     extend: {
       typography: {
         DEFAULT: {
-          css: {
+          css: [{
+            table: {
+              '@media (max-width: 576px)': {
+                display: 'block',
+                width: '100%',
+                overflow: 'auto',
+              },
+
+            },
             tr: {
               th: {
                 '&:first-child': {
-                  whiteSpace:'nowrap'
+                  whiteSpace: 'nowrap'
                 }
               },
               td: {
                 '&:first-child': {
-                  whiteSpace:'nowrap'
+                  whiteSpace: 'nowrap'
                 },
               }
             },
-          }
+          }]
         }
       },
       fontFamily: {
