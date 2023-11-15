@@ -23,7 +23,7 @@ export default function Demo() {
       <main className={styles.main}>
         <Carousel
           items={slides}
-          className="w-[800px] h-[520px] rounded-lg shadow"
+          className="w-[800px] h-[420px] rounded-lg shadow"
         ></Carousel>
       </main>
     </div>

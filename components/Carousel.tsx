@@ -2,7 +2,7 @@
 import { SlideItem } from "@/constants";
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loading from "./loading";
 
 type Props = {
@@ -10,9 +10,21 @@ type Props = {
   items: SlideItem[];
 };
 
+enum Status {
+  loaded = "loaded",
+  error = "error",
+  loading = "loading",
+}
+
 const Carousel = ({ className, items }: Props) => {
+  const container = useRef<Element>();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [imageLoadedArr, setImageLoadedArr] = useState(items.map(() => false));
+  const image2Status = new Map();
+  for (const item of items) {
+    image2Status.set(item.image, Status.loading);
+  }
+  const [imageLoadedArr, setImageLoadedArr] =
+    useState<Map<string, Status>>(image2Status);
 
   const jumpTo = (to) => {
     setCurrentIndex(to);
@@ -26,38 +38,54 @@ const Carousel = ({ className, items }: Props) => {
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        const lazyImage = entry.target;
-        if (!(lazyImage instanceof HTMLImageElement)) {
-          return;
-        }
-        if (entry.isIntersecting) {
-          // todo: 替换 fallback
-          lazyImage.src =
-            lazyImage.dataset.src ||
-            "https://www.peugeot.com.cn/Cg/Upload/www.peugeot.com.cn/image/230529/2023052917174454808.png";
-          observer.unobserve(lazyImage);
-        }
-      });
+      console.log(entries);
+      entries
+        .filter((e) => e.target instanceof HTMLImageElement)
+        .forEach((entry, index) => {
+          const lazyImage = entry.target as HTMLImageElement;
+
+          if (entry.isIntersecting && !lazyImage.src) {
+            lazyImage.onerror = (e) => {
+              setImageLoadedArr((prevMap) => {
+                prevMap.set(lazyImage.dataset.src as string, Status.error);
+                return new Map(prevMap.entries());
+              });
+              console.log(imageLoadedArr);
+            };
+
+            lazyImage.onload = () => {
+              setImageLoadedArr((prevMap) => {
+                prevMap.set(
+                  (lazyImage as HTMLImageElement).dataset.src as string,
+                  Status.loaded
+                );
+                console.log(new Map(prevMap.entries()))
+                return new Map(prevMap.entries());
+              });
+            };
+
+            // todo: 替换 fallback
+            lazyImage.src =
+              lazyImage.dataset.src ||
+              "https://www.peugeot.com.cn/Cg/Upload/www.peugeot.com.cn/image/230529/2023052917174454808.png";
+
+            observer.unobserve(lazyImage);
+          }
+        });
     }, options);
 
-    const lazyImages = document.querySelectorAll("img[data-src]");
+    if (!container.current) {
+      return;
+    }
 
-    lazyImages.forEach((image, index) => {
-      image.addEventListener("load", () => {
-        setImageLoadedArr((prevArr) => {
-          const newArr = [...prevArr];
-          newArr[index] = true;
-          return newArr;
-        });
-      });
-      observer.observe(image);
+    container.current.querySelectorAll("img[data-src]").forEach((img) => {
+      observer.observe(img);
     });
 
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [container.current]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -67,15 +95,16 @@ const Carousel = ({ className, items }: Props) => {
     return () => {
       clearInterval(interval);
     };
-  }, [items.length]);
+  }, []);
 
   return (
     <>
       <div
+        ref={container}
         className={cn("relative overflow-hidden w-96 h-72 mx-auto", className)}
       >
         <div
-          className="flex transition-transform duration-300 ease-in-out h-full"
+          className="flex transition-all duration-500 ease-in-out h-full"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {items.map((item, index) => (
@@ -83,8 +112,16 @@ const Carousel = ({ className, items }: Props) => {
               key={index}
               className="relative flex-none w-full h-full bg-slate-200"
             >
-              {!imageLoadedArr[index] && (
+              {imageLoadedArr.get(item.image) === Status.loading && (
                 <Loading className="absolute w-full h-full" />
+              )}
+              {imageLoadedArr.get(item.image) === Status.error && (
+                <button
+                  className="w-full h-full"
+                  onClick={() => window.open(item.image)}
+                >
+                  图片加载失败，点击访问图片地址
+                </button>
               )}
               <img
                 alt={item.caption}
@@ -92,24 +129,31 @@ const Carousel = ({ className, items }: Props) => {
                 data-src={item.image}
                 className={clsx(
                   "w-full h-full object-cover",
-                  `${!imageLoadedArr[index] ? "opacity-0" : ""}`
+                  `${!imageLoadedArr.get(item.image) ? "opacity-0" : ""}`
                 )}
               />
               <div
-                className="absolute bottom-4 left-0 right-0 text-center text-white"
+                className="absolute bottom-0  left-0 right-0 text-center mix-blend-difference drop-shadow-lg"
                 style={{ display: imageLoadedArr[index] ? "block" : "none" }}
               >
-                {item.caption}
+                <span className="text-white">{item.caption}</span>
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="controls">
+      <div className="my-4 flex w-full justify-center items-center gap-3">
         {items.map((item, index) => (
-          <button key={index} onClick={() => jumpTo(index)}>
-            {index}
-          </button>
+          <button
+            className={cn(
+              "rounded-full bg-primary-200 w-2 h-2 transition-all",
+              {
+                "bg-primary-500 ring-4 ring-primary-200": currentIndex == index,
+              }
+            )}
+            key={index}
+            onClick={() => jumpTo(index)}
+          ></button>
         ))}
       </div>
     </>
