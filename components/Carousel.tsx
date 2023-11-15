@@ -16,8 +16,10 @@ enum Status {
   loading = "loading",
 }
 
+let interval: number;
+
 const Carousel = ({ className, items }: Props) => {
-  const container = useRef<Element>();
+  const container = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const image2Status = new Map();
   for (const item of items) {
@@ -27,6 +29,10 @@ const Carousel = ({ className, items }: Props) => {
     useState<Map<string, Status>>(image2Status);
 
   const jumpTo = (to) => {
+    clearInterval(interval);
+    interval = window.setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+    }, 5000);
     setCurrentIndex(to);
   };
 
@@ -59,7 +65,6 @@ const Carousel = ({ className, items }: Props) => {
                   (lazyImage as HTMLImageElement).dataset.src as string,
                   Status.loaded
                 );
-                console.log(new Map(prevMap.entries()))
                 return new Map(prevMap.entries());
               });
             };
@@ -88,7 +93,7 @@ const Carousel = ({ className, items }: Props) => {
   }, [container.current]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    interval = window.setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
     }, 5000);
 
@@ -133,10 +138,14 @@ const Carousel = ({ className, items }: Props) => {
                 )}
               />
               <div
-                className="absolute bottom-0  left-0 right-0 text-center mix-blend-difference drop-shadow-lg"
-                style={{ display: imageLoadedArr[index] ? "block" : "none" }}
+                className="absolute bottom-0  left-0 right-0 text-center backdrop-opacity-10  bg-black/30"
+                style={{
+                  display: imageLoadedArr.get(item.image) ? "block" : "none",
+                }}
               >
-                <span className="text-white">{item.caption}</span>
+                <span className="text-white mix-blend-normal blur-none">
+                  {item.caption}
+                </span>
               </div>
             </div>
           ))}
