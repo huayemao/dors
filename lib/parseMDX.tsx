@@ -35,10 +35,10 @@ const components = {
   Annotate: (props) => <Annotate {...props}></Annotate>,
   Note: (props) => <Annotate {...props} source={props.children}>{props.description}</Annotate>,
   Raw: (props) => <Raw {...props}></Raw>,
-  h1: (props) => <h1 id={props.children} {...props}></h1>,
-  h2: (props) => <h2 id={props.children} {...props}></h2>,
-  h3: (props) => <h3 id={props.children} {...props}></h3>,
-  h4: (props) => <h4 id={props.children} {...props}></h4>,
+  h1: (props) => <h1 id={encodeURIComponent(props.children)} {...props}></h1>,
+  h2: (props) => <h2 id={encodeURIComponent(props.children)} {...props}></h2>,
+  h3: (props) => <h3 id={encodeURIComponent(props.children)} {...props}></h3>,
+  h4: (props) => <h4 id={encodeURIComponent(props.children)} {...props}></h4>,
   img: async (props) => {
     return (
       <figure suppressHydrationWarning>

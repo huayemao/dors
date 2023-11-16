@@ -3,11 +3,16 @@ import { getPost, getProcessedPosts, getRecentPosts } from "@/lib/posts";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import c from "@/styles/post.module.css";
+import dynamic from "next/dynamic";
 import { join } from "path";
-import { BackButton } from "./BackButton";
-import PostHead from "./PostHead";
-import PostTile from "./PostTile";
-import { ShareButton } from "./ShareButton";
+import { BackButton } from "../BackButton";
+import PostHead from "../PostHead";
+import PostTile from "../PostTile";
+import { ShareButton } from "../ShareButton";
+
+const TOC = dynamic(() => import("./toc"), {
+  ssr: false,
+});
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
@@ -39,7 +44,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
         url={url}
         blurDataURL={blurDataURL}
       />
-      <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 overflow-hidden">
+      <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 ">
         <div className="w-full max-w-7xl mx-auto">
           <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
             <div className="w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto">
@@ -57,7 +62,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                   className={
                     c.content +
                     " " +
-                    "dark:prose-invert prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium"
+                    "dark:prose-invert prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium overflow-hidden"
                   }
                 >
                   {content}
@@ -67,12 +72,12 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
             <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto">
               <div className="mt-10">
                 <div>
-                  <h3
+                  <h2
                     className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6
             "
                   >
                     分享文章
-                  </h3>
+                  </h2>
 
                   <div className="flex gap-4">
                     <ShareButton
@@ -83,13 +88,12 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                   </div>
                 </div>
                 <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
-
-                <h3 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
+                <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
                   最近文章
-                </h3>
-
+                </h2>
                 <RecentPosts posts={posts} />
               </div>
+              <TOC />
             </div>
           </div>
         </div>
@@ -97,7 +101,6 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
     </div>
   );
 }
-
 
 function RecentPosts({
   posts,
