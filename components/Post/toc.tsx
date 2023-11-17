@@ -14,14 +14,18 @@ export default function TOC() {
   const [currentViewedTocItem, setCurrentViewedTocItem] = useState("");
 
   const observedElements = React.useCallback(() => {
-    const mainElement = document.querySelector("article") ?? document;
+    const mainElement = document.querySelector("article");
+
+    if (!mainElement) {
+      return [];
+    }
 
     // 看看有没有其他 h2 等
     const elements = mainElement.querySelectorAll(
       "h1, h1 ~ *:not(section), h2:not(.document-toc-heading), h2:not(.document-toc-heading) ~ *:not(section), h3, h3 ~ *:not(section)"
     );
     return Array.from(elements);
-  }, []);
+  }, [window.location.pathname]);
 
   // const referencedIds = toc.map(({ id }) => id);
   const idByObservedElement = React.useRef(new Map<Element, string>());
@@ -56,7 +60,7 @@ export default function TOC() {
           文章目录
         </h2>
       </header>
-      <ul className="">
+      <ul key={window.location.pathname} className="">
         {observedElements()
           .filter((e) => e.tagName.toLowerCase().match(/^h\d$/))
           .map((item) => {
