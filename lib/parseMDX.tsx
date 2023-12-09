@@ -3,7 +3,7 @@ import { nodeTypes } from "@mdx-js/mdx";
 // import { serialize } from "next-mdx-remote/serialize";
 import { compileMDX } from "next-mdx-remote/rsc";
 //@ts-ignore
-import rehypeMathjax from "rehype-mathjax";
+import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
@@ -33,7 +33,11 @@ const components = {
   DataList: (props) => <DataList {...props} />,
   ToolBox: (props) => <ToolBox {...props} />,
   Annotate: (props) => <Annotate {...props}></Annotate>,
-  Note: (props) => <Annotate {...props} source={props.children}>{props.description}</Annotate>,
+  Note: (props) => (
+    <Annotate {...props} source={props.children}>
+      {props.description}
+    </Annotate>
+  ),
   Raw: (props) => <Raw {...props}></Raw>,
   h1: (props) => <h1 id={encodeURIComponent(props.children)} {...props}></h1>,
   h2: (props) => <h2 id={encodeURIComponent(props.children)} {...props}></h2>,
@@ -69,7 +73,11 @@ export async function parseMDX(post: { content?: string | null | undefined }) {
         remarkRehypeOptions: {
           allowDangerousHtml: true,
         },
-        rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }], rehypeMathjax],
+        rehypePlugins: [
+          [rehypeRaw, { passThrough: nodeTypes }],
+          //@ts-ignore
+          [rehypeKatex, { output: "mathml" }],
+        ],
         remarkPlugins: [
           [
             remarkShikiTwoslash,
