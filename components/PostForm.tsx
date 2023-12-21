@@ -7,6 +7,7 @@ import { getPost } from "@/lib/posts";
 import { getTags } from "@/lib/tags";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
+import Link from "next/link";
 import { FormEventHandler, MouseEventHandler } from "react";
 
 export type PostFormProps = {
@@ -92,6 +93,9 @@ export function PostForm({ post, categories, tags }: PostFormProps) {
                 }))}
                 className="lg:h-[180px]"
               />
+            </div>
+            <div>
+              <Link href={'https://www.imghost.net/'}>图片上传</Link>
             </div>
           </div>
         </div>
