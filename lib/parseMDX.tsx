@@ -43,6 +43,7 @@ const components = {
   h2: (props) => <h2 id={encodeURIComponent(props.children)} {...props}></h2>,
   h3: (props) => <h3 id={encodeURIComponent(props.children)} {...props}></h3>,
   h4: (props) => <h4 id={encodeURIComponent(props.children)} {...props}></h4>,
+  h5: (props) => <h5 id={encodeURIComponent(props.children)} {...props}></h5>,
   img: async (props) => {
     return (
       <figure suppressHydrationWarning>
