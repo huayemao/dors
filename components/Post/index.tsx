@@ -3,6 +3,7 @@ import { getPost, getProcessedPosts, getRecentPosts } from "@/lib/posts";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import c from "@/styles/post.module.css";
+import "katex/dist/katex.min.css";
 import dynamic from "next/dynamic";
 import { join } from "path";
 import { BackButton } from "../BackButton";

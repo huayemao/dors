@@ -77,7 +77,7 @@ export async function parseMDX(post: { content?: string | null | undefined }) {
         rehypePlugins: [
           [rehypeRaw, { passThrough: nodeTypes }],
           //@ts-ignore
-          [rehypeKatex, { output: "mathml" }],
+          [rehypeKatex],
         ],
         remarkPlugins: [
           [
