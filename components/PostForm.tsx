@@ -8,9 +8,8 @@ import { Settings } from "lucide-react";
 import Link from "next/link";
 import {
   FormEventHandler,
-  MouseEventHandler,
   useContext,
-  useState,
+  useState
 } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -52,12 +51,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   }
 };
 
-const syncUpdateTime: MouseEventHandler<HTMLButtonElement> = (e) => {
-  e.preventDefault();
-  (document.querySelector("#updated_at") as HTMLInputElement).value = (
-    document.querySelector("#created_at") as HTMLInputElement
-  ).value;
-};
+
 
 export function PostForm({ post}: PostFormProps) {
   const categories = useContext(CategoriesContext);
@@ -156,7 +150,7 @@ export function PostForm({ post}: PostFormProps) {
             defaultValue={post.title || ""}
           />
           <textarea
-            placeholder="Description"
+            placeholder="摘要"
             className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
           />
         </div>
