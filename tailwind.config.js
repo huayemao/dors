@@ -23,6 +23,13 @@ module.exports = withShurikenUI({
               },
 
             },
+            figure: {
+              marginBottom: '2em',
+              figcaption: { textAlign: 'center' },
+              img: {
+                marginBottom: 0,
+              }
+            },
             tr: {
               th: {
                 '&:first-child': {
