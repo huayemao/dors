@@ -53,7 +53,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                 <div className="flex justify-between w-full mb-5">
                   <BackButton />
                   <a
-                    href={`/admin/posts/${post.id}/edit`}
+                    href={`/admin/posts/${post.id}`}
                     className="mr-4 md:mr-8 font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
                   >
                     编辑

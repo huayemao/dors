@@ -1,9 +1,12 @@
 "use client";
 import { Category } from "@/components/Category";
+import { CategoriesContext } from "@/contexts/categories";
 import { useSelectedLayoutSegments } from "next/navigation";
+import { useContext } from "react";
 
-export function Categories({ categories }) {
+export function Categories() {
   const segments = useSelectedLayoutSegments();
+  const categories = useContext(CategoriesContext);
   const [seg, id] = segments;
 
   return (

@@ -19,13 +19,10 @@ export default function Demo() {
       </form>`,
         }}
       ></div>
-
-      <main className={styles.main}>
-        <Carousel
-          items={slides}
-          className="w-[800px] h-[420px] rounded-lg shadow"
-        ></Carousel>
-      </main>
+      <Carousel
+        items={slides}
+        className="w-[800px] h-[420px] rounded-lg shadow"
+      ></Carousel>
     </div>
   );
 }

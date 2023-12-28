@@ -1,4 +1,8 @@
 import { SITE_META } from "@/constants";
+import { CategoriesContextProvider } from "@/contexts/categories";
+import { TagsContextProvider } from "@/contexts/tags";
+import { getAllCategories } from "@/lib/categories";
+import { getTags } from "@/lib/tags";
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import Script from "next/script";
@@ -9,13 +13,16 @@ export const metadata: Metadata = {
   authors: SITE_META.author,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params,
 }: {
   children: JSX.Element;
   params: any;
 }) {
+  const categories = await getAllCategories();
+  const tags = await getTags();
+
   return (
     <html>
       <head>
@@ -31,8 +38,10 @@ export default function RootLayout({
           src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
         ></Script>
       </head>
-      <body className="bg-muted-100 transition-all duration-300 min-h-screen flex flex-col">
-        {children}
+      <body className="transition-all duration-300 min-h-screen flex flex-col">
+        <CategoriesContextProvider Categories={categories}>
+          <TagsContextProvider tags={tags}>{children}</TagsContextProvider>
+        </CategoriesContextProvider>
       </body>
     </html>
   );

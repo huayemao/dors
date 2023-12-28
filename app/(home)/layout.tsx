@@ -16,7 +16,7 @@ export default async function MainLayout({
   return (
     <>
       <Nav></Nav>
-      <main className="flex-1">
+      <main className="flex-1 bg-muted-100">
         <section className="w-full bg-muted-100 dark:bg-muted-900">
           <div className="w-full max-w-7xl mx-auto">
             <div className="w-full">
@@ -30,7 +30,7 @@ export default async function MainLayout({
                   </p>
                 </div>
                 <div className="w-full max-w-lg mx-auto my-4 space-y-8 text-center">
-                  <Categories categories={categories} />
+                  <Categories  />
                 </div>
                 {children}
               </div>
