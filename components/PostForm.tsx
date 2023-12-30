@@ -90,6 +90,7 @@ export function PostForm({ post }: PostFormProps) {
         <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
           <div className="w-24">
             <Select
+              size="sm"
               required
               labelFloat
               label="分类"
