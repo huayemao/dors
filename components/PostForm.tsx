@@ -56,7 +56,7 @@ export function PostForm({ post }: PostFormProps) {
 
   return (
     <form
-      className="dark:bg-black"
+      className="bg-white dark:bg-black"
       action={post ? "/api/updatePost" : "/api/createPost"}
       method="POST"
       onSubmit={handleOnSubmit}
