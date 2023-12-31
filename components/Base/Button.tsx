@@ -4,6 +4,7 @@ import { ButtonHTMLAttributes, FC } from "react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "medium";
   flavor?: "pastel" | "solid";
+  loading?: boolean;
 }
 
 const Button: FC<ButtonProps> = ({
@@ -11,6 +12,7 @@ const Button: FC<ButtonProps> = ({
   size = "medium",
   flavor = "solid",
   className,
+  loading = false,
   ...rest
 }) => {
   return (
@@ -24,11 +26,15 @@ const Button: FC<ButtonProps> = ({
             "nui-button-medium": size === "medium",
             "nui-button-small": size === "sm",
             "nui-button-pastel": flavor === "pastel",
+            "nui-button-loading": loading,
           },
           className
         )}
       >
         {children}
+        {loading && (
+          <div className="nui-placeload animate-nui-placeload h-full w-full rounded"></div>
+        )}
       </button>
     </>
   );

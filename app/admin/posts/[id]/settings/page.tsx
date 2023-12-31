@@ -5,7 +5,13 @@ import Select from "@/components/Base/Select";
 import { CategoriesContext } from "@/contexts/categories";
 import { PostContext } from "@/contexts/post";
 import { notFound } from "next/navigation";
-import { FC, MouseEventHandler, PropsWithChildren, useContext } from "react";
+import {
+  FC,
+  MouseEventHandler,
+  PropsWithChildren,
+  useContext,
+  useState,
+} from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +40,38 @@ const Panel: FC<
   );
 };
 
+const SaveButton = ({ postId }: { postId: string }) => {
+  const [loading, setLoading] = useState(false);
+  const handleClick = async (e) => {
+    const form = (e.nativeEvent.target as HTMLElement)
+      .previousElementSibling as HTMLFormElement;
+    const formData = new FormData(form);
+    formData.append("id", postId);
+    setLoading(true);
+    fetch("/api/updatePost", {
+      method: "POST",
+      body: formData,
+      headers: {
+        accept: "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          alert("修改成功");
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return (
+    <Button loading={loading} className="w-full" onClick={handleClick}>
+      保存
+    </Button>
+  );
+};
+
 export default function Page({ params }) {
   const post = useContext(PostContext);
 
@@ -50,31 +88,6 @@ export default function Page({ params }) {
   if (!post) {
     return notFound();
   }
-
-  const SaveButton = () => (
-    <Button
-      className="w-full"
-      onClick={async (e) => {
-        const form = (e.nativeEvent.target as HTMLElement)
-          .previousElementSibling as HTMLFormElement;
-        const formData = new FormData(form);
-        formData.append("id", String(post.id));
-        const res = await fetch("/api/updatePost", {
-          method: "POST",
-          body: formData,
-          headers: {
-            accept: "application/json",
-          },
-        });
-
-        if (res.status === 200) {
-          alert("修改成功");
-        }
-      }}
-    >
-      保存
-    </Button>
-  );
 
   return (
     <div className="space-y-4 max-w-4xl">
@@ -93,7 +106,7 @@ export default function Page({ params }) {
             }))}
           />
         </form>
-        <SaveButton></SaveButton>
+        <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
       <Panel
         description="修改文章任意属性将默认更新修改时间，可选择自定义修改时间"
@@ -125,7 +138,7 @@ export default function Page({ params }) {
             </Button>
           </div>
         </form>
-        <SaveButton></SaveButton>
+        <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
     </div>
   );
