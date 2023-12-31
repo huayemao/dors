@@ -4,6 +4,9 @@ import Input from "@/components/Base/Input";
 import Select from "@/components/Base/Select";
 import { CategoriesContext } from "@/contexts/categories";
 import { PostContext } from "@/contexts/post";
+import { getPost } from "@/lib/posts";
+import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   FC,
@@ -72,6 +75,64 @@ const SaveButton = ({ postId }: { postId: string }) => {
   );
 };
 
+const CoverImageSetting = ({
+  originalPhoto,
+  postId,
+  editTime,
+}: {
+  originalPhoto: PexelsPhoto;
+  postId: string;
+  editTime: string;
+}) => {
+  const [photo, setPhoto] = useState(originalPhoto);
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <>
+      <Image
+        width={300}
+        height={240}
+        className="w-full"
+        alt={photo.alt}
+        src={photo.src.large}
+      />
+      <div className="text-right mt-2">
+        <Button
+          loading={loading}
+          onClick={() => {
+            const formData = new FormData();
+            formData.append("id", postId);
+            formData.append("changePhoto", "on");
+            formData.append("updated_at", editTime);
+            setLoading(true);
+            fetch("/api/updatePost", {
+              method: "POST",
+              body: formData,
+              headers: {
+                accept: "application/json",
+              },
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((data) => {
+                const post = data.data as Awaited<ReturnType<typeof getPost>>;
+                setPhoto(post?.cover_image as PexelsPhoto);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+          }}
+          size="sm"
+          flavor="pastel"
+        >
+          随机更换图片
+        </Button>
+      </div>
+    </>
+  );
+};
+
 export default function Page({ params }) {
   const post = useContext(PostContext);
 
@@ -85,12 +146,25 @@ export default function Page({ params }) {
     ).value;
   };
 
+  const useLastEditTime: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    (document.querySelector("#updated_at") as HTMLInputElement).value =
+      post?.updated_at?.toISOString().slice(0, 16) as string;
+  };
+
   if (!post) {
     return notFound();
   }
 
   return (
     <div className="space-y-4 max-w-4xl">
+      <Panel title="封面图片" description="可更换为随机图片或自定义图片">
+        <CoverImageSetting
+          originalPhoto={post.cover_image as PexelsPhoto}
+          postId={String(post.id)}
+          editTime={post.updated_at?.toISOString().slice(0, 16) as string}
+        />
+      </Panel>
       <Panel title="分类&标签" description="文章可有一个分类和多个标签">
         <form className="mb-3">
           <Select
@@ -132,10 +206,18 @@ export default function Page({ params }) {
               data-original-value={post.created_at?.toISOString().slice(0, 16)}
             />
           </div>
-          <div className="text-right my-3">
-            <Button onClick={syncUpdateTime} size="sm" flavor="pastel">
-              修改时间使用创建时间
-            </Button>
+          <div className="flex my-3">
+            <div className="mr-auto nui-paragraph nui-paragraph-xs text-muted-400">
+              快捷自定义修改时间：
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button onClick={useLastEditTime} size="sm" flavor="pastel">
+                使用上次修改时间
+              </Button>
+              <Button onClick={syncUpdateTime} size="sm" flavor="pastel">
+                使用创建时间
+              </Button>
+            </div>
           </div>
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>

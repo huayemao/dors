@@ -42,32 +42,8 @@ export const getPost = cache(async (id: number) => {
 
   /* @ts-ignore */
   if (!res.cover_image?.dataURLs) {
-    const imageData = await getPexelImages(1);
-    // imageData.photos 有可能为空数组
-    const imageJson = imageData.photos[0] as PexelsPhoto;
-
-    const dataURLs = {
-      large: await getBase64Image((imageJson as PexelsPhoto).src.large),
-      small: await getBase64Image((imageJson as PexelsPhoto).src.small),
-    };
-
-    await prisma.posts.update({
-      where: {
-        id,
-      },
-      data: {
-        cover_image: {
-          ...imageJson,
-          dataURLs,
-        },
-      },
-    });
-
-    /* @ts-ignore */
-    res.cover_image = {
-      ...imageJson,
-      dataURLs,
-    };
+    const cover_image = await randomlyUpdatePhoto(id);
+    res.cover_image = cover_image;
   }
 
   const html = await markdownToHtml(res.content);
@@ -119,6 +95,37 @@ export const getPosts = cache(
     );
   }
 );
+
+async function randomlyUpdatePhoto(id: number) {
+  const cover_image = await getRandomPhoto();
+
+  await prisma.posts.update({
+    where: {
+      id,
+    },
+    data: {
+      cover_image,
+    },
+  });
+  return cover_image;
+}
+
+export async function getRandomPhoto() {
+  const imageData = await getPexelImages(1);
+  // imageData.photos 有可能为空数组
+  const imageJson = imageData.photos[0] as PexelsPhoto;
+
+  const dataURLs = {
+    large: await getBase64Image((imageJson as PexelsPhoto).src.large),
+    small: await getBase64Image((imageJson as PexelsPhoto).src.small),
+  };
+
+  const cover_image = {
+    ...imageJson,
+    dataURLs,
+  };
+  return cover_image;
+}
 
 export async function getFeaturedPostIds() {
   const res = await prisma.settings.findUnique({
@@ -288,7 +295,6 @@ export async function getRecentPosts() {
   return posts;
 }
 
-
 export async function updatePost(
   post: Awaited<ReturnType<typeof getPost>>,
   tags: string[] | undefined,
@@ -345,7 +351,7 @@ export async function updatePost(
     data: {
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
-      cover_image: changePhoto === "on" ? {} : undefined,
+      cover_image: changePhoto === "on" ? await getRandomPhoto() : undefined,
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       created_at: created_at ? new Date(created_at as string) : undefined,
       tags_posts_links: {},
@@ -359,4 +365,6 @@ export async function updatePost(
         : undefined,
     },
   });
+
+  return res;
 }

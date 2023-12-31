@@ -31,7 +31,7 @@ const Button: FC<ButtonProps> = ({
           className
         )}
       >
-        {children}
+        {!loading && children}
         {loading && (
           <div className="nui-placeload animate-nui-placeload h-full w-full rounded"></div>
         )}

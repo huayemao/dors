@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     );
   }
 
-  await updatePost(
+  const res = await updatePost(
     post,
     tags,
     id,
@@ -57,6 +57,7 @@ export async function POST(request: Request) {
     return new NextResponse(
       JSON.stringify({
         success: true,
+        data: res,
       }),
       {
         status: 200,
