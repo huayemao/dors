@@ -20,7 +20,6 @@ export function Menu() {
   ];
 
   const segs = useSelectedLayoutSegments();
-  console.log(segs);
 
   return (
     <div className="nui-slimscroll relative flex w-full grow flex-col overflow-y-auto py-6 px-6">

@@ -1,18 +1,19 @@
-import { getPost } from "@/lib/posts";
-import prisma from "@/lib/prisma";
-import { updatePostTags } from "@/lib/tags";
+import { getPost, updatePost } from "@/lib/posts";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
-  const id = formData.get("id");
-  const content = formData.get("content");
-  const title = formData.get("title");
-  const changePhoto = formData.get("changePhoto");
-  const categoryId = formData.get("category");
-  const updated_at = formData.get("updated_at");
-  const created_at = formData.get("created_at");
-  const tags = formData.get("tags") ? formData.getAll("tags") : undefined;
+  const id = (formData.get("id") as string) || undefined;
+  const content = (formData.get("content") as string) || undefined;
+  const title = (formData.get("title") as string) || undefined;
+  const changePhoto = (formData.get("changePhoto") as string) || undefined;
+  const category_id = (formData.get("category_id") as string) || undefined;
+  const updated_at = (formData.get("updated_at") as string) || undefined;
+  const created_at = (formData.get("created_at") as string) || undefined;
+
+  const tags = formData.has("tags")
+    ? (formData.getAll("tags") as string[])
+    : undefined;
 
   if (Number.isNaN(parseInt(id as string))) {
     return new NextResponse(
@@ -35,76 +36,33 @@ export async function POST(request: Request) {
         success: false,
       }),
       {
-        status: 400,
+        status: 404,
       }
     );
   }
 
-  if (
-    tags &&
-    tags.sort().toString() !==
-      post.tags
-        .map((e) => e?.name)
-        .sort()
-        .toString()
-  ) {
-    const existedTags = await prisma.tags.findMany({
-      where: {
-        name: {
-          in: tags as string[],
-        },
-      },
-    });
+  await updatePost(
+    post,
+    tags,
+    id,
+    content,
+    title,
+    changePhoto,
+    updated_at,
+    created_at,
+    category_id
+  );
 
-    const tagsToAdd = tags.filter(
-      (t) => !existedTags.map((e) => e.name).includes(t as string)
+  if (request.headers.get("accept") === "application/json") {
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+      }),
+      {
+        status: 200,
+      }
     );
-
-    await prisma.tags.createMany({
-      data: tagsToAdd.map((t) => ({
-        name: t as string,
-      })),
-    });
-
-    const tagsIds = (
-      await prisma.tags.findMany({
-        where: {
-          name: {
-            in: tags as string[],
-          },
-        },
-        select: {
-          id: true,
-        },
-      })
-    ).map((e) => e.id);
-
-    updatePostTags(post, tagsIds);
   }
-  // await prisma.tags.find; tags 也必须要查？或者如果对比结果相同就不用查
-
-  // todo: 应该有 diff 的
-  const res = await prisma.posts.update({
-    where: {
-      id: parseInt(id as string),
-    },
-    data: {
-      content: content ? (content as string) : undefined,
-      title: title ? (title as string) : undefined,
-      cover_image: changePhoto === "on" ? {} : undefined,
-      updated_at: updated_at ? new Date(updated_at as string) : new Date(),
-      created_at: created_at ? new Date(created_at as string) : undefined,
-      tags_posts_links: {},
-      posts_category_links: categoryId
-        ? {
-            deleteMany: { post_id: parseInt(id as string) },
-            create: {
-              category_id: parseInt(categoryId as string),
-            },
-          }
-        : undefined,
-    },
-  });
 
   const origin = request.headers.get("Origin");
 

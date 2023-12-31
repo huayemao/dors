@@ -16,7 +16,7 @@ const Panel: FC<
   }>
 > = ({ title, description, children }) => {
   return (
-    <div className="nui-card nui-card-curved nui-card-white p-6">
+    <div className="nui-card nui-card-curved nui-card-white p-6 max-w-md">
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="nui-heading nui-heading-sm nui-weight-semibold nui-lead-tight text-muted-800 dark:text-white">
@@ -50,50 +50,82 @@ export default function Page({ params }) {
   if (!post) {
     return notFound();
   }
+
+  const SaveButton = () => (
+    <Button
+      className="w-full"
+      onClick={async (e) => {
+        const form = (e.nativeEvent.target as HTMLElement)
+          .previousElementSibling as HTMLFormElement;
+        const formData = new FormData(form);
+        formData.append("id", String(post.id));
+        const res = await fetch("/api/updatePost", {
+          method: "POST",
+          body: formData,
+          headers: {
+            accept: "application/json",
+          },
+        });
+
+        if (res.status === 200) {
+          alert("修改成功");
+        }
+      }}
+    >
+      保存
+    </Button>
+  );
+
   return (
     <div className="space-y-4 max-w-4xl">
       <Panel title="分类&标签" description="文章可有一个分类和多个标签">
-        <Select
-          required
-          label="分类"
-          id="category"
-          name="category"
-          defaultValue={categoryId ? String(categoryId) : undefined}
-          data-original-value={categoryId ? String(categoryId) : undefined}
-          data={cats.map((e) => ({
-            value: String(e.id),
-            label: e.name as string,
-          }))}
-        />
+        <form className="mb-3">
+          <Select
+            required
+            label="分类"
+            id="category_id"
+            name="category_id"
+            defaultValue={categoryId ? String(categoryId) : undefined}
+            data-original-value={categoryId ? String(categoryId) : undefined}
+            data={cats.map((e) => ({
+              value: String(e.id),
+              label: e.name as string,
+            }))}
+          />
+        </form>
+        <SaveButton></SaveButton>
       </Panel>
       <Panel
         description="修改文章任意属性将默认更新修改时间，可选择自定义修改时间"
         title="创建&修改时间"
       >
-        <div className="grid md:grid-cols-2 gap-4">
-          <Input
-            type="datetime-local"
-            label="自定义修改时间"
-            id={"updated_at"}
-            name="updated_at"
-            // 不传修改为当前时间
-            defaultValue={""}
-            data-original-value={""}
-          />
-          <Input
-            type="datetime-local"
-            label="自定义创建时间"
-            id={"created_at"}
-            name="created_at"
-            defaultValue={post.created_at?.toISOString().slice(0, 16)}
-            data-original-value={post.created_at?.toISOString().slice(0, 16)}
-          />
-        </div>
-        <div className="text-right my-3">
-          <Button onClick={syncUpdateTime} size="sm" flavor="pastel">
-            修改时间使用创建时间
-          </Button>
-        </div>
+        <form>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              type="datetime-local"
+              label="自定义修改时间"
+              id={"updated_at"}
+              name="updated_at"
+              // 不传修改为当前时间
+              defaultValue={""}
+              data-original-value={""}
+            />
+            <Input
+              type="datetime-local"
+              label="自定义创建时间"
+              id={"created_at"}
+              name="created_at"
+              defaultValue={post.created_at?.toISOString().slice(0, 16)}
+              data-original-value={post.created_at?.toISOString().slice(0, 16)}
+            />
+          </div>
+          <div className="text-right my-3">
+            <Button onClick={syncUpdateTime} size="sm" flavor="pastel">
+              修改时间使用创建时间
+            </Button>
+          </div>
+        </form>
+        <SaveButton></SaveButton>
       </Panel>
     </div>
   );

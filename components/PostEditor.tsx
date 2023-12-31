@@ -81,8 +81,8 @@ export function PostEditor({ post }: PostEditorProps) {
               required
               labelFloat
               label="分类"
-              id="category"
-              name="category"
+              id="category_id"
+              name="category_id"
               defaultValue={categoryId ? String(categoryId) : undefined}
               data-original-value={categoryId ? String(categoryId) : undefined}
               data={categories.map((e) => ({
@@ -122,7 +122,7 @@ export function PostEditor({ post }: PostEditorProps) {
             name="abstract"
             data-original-value={""}
             // todo
-            value={""}
+            defaultValue={""}
             className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
           />
         </div>

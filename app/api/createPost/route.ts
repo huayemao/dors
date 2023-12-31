@@ -5,9 +5,29 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const content = formData.get("content");
   const title = formData.get("title");
-  const categoryId = formData.get("category");
-  const tags = formData.get("tags") ? formData.getAll("tags") : undefined;
+  const categoryId = formData.get("category_id");
+  const tags = formData.has("tags") ? formData.getAll("tags") : undefined;
 
+  const post = await createPost(
+    content as string,
+    title as string,
+    categoryId as string,
+    tags as string[]
+  );
+
+  const origin = request.headers.get("Origin");
+
+  const path = new URL(("/posts/" + post.id) as string, origin || request.url);
+
+  return NextResponse.redirect(path);
+}
+
+async function createPost(
+  content: string,
+  title?: string,
+  categoryId?: string,
+  tags?: string[]
+) {
   const post = await prisma.posts.create({
     data: {
       content: content as string,
@@ -69,10 +89,5 @@ export async function POST(request: Request) {
       },
     });
   }
-
-  const origin = request.headers.get("Origin");
-
-  const path = new URL(("/posts/" + post.id) as string, origin || request.url);
-
-  return NextResponse.redirect(path);
+  return post;
 }

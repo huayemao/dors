@@ -3,6 +3,7 @@ import prisma, { Prisma } from "@/lib/prisma";
 import { getPlaiceholder } from "plaiceholder";
 import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
+import { updatePostTags } from "./tags";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
   getPexelImages,
@@ -285,4 +286,77 @@ export async function getRecentPosts() {
     imageSize: "small",
   });
   return posts;
+}
+
+
+export async function updatePost(
+  post: Awaited<ReturnType<typeof getPost>>,
+  tags: string[] | undefined,
+  id: string | undefined,
+  content: string | undefined,
+  title: string | undefined,
+  changePhoto: string | undefined,
+  updated_at: string | undefined,
+  created_at: string | undefined,
+  categoryId: string | undefined
+) {
+  const postTagNames = post?.tags.map((e) => e?.name) as string[];
+
+  if (tags && tags.sort().toString() !== postTagNames.sort().toString()) {
+    const existedTags = await prisma.tags.findMany({
+      where: {
+        name: {
+          in: tags as string[],
+        },
+      },
+    });
+
+    const tagsToAdd = tags.filter(
+      (t) => !existedTags.map((e) => e.name).includes(t as string)
+    );
+
+    await prisma.tags.createMany({
+      data: tagsToAdd.map((t) => ({
+        name: t as string,
+      })),
+    });
+
+    const tagsIds = (
+      await prisma.tags.findMany({
+        where: {
+          name: {
+            in: tags as string[],
+          },
+        },
+        select: {
+          id: true,
+        },
+      })
+    ).map((e) => e.id);
+
+    updatePostTags(post, tagsIds);
+  }
+  // await prisma.tags.find; tags 也必须要查？或者如果对比结果相同就不用查
+  // todo: 应该有 diff 的
+  const res = await prisma.posts.update({
+    where: {
+      id: parseInt(id as string),
+    },
+    data: {
+      content: content ? (content as string) : undefined,
+      title: title ? (title as string) : undefined,
+      cover_image: changePhoto === "on" ? {} : undefined,
+      updated_at: updated_at ? new Date(updated_at as string) : new Date(),
+      created_at: created_at ? new Date(created_at as string) : undefined,
+      tags_posts_links: {},
+      posts_category_links: categoryId
+        ? {
+            deleteMany: { post_id: parseInt(id as string) },
+            create: {
+              category_id: parseInt(categoryId as string),
+            },
+          }
+        : undefined,
+    },
+  });
 }
