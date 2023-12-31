@@ -3,9 +3,15 @@ import { ButtonHTMLAttributes, FC } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "medium";
+  flavor?: "pastel" | "solid";
 }
 
-const Button: FC<ButtonProps> = ({ children, size = "medium", ...rest }) => {
+const Button: FC<ButtonProps> = ({
+  children,
+  size = "medium",
+  flavor = "solid",
+  ...rest
+}) => {
   return (
     <>
       <button
@@ -15,6 +21,7 @@ const Button: FC<ButtonProps> = ({ children, size = "medium", ...rest }) => {
           {
             "nui-button-medium": size === "medium",
             "nui-button-small": size === "sm",
+            "nui-button-pastel": flavor === "pastel",
           }
         )}
         {...rest}
