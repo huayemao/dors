@@ -1,6 +1,6 @@
+import { PostEditor } from "@/components/PostEditor";
 import { getPost } from "@/lib/posts";
 import { notFound } from "next/navigation";
-import { PostForm } from "../../../../components/PostForm";
 
 export const dynamic = 'force-dynamic'
 
@@ -16,6 +16,6 @@ export default async function page({ params }) {
   }
 
   return (
-      <PostForm post={post}  />
+      <PostEditor post={post}  />
   );
 }

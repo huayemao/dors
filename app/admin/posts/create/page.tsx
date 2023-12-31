@@ -1,9 +1,8 @@
-import { PostForm } from "@/components/PostForm";
-import { getTags } from "@/lib/tags";
+import { PostEditor } from "@/components/PostEditor";
 
 export default async function CreatePostPage({ params }) {
 
   return (
-      <PostForm post={null} />
+      <PostEditor post={null} />
   );
 }

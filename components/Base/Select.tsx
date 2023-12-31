@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React, { InputHTMLAttributes } from "react";
 
-interface Props extends InputHTMLAttributes<HTMLSelectElement> {
+interface Props extends Omit<InputHTMLAttributes<HTMLSelectElement>, "size"> {
   label: string;
   id: string;
   labelClassName?: string;
@@ -9,6 +9,7 @@ interface Props extends InputHTMLAttributes<HTMLSelectElement> {
   data: { label: string; value: string | number }[];
   labelFloat?: boolean;
   size?: "sm" | "md";
+  shape?: "full" | "straight" | "rounded" | "curved";
 }
 
 const SelectComponent: React.FC<Props> = ({
@@ -21,18 +22,17 @@ const SelectComponent: React.FC<Props> = ({
   className,
   labelFloat = false,
   size = "md",
+  shape = "straight",
   ...restProps
 }) => {
   return (
     <div
-      className={cn(
-        "nui-select-wrapper nui-select-wrapper nui-select-default ",
-        {
-          "nui-select-label-float": labelFloat,
-          "nui-select-md": size == "md",
-          "nui-select-sm": size == "sm",
-        }
-      )}
+      className={cn("nui-select-wrapper nui-select-default ", {
+        "nui-select-label-float": labelFloat,
+        "nui-select-md": size == "md",
+        "nui-select-sm": size == "sm",
+        "nui-select-full": shape == "full",
+      })}
     >
       <div className="nui-select-outer">
         {!labelFloat && (

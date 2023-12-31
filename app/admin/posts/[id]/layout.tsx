@@ -16,7 +16,7 @@ export default async function page({ params, children }) {
   }
 
   return (
-    <main className="w-full px-8 py-4">
+    <main className="w-full md:px-8 py-4">
       <PostContextProvider post={post}>{children}</PostContextProvider>
     </main>
   );

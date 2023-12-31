@@ -9,7 +9,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import Button from "./Base/Button";
 import Select from "./Base/Select";
 
-export type PostFormProps = {
+export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
 };
 
@@ -27,7 +27,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
           formData.get(el.name);
       // @ts-ignore
       const originalValue = el.dataset.originalValue;
-      if (String(originalValue) === String(formDataValue)) {
+      if (String(originalValue) === String(formDataValue) && el.id !== "id") {
         // @ts-ignore
         el.disabled = true;
       } else {
@@ -35,8 +35,9 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         changedFields.push(el.name);
       }
     });
-  if (changedFields.length < 2) {
+  if (!changedFields.length) {
     e.preventDefault();
+    alert("未修改内容");
     (e.target as HTMLFormElement)
       .querySelectorAll("input, select, textarea")
       .forEach((el) => {
@@ -46,7 +47,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   }
 };
 
-export function PostForm({ post }: PostFormProps) {
+export function PostEditor({ post }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const tags = useContext(TagsContext);
 
@@ -71,26 +72,12 @@ export function PostForm({ post }: PostFormProps) {
         />
       )}
 
-      <div className="relative min-h-[500px] w-full max-w-screen-lg border-stone-200 p-12 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
-        <div className="absolute right-5 top-5 mb-5 flex items-center space-x-3">
-          {post && (
-            <Link
-              href={`/admin/posts/${post.id}/settings`}
-              className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
-            >
-              <Settings className="h-4 w-4" />
-            </Link>
-          )}
-
-          <Button type="submit" size="sm">
-            保存
-          </Button>
-        </div>
-
-        <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
-          <div className="w-24">
+      <div className="relative min-h-[500px] w-full max-w-screen-lg border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
+        <div className="absolute right-0 left-0 px-5 top-5 mb-6 flex items-center ">
+          <div className="w-20 mr-auto">
             <Select
               size="sm"
+              shape="full"
               required
               labelFloat
               label="分类"
@@ -104,6 +91,22 @@ export function PostForm({ post }: PostFormProps) {
               }))}
             />
           </div>
+          <div className="space-x-3 flex items-center">
+            {post && (
+              <Link
+                href={`/admin/posts/${post.id}/settings`}
+                className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
+              >
+                <Settings className="h-4 w-4" />
+              </Link>
+            )}
+            <Button type="submit" size="sm">
+              保存
+            </Button>
+          </div>
+        </div>
+
+        <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
           <input
             id={"title"}
             name="title"
