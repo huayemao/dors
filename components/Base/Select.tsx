@@ -34,8 +34,7 @@ const SelectComponent: React.FC<Props> = ({
         "nui-select-full": shape == "full",
       })}
     >
-      <div className="nui-select-outer">
-        {!labelFloat && (
+      {!labelFloat && (
           <label
             className={cn(
               "nui-label w-full pb-1 text-[0.825rem]",
@@ -46,7 +45,7 @@ const SelectComponent: React.FC<Props> = ({
             {label}
           </label>
         )}
-
+      <div className="nui-select-outer">
         <select
           defaultValue={defaultValue}
           id={id}
