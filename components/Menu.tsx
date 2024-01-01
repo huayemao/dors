@@ -10,12 +10,12 @@ export function Menu() {
     {
       title: "文章管理",
       href: "/admin/posts/create",
-      iconName: "Sun",
+      iconName: "StickyNote",
     },
     {
       title: "标签管理",
       href: "/admin/tags",
-      iconName: "Home",
+      iconName: "Tag",
     },
   ];
 
@@ -27,7 +27,8 @@ export function Menu() {
         {menuItems.map((e) => {
           const LucideIcon = icons[e.iconName];
           const isSelected =
-            ["admin"].concat(segs).join("/") === e.href.slice(1);
+            ["admin"].concat(segs).slice(0, 2).toString() ===
+            e.href.slice(1).split("/").slice(0, 2).toString();
           return (
             <li key={e.title}>
               <div className="group">
