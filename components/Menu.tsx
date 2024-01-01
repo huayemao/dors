@@ -17,6 +17,11 @@ export function Menu() {
       href: "/admin/tags",
       iconName: "Tag",
     },
+    {
+      title: "设置",
+      href: "/admin/settings",
+      iconName: "Settings",
+    },
   ];
 
   const segs = useSelectedLayoutSegments();

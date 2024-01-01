@@ -1,4 +1,5 @@
 import { getPost, updatePost } from "@/lib/posts";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -52,6 +53,8 @@ export async function POST(request: Request) {
     created_at,
     category_id
   );
+
+  revalidatePath("/posts/" + post.id);
 
   if (request.headers.get("accept") === "application/json") {
     return new NextResponse(
