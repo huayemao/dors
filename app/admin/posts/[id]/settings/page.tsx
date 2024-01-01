@@ -2,8 +2,10 @@
 import Button from "@/components/Base/Button";
 import Input from "@/components/Base/Input";
 import Select from "@/components/Base/Select";
+import { detectChange } from "@/components/PostEditor";
 import { CategoriesContext } from "@/contexts/categories";
 import { PostContext } from "@/contexts/post";
+import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import Image from "next/image";
@@ -48,6 +50,11 @@ const SaveButton = ({ postId }: { postId: string }) => {
   const handleClick = async (e) => {
     const form = (e.nativeEvent.target as HTMLElement)
       .previousElementSibling as HTMLFormElement;
+    const hasChanged = detectChange(form);
+    if (!hasChanged) {
+      alert("没有需要提交的修改");
+      return;
+    }
     const formData = new FormData(form);
     formData.append("id", postId);
     setLoading(true);
@@ -135,6 +142,7 @@ const CoverImageSetting = ({
 
 export default function Page({ params }) {
   const post = useContext(PostContext);
+  const tags = useContext(TagsContext);
 
   const cats = useContext(CategoriesContext);
   const categoryId = post?.posts_category_links[0]?.category_id;
@@ -157,7 +165,7 @@ export default function Page({ params }) {
   }
 
   return (
-    <div className="space-y-4 max-w-4xl">
+    <div className="grid lg:grid-cols-2 gap-4 max-w-5xl mx-auto">
       <Panel title="封面图片" description="可更换为随机图片或自定义图片">
         <CoverImageSetting
           originalPhoto={post.cover_image as PexelsPhoto}
@@ -178,6 +186,19 @@ export default function Page({ params }) {
               value: String(e.id),
               label: e.name as string,
             }))}
+          />
+          <Select
+            multiple
+            label="标签"
+            id="tags"
+            name="tags"
+            defaultValue={post.tags.map((e) => String(e?.name)).sort()}
+            data-original-value={post.tags.map((e) => String(e?.name)).sort()}
+            data={tags.map((e) => ({
+              value: String(e.name),
+              label: e.name as string,
+            }))}
+            className="lg:!h-[180px]"
           />
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>

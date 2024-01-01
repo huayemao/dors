@@ -1,6 +1,5 @@
 "use client";
 import { CategoriesContext } from "@/contexts/categories";
-import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/posts";
 import { Settings } from "lucide-react";
 import Link from "next/link";
@@ -13,43 +12,48 @@ export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
 };
 
-const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+export const detectChange = (form: HTMLFormElement) => {
   const changedFields = [];
-  const formData = new FormData(e.target as HTMLFormElement);
-  (e.target as HTMLFormElement)
-    .querySelectorAll("input, select, textarea")
-    .forEach((el) => {
+  const formData = new FormData(form);
+  const inputs = form.querySelectorAll("input, select, textarea");
+  inputs.forEach((el) => {
+    // @ts-ignore
+    const formDataValue = el.multiple
+      ? // @ts-ignore
+        formData.getAll(el.name).sort().join(",")
+      : // @ts-ignore
+        formData.get(el.name);
+    // @ts-ignore
+    const originalValue = el.dataset.originalValue;
+    if (String(originalValue) === String(formDataValue) && el.id !== "id") {
       // @ts-ignore
-      const formDataValue = el.multiple
-        ? // @ts-ignore
-          formData.getAll(el.name).sort().join(",")
-        : // @ts-ignore
-          formData.get(el.name);
+      el.disabled = true;
+    } else {
       // @ts-ignore
-      const originalValue = el.dataset.originalValue;
-      if (String(originalValue) === String(formDataValue) && el.id !== "id") {
-        // @ts-ignore
-        el.disabled = true;
-      } else {
-        // @ts-ignore
-        changedFields.push(el.name);
-      }
-    });
+      changedFields.push(el.name);
+    }
+  });
+
   if (!changedFields.length) {
+    inputs.forEach((el) => {
+      // @ts-ignore
+      el.disabled = false;
+    });
+    return false;
+  }
+  return true;
+};
+
+const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const changed = detectChange(e.target as HTMLFormElement);
+  if (!changed) {
     e.preventDefault();
-    alert("未修改内容");
-    (e.target as HTMLFormElement)
-      .querySelectorAll("input, select, textarea")
-      .forEach((el) => {
-        // @ts-ignore
-        el.disabled = false;
-      });
+    alert("尚未修改内容");
   }
 };
 
 export function PostEditor({ post }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
-  const tags = useContext(TagsContext);
 
   const [content, setContent] = useState(post?.content || "");
 
@@ -160,20 +164,7 @@ export function PostEditor({ post }: PostEditorProps) {
 
   //         </div>
   //         <div>
-  //           <Select
-  //             multiple
-  //             height={90}
-  //             label="标签"
-  //             id="tags"
-  //             name="tags"
-  //             defaultValue={post.tags.map((e) => String(e?.name)).sort()}
-  //             data-original-value={post.tags.map((e) => String(e?.name)).sort()}
-  //             data={tags.map((e) => ({
-  //               value: String(e.name),
-  //               label: e.name as string,
-  //             }))}
-  //             className="lg:h-[180px]"
-  //           />
+
   //         </div>
   //       </div>
   //   </form>
