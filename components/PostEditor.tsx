@@ -61,7 +61,7 @@ export function PostEditor({ post }: PostEditorProps) {
 
   return (
     <form
-      className="bg-white dark:bg-black"
+      className="bg-white dark:bg-black  max-w-screen-lg"
       action={post ? "/api/updatePost" : "/api/createPost"}
       method="POST"
       onSubmit={handleOnSubmit}
@@ -76,7 +76,7 @@ export function PostEditor({ post }: PostEditorProps) {
         />
       )}
 
-      <div className="relative min-h-[500px] w-full max-w-screen-lg border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
+      <div className="relative min-h-[500px] w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
         <div className="absolute right-0 left-0 px-5 top-5 mb-6 flex items-center ">
           <div className="w-20 mr-auto">
             <Select
