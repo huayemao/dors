@@ -19,5 +19,5 @@ export async function POST(request: Request, response: Response) {
 
   const path = new URL(("/tags/" + tag.id) as string, origin || request.url);
 
-  return NextResponse.redirect(path);
+  return NextResponse.redirect(path, 303);
 }

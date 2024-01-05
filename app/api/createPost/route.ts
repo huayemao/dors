@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
   const path = new URL(("/posts/" + post.id) as string, origin || request.url);
 
-  return NextResponse.redirect(path);
+  return NextResponse.redirect(path, 303);
 }
 
 async function createPost(

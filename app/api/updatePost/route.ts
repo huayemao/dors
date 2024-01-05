@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
   const path = new URL(("/posts/" + id) as string, origin || request.url);
 
-  return NextResponse.redirect(path);
+  return NextResponse.redirect(path, 303);
 }
 
 export async function revalidateHomePage(id: number) {

@@ -18,13 +18,6 @@ export function middleware(req: NextRequest) {
         headers: { "WWW-Authenticate": "Basic" },
       });
     }
-  } else if (
-    req.method === "POST" &&
-    !req.nextUrl.pathname.startsWith("/api")
-  ) {
-    // Redirect to the correct static page using semantic 303
-    // ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/303
-    return NextResponse.redirect(req.nextUrl.clone(), 303);
   }
 
   return NextResponse.next();
