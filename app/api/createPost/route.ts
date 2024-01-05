@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { revalidateHomePage } from "../updatePost/route";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -14,6 +15,8 @@ export async function POST(request: Request) {
     categoryId as string,
     tags as string[]
   );
+
+  await revalidateHomePage(post.id);
 
   const origin = request.headers.get("Origin");
 

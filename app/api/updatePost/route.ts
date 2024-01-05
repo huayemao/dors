@@ -1,4 +1,6 @@
+import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { getPost, updatePost } from "@/lib/posts";
+import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
@@ -54,6 +56,8 @@ export async function POST(request: Request) {
     category_id
   );
 
+  await revalidateHomePage(res.id);
+
   revalidatePath("/posts/" + post.id);
 
   if (request.headers.get("accept") === "application/json") {
@@ -73,4 +77,20 @@ export async function POST(request: Request) {
   const path = new URL(("/posts/" + id) as string, origin || request.url);
 
   return NextResponse.redirect(path);
+}
+
+export async function revalidateHomePage(id: number) {
+  const firstPagePosts = await prisma.posts.findMany({
+    select: {
+      id: true,
+    },
+    take: POSTS_COUNT_PER_PAGE,
+    orderBy: {
+      updated_at: "desc",
+    },
+  });
+
+  if (firstPagePosts.some((e) => e.id === id)) {
+    revalidatePath("/", "page");
+  }
 }
