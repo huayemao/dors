@@ -43,8 +43,10 @@ export async function generateMetadata({
   return {
     title: `${post.title} | ${SITE_META.name}——${SITE_META.description}`,
     description: abstract,
+    abstract: abstract,
     keywords,
     openGraph: {
+      description: abstract,
       images: [(post.cover_image as PexelsPhoto).src.small],
     },
   };

@@ -10,7 +10,12 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: SITE_META.name + "——" + SITE_META.description,
   description: SITE_META.description + SITE_META.introduction,
+  abstract: SITE_META.description + SITE_META.introduction,
   authors: SITE_META.author,
+  openGraph: {
+    description: SITE_META.description + SITE_META.introduction,
+    images: "/img/huayemao.png",
+  },
 };
 
 export default async function RootLayout({
