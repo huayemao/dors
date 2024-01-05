@@ -2,6 +2,7 @@ import { getPost } from "@/lib/posts";
 import { getDateString } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import Image, { ImageProps } from "next/image";
+import Link from "next/link";
 import Tag from "./Tag";
 
 type Avatar = {
@@ -47,11 +48,9 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                   post.tags.map(
                     (t) =>
                       t && (
-                        <Tag
-                          key={t.id}
-                          type="secondary"
-                          text={t.name as string}
-                        />
+                        <Link href={"/tags/" + t.id} key={t.id}>
+                          <Tag type="secondary" text={t.name as string} />
+                        </Link>
                       )
                   )}
 
