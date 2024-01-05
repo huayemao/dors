@@ -91,6 +91,8 @@ export async function revalidateHomePage(id: number) {
   });
 
   if (firstPagePosts.some((e) => e.id === id)) {
+    console.log('should revalidate home page')
+    revalidatePath("/(home)", "page");
     revalidatePath("/", "page");
   }
 }
