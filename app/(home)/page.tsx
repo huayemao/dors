@@ -1,6 +1,7 @@
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
+import { Suspense } from "react";
 import Pagination from "./Pagination";
 
 type SearchParams = PaginateOptions;
@@ -24,7 +25,9 @@ export default async function Home({
   return (
     <>
       <Posts showFeature data={posts} />
-      <Pagination pageCount={pageCount}></Pagination>
+      <Suspense>
+        <Pagination pageCount={pageCount}></Pagination>
+      </Suspense>
     </>
   );
 }
