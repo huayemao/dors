@@ -3,7 +3,7 @@ import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
 import prisma from "@/lib/prisma";
-import { cache } from "react";
+import { Suspense, cache } from "react";
 import Pagination from "../../Pagination";
 
 type SearchParams = PaginateOptions;
@@ -41,7 +41,9 @@ export default async function Home({
   return (
     <>
       <Posts data={posts} showFeature={isFirstPage} />
-      <Pagination pageCount={pageCount} />
+      <Suspense>
+        <Pagination pageCount={pageCount} />
+      </Suspense>
     </>
   );
 }
