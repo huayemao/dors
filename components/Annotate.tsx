@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 
-function Annotate({ source, children, danger }) {
+// todo: remove this comp, use Note istead
+
+function Annotate({ source, children, danger, ...props }) {
   return (
     <>
       <span
@@ -8,6 +10,7 @@ function Annotate({ source, children, danger }) {
           "leading-5 lg:leading-6 inline-block outline outline-2 outline-violet-600 px-1",
           { "ml-1": children, "border-rose-700": danger }
         )}
+        {...props}
       >
         {source}
       </span>
