@@ -38,9 +38,9 @@ function ToolBox({ data }: Props) {
                   <path d="M104 112a8 8 0 0 1 8-8h32a8 8 0 0 1 0 16h-32a8 8 0 0 1-8-8Zm128-40v128a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V72a16 16 0 0 1 16-16h40v-8a24 24 0 0 1 24-24h48a24 24 0 0 1 24 24v8h40a16 16 0 0 1 16 16ZM96 56h64v-8a8 8 0 0 0-8-8h-48a8 8 0 0 0-8 8ZM40 72v41.62A184.07 184.07 0 0 0 128 136a184 184 0 0 0 88-22.39V72Zm176 128v-68.37A200.25 200.25 0 0 1 128 152a200.19 200.19 0 0 1-88-20.36V200h176Z"></path>
                 </g>
               </svg>
-              <h3 className="nui-heading nui-heading-sm nui-weight-semibold nui-lead-normal mt-2">
+              <h5 id={item.title} className="nui-heading nui-heading-sm nui-weight-semibold nui-lead-normal mt-2">
                 {item.title}
-              </h3>
+              </h5>
               <p className="nui-text nui-content-xs nui-weight-normal nui-lead-normal text-muted-400">
                 {item.description}
               </p>

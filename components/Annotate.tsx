@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 // todo: remove this comp, use Note istead
 
-function Annotate({ source, children, danger, ...props }) {
+function Annotate({ source, children, danger, arrow = true, ...props }) {
   return (
     <>
       <span
@@ -20,7 +20,7 @@ function Annotate({ source, children, danger, ...props }) {
             "text-rose-700": danger,
           })}
         >
-          → {children}
+          {arrow && "→"} {children}
         </span>
       )}
     </>
