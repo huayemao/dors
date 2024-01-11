@@ -1,7 +1,8 @@
 "use client";
 import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
-import { Settings } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Settings, TimerReset } from "lucide-react";
 import Link from "next/link";
 import { FormEventHandler, useContext, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -54,6 +55,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
 
 export function PostEditor({ post }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
+  const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
 
   const [content, setContent] = useState(post?.content || "");
 
@@ -97,12 +99,40 @@ export function PostEditor({ post }: PostEditorProps) {
           </div>
           <div className="space-x-3 flex items-center">
             {post && (
-              <Link
-                href={`/admin/posts/${post.id}/settings`}
-                className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
-              >
-                <Settings className="h-4 w-4" />
-              </Link>
+              <>
+                <Link
+                  href={`/admin/posts/${post.id}/settings`}
+                  className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
+                >
+                  <Settings className="h-5 w-5" />
+                </Link>
+                <label className="text-stone-400 hover:text-stone-500">
+                  <TimerReset
+                    className={cn("h-5 w-5 ", {
+                      "text-primary-500":
+                        reserveUpdateTime,
+                    })}
+                  />
+                  <input
+                    className="appearance-none m-0 bg-transparent hidden"
+                    type="checkbox"
+                    onChange={(e) => {
+                      setReserveUpdateTime(e.target.checked);
+                    }}
+                    defaultChecked={reserveUpdateTime}
+                  />
+                </label>
+                <input
+                  hidden
+                  disabled={!reserveUpdateTime}
+                  id="updated_at"
+                  name="updated_at"
+                  type="datetime-local"
+                  defaultValue={
+                    post.updated_at?.toISOString().slice(0, 16) as string
+                  }
+                ></input>
+              </>
             )}
             <Button type="submit" size="sm">
               保存
