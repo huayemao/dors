@@ -42,7 +42,7 @@ export const Nav = () => {
       )}
     >
       <div
-        className="w-full max-w-7xl mx-auto flex flex-wrap py-3 flex-row items-center sm:justify-between
+        className="w-full max-w-6xl mx-auto flex flex-wrap py-3 flex-row items-center sm:justify-between
     "
       >
         <div className="flex justify-between items-center w-full lg:w-1/5">
@@ -85,7 +85,7 @@ export const Nav = () => {
             {/* <li className="relative">
               <button
                 type="button"
-                className="relative inline-flex items-center gap-1 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility z-50"
+                className="relative inline-flex items-center gap-1 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-1 md:mx-2 tw-accessibility z-50"
               >
                 <span>Product</span>
                 <svg
@@ -610,7 +610,7 @@ export const Nav = () => {
             {/* <li className="relative">
               <button
                 type="button"
-                className="relative inline-flex items-center gap-1 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility z-50"
+                className="relative inline-flex items-center gap-1 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-1 md:mx-2 tw-accessibility z-50"
               >
                 <span>Company</span>
                 <svg

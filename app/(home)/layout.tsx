@@ -18,7 +18,7 @@ export default async function MainLayout({
       <Nav></Nav>
       <main className="flex-1 bg-muted-100">
         <section className="w-full bg-muted-100 dark:bg-muted-900">
-          <div className="w-full max-w-7xl mx-auto">
+          <div className="w-full max-w-6xl mx-auto">
             <div className="w-full">
               <div className="w-full h-full flex flex-col justify-between pt-36 px-6">
                 <div className="w-full max-w-3xl mx-auto space-y-4 text-center">

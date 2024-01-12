@@ -46,7 +46,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
         blurDataURL={blurDataURL}
       />
       <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 ">
-        <div className="w-full max-w-7xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
           <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
             <div className="w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto">
               <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
