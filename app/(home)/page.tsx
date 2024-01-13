@@ -1,7 +1,6 @@
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Pagination from "./Pagination";
 
@@ -17,9 +16,7 @@ export default async function Home({
 }: {
   searchParams: SearchParams;
 }) {
-  if (searchParams.page && !searchParams.perPage) {
-    redirect("/p/" + searchParams.page);
-  }
+
   const posts = await getProcessedPosts(
     await getPosts({
       ...searchParams,
