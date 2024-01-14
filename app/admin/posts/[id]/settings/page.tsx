@@ -8,6 +8,7 @@ import { PostContext } from "@/contexts/post";
 import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
+import { getDateForDateTimeInput } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -157,7 +158,7 @@ export default function Page({ params }) {
   const useLastEditTime: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     (document.querySelector("#updated_at") as HTMLInputElement).value =
-      post?.updated_at?.toISOString().slice(0, 16) as string;
+      getDateForDateTimeInput(post?.updated_at as Date);
   };
 
   if (!post) {
@@ -170,7 +171,7 @@ export default function Page({ params }) {
         <CoverImageSetting
           originalPhoto={post.cover_image as PexelsPhoto}
           postId={String(post.id)}
-          editTime={post.updated_at?.toISOString().slice(0, 16) as string}
+          editTime={getDateForDateTimeInput(post?.updated_at as Date)}
         />
       </Panel>
       <Panel title="分类&标签" description="文章可有一个分类和多个标签">
@@ -223,8 +224,10 @@ export default function Page({ params }) {
               label="自定义创建时间"
               id={"created_at"}
               name="created_at"
-              defaultValue={post.created_at?.toISOString().slice(0, 16)}
-              data-original-value={post.created_at?.toISOString().slice(0, 16)}
+              defaultValue={getDateForDateTimeInput(post?.created_at as Date)}
+              data-original-value={getDateForDateTimeInput(
+                post?.updated_at as Date
+              )}
             />
           </div>
           <div className="flex my-3">

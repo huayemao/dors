@@ -1,7 +1,7 @@
 "use client";
 import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
-import { cn } from "@/lib/utils";
+import { cn, getDateForDateTimeInput } from "@/lib/utils";
 import { Settings, TimerReset } from "lucide-react";
 import Link from "next/link";
 import { FormEventHandler, useContext, useState } from "react";
@@ -109,8 +109,7 @@ export function PostEditor({ post }: PostEditorProps) {
                 <label className="text-stone-400 hover:text-stone-500">
                   <TimerReset
                     className={cn("h-5 w-5 ", {
-                      "text-primary-500":
-                        reserveUpdateTime,
+                      "text-primary-500": reserveUpdateTime,
                     })}
                   />
                   <input
@@ -128,9 +127,9 @@ export function PostEditor({ post }: PostEditorProps) {
                   id="updated_at"
                   name="updated_at"
                   type="datetime-local"
-                  defaultValue={
-                    post.updated_at?.toISOString().slice(0, 16) as string
-                  }
+                  defaultValue={getDateForDateTimeInput(
+                    post?.updated_at as Date
+                  )}
                 ></input>
               </>
             )}

@@ -1,4 +1,6 @@
 import { ClassValue, clsx } from "clsx";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
 import { remark } from "remark";
 import html from "remark-html";
 import excerpt from "strip-markdown";
@@ -63,4 +65,9 @@ export function getDateString(date: Date) {
     .toString()
     .padStart(2, "0")}`;
   return formattedDate;
+}
+
+export function getDateForDateTimeInput(date: Date): string {
+  dayjs.extend(timezone);
+  return dayjs(date).format("YYYY-MM-DDTHH:mm");
 }
