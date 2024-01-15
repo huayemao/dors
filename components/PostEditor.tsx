@@ -108,7 +108,7 @@ export function PostEditor({ post }: PostEditorProps) {
                 </Link>
                 <label className="text-stone-400 hover:text-stone-500">
                   <TimerReset
-                    className={cn("h-5 w-5 ", {
+                    className={cn("h-5 w-5 cursor-pointer", {
                       "text-primary-500": reserveUpdateTime,
                     })}
                   />

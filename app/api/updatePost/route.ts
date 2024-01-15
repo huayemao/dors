@@ -59,6 +59,7 @@ export async function POST(request: Request) {
   await revalidateHomePage(res.id);
 
   revalidatePath("/posts/" + post.id);
+  revalidatePath("/(content)/posts/" + post.id);
 
   if (request.headers.get("accept") === "application/json") {
     return new NextResponse(
