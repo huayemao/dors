@@ -1,8 +1,4 @@
 import { SITE_META } from "@/constants";
-import { CategoriesContextProvider } from "@/contexts/categories";
-import { TagsContextProvider } from "@/contexts/tags";
-import { getAllCategories } from "@/lib/categories";
-import { getTags } from "@/lib/tags";
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import Script from "next/script";
@@ -25,8 +21,8 @@ export default async function RootLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const categories = await getAllCategories();
-  const tags = await getTags();
+  // const categories = await getAllCategories();
+  // const tags = await getTags();
 
   return (
     <html>
@@ -44,9 +40,11 @@ export default async function RootLayout({
         ></Script>
       </head>
       <body className="transition-all duration-300 min-h-screen flex flex-col">
-        <CategoriesContextProvider Categories={categories}>
-          <TagsContextProvider tags={tags}>{children}</TagsContextProvider>
-        </CategoriesContextProvider>
+        {/* <CategoriesContextProvider Categories={categories}>
+          <TagsContextProvider tags={tags}> */}
+            {children}
+            {/* </TagsContextProvider>
+        </CategoriesContextProvider> */}
       </body>
     </html>
   );
