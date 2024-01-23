@@ -4,7 +4,7 @@ import withPlaiceholder from "@plaiceholder/next";
 const nextConfig = {
   images: {
     unoptimized: process.env.OUTPUT_MODE === 'export',
-    domains: ['images.pexels.com', 'www.imghost.net', 'svgshare.com', 'fms.news.cn', 'project-management.info'],
+    domains: ['images.pexels.com', 'www.imghost.net', 'svgshare.com', 'fms.news.cn', 'project-management.info', 'runestone.academy'],
   },
   experimental: {
     appDir: true,
