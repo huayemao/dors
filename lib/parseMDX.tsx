@@ -19,6 +19,7 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
+import { SITE_META } from "@/constants";
 import nextConfig from "@/next.config.mjs";
 import Image from "next/image";
 import remarkMath from "remark-math";

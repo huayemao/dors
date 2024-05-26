@@ -6,13 +6,17 @@ const [AUTH_USER, AUTH_PASS] = (process.env.HTTP_BASIC_AUTH || ":").split(":");
 // Step 1. HTTP Basic Auth Middleware for Challenge
 export function middleware(req: NextRequest) {
   const basicAuthPathSuffixes = ["/api", "/admin"];
+  const whiteList = ["/api/files"];
 
   if (
     basicAuthPathSuffixes.some((suffix) =>
       req.nextUrl.pathname.startsWith(suffix)
     )
   ) {
-    if (!isAuthenticated(req)) {
+    if (
+      !isAuthenticated(req) &&
+      !whiteList.some((e) => req.nextUrl.pathname.startsWith(e))
+    ) {
       return new NextResponse("Authentication required", {
         status: 401,
         headers: { "WWW-Authenticate": "Basic" },
