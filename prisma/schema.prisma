@@ -577,3 +577,10 @@ model settings {
   key   String @id
   value String
 }
+
+model File {
+  id       Int    @id @default(autoincrement())
+  name     String
+  data     Bytes
+  mimeType String
+}

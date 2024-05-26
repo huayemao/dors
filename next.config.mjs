@@ -4,7 +4,12 @@ import withPlaiceholder from "@plaiceholder/next";
 const nextConfig = {
   images: {
     unoptimized: process.env.OUTPUT_MODE === 'export',
-    domains: ['images.pexels.com', 'www.imghost.net', 'svgshare.com', 'fms.news.cn', 'project-management.info', 'runestone.academy'],
+    remotePatterns: ['huayemao.run', 'pexels.com', 'imghost.net', 'svgshare.com', 'fms.news.cn', 'project-management.info', 'runestone.academy'].map(e => ({
+      protocol: 'https',
+      hostname: '**.' + e,
+      port: ''
+
+    }))
   },
   experimental: {
     appDir: true,

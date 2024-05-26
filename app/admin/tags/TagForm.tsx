@@ -47,25 +47,7 @@ export function TagForm({ id, isEditing, tags }: Props) {
       />
       <div className="flex items-center gap-4 ">
         <div className="bg-primary-500/20 text-primary-500 flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-sans text-2xl">
-          <svg
-            data-v-26e5b7b0=""
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            aria-hidden="true"
-            role="img"
-            className="icon h-5 w-5"
-            width="1em"
-            height="1em"
-            viewBox="0 0 256 256"
-          >
-            <g fill="currentColor">
-              <path
-                d="M216 48v40H40V48a8 8 0 0 1 8-8h160a8 8 0 0 1 8 8Z"
-                opacity=".2"
-              ></path>
-              <path d="M208 32h-24v-8a8 8 0 0 0-16 0v8H88v-8a8 8 0 0 0-16 0v8H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM72 48v8a8 8 0 0 0 16 0v-8h80v8a8 8 0 0 0 16 0v-8h24v32H48V48Zm136 160H48V96h160v112Z"></path>
-            </g>
-          </svg>
+          <TagIcon />
         </div>
         <div className="block text-xl font-semibold text-gray-700">
           <h3 className="leading-5 font-heading font-medium text-lg">
@@ -93,5 +75,28 @@ export function TagForm({ id, isEditing, tags }: Props) {
         </button>
       </div>
     </form>
+  );
+}
+function TagIcon() {
+  return (
+    <svg
+      data-v-26e5b7b0=""
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      aria-hidden="true"
+      role="img"
+      className="icon h-5 w-5"
+      width="1em"
+      height="1em"
+      viewBox="0 0 256 256"
+    >
+      <g fill="currentColor">
+        <path
+          d="M216 48v40H40V48a8 8 0 0 1 8-8h160a8 8 0 0 1 8 8Z"
+          opacity=".2"
+        ></path>
+        <path d="M208 32h-24v-8a8 8 0 0 0-16 0v8H88v-8a8 8 0 0 0-16 0v8H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM72 48v8a8 8 0 0 0 16 0v-8h80v8a8 8 0 0 0 16 0v-8h24v32H48V48Zm136 160H48V96h160v112Z"></path>
+      </g>
+    </svg>
   );
 }

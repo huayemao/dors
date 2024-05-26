@@ -1,7 +1,6 @@
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { SITE_META } from "@/constants";
-import { getAllCategories } from "@/lib/categories";
 import { Categories } from "../../components/Categories";
 
 export default async function MainLayout({
@@ -11,7 +10,6 @@ export default async function MainLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const categories = await getAllCategories();
 
   return (
     <>
