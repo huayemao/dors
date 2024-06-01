@@ -1,6 +1,6 @@
 "use client";
 
-import { Share } from "lucide-react";
+import { Share2 } from "lucide-react";
 
 export const ShareButton = ({ options }) => {
   const share = async () => {
@@ -17,7 +17,7 @@ export const ShareButton = ({ options }) => {
       className="flex-1 inline-flex justify-center items-center py-4 px-5 rounded bg-muted-200 dark:bg-muted-700 hover:bg-muted-100 dark:hover:bg-muted-600 text-muted-600 dark:text-muted-400 transition-colors duration-300 cursor-pointer tw-accessibility
 "
     >
-      <Share className="w-4 h-4 " fill="currentColor" />
+      <Share2 className="w-4 h-4 " fill="currentColor" />
     </button>
   );
 };
