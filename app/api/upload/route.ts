@@ -1,3 +1,4 @@
+import { SITE_META } from "@/constants";
 import prisma from "@/lib/prisma";
 
 export async function POST(request: Request) {
@@ -13,18 +14,17 @@ export async function POST(request: Request) {
           mimeType: "",
         },
       });
-      console.log(file);
+      const markdownText = `![这是一个描述](${SITE_META.url}/api/files/${file.name})`;
+
+      return new Response(markdownText, {
+        status: 200,
+      });
     }
 
-    console.log(text instanceof File);
     // Process the webhook payload
   } catch (error) {
     return new Response(`Webhook error: ${error.message}`, {
       status: 400,
     });
   }
-
-  return new Response("Success!", {
-    status: 200,
-  });
 }
