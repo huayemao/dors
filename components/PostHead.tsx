@@ -26,23 +26,23 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-6xl mx-auto">
         <div className="py-14 px-4 relative">
-          <div className="mt-12 w-full mx-auto grid md:grid-cols-2 gap-2">
+          <div className="mt-12 w-full mx-auto grid md:grid-cols-2 gap-2 ">
             <div className="bg-cover bg-center w-full mb-5 md:mb-0 ptablet:px-5 ltablet:px-4">
               {/* todo: 图片的齿唇其实需要优化 */}
               <Image
-                className="lg:w-[512px] lg:h-[373px] mx-auto object-cover rounded-3xl"
+                className="h-full w-full max-w-lg mx-auto object-cover rounded-3xl"
                 src={url}
                 alt={post.title || "featured image"}
                 width={512}
-                height={373}
-                quality={80}
+                height={512}
+                // quality={80}
                 unoptimized={nextConfig.output === "export"}
                 blurDataURL={typeof url === "string" ? blurDataURL : undefined}
                 placeholder={"blur"}
               />
             </div>
 
-            <div className="h-full flex items-center ptablet:px-4 ltablet:px-6 break-words">
+            <div className="h-full flex items-center ptablet:px-4 ltablet:px-6 break-words justify-center">
               <div className="w-full max-w-lg space-x-2">
                 {!!post?.tags?.length &&
                   post.tags.map(
@@ -64,7 +64,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                   {post?.excerpt}
                 </p>
                 <div className="flex items-center justify-start w-full relative">
-                  <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
+                  <div className="print:invisible bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
                     <Image
                       alt={avatar.alt}
                       src={avatar.src}
@@ -72,7 +72,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                       height={44}
                     />
                   </div>
-                  <div className="pl-2">
+                  <div className="pl-2 print:invisible">
                     <h3
                       className="
                       font-heading font-medium 

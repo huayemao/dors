@@ -45,12 +45,12 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
         url={url}
         blurDataURL={blurDataURL}
       />
-      <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 ">
+      <section className="w-full py-12 px-4 bg-white dark:bg-muted-900">
         <div className="w-full max-w-6xl mx-auto">
           <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
-            <div className="w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto">
+            <div className="w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto ptablet:print:w-full">
               <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
-                <div className="flex justify-between w-full mb-5">
+                <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
                   <a
                     href={`/admin/posts/${post.id}`}
@@ -70,7 +70,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                 </article>
               </div>
             </div>
-            <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto">
+            <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">
               <div className="mt-10">
                 <div>
                   <h2

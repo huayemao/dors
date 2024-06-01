@@ -31,6 +31,20 @@ export default async function RootLayout({
   return (
     <html>
       <head>
+        {/* <style>
+          {` 
+          @page {
+            margin:0;
+            margin-top: .6cm;
+            margin-bottom: .6cm;
+          }
+  
+          @page:first {
+            size:800px 600px;
+            margin-top:0;
+          }
+  `}
+        </style> */}
         <Script id="darkMode" strategy="beforeInteractive">
           {`if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.classList.add('dark')

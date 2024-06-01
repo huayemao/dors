@@ -101,3 +101,7 @@ a {
 .not-prose {
   font-size: unset;
 }
+
+.code-container {
+ @apply print:whitespace-break-spaces;
+}
