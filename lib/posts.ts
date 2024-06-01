@@ -134,7 +134,7 @@ export async function getFeaturedPostIds() {
     },
   });
 
-  const postIds = JSON.parse(res?.value || "");
+  const postIds = res ? JSON.parse(res?.value || "") : [];
   return postIds;
 }
 

@@ -60,7 +60,11 @@ export default function TOC() {
           文章目录
         </h2>
       </header>
-      <ul key={window.location.pathname} className="">
+      <ul
+        key={window.location.pathname}
+        className="max-h-[calc(100vh_-_168px)] overflow-y-auto"
+        style={{ scrollbarWidth: "thin" }}
+      >
         {observedElements()
           .filter((e) => e.tagName.toLowerCase().match(/^h\d$/))
           .map((item) => {
