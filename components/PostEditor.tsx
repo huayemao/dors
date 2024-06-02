@@ -257,12 +257,13 @@ function UploadPanel() {
           method: "POST",
           body: formData,
         })
+          .then((res) => res.text())
           .then(copyTextToClipboard)
           .then(() => {
             alert("已复制到剪贴板");
             close();
           });
       }}
-    ></UploadForm>
+    />
   );
 }

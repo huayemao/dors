@@ -13,7 +13,7 @@ export async function POST(request: Request) {
           mimeType: "",
         },
       });
-      const markdownText = `![这是一个描述](${SITE_META.url}/api/files/${file.name})`;
+      const markdownText = `![${file.name}](${SITE_META.url}/api/files/${file.name})`;
 
       return new Response(markdownText, {
         status: 200,
