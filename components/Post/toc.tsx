@@ -53,33 +53,38 @@ export default function TOC() {
     }
   });
 
+  const headings = observedElements().filter((e) =>
+    e.tagName.toLowerCase().match(/^h\d$/)
+  );
+
   return (
     <section className="my-6 sticky top-24">
-      <header>
-        <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
-          文章目录
-        </h2>
-      </header>
+      {headings.length ? (
+        <header>
+          <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
+            文章目录
+          </h2>
+        </header>
+      ) : null}
+
       <ul
         key={window.location.pathname}
         className="max-h-[calc(100vh_-_168px)] overflow-y-auto"
         style={{ scrollbarWidth: "thin" }}
       >
-        {observedElements()
-          .filter((e) => e.tagName.toLowerCase().match(/^h\d$/))
-          .map((item) => {
-            const id = item.id;
-            return (
-              <TOCItem
-                key={id}
-                id={id}
-                text={item.textContent as string}
-                level={parseInt(item.tagName.slice(1))}
-                // sub={item.sub}
-                currentViewedTocItem={currentViewedTocItem}
-              />
-            );
-          })}
+        {headings.map((item) => {
+          const id = item.id;
+          return (
+            <TOCItem
+              key={id}
+              id={id}
+              text={item.textContent as string}
+              level={parseInt(item.tagName.slice(1))}
+              // sub={item.sub}
+              currentViewedTocItem={currentViewedTocItem}
+            />
+          );
+        })}
       </ul>
     </section>
   );

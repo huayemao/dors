@@ -13,7 +13,7 @@ export default async function UploadTest() {
       ))}
 
       <form
-        action="/api/upload"
+        action="/api/files"
         encType="multipart/form-data"
         method="POST"
         className="w-96 rounded  bg-white p-8 mx-auto space-y-4"

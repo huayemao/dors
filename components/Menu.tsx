@@ -18,6 +18,11 @@ export function Menu() {
       iconName: "Tag",
     },
     {
+      title: "文件管理",
+      href: "/admin/files",
+      iconName: "File",
+    },
+    {
       title: "设置",
       href: "/admin/settings",
       iconName: "Settings",

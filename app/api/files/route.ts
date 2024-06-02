@@ -21,9 +21,8 @@ export async function POST(request: Request) {
       });
     }
 
-    // Process the webhook payload
   } catch (error) {
-    return new Response(`Webhook error: ${error.message}`, {
+    return new Response(`error: ${error.message}`, {
       status: 400,
     });
   }

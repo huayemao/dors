@@ -4,6 +4,7 @@ import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import c from "@/styles/post.module.css";
 import "katex/dist/katex.min.css";
+import { Edit } from "lucide-react";
 import dynamic from "next/dynamic";
 import { join } from "path";
 import { BackButton } from "../BackButton";
@@ -53,12 +54,6 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
               <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
                 <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
-                  <a
-                    href={`/admin/posts/${post.id}`}
-                    className="mr-4 md:mr-8 font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300"
-                  >
-                    编辑
-                  </a>
                 </div>
                 <article
                   className={
@@ -74,19 +69,19 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
             <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">
               <div className="mt-10">
                 <div>
-                  <h2
-                    className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6
-            "
-                  >
-                    分享文章
-                  </h2>
-
                   <div className="flex gap-4">
                     <ShareButton
                       options={{
                         title: post.title,
                       }}
                     />
+                    <a
+                      href={`/admin/posts/${post.id}`}
+                      className="flex-1 inline-flex justify-center items-center py-4 px-5 rounded bg-muted-200 dark:bg-muted-700 hover:bg-muted-100 dark:hover:bg-muted-600 text-muted-600 dark:text-muted-400 transition-colors duration-300 cursor-pointer tw-accessibility
+"
+                    >
+                      <Edit className="w-4 h-4 " fill="currentColor" />
+                    </a>
                   </div>
                 </div>
                 <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
