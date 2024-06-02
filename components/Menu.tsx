@@ -5,7 +5,7 @@ import { icons } from "lucide-react";
 import Link from "next/link";
 import { useSelectedLayoutSegments } from "next/navigation";
 
-export function Menu() {
+export function AdminMenu() {
   const menuItems = [
     {
       title: "文章管理",
@@ -64,3 +64,4 @@ export function Menu() {
     </div>
   );
 }
+

@@ -580,8 +580,10 @@ model settings {
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
-  name     String
-  data     Bytes
-  mimeType String
+  id        Int      @id @default(autoincrement())
+  name      String
+  data      Bytes
+  mimeType  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }

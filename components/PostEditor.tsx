@@ -1,8 +1,16 @@
 "use client";
+import { UploadForm } from "@/components/UploadForm";
+import { SITE_META } from "@/constants";
 import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
-import { cn, getDateForDateTimeInput } from "@/lib/utils";
-import { Settings, TimerReset } from "lucide-react";
+import { cn, copyTextToClipboard, getDateForDateTimeInput } from "@/lib/utils";
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  useClose,
+} from "@headlessui/react";
+import { Plus, Settings, TimerReset } from "lucide-react";
 import Link from "next/link";
 import { FormEventHandler, useContext, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -100,6 +108,33 @@ export function PostEditor({ post }: PostEditorProps) {
           <div className="space-x-3 flex items-center">
             {post && (
               <>
+                <Popover className="relative">
+                  <PopoverButton className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500 active:text-primary-500">
+                    <Plus className="h-5 w-5" />
+                  </PopoverButton>
+                  <PopoverPanel
+                    anchor="bottom"
+                    className="bg-white shadow-lg rounded p-4 flex flex-col"
+                  >
+                    <UploadPopover />
+                    <button
+                      onClick={() => {
+                        fetch("/api/files/getLatestFile")
+                          .then((res) => res.json())
+                          .then(
+                            (json) => `${SITE_META.url}/api/files/${json.name}`
+                          )
+                          .then(copyTextToClipboard)
+                          .then(() => {
+                            alert("已复制到剪切板");
+                          });
+                      }}
+                    >
+                      最近图片
+                    </button>
+                  </PopoverPanel>
+                </Popover>
+
                 <Link
                   href={`/admin/posts/${post.id}/settings`}
                   className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
@@ -197,4 +232,37 @@ export function PostEditor({ post }: PostEditorProps) {
   //       </div>
   //   </form>
   // );
+}
+function UploadPopover() {
+  return (
+    <Popover className="relative">
+      <PopoverButton>上传文件</PopoverButton>
+      <PopoverPanel anchor="bottom" className="bg-white shadow-lg rounded p-4">
+        <UploadPanel />
+      </PopoverPanel>
+    </Popover>
+  );
+}
+
+function UploadPanel() {
+  let close = useClose();
+
+  return (
+    <UploadForm
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formEl = e.target as HTMLFormElement;
+        const formData = new FormData(formEl);
+        fetch("/api/files", {
+          method: "POST",
+          body: formData,
+        })
+          .then(copyTextToClipboard)
+          .then(() => {
+            alert("已复制到剪贴板");
+            close();
+          });
+      }}
+    ></UploadForm>
+  );
 }

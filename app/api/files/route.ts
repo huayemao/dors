@@ -5,8 +5,7 @@ export async function POST(request: Request) {
   try {
     const text = (await request.formData()).get("file");
     if (text instanceof File) {
-      console.log(text.name);
-
+      
       const file = await prisma.file.create({
         data: {
           name: text.name,
