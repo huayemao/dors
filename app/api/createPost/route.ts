@@ -5,12 +5,14 @@ import { revalidateHomePage } from "../updatePost/route";
 export async function POST(request: Request) {
   const formData = await request.formData();
   const content = formData.get("content");
+  const excerpt = formData.get("excerpt");
   const title = formData.get("title");
   const categoryId = formData.get("category_id");
   const tags = formData.has("tags") ? formData.getAll("tags") : undefined;
 
   const post = await createPost(
     content as string,
+    excerpt as string,
     title as string,
     categoryId as string,
     tags as string[]
@@ -27,12 +29,14 @@ export async function POST(request: Request) {
 
 async function createPost(
   content: string,
+  excerpt?: string,
   title?: string,
   categoryId?: string,
   tags?: string[]
 ) {
   const post = await prisma.posts.create({
     data: {
+      excerpt: excerpt as string,
       content: content as string,
       title: title as string,
       created_at: new Date(),

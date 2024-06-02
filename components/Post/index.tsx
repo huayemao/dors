@@ -35,7 +35,8 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
   /* @ts-ignore */
   const blurDataURL = post.cover_image?.dataURLs?.large;
 
-  const excerpt = (await markdownExcerpt(post?.content || "")) + "...";
+  const excerpt =
+    (post.excerpt || (await markdownExcerpt(post?.content || ""))) + "...";
 
   return (
     <div>

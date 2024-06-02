@@ -300,6 +300,7 @@ export async function updatePost(
   tags: string[] | undefined,
   id: string | undefined,
   content: string | undefined,
+  excerpt: string | undefined,
   title: string | undefined,
   changePhoto: string | undefined,
   updated_at: string | undefined,
@@ -349,6 +350,7 @@ export async function updatePost(
       id: parseInt(id as string),
     },
     data: {
+      excerpt: excerpt ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
       cover_image: changePhoto === "on" ? await getRandomPhoto() : undefined,

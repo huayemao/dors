@@ -151,11 +151,10 @@ export function PostEditor({ post }: PostEditorProps) {
           />
           <textarea
             placeholder="摘要"
-            id="abstract"
-            name="abstract"
-            data-original-value={""}
-            // todo
-            defaultValue={""}
+            id="excerpt"
+            name="excerpt"
+            data-original-value={post?.excerpt}
+            defaultValue={post?.excerpt || ""}
             className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
           />
         </div>

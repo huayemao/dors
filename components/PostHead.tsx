@@ -10,9 +10,7 @@ type Avatar = {
   src: ImageProps["src"];
 };
 
-type Post = Partial<Awaited<ReturnType<typeof getPost>>> & {
-  excerpt?: string;
-};
+type Post = Partial<Awaited<ReturnType<typeof getPost>>>;
 
 interface Props {
   post: Post;
@@ -32,7 +30,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
               <Image
                 className="h-full w-full max-w-lg mx-auto object-cover rounded-3xl"
                 src={url}
-                alt={post.title || "featured image"}
+                alt={post?.title || "featured image"}
                 width={512}
                 height={512}
                 // quality={80}
@@ -89,7 +87,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                     </p>
                   </div>
                   <div className="block ml-auto font-sans text-sm text-muted-400">
-                    <span>— {post.wordCount} 字</span>
+                    <span>— {post?.wordCount} 字</span>
                   </div>
                 </div>
               </div>

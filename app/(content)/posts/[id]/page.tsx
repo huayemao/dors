@@ -33,7 +33,7 @@ export async function generateMetadata({
     return notFound();
   }
 
-  const abstract = await markdownExcerpt(post.content);
+  const abstract =  await markdownExcerpt(post.content);
   const keywords = post.tags
     .map((e) => e?.name || "")
     .concat([post.title || ""])

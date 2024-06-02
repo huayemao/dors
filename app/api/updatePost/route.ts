@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const id = (formData.get("id") as string) || undefined;
   const content = (formData.get("content") as string) || undefined;
+  const excerpt = (formData.get("excerpt") as string) || undefined;
   const title = (formData.get("title") as string) || undefined;
   const changePhoto = (formData.get("changePhoto") as string) || undefined;
   const category_id = (formData.get("category_id") as string) || undefined;
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
     tags,
     id,
     content,
+    excerpt,
     title,
     changePhoto,
     updated_at,
@@ -92,7 +94,7 @@ export async function revalidateHomePage(id: number) {
   });
 
   if (firstPagePosts.some((e) => e.id === id)) {
-    console.log('should revalidate home page')
+    console.log("should revalidate home page");
     revalidatePath("/(home)", "page");
     revalidatePath("/", "page");
   }
