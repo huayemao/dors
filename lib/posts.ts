@@ -8,8 +8,7 @@ import { PexelsPhoto } from "./types/PexelsPhoto";
 import {
   getPexelImages,
   getWordCount,
-  markdownExcerpt,
-  markdownToHtml,
+  markdownToHtml
 } from "./utils";
 
 async function getBase64Image(url) {
@@ -86,7 +85,6 @@ export const getPosts = cache(
         return {
           ...e,
           content: await markdownToHtml(e.content),
-          excerpt: await markdownExcerpt(e.content),
           wordCount: getWordCount(e.content),
           tags: e.tags_posts_links.map((e) => e.tags),
           category: e.posts_category_links?.[0]?.categories,
