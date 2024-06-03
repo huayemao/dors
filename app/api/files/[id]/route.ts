@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import mime from "mime";
 
 export const revalidate = 60 * 60;
 
@@ -13,10 +14,18 @@ export async function GET(
       },
     });
 
+    if (!file) {
+      new Response(null, {
+        status: 404,
+      });
+    }
+
+    const mimeType = mime.getType(file?.name || "");
+
     return new Response(file?.data, {
-      // headers: {
-      //   "Content-Type": "image/jpeg",
-      // },
+      headers: {
+        "Content-Type": mimeType as string,
+      },
       status: 200,
     });
   } catch (error) {
