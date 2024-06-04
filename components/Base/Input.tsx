@@ -16,7 +16,7 @@ const Input: FC<AddressInputProps> = ({
   ...rest
 }) => {
   return (
-    <div>
+    <>
       <label
         className={cn("nui-label w-full pb-1 text-[0.825rem]", labelClassName)}
         htmlFor="num"
@@ -35,7 +35,7 @@ const Input: FC<AddressInputProps> = ({
           {...rest}
         />
       </div>
-    </div>
+    </>
   );
 };
 

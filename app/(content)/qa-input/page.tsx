@@ -4,8 +4,10 @@ import Select from "@/components/Base/Select";
 import QA from "@/components/Question";
 import { useStorageState } from "@/lib/hooks/localstorage";
 import { Question } from "@/lib/types/Question";
+import { readFromClipboard } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import { DOMAttributes, useEffect, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 const DEFAULT_OPTIONS = [
   {
@@ -126,14 +128,29 @@ export default function QInput() {
     setCurrentItem(DEFAULT_ITEM);
   };
 
+  const importQuestionsFromClipBoard = () => {
+    readFromClipboard().then((text) => {
+      try {
+        const obj = JSON.parse(text);
+        if (obj[0].id) {
+          mutate(obj);
+          alert("导入成功");
+        }
+      } catch (error) {
+        alert("数据导入错误：" + error.message);
+      }
+    });
+  };
+
   const copy = (e) => {
     e.preventDefault();
     copyToClipboard(`<QuestionList  data={${JSON.stringify(itemList)}}/>`);
+    alert("已复制到剪贴板");
   };
 
-  const handlePasteInput: DOMAttributes<HTMLInputElement>["onPaste"] = (e) => {
+  const handlePasteInput = async () => {
     /* @ts-ignore */
-    const inputString = e.clipboardData.getData("text");
+    const inputString = await readFromClipboard();
 
     const regex = /([A-D])([,:.、])(.*)/g;
     const options: Question["options"] = [];
@@ -147,26 +164,32 @@ export default function QInput() {
       options.push(option);
     }
 
+    if (options.length < 3) {
+      alert("识别的选项数目：" + options.length);
+      return;
+    }
+
     setCurrentItem((prev) => {
       return {
         ...prev,
         options,
       };
     });
-    e.preventDefault();
+
+    alert("自动解析成功");
   };
 
   return (
-    <div className="py-4 md:px-12">
+    <div className="pt-24 md:px-12">
       <form
         method="POST"
         className="grid grid-cols-12 gap-6"
         onSubmit={handleSubmit}
       >
-        <div className="ltablet:col-span-6 col-span-12 lg:col-span-6">
-          <div className="border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md">
-            <div className="ltablet:col-span-9 col-span-12 lg:col-span-9">
-              <fieldset className="relative p-4 md:p-8">
+        <div className="ltablet:col-span-6 col-span-12 lg:col-span-7">
+          <div className="relative w-full bg-white transition-all duration-300 rounded-md">
+            <div className="lg:grid border rounded lg:grid-cols-12 lg:max-h-[76vh] lg:overflow-y-auto">
+              <fieldset className="relative p-4 md:p-8 lg:col-span-5">
                 <div className="mb-6">
                   <p className="font-heading text-base font-medium leading-none">
                     题目
@@ -207,13 +230,13 @@ export default function QInput() {
                         问题（文本）
                       </label>
                       <div className="group/nui-textarea relative flex flex-col">
-                        <textarea
+                        <TextareaAutosize
                           key={currentItem?.id}
                           id="content"
                           name="content"
                           className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
                           placeholder="输入题目文本"
-                          rows={3}
+                          minRows={2}
                           defaultValue={currentItem?.content || ""}
                         />
                       </div>
@@ -221,16 +244,28 @@ export default function QInput() {
                   </div>
                 </div>
               </fieldset>
-              <fieldset className="p-4 md:p-8 bg-muted-50 dark:bg-muted-800/70 border-muted-200 dark:border-muted-700 border-t">
-                <div className="grid grid-cols-12 md:gap-x-8 gap-y-4">
+              <fieldset className="lg:col-span-7 p-4 md:p-8  dark:border-muted-700">
+                <div className="mb-6 relative">
+                  <p className="font-heading text-base font-medium leading-none">
+                    选项
+                  </p>
+                  <button
+                    type="button"
+                    className="absolute right-4 top-2 is-button rounded is-button-default w-24"
+                    onClick={handlePasteInput}
+                  >
+                    自动识别
+                  </button>
+                </div>
+                <div className="grid grid-cols-12 md:gap-x-8 gap-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 ">
                   {options.map((e, i) => (
-                    <div key={e.label} className="col-span-12 md:col-span-6">
-                      <div className="flex items-center gap-4">
+                    <div key={e.label} className="col-span-12">
+                      <div className="flex items-center gap-x-4 gap-y-2">
                         <Input
-                          onPaste={handlePasteInput}
+                          // onPaste={handlePasteInput}
                           key={currentItem?.id + e.label}
                           defaultValue={e.value}
-                          label={"选项" + e.label}
+                          label={e.label}
                           labelClassName="w-fit"
                           inputContainerClassName="w-full flex-1"
                           type="text"
@@ -239,117 +274,118 @@ export default function QInput() {
                       </div>
                     </div>
                   ))}
-
-                  <div className="col-span-12">
-                    <div className="bg-muted-100 dark:bg-muted-700/70 space-y-2 rounded-lg p-4">
-                      <div className="w-48 sm:col-span-4">
-                        <div className="relative">
-                          <Select
-                            size="lg"
-                            multiple
-                            label="答案"
-                            id="answer"
-                            name="answer"
-                            key={currentItem?.id}
-                            /* @ts-ignore */
-                            defaultValue={currentItem?.options
-                              .filter((e) =>
-                                currentItem.answer.includes(e.label)
-                              )
-                              .map((e) => e.label)}
-                            data={options.map((e) => ({
-                              value: e.label,
-                              label: e.label,
-                            }))}
-                          ></Select>
-                        </div>
-                      </div>
-                      <div className="col-span-12 relative">
-                        <label
-                          htmlFor="solution"
-                          className="nui-label pb-1 text-[0.825rem]"
-                        >
-                          解答
-                        </label>
-                        <div className="group/nui-textarea relative flex flex-col">
-                          <textarea
-                            key={currentItem?.id}
-                            id="solution"
-                            name="solution"
-                            className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded p-2"
-                            placeholder=""
-                            rows={8}
-                            defaultValue={currentItem?.solution}
-                          />
-                        </div>
-                      </div>
+                </div>
+              </fieldset>
+              <fieldset className="bg-muted-100 dark:bg-muted-700/70 col-span-12">
+                <div className=" space-y-2 rounded-lg p-8">
+                  <div className="w-48 sm:col-span-4">
+                    <div className="relative">
+                      <Select
+                        size="lg"
+                        multiple
+                        label="答案"
+                        id="answer"
+                        name="answer"
+                        key={currentItem?.id}
+                        /* @ts-ignore */
+                        defaultValue={currentItem?.options
+                          .filter((e) => currentItem.answer.includes(e.label))
+                          .map((e) => e.label)}
+                        data={options.map((e) => ({
+                          value: e.label,
+                          label: e.label,
+                        }))}
+                      ></Select>
+                    </div>
+                  </div>
+                  <div className="col-span-12 relative">
+                    <label
+                      htmlFor="solution"
+                      className="nui-label pb-1 text-[0.825rem]"
+                    >
+                      解答
+                    </label>
+                    <div className="group/nui-textarea relative flex flex-col">
+                      <TextareaAutosize
+                        key={currentItem?.id}
+                        id="solution"
+                        name="solution"
+                        className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded p-2"
+                        placeholder=""
+                        minRows={2}
+                        defaultValue={currentItem?.solution}
+                      />
                     </div>
                   </div>
                 </div>
               </fieldset>
-              <div className="p-4 text-right md:col-span-5">
-                <div className=" inline-flex w-full items-center justify-end gap-2 sm:w-auto">
-                  <button
-                    data-v-71bb21a6
-                    type="button"
-                    className="is-button rounded is-button-default !h-12 w-full sm:w-40"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      cancel();
-                    }}
-                  >
-                    取消
-                  </button>
-                  <button
-                    type="submit"
-                    className="is-button rounded bg-primary-500 dark:bg-primary-500 hover:enabled:bg-primary-400 dark:hover:enabled:bg-primary-400 text-white hover:enabled:shadow-lg hover:enabled:shadow-primary-500/50 dark:hover:enabled:shadow-primary-800/20 focus-visible:outline-primary-400/70 focus-within:outline-primary-400/70 focus-visible:bg-primary-500 active:enabled:bg-primary-500 dark:focus-visible:outline-primary-400 dark:focus-within:outline-primary-400 dark:focus-visible:bg-primary-500 dark:active:enabled:bg-primary-500 !h-12 w-full sm:w-40"
-                  >
-                    确定
-                  </button>
-                </div>
+            </div>
+            <div className="p-4 text-right md:col-span-12">
+              <div className=" inline-flex w-full items-center justify-end gap-2 sm:w-auto">
+                <button
+                  data-v-71bb21a6
+                  type="button"
+                  className="is-button rounded is-button-default !h-12 w-full sm:w-40 border"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    cancel();
+                  }}
+                >
+                  取消
+                </button>
+                <button
+                  type="submit"
+                  className="is-button rounded bg-primary-500 dark:bg-primary-500 hover:enabled:bg-primary-400 dark:hover:enabled:bg-primary-400 text-white hover:enabled:shadow-lg hover:enabled:shadow-primary-500/50 dark:hover:enabled:shadow-primary-800/20 focus-visible:outline-primary-400/70 focus-within:outline-primary-400/70 focus-visible:bg-primary-500 active:enabled:bg-primary-500 dark:focus-visible:outline-primary-400 dark:focus-within:outline-primary-400 dark:focus-visible:bg-primary-500 dark:active:enabled:bg-primary-500 !h-12 w-full sm:w-40"
+                >
+                  确定
+                </button>
               </div>
-              <textarea
-                onPaste={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  mutate(JSON.parse(target.value));
-                }}
-              />
             </div>
           </div>
         </div>
-        <div className="ltablet:col-span-6 col-span-12 lg:col-span-6">
-          <div className="prose space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            {itemList?.map((e, i, arr) => (
-              <div key={i}>
-                <div className="relative">
-                  <QA data={e} preview />
-                  <div className="absolute bottom-4 right-4 space-x-2">
-                    <button
-                      type="button"
-                      onClick={(ev) => {
-                        ev.preventDefault();
-                        setCurrentItem(e);
-                      }}
-                    >
-                      编辑
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(ev) => {
-                        ev.preventDefault();
-                        removeItem(e.id);
-                      }}
-                    >
-                      删除
-                    </button>
+        <div className="ltablet:col-span-6 col-span-12 lg:col-span-5 ">
+          <div className="lg:max-h-[74vh] overflow-y-auto space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
+            <div className="prose max-w-full">
+              {itemList?.map((e, i, arr) => (
+                <div key={i}>
+                  <div className="relative">
+                    <QA data={e} />
+                    <div className="space-x-2 text-right">
+                      <button
+                        type="button"
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          setCurrentItem(e);
+                        }}
+                      >
+                        编辑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          removeItem(e.id);
+                        }}
+                      >
+                        删除
+                      </button>
+                    </div>
                   </div>
+                  {i !== arr.length - 1 && <hr />}
                 </div>
-                {i !== arr.length - 1 && <hr />}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          <div className="prose space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            <button onClick={copy}>复制</button>
+          <div className="space-x-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
+            <button className="is-button" onClick={copy}>
+              复制
+            </button>
+            <button
+              className="is-button"
+              onClick={importQuestionsFromClipBoard}
+            >
+              导入
+            </button>
           </div>
         </div>
       </form>

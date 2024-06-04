@@ -210,25 +210,29 @@ export default function Page({ params }) {
       >
         <form>
           <div className="grid md:grid-cols-2 gap-4">
-            <Input
-              type="datetime-local"
-              label="自定义修改时间"
-              id={"updated_at"}
-              name="updated_at"
-              // 不传修改为当前时间
-              defaultValue={""}
-              data-original-value={""}
-            />
-            <Input
-              type="datetime-local"
-              label="自定义创建时间"
-              id={"created_at"}
-              name="created_at"
-              defaultValue={getDateForDateTimeInput(post?.created_at as Date)}
-              data-original-value={getDateForDateTimeInput(
-                post?.updated_at as Date
-              )}
-            />
+            <div>
+              <Input
+                type="datetime-local"
+                label="自定义修改时间"
+                id={"updated_at"}
+                name="updated_at"
+                // 不传修改为当前时间
+                defaultValue={""}
+                data-original-value={""}
+              />
+            </div>
+            <div>
+              <Input
+                type="datetime-local"
+                label="自定义创建时间"
+                id={"created_at"}
+                name="created_at"
+                defaultValue={getDateForDateTimeInput(post?.created_at as Date)}
+                data-original-value={getDateForDateTimeInput(
+                  post?.updated_at as Date
+                )}
+              />
+            </div>
           </div>
           <div className="flex my-3">
             <div className="mr-auto nui-paragraph nui-paragraph-xs text-muted-400">

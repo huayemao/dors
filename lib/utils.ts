@@ -79,3 +79,7 @@ export async function copyTextToClipboard(text) {
     return document.execCommand("copy", true, text);
   }
 }
+
+export async function readFromClipboard() {
+  return await navigator.clipboard.readText();
+}
