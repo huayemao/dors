@@ -7,7 +7,6 @@ import { Question } from "@/lib/types/Question";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import { DOMAttributes, useEffect, useState } from "react";
 
-
 const DEFAULT_OPTIONS = [
   {
     label: "A",
@@ -129,7 +128,7 @@ export default function QInput() {
 
   const copy = (e) => {
     e.preventDefault();
-    copyToClipboard(JSON.stringify(itemList));
+    copyToClipboard(`<QuestionList  data={${JSON.stringify(itemList)}}/>`);
   };
 
   const handlePasteInput: DOMAttributes<HTMLInputElement>["onPaste"] = (e) => {
@@ -158,7 +157,7 @@ export default function QInput() {
   };
 
   return (
-    <div className="py-4 px-12">
+    <div className="py-4 md:px-12">
       <form
         method="POST"
         className="grid grid-cols-12 gap-6"
@@ -223,15 +222,15 @@ export default function QInput() {
                 </div>
               </fieldset>
               <fieldset className="p-4 md:p-8 bg-muted-50 dark:bg-muted-800/70 border-muted-200 dark:border-muted-700 border-t">
-                <div className="grid grid-cols-12 gap-x-8 gap-y-4">
+                <div className="grid grid-cols-12 md:gap-x-8 gap-y-4">
                   {options.map((e, i) => (
-                    <div key={e.label} className="col-span-6">
+                    <div key={e.label} className="col-span-12 md:col-span-6">
                       <div className="flex items-center gap-4">
                         <Input
                           onPaste={handlePasteInput}
                           key={currentItem?.id + e.label}
                           defaultValue={e.value}
-                          label={e.label}
+                          label={"选项" + e.label}
                           labelClassName="w-fit"
                           inputContainerClassName="w-full flex-1"
                           type="text"
@@ -246,7 +245,7 @@ export default function QInput() {
                       <div className="w-48 sm:col-span-4">
                         <div className="relative">
                           <Select
-                            className="h-24"
+                            size="lg"
                             multiple
                             label="答案"
                             id="answer"
@@ -278,8 +277,8 @@ export default function QInput() {
                             id="solution"
                             name="solution"
                             className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded p-2"
-                            placeholder="Ex: General Orthopedic Surgery, Foot & Ankle Surgery"
-                            rows={4}
+                            placeholder=""
+                            rows={8}
                             defaultValue={currentItem?.solution}
                           />
                         </div>

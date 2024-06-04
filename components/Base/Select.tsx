@@ -8,7 +8,7 @@ interface Props extends Omit<InputHTMLAttributes<HTMLSelectElement>, "size"> {
   inputContainerClassName?: string;
   data: { label: string; value: string | number }[];
   labelFloat?: boolean;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
   shape?: "full" | "straight" | "rounded" | "curved";
 }
 
@@ -31,20 +31,21 @@ const SelectComponent: React.FC<Props> = ({
         "nui-select-label-float": labelFloat,
         "nui-select-md": size == "md",
         "nui-select-sm": size == "sm",
+        "nui-select-lg": size == "lg",
         "nui-select-full": shape == "full",
       })}
     >
       {!labelFloat && (
-          <label
-            className={cn(
-              "nui-label w-full pb-1 text-[0.825rem]",
-              labelClassName
-            )}
-            htmlFor={id}
-          >
-            {label}
-          </label>
-        )}
+        <label
+          className={cn(
+            "nui-label w-full pb-1 text-[0.825rem]",
+            labelClassName
+          )}
+          htmlFor={id}
+        >
+          {label}
+        </label>
+      )}
       <div className="nui-select-outer">
         <select
           defaultValue={defaultValue}
