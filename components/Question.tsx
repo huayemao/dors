@@ -9,15 +9,18 @@ export default function QA({
   preview?: boolean;
 }) {
   const options = data.options.map((e) => e.value);
-  const optionsHorizontal = options.join("").length < 24;
+  const optionCharLength = options.join("").length;
+  const optionsHorizontal = optionCharLength < 24;
+  const optionsMobileHorizontal = optionCharLength < 16;
   return (
     <section className="mb-4">
-      <p>{`${data.seq}. ${data.content}`}</p>
+      <p className="whitespace-pre-wrap">{`${data.seq}. ${data.content}`}</p>
       {!preview && (
         <>
           <ul
             className={cn({
-              "flex gap-6": optionsHorizontal,
+              "md:flex md:gap-6": optionsHorizontal,
+              "flex gap-3": optionsMobileHorizontal,
             })}
           >
             {data.options.map((e) => (
