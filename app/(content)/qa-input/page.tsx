@@ -1,5 +1,4 @@
 "use client";
-import Input from "@/components/Base/Input";
 import Select from "@/components/Base/Select";
 import QA from "@/components/Question";
 import { useStorageState } from "@/lib/hooks/localstorage";
@@ -14,6 +13,7 @@ import {
   BaseButtonIcon,
   BaseCard,
   BaseInput,
+  BaseSelect,
 } from "@shuriken-ui/react";
 import { CopyIcon, Edit2, ImportIcon, PlusIcon, Trash } from "lucide-react";
 import { Modal } from "../../../components/Base/Modal";
@@ -256,7 +256,11 @@ export default function QInput() {
       <Modal
         open={isOpen}
         onClose={cancel}
-        title={<>{currentItem.seq}</>}
+        title={
+          <>
+            {"题目"} {currentItem.seq}
+          </>
+        }
         actions={
           <>
             {mode == "view" ? (
@@ -307,18 +311,18 @@ export default function QInput() {
           <div className="relative w-full bg-white transition-all duration-300 rounded-md">
             <div className="lg:grid border rounded lg:grid-cols-12 max-h-[76vh] overflow-y-auto">
               <fieldset className="relative p-4 md:p-8 lg:col-span-7">
-                <div className="mb-6">
+                {/* <div className="mb-6">
                   <p className="font-heading text-base font-medium leading-none">
                     题目
                   </p>
                   <p className="font-sans text-xs font-normal leading-normal text-muted-400">
                     录入题目信息
                   </p>
-                </div>
+                </div> */}
                 <div className="grid grid-cols-12 gap-4">
                   <div className="col-span-12 md:col-span-6">
                     <div className="relative">
-                      <Input
+                      <BaseInput
                         key={currentItem?.id}
                         label="题号"
                         type="number"
@@ -329,13 +333,16 @@ export default function QInput() {
                   </div>
                   <div className="col-span-12 md:col-span-6">
                     <div className="relative">
-                      <Select
+                      <BaseSelect
                         id="type"
                         name="type"
                         label="类型"
-                        data={[{ value: "single", label: "单选" }]}
                         defaultValue={"single"}
-                      />
+                      >
+                        {[{ value: "single", label: "单选" }].map((e) => (
+                          <option key={e.value}>{e.label}</option>
+                        ))}
+                      </BaseSelect>
                     </div>
                   </div>
                   <div className="col-span-12">
@@ -353,7 +360,7 @@ export default function QInput() {
                           name="content"
                           className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
                           placeholder="输入题目文本"
-                          minRows={2}
+                          minRows={4}
                           defaultValue={currentItem?.content || ""}
                         />
                       </div>
@@ -362,35 +369,33 @@ export default function QInput() {
                 </div>
               </fieldset>
               <fieldset className="lg:col-span-5 p-4 md:p-8  dark:border-muted-700">
-                <div className="mb-6 relative">
-                  <p className="font-heading text-base font-medium leading-none">
-                    选项
-                  </p>
+                <div className="grid grid-cols-12 md:gap-x-8 gap-y-5 border-muted-200 dark:border-muted-700 dark:bg-muted-800 ">
+                  {options.map((e, i) => (
+                    <div key={e.label} className="col-span-12">
+                      <BaseInput
+                        classes={{
+                          wrapper: "w-full",
+                        }}
+                        labelFloat
+                        key={currentItem?.id + e.label}
+                        defaultValue={e.value}
+                        label={e.label}
+                        type="text"
+                        id={"option-" + i}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 relative text-right">
                   <BaseButton
+                    data-nui-tooltip="格式 /([A-D])([,:.、])(.*)/g"
                     size="sm"
                     variant="pastel"
                     type="button"
-                    className="absolute right-4 top-2"
                     onClick={handlePasteInput}
                   >
-                    自动识别
+                    自动识别选项
                   </BaseButton>
-                </div>
-                <div className="grid grid-cols-12 md:gap-x-8 gap-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 ">
-                  {options.map((e, i) => (
-                    <div key={e.label} className="col-span-12">
-                      <div className="flex items-center gap-x-4 gap-y-2">
-                        <BaseInput
-                          // onPaste={handlePasteInput}
-                          key={currentItem?.id + e.label}
-                          defaultValue={e.value}
-                          // label={e.label}
-                          type="text"
-                          id={"option-" + i}
-                        />
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </fieldset>
               <fieldset className="bg-muted-100 dark:bg-muted-700/70 col-span-12">
