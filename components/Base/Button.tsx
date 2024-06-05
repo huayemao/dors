@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Button as BaseButton } from '@headlessui/react';
 import { ButtonHTMLAttributes, FC } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,11 +18,11 @@ const Button: FC<ButtonProps> = ({
 }) => {
   return (
     <>
-      <button
+      <BaseButton
         type="button"
         {...rest}
         className={cn(
-          "nui-button nui-button-rounded nui-button-solid nui-button-primary",
+          "nui-button nui-button-solid nui-button-primary",
           {
             "nui-button-medium": size === "medium",
             "nui-button-small": size === "sm",
@@ -37,7 +38,7 @@ const Button: FC<ButtonProps> = ({
             <div className="nui-placeload animate-nui-placeload h-[60%] w-[80%] rounded"></div>
           </div>
         )}
-      </button>
+      </BaseButton>
     </>
   );
 };

@@ -9,6 +9,23 @@ import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import { DOMAttributes, useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
+import {
+  BaseButton,
+  BaseButtonIcon,
+  BaseCard,
+  BaseInput,
+} from "@shuriken-ui/react";
+import { CopyIcon, Edit2, ImportIcon, PlusIcon, Trash } from "lucide-react";
+import { Modal } from "../../../components/Base/Modal";
+
+function withConfirm<T extends Function>(fn: T) {
+  const res = confirm("确定吗？");
+  if (!res) {
+    return;
+  }
+  fn();
+}
+
 const DEFAULT_OPTIONS = [
   {
     label: "A",
@@ -44,12 +61,23 @@ const DEFAULT_ITEM = {
 export default function QInput() {
   const [, forceUpdate] = useState(0);
 
+  let [isOpen, setIsOpen] = useState(false);
+  let [mode, setMode] = useState<"view" | "edit">("view");
+
+  function open() {
+    setIsOpen(true);
+  }
+
+  function close() {
+    setIsOpen(false);
+  }
+
   const { data: collectionList } = useStorageState("collectionList", [
     { id: new Date().toLocaleDateString() },
   ]);
 
   const { data: itemList, mutate } = useStorageState<Question[]>(
-    new Date().toLocaleDateString(),
+    new Date(Date.now() - 24 * 60 * 60 * 1000).toLocaleDateString(),
     []
   );
 
@@ -123,10 +151,12 @@ export default function QInput() {
     }
   };
 
-  const cancel = () => {
+  function cancel() {
     // forceUpdate(1);
     setCurrentItem(DEFAULT_ITEM);
-  };
+    setMode("view");
+    close();
+  }
 
   const importQuestionsFromClipBoard = () => {
     readFromClipboard().then((text) => {
@@ -181,15 +211,102 @@ export default function QInput() {
 
   return (
     <div className="pt-24 md:px-12">
-      <form
-        method="POST"
-        className="grid grid-cols-12 gap-6"
-        onSubmit={handleSubmit}
+      <div className="space-x-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
+        <BaseButton onClick={copy}>
+          <CopyIcon className="me-2 h-4 w-4"></CopyIcon>
+          复制
+        </BaseButton>
+        <BaseButton size="md" onClick={importQuestionsFromClipBoard}>
+          <ImportIcon className="me-2 h-4 w-4"></ImportIcon>
+          导入
+        </BaseButton>
+        <BaseButton
+          onClick={() => {
+            open();
+            setMode("edit");
+          }}
+        >
+          <PlusIcon className="me-2 h-4 w-4"></PlusIcon>
+          新建
+        </BaseButton>
+      </div>
+      <div className="col-span-12">
+        <div className="bg-slate-50 relative w-full border transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
+          <div className="max-w-full  masonry sn:masonry-sm md:masonry-md">
+            {itemList?.map((e, i, arr) => (
+              <BaseCard
+                rounded="md"
+                key={i}
+                className=" break-inside-avoid my-3 p-4"
+                onClick={() => {
+                  setCurrentItem(e);
+                  open();
+                }}
+              >
+                <div className="relative">
+                  <QA preview data={e} />
+                  {/* <div className="space-x-2 text-right">
+                    </div> */}
+                </div>
+              </BaseCard>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Modal
+        open={isOpen}
+        onClose={cancel}
+        title={<>{currentItem.seq}</>}
+        actions={
+          <>
+            {mode == "view" ? (
+              <>
+                <BaseButtonIcon
+                  rounded="md"
+                  size="sm"
+                  onClick={() => {
+                    setMode("edit");
+                  }}
+                >
+                  <Edit2 className="h-4 w-4" />
+                </BaseButtonIcon>
+                <BaseButtonIcon
+                  rounded="md"
+                  size="sm"
+                  onClick={() => {
+                    withConfirm(() => {
+                      removeItem(currentItem.id);
+                      cancel();
+                    });
+                  }}
+                >
+                  <Trash className="h-4 w-4" />
+                </BaseButtonIcon>
+              </>
+            ) : null}
+          </>
+        }
       >
+        {mode == "view" ? (
+          <>
+            <div className="p-8 flex justify-center w-full ">
+              <QA data={currentItem} />
+            </div>
+          </>
+        ) : (
+          newFunction()
+        )}
+      </Modal>
+    </div>
+  );
+
+  function newFunction() {
+    return (
+      <form method="POST" onSubmit={handleSubmit}>
         <div className="ltablet:col-span-6 col-span-12 lg:col-span-7">
           <div className="relative w-full bg-white transition-all duration-300 rounded-md">
-            <div className="lg:grid border rounded lg:grid-cols-12 lg:max-h-[76vh] lg:overflow-y-auto">
-              <fieldset className="relative p-4 md:p-8 lg:col-span-5">
+            <div className="lg:grid border rounded lg:grid-cols-12 max-h-[76vh] overflow-y-auto">
+              <fieldset className="relative p-4 md:p-8 lg:col-span-7">
                 <div className="mb-6">
                   <p className="font-heading text-base font-medium leading-none">
                     题目
@@ -244,30 +361,30 @@ export default function QInput() {
                   </div>
                 </div>
               </fieldset>
-              <fieldset className="lg:col-span-7 p-4 md:p-8  dark:border-muted-700">
+              <fieldset className="lg:col-span-5 p-4 md:p-8  dark:border-muted-700">
                 <div className="mb-6 relative">
                   <p className="font-heading text-base font-medium leading-none">
                     选项
                   </p>
-                  <button
+                  <BaseButton
+                    size="sm"
+                    variant="pastel"
                     type="button"
-                    className="absolute right-4 top-2 is-button rounded is-button-default w-24"
+                    className="absolute right-4 top-2"
                     onClick={handlePasteInput}
                   >
                     自动识别
-                  </button>
+                  </BaseButton>
                 </div>
                 <div className="grid grid-cols-12 md:gap-x-8 gap-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 ">
                   {options.map((e, i) => (
                     <div key={e.label} className="col-span-12">
                       <div className="flex items-center gap-x-4 gap-y-2">
-                        <Input
+                        <BaseInput
                           // onPaste={handlePasteInput}
                           key={currentItem?.id + e.label}
                           defaultValue={e.value}
-                          label={e.label}
-                          labelClassName="w-fit"
-                          inputContainerClassName="w-full flex-1"
+                          // label={e.label}
                           type="text"
                           id={"option-" + i}
                         />
@@ -320,75 +437,33 @@ export default function QInput() {
                 </div>
               </fieldset>
             </div>
-            <div className="p-4 text-right md:col-span-12">
-              <div className=" inline-flex w-full items-center justify-end gap-2 sm:w-auto">
-                <button
-                  data-v-71bb21a6
-                  type="button"
-                  className="is-button rounded is-button-default !h-12 w-full sm:w-40 border"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    cancel();
-                  }}
-                >
-                  取消
-                </button>
-                <button
-                  type="submit"
-                  className="is-button rounded bg-primary-500 dark:bg-primary-500 hover:enabled:bg-primary-400 dark:hover:enabled:bg-primary-400 text-white hover:enabled:shadow-lg hover:enabled:shadow-primary-500/50 dark:hover:enabled:shadow-primary-800/20 focus-visible:outline-primary-400/70 focus-within:outline-primary-400/70 focus-visible:bg-primary-500 active:enabled:bg-primary-500 dark:focus-visible:outline-primary-400 dark:focus-within:outline-primary-400 dark:focus-visible:bg-primary-500 dark:active:enabled:bg-primary-500 !h-12 w-full sm:w-40"
-                >
-                  确定
-                </button>
+            <div className="flex w-full items-center gap-x-2 justify-end">
+              <div className="p-4 md:p-6">
+                <div className="flex gap-x-2">
+                  <BaseButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      close();
+                    }}
+                    type="button"
+                  >
+                    取消
+                  </BaseButton>
+                  <BaseButton
+                    type="submit"
+                    variant="solid"
+                    color="primary"
+                    size="md"
+                  >
+                    {" "}
+                    确定
+                  </BaseButton>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="ltablet:col-span-6 col-span-12 lg:col-span-5 ">
-          <div className="lg:max-h-[74vh] overflow-y-auto space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            <div className="prose max-w-full">
-              {itemList?.map((e, i, arr) => (
-                <div key={i}>
-                  <div className="relative">
-                    <QA data={e} />
-                    <div className="space-x-2 text-right">
-                      <button
-                        type="button"
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                          setCurrentItem(e);
-                        }}
-                      >
-                        编辑
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                          removeItem(e.id);
-                        }}
-                      >
-                        删除
-                      </button>
-                    </div>
-                  </div>
-                  {i !== arr.length - 1 && <hr />}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="space-x-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            <button className="is-button" onClick={copy}>
-              复制
-            </button>
-            <button
-              className="is-button"
-              onClick={importQuestionsFromClipBoard}
-            >
-              导入
-            </button>
-          </div>
-        </div>
       </form>
-    </div>
-  );
+    );
+  }
 }

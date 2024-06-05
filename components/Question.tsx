@@ -13,7 +13,7 @@ export default function QA({
   const optionsHorizontal = optionCharLength < 24;
   const optionsMobileHorizontal = optionCharLength < 16;
   return (
-    <section className="mb-4">
+    <section className="mb-4 prose">
       <p className="whitespace-pre-wrap">{`${data.seq}. ${data.content}`}</p>
       {!preview && (
         <>

@@ -3,23 +3,25 @@ const { withShurikenUI } = require("@shuriken-ui/tailwind")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = withShurikenUI({
-  mode: 'jit',
+  // mode: 'jit',
   content: [
     "app/**/*.{ts,tsx}",
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "components/**/*.{ts,tsx}"
+    "pages/**/*.{js,ts,jsx,tsx}",
+    "components/**/*.{ts,tsx}",
+    "node_modules/@shuriken-ui/react/dist/**/*.js",
   ],
   darkMode: ['class'],
   theme: {
     extend: {
+      nui: {},
       typography: {
         DEFAULT: {
           css: [{
             table: {
               '@media (max-width: 576px)': {
                 // 如果 table 设置成 display:block 来产生滚动条会导致内容无法自动扩展到全宽
-                td:{
-                  wordBreak:'break-all'
+                td: {
+                  wordBreak: 'break-all'
                 }
               },
 

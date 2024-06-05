@@ -8,9 +8,9 @@ export default function ContentLayout({
   params: any;
 }) {
   return (
-    <>
-      <Nav></Nav>
-      {children}
-    </>
+      <div className="z-0">
+        <Nav></Nav>
+        {children}
+      </div>
   );
 }

@@ -4,6 +4,7 @@ import { TagsContextProvider } from "@/contexts/tags";
 import { getAllCategories } from "@/lib/categories";
 import { getTags } from "@/lib/tags";
 import "@/styles/globals.css";
+import { ShurikenUIProvider } from "@shuriken-ui/react";
 import { Metadata } from "next";
 import Script from "next/script";
 
@@ -29,9 +30,10 @@ export default async function RootLayout({
   const tags = await getTags();
 
   return (
-    <html>
-      <head>
-        {/* <style>
+    <ShurikenUIProvider>
+      <html>
+        <head>
+          {/* <style>
           {` 
           @page {
             margin:0;
@@ -45,23 +47,25 @@ export default async function RootLayout({
           }
   `}
         </style> */}
-        <Script id="darkMode" strategy="beforeInteractive">
-          {`if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          <Script id="darkMode" strategy="beforeInteractive">
+            {`if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.classList.add('dark')
 } else {
   document.documentElement.classList.remove('dark')
 }`}
-        </Script>
-        <Script
-          id="tencentShare"
-          src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
-        ></Script>
-      </head>
-      <body className="transition-all duration-300 min-h-screen flex flex-col">
-        <CategoriesContextProvider Categories={categories}>
-          <TagsContextProvider tags={tags}>{children}</TagsContextProvider>
-        </CategoriesContextProvider>
-      </body>
-    </html>
+          </Script>
+          <Script
+            id="tencentShare"
+            src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
+          ></Script>
+        </head>
+        <body className="transition-all duration-300 min-h-screen flex flex-col">
+          <CategoriesContextProvider Categories={categories}>
+            <TagsContextProvider tags={tags}>
+              {children}</TagsContextProvider>
+          </CategoriesContextProvider>
+        </body>
+      </html>
+    </ShurikenUIProvider>
   );
 }

@@ -33,7 +33,7 @@ export const Nav = () => {
   return (
     <nav
       className={clsx(
-        "fixed top-0 w-full  z-50 transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
+        "fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
         {
           "bg-white dark:bg-muted-800 shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10":
             scrolled || megamenuOpened,
