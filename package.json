@@ -11,7 +11,6 @@
     "db:pull": "prisma db pull --schema=./prisma/schema.prisma"
   },
   "dependencies": {
-    "@headlessui/react": "^2.0.4",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",
     "@shuriken-ui/react": "^0.0.3",

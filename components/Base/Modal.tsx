@@ -1,10 +1,7 @@
 "use client";
 import {
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-    Transition,
-    TransitionChild
+  Dialog,
+  Transition,
 } from "@headlessui/react";
 import { BaseButtonClose } from "@shuriken-ui/react";
 
@@ -21,7 +18,7 @@ export const Modal = ({
     <>
       <Transition appear show={open}>
         <Dialog onClose={onClose} className="z-50">
-          <TransitionChild
+          <Transition.Child
             enter="ease-out duration-100"
             enterFrom="opacity-0 transform-[scale(75%)]"
             enterTo="opacity-100 transform-[scale(100%)]"
@@ -30,16 +27,16 @@ export const Modal = ({
             leaveTo="opacity-0 transform-[scale(75%)]"
           >
             <div className="bg-muted-800/70 dark:bg-muted-900/80 fixed inset-0">
-              <DialogPanel className="fixed inset-0">
+              <Dialog.Panel className="fixed inset-0">
                 <div className="flex min-h-full items-center justify-center p-4 text-center">
                   <div className="dark:bg-muted-800 w-full bg-white text-left align-middle shadow-xl transition-all rounded-md max-w-5xl">
                     <div className="flex w-full items-center justify-between p-4 md:p-6">
-                      <DialogTitle
+                      <Dialog.Title
                         as="h3"
                         className="font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"
                       >
                         {title}
-                      </DialogTitle>
+                      </Dialog.Title>
                       <div className="flex gap-4 items-center">
                         {actions}
                         <BaseButtonClose onClick={onClose}></BaseButtonClose>
@@ -48,9 +45,9 @@ export const Modal = ({
                     {children}
                   </div>
                 </div>
-              </DialogPanel>
+              </Dialog.Panel>
             </div>
-          </TransitionChild>
+          </Transition.Child>
         </Dialog>
       </Transition>
     </>

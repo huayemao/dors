@@ -83,3 +83,12 @@ export async function copyTextToClipboard(text) {
 export async function readFromClipboard() {
   return await navigator.clipboard.readText();
 }
+
+
+export function withConfirm<T extends Function>(fn: T) {
+  const res = confirm("确定吗？");
+  if (!res) {
+    return;
+  }
+  fn();
+}
