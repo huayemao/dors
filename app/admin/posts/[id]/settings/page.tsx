@@ -8,7 +8,7 @@ import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getDateForDateTimeInput } from "@/lib/utils";
-import { BaseButton, BaseSelect } from "@shuriken-ui/react";
+import { BaseButton, BaseCard } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -28,7 +28,7 @@ const Panel: FC<
   }>
 > = ({ title, description, children }) => {
   return (
-    <div className="nui-card nui-card-curved nui-card-white p-6 max-w-md">
+    <BaseCard className="max-w-md p-6">
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="nui-heading nui-heading-sm nui-weight-semibold nui-lead-tight text-muted-800 dark:text-white">
@@ -42,7 +42,7 @@ const Panel: FC<
           {children}
         </div>
       </div>
-    </div>
+    </BaseCard>
   );
 };
 
@@ -77,7 +77,7 @@ const SaveButton = ({ postId }: { postId: string }) => {
   };
 
   return (
-    <BaseButton loading={loading} className="w-full" onClick={handleClick}>
+    <BaseButton color="primary" loading={loading} className="w-full" onClick={handleClick}>
       保存
     </BaseButton>
   );
@@ -174,22 +174,9 @@ export default function Page({ params }) {
           editTime={getDateForDateTimeInput(post?.updated_at as Date)}
         />
       </Panel>
-      <Panel title="分类&标签" description="文章可有一个分类和多个标签">
+      <Panel title="标签" description="文章可有多个标签">
         <form className="mb-3">
-          <BaseSelect
-            required
-            label="分类"
-            id="category_id"
-            name="category_id"
-            defaultValue={categoryId ? String(categoryId) : undefined}
-            data-original-value={categoryId ? String(categoryId) : undefined}
-          >
-            {cats.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name}
-              </option>
-            ))}
-          </BaseSelect>
+          {/* todo：改掉这个组件 */}
           <Select
             multiple
             label="标签"

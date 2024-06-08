@@ -87,24 +87,7 @@ export function PostEditor({ post }: PostEditorProps) {
 
       <div className="relative min-h-[500px] w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
         <div className="absolute right-0 left-0 px-5 top-5 mb-6 flex items-center ">
-          <div className="w-20 mr-auto">
-            <BaseSelect
-              size="sm"
-              required
-              labelFloat
-              label="分类"
-              id="category_id"
-              name="category_id"
-              defaultValue={categoryId ? String(categoryId) : undefined}
-              data-original-value={categoryId ? String(categoryId) : undefined}
-            >
-              {categories.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.name}
-                </option>
-              ))}
-            </BaseSelect>
-          </div>
+          {CatSelect()}
           <div className="space-x-3 flex items-center">
             {post && (
               <>
@@ -147,6 +130,8 @@ export function PostEditor({ post }: PostEditorProps) {
                   <UploadPanel />
                 </Modal>
                 <Link
+                  legacyBehavior
+                  passHref
                   href={`/admin/posts/${post.id}/settings`}
                   className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
                 >
@@ -227,6 +212,41 @@ export function PostEditor({ post }: PostEditorProps) {
     </form>
   );
 
+  function CatSelect() {
+    const [v, setV] = useState(categoryId ? String(categoryId) : undefined);
+    return (
+      <div className="w-20 mr-auto">
+        <BaseSelect
+          size="sm"
+          required
+          labelFloat
+          label="分类"
+          onChange={(v) => {
+            (
+              document.querySelector("input#category_id") as HTMLInputElement
+            ).value = v;
+            setV(v);
+          }}
+          // 组件不支持传 props ... 用它来作 input 的代理好了。。。
+          // defaultValue={String(categoryId) ? String(categoryId) : undefined}
+          value={v}
+        >
+          {categories.map((e) => (
+            <option key={e.id} defaultChecked={e.id == categoryId} value={e.id}>
+              {e.name}
+            </option>
+          ))}
+        </BaseSelect>
+        <input
+          className="hidden"
+          name="category_id"
+          id="category_id"
+          data-original-value={categoryId ? categoryId : undefined}
+          defaultValue={v}
+        ></input>
+      </div>
+    );
+  }
   // return (
   //   <form
   //     action="/api/updatePost"
