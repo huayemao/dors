@@ -5,17 +5,16 @@ import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
 import { cn, copyTextToClipboard, getDateForDateTimeInput } from "@/lib/utils";
 import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  useClose,
-} from "@headlessui/react";
-import { Plus, Settings, TimerReset } from "lucide-react";
+  BaseButtonIcon,
+  BaseDropdown,
+  BaseDropdownItem,
+  BaseSelect,
+} from "@shuriken-ui/react";
+import { Plus, Save, Settings, TimerReset } from "lucide-react";
 import Link from "next/link";
 import { FormEventHandler, useContext, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import Button from "./Base/Button";
-import Select from "./Base/Select";
+import { Modal } from "./Base/Modal";
 
 export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
@@ -64,7 +63,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
 export function PostEditor({ post }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
-
+  const [modalOpen, setModalOpen] = useState(false);
   const [content, setContent] = useState(post?.content || "");
 
   const categoryId = post?.posts_category_links[0]?.category_id;
@@ -89,9 +88,8 @@ export function PostEditor({ post }: PostEditorProps) {
       <div className="relative min-h-[500px] w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
         <div className="absolute right-0 left-0 px-5 top-5 mb-6 flex items-center ">
           <div className="w-20 mr-auto">
-            <Select
+            <BaseSelect
               size="sm"
-              shape="full"
               required
               labelFloat
               label="分类"
@@ -99,54 +97,71 @@ export function PostEditor({ post }: PostEditorProps) {
               name="category_id"
               defaultValue={categoryId ? String(categoryId) : undefined}
               data-original-value={categoryId ? String(categoryId) : undefined}
-              data={categories.map((e) => ({
-                value: String(e.id),
-                label: e.name as string,
-              }))}
-            />
+            >
+              {categories.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.name}
+                </option>
+              ))}
+            </BaseSelect>
           </div>
           <div className="space-x-3 flex items-center">
             {post && (
               <>
-                <Popover className="relative">
-                  <PopoverButton className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500 active:text-primary-500">
-                    <Plus className="h-5 w-5" />
-                  </PopoverButton>
-                  <PopoverPanel
-                    anchor="bottom"
-                    className="bg-white shadow-lg rounded p-4 flex flex-col"
-                  >
-                    <UploadPopover />
-                    <button
-                      onClick={() => {
-                        fetch("/api/files/getLatestFile")
-                          .then((res) => res.json())
-                          .then(
-                            (json) => `${SITE_META.url}/api/files/${json.name}`
-                          )
-                          .then(copyTextToClipboard)
-                          .then(() => {
-                            alert("已复制到剪切板");
-                          });
-                      }}
-                    >
-                      最近图片
-                    </button>
-                  </PopoverPanel>
-                </Popover>
-
+                <BaseDropdown
+                  renderButton={() => (
+                    <BaseButtonIcon rounded="md" size="sm">
+                      <Plus className="h-4 w-4" />
+                    </BaseButtonIcon>
+                  )}
+                >
+                  <BaseDropdownItem
+                    title="上传文件"
+                    onClick={() => {
+                      setModalOpen(true);
+                    }}
+                  ></BaseDropdownItem>
+                  <BaseDropdownItem
+                    title="最近文件"
+                    text="获取最近文件的 markdown 标记"
+                    onClick={() => {
+                      fetch("/api/files/getLatestFile")
+                        .then((res) => res.json())
+                        .then(
+                          (json) => `${SITE_META.url}/api/files/${json.name}`
+                        )
+                        .then(copyTextToClipboard)
+                        .then(() => {
+                          alert("已复制到剪切板");
+                        });
+                    }}
+                  ></BaseDropdownItem>
+                </BaseDropdown>
+                <Modal
+                  title={"上传文件"}
+                  open={modalOpen}
+                  onClose={() => {
+                    setModalOpen(false);
+                  }}
+                >
+                  <UploadPanel />
+                </Modal>
                 <Link
                   href={`/admin/posts/${post.id}/settings`}
                   className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
                 >
-                  <Settings className="h-5 w-5" />
+                  <BaseButtonIcon rounded="md" size="sm">
+                    <Settings className="h-4 w-4" />
+                  </BaseButtonIcon>
                 </Link>
                 <label className="text-stone-400 hover:text-stone-500">
-                  <TimerReset
-                    className={cn("h-5 w-5 cursor-pointer", {
-                      "text-primary-500": reserveUpdateTime,
-                    })}
-                  />
+                  <div className="nui-button-icon nui-button-rounded-md nui-button-small nui-button-default">
+                    <TimerReset
+                      className={cn("h-4 w-4 cursor-pointer", {
+                        "text-primary-500": reserveUpdateTime,
+                      })}
+                    />
+                  </div>
                   <input
                     className="appearance-none m-0 bg-transparent hidden"
                     type="checkbox"
@@ -168,9 +183,9 @@ export function PostEditor({ post }: PostEditorProps) {
                 ></input>
               </>
             )}
-            <Button type="submit" size="sm">
-              保存
-            </Button>
+            <BaseButtonIcon rounded="md" type="submit" size="sm">
+              <Save className="h-4 w-4" />
+            </BaseButtonIcon>
           </div>
         </div>
 
@@ -233,20 +248,7 @@ export function PostEditor({ post }: PostEditorProps) {
   //   </form>
   // );
 }
-function UploadPopover() {
-  return (
-    <Popover className="relative">
-      <PopoverButton>上传文件</PopoverButton>
-      <PopoverPanel anchor="bottom" className="bg-white shadow-lg rounded p-4">
-        <UploadPanel />
-      </PopoverPanel>
-    </Popover>
-  );
-}
-
 function UploadPanel() {
-  let close = useClose();
-
   return (
     <UploadForm
       onSubmit={(e) => {

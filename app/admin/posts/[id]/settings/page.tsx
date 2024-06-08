@@ -1,5 +1,4 @@
 "use client";
-import Button from "@/components/Base/Button";
 import Input from "@/components/Base/Input";
 import Select from "@/components/Base/Select";
 import { detectChange } from "@/components/PostEditor";
@@ -9,6 +8,7 @@ import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getDateForDateTimeInput } from "@/lib/utils";
+import { BaseButton, BaseSelect } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -77,9 +77,9 @@ const SaveButton = ({ postId }: { postId: string }) => {
   };
 
   return (
-    <Button loading={loading} className="w-full" onClick={handleClick}>
+    <BaseButton loading={loading} className="w-full" onClick={handleClick}>
       保存
-    </Button>
+    </BaseButton>
   );
 };
 
@@ -105,7 +105,7 @@ const CoverImageSetting = ({
         src={photo.src.large}
       />
       <div className="text-right mt-2">
-        <Button
+        <BaseButton
           loading={loading}
           onClick={() => {
             const formData = new FormData();
@@ -132,10 +132,10 @@ const CoverImageSetting = ({
               });
           }}
           size="sm"
-          flavor="pastel"
+          variant="pastel"
         >
           随机更换图片
-        </Button>
+        </BaseButton>
       </div>
     </>
   );
@@ -176,18 +176,20 @@ export default function Page({ params }) {
       </Panel>
       <Panel title="分类&标签" description="文章可有一个分类和多个标签">
         <form className="mb-3">
-          <Select
+          <BaseSelect
             required
             label="分类"
             id="category_id"
             name="category_id"
             defaultValue={categoryId ? String(categoryId) : undefined}
             data-original-value={categoryId ? String(categoryId) : undefined}
-            data={cats.map((e) => ({
-              value: String(e.id),
-              label: e.name as string,
-            }))}
-          />
+          >
+            {cats.map((e) => (
+              <option key={e.id} value={e.id}>
+                {e.name}
+              </option>
+            ))}
+          </BaseSelect>
           <Select
             multiple
             label="标签"
@@ -239,12 +241,12 @@ export default function Page({ params }) {
               快捷自定义修改时间：
             </div>
             <div className="flex flex-col gap-2">
-              <Button onClick={useLastEditTime} size="sm" flavor="pastel">
+              <BaseButton onClick={useLastEditTime} size="sm" variant="pastel">
                 使用上次修改时间
-              </Button>
-              <Button onClick={syncUpdateTime} size="sm" flavor="pastel">
+              </BaseButton>
+              <BaseButton onClick={syncUpdateTime} size="sm" variant="pastel">
                 使用创建时间
-              </Button>
+              </BaseButton>
             </div>
           </div>
         </form>
