@@ -1,6 +1,6 @@
 "use client";
+import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import Input from "@/components/Base/Input";
-import Select from "@/components/Base/Select";
 import { detectChange } from "@/components/PostEditor";
 import { CategoriesContext } from "@/contexts/categories";
 import { PostContext } from "@/contexts/post";
@@ -77,7 +77,12 @@ const SaveButton = ({ postId }: { postId: string }) => {
   };
 
   return (
-    <BaseButton color="primary" loading={loading} className="w-full" onClick={handleClick}>
+    <BaseButton
+      color="primary"
+      loading={loading}
+      className="w-full"
+      onClick={handleClick}
+    >
       保存
     </BaseButton>
   );
@@ -176,20 +181,7 @@ export default function Page({ params }) {
       </Panel>
       <Panel title="标签" description="文章可有多个标签">
         <form className="mb-3">
-          {/* todo：改掉这个组件 */}
-          <Select
-            multiple
-            label="标签"
-            id="tags"
-            name="tags"
-            defaultValue={post.tags.map((e) => String(e?.name)).sort()}
-            data-original-value={post.tags.map((e) => String(e?.name)).sort()}
-            data={tags.map((e) => ({
-              value: String(e.name),
-              label: e.name as string,
-            }))}
-            className="lg:!h-[180px]"
-          />
+          <Tags></Tags>
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
@@ -241,4 +233,45 @@ export default function Page({ params }) {
       </Panel>
     </div>
   );
+
+  function Tags() {
+    const [value, setValue] = useState<string[]>(
+      post!.tags.map((e) => String(e?.name)).sort()
+    );
+
+    return (
+      <>
+        <select
+          multiple
+          id="tags"
+          name="tags"
+          defaultValue={value}
+          data-original-value={post!.tags.map((e) => String(e?.name)).sort()}
+          className="hidden"
+        >
+          {value.map((e) => {
+            return (
+              <option value={e} key={e} selected>
+                {e}
+              </option>
+            );
+          })}
+        </select>
+        <BaseAutocomplete
+          // @ts-ignore
+          // id="tags"
+          // name="tags"
+          onChange={setValue}
+          value={value}
+          items={tags.map((e) => e.name as string)}
+          rounded="md"
+          icon="lucide:list-filter"
+          placeholder="搜索..."
+          label="标签"
+          allowCreate
+          multiple
+        />
+      </>
+    );
+  }
 }
