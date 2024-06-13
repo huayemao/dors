@@ -16,6 +16,8 @@ import { FormEventHandler, useContext, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Modal } from "./Base/Modal";
 
+const DEFAULT_CATEGORY_ID = 3;
+
 export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
 };
@@ -213,7 +215,9 @@ export function PostEditor({ post }: PostEditorProps) {
   );
 
   function CatSelect() {
-    const [v, setV] = useState(categoryId ? String(categoryId) : undefined);
+    const [v, setV] = useState(
+      categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)
+    );
     return (
       <div className="w-20 mr-auto">
         <BaseSelect
