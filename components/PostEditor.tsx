@@ -66,152 +66,164 @@ export function PostEditor({ post }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [action, setAction] = useState<"upload" | "unicode">("upload");
   const [content, setContent] = useState(post?.content || "");
 
   const categoryId = post?.posts_category_links[0]?.category_id;
 
   return (
-    <form
-      className="bg-white dark:bg-black  max-w-screen-lg"
-      action={post ? "/api/updatePost" : "/api/createPost"}
-      method="POST"
-      onSubmit={handleOnSubmit}
-    >
-      {post && (
-        <input
-          hidden
-          name="id"
-          id="id"
-          defaultValue={post.id}
-          data-original-value={post.id}
-        />
-      )}
+    <>
+      <form
+        className="bg-white dark:bg-black  max-w-screen-lg"
+        action={post ? "/api/updatePost" : "/api/createPost"}
+        method="POST"
+        onSubmit={handleOnSubmit}
+      >
+        {post && (
+          <input
+            hidden
+            name="id"
+            id="id"
+            defaultValue={post.id}
+            data-original-value={post.id}
+          />
+        )}
 
-      <div className="relative min-h-[500px] w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
-        <div className="absolute right-0 left-0 px-5 top-5 mb-6 flex items-center ">
-          {CatSelect()}
-          <div className="space-x-3 flex items-center">
-            {post && (
-              <>
-                <BaseDropdown
-                  renderButton={() => (
-                    <BaseButtonIcon rounded="md" size="sm">
-                      <Plus className="h-4 w-4" />
-                    </BaseButtonIcon>
-                  )}
-                >
-                  <BaseDropdownItem
-                    title="上传文件"
-                    onClick={() => {
-                      setModalOpen(true);
-                    }}
-                  ></BaseDropdownItem>
-                  <BaseDropdownItem
-                    title="最近文件"
-                    text="获取最近文件的 markdown 标记"
-                    onClick={() => {
-                      fetch("/api/files/getLatestFile")
-                        .then((res) => res.json())
-                        .then(
-                          (json) => `${SITE_META.url}/api/files/${json.name}`
-                        )
-                        .then(copyTextToClipboard)
-                        .then(() => {
-                          alert("已复制到剪切板");
-                        });
-                    }}
-                  ></BaseDropdownItem>
-                </BaseDropdown>
-                <Modal
-                  title={"上传文件"}
-                  open={modalOpen}
-                  onClose={() => {
-                    setModalOpen(false);
-                  }}
-                >
-                  <UploadPanel />
-                </Modal>
-                <Link
-                  legacyBehavior
-                  passHref
-                  href={`/admin/posts/${post.id}/settings`}
-                  className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
-                >
-                  <BaseButtonIcon rounded="md" size="sm">
-                    <Settings className="h-4 w-4" />
-                  </BaseButtonIcon>
-                </Link>
-                <label className="text-stone-400 hover:text-stone-500">
-                  <div className="nui-button-icon nui-button-rounded-md nui-button-small nui-button-default">
-                    <TimerReset
-                      className={cn("h-4 w-4 cursor-pointer", {
-                        "text-primary-500": reserveUpdateTime,
-                      })}
+        <div className="relative min-h-[500px] w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
+          <div className="absolute right-0 left-0 px-5 top-5 mb-6 flex items-center ">
+            {CatSelect()}
+            <div className="space-x-3 flex items-center">
+              {post && (
+                <>
+                  <BaseDropdown
+                    renderButton={() => (
+                      <BaseButtonIcon rounded="md" size="sm">
+                        <Plus className="h-4 w-4" />
+                      </BaseButtonIcon>
+                    )}
+                  >
+                    <BaseDropdownItem
+                      title="上传文件"
+                      onClick={() => {
+                        setAction("upload");
+                        setModalOpen(true);
+                      }}
+                    ></BaseDropdownItem>
+                    <BaseDropdownItem
+                      title="Unicode 表情"
+                      onClick={() => {
+                        setAction("unicode");
+                        setModalOpen(true);
+                      }}
                     />
-                  </div>
+                    <BaseDropdownItem
+                      title="最近文件"
+                      text="获取最近文件的 markdown 标记"
+                      onClick={() => {
+                        fetch("/api/files/getLatestFile")
+                          .then((res) => res.json())
+                          .then(
+                            (json) => `${SITE_META.url}/api/files/${json.name}`
+                          )
+                          .then(copyTextToClipboard)
+                          .then(() => {
+                            alert("已复制到剪切板");
+                          });
+                      }}
+                    ></BaseDropdownItem>
+                  </BaseDropdown>
+
+                  <Link
+                    legacyBehavior
+                    passHref
+                    href={`/admin/posts/${post.id}/settings`}
+                    className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
+                  >
+                    <BaseButtonIcon rounded="md" size="sm">
+                      <Settings className="h-4 w-4" />
+                    </BaseButtonIcon>
+                  </Link>
+                  <label className="text-stone-400 hover:text-stone-500">
+                    <div className="nui-button-icon nui-button-rounded-md nui-button-small nui-button-default">
+                      <TimerReset
+                        className={cn("h-4 w-4 cursor-pointer", {
+                          "text-primary-500": reserveUpdateTime,
+                        })}
+                      />
+                    </div>
+                    <input
+                      className="appearance-none m-0 bg-transparent hidden"
+                      type="checkbox"
+                      onChange={(e) => {
+                        setReserveUpdateTime(e.target.checked);
+                      }}
+                      defaultChecked={reserveUpdateTime}
+                    />
+                  </label>
                   <input
-                    className="appearance-none m-0 bg-transparent hidden"
-                    type="checkbox"
-                    onChange={(e) => {
-                      setReserveUpdateTime(e.target.checked);
-                    }}
-                    defaultChecked={reserveUpdateTime}
-                  />
-                </label>
-                <input
-                  hidden
-                  disabled={!reserveUpdateTime}
-                  id="updated_at"
-                  name="updated_at"
-                  type="datetime-local"
-                  defaultValue={getDateForDateTimeInput(
-                    post?.updated_at as Date
-                  )}
-                ></input>
-              </>
-            )}
-            <BaseButtonIcon rounded="md" type="submit" size="sm">
-              <Save className="h-4 w-4" />
-            </BaseButtonIcon>
+                    hidden
+                    disabled={!reserveUpdateTime}
+                    id="updated_at"
+                    name="updated_at"
+                    type="datetime-local"
+                    defaultValue={getDateForDateTimeInput(
+                      post?.updated_at as Date
+                    )}
+                  ></input>
+                </>
+              )}
+              <BaseButtonIcon rounded="md" type="submit" size="sm">
+                <Save className="h-4 w-4" />
+              </BaseButtonIcon>
+            </div>
+          </div>
+
+          <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
+            <input
+              id={"title"}
+              name="title"
+              placeholder="标题"
+              className="dark:placeholder-text-600 border-none px-0 font-cal text-3xl placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
+              type="text"
+              data-original-value={post?.title}
+              defaultValue={post?.title || ""}
+            />
+            <textarea
+              placeholder="摘要"
+              id="excerpt"
+              name="excerpt"
+              data-original-value={post?.excerpt}
+              defaultValue={post?.excerpt || ""}
+              className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
+            />
+          </div>
+          <div>
+            <TextareaAutosize
+              minRows={8}
+              id="content"
+              name="content"
+              onInput={(e) => {
+                const thisEl = e.target as HTMLTextAreaElement;
+                setContent(thisEl.value);
+              }}
+              defaultValue={post?.content || ""}
+              data-original-value={post?.content}
+              placeholder="正文"
+              className="resize-none dark:placeholder-text-600 w-full border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
+            />
           </div>
         </div>
-
-        <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
-          <input
-            id={"title"}
-            name="title"
-            placeholder="标题"
-            className="dark:placeholder-text-600 border-none px-0 font-cal text-3xl placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
-            type="text"
-            data-original-value={post?.title}
-            defaultValue={post?.title || ""}
-          />
-          <textarea
-            placeholder="摘要"
-            id="excerpt"
-            name="excerpt"
-            data-original-value={post?.excerpt}
-            defaultValue={post?.excerpt || ""}
-            className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
-          />
-        </div>
-        <div>
-          <TextareaAutosize
-            minRows={8}
-            id="content"
-            name="content"
-            onInput={(e) => {
-              const thisEl = e.target as HTMLTextAreaElement;
-              setContent(thisEl.value);
-            }}
-            defaultValue={post?.content || ""}
-            data-original-value={post?.content}
-            placeholder="正文"
-            className="resize-none dark:placeholder-text-600 w-full border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
-          />
-        </div>
-      </div>
-    </form>
+      </form>
+      <Modal
+        title={action == "upload" ? "上传文件" : "常用 Unicode"}
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      >
+        {action == "upload" ? <UploadPanel /> : <EmojiPanel />}
+      </Modal>
+    </>
   );
 
   function CatSelect() {
@@ -272,6 +284,16 @@ export function PostEditor({ post }: PostEditorProps) {
   //   </form>
   // );
 }
+function EmojiPanel() {
+  return (
+    <div className="flex gap-3 p-8">
+      {["👍", "✅", "⭐", "👎", "❌", "💔"].map((e) => (
+        <EmojiItem key={e} text={e}></EmojiItem>
+      ))}
+    </div>
+  );
+}
+
 function UploadPanel() {
   return (
     <UploadForm
@@ -291,5 +313,18 @@ function UploadPanel() {
           });
       }}
     />
+  );
+}
+
+function EmojiItem({ text }: { text: string }) {
+  return (
+    <button
+      onClick={() => {
+        copyTextToClipboard(text).then(() => alert("已复制到剪贴板"));
+      }}
+      className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-2 cursor-pointer transition-colors"
+    >
+      {text}
+    </button>
   );
 }
