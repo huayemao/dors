@@ -11,6 +11,7 @@ const theme = require("shiki/themes/nord.json");
 
 import Annotate from "@/components/Annotate";
 import Carousel from "@/components/Carousel";
+import Columns from "@/components/Columns";
 import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { PersonList } from "@/components/Person";
@@ -19,7 +20,6 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
-import { SITE_META } from "@/constants";
 import nextConfig from "@/next.config.mjs";
 import Image from "next/image";
 import remarkMath from "remark-math";
@@ -27,6 +27,7 @@ import remarkMath from "remark-math";
 const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
   QuestionList: (props) => <QuestionList {...props} />,
+  Columns: (props) => <Columns {...props} />,
   PersonList: (props) => <PersonList {...props} />,
   Word: (props) => <Word {...props} />,
   Carousel: (props) => <Carousel {...props} />,
