@@ -11,6 +11,7 @@ import { BackButton } from "../BackButton";
 import PostHead from "../PostHead";
 import PostTile from "../PostTile";
 import { ShareButton } from "../ShareButton";
+import ContentModal from "./ContentModal";
 
 const TOC = dynamic(() => import("./toc"), {
   ssr: false,
@@ -95,6 +96,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
           </div>
         </div>
       </section>
+      <ContentModal></ContentModal>
     </div>
   );
 }

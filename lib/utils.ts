@@ -84,11 +84,22 @@ export async function readFromClipboard() {
   return await navigator.clipboard.readText();
 }
 
-
 export function withConfirm<T extends Function>(fn: T) {
   const res = confirm("确定吗？");
   if (!res) {
     return;
   }
   fn();
+}
+
+export function getCurrentSegmentContent(el: HTMLElement) {
+  let str = el.outerHTML;
+  let current = el.nextElementSibling;
+  const test = (tName) =>
+    tName.startsWith("H") && Number(tName[1]) <= Number(el.tagName[1]);
+  while (current && !test(current.tagName)) {
+    str += current.outerHTML;
+    current = current.nextElementSibling;
+  }
+  return str
 }
