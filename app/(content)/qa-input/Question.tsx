@@ -69,7 +69,11 @@ export default function Question() {
         type: "REMOVE_QUESTION",
         payload: currentQuestion.id,
       });
-      dispatch({ type: "CANCEL" });
+      if (history.length) {
+        navigate(-1);
+      } else {
+        navigate("..", { replace: true });
+      }
     });
   };
 

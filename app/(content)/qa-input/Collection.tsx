@@ -2,7 +2,7 @@
 
 import QA from "@/components/Question";
 import { Question } from "@/lib/types/Question";
-import { readFromClipboard, withConfirm } from "@/lib/utils";
+import { readFromClipboard } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import {
   BaseButtonIcon,
@@ -52,16 +52,6 @@ export default function CollectionLayout() {
   function close() {
     dispatch({ type: "SET_MODAL_OPEN", payload: false });
   }
-
-  const handleRemove = () => {
-    withConfirm(() => {
-      dispatch({
-        type: "REMOVE_QUESTION",
-        payload: currentQuestion.id,
-      });
-      dispatch({ type: "CANCEL" });
-    });
-  };
 
   // todo: questions 放到最后一级去 render。外层只提供一个 context
 

@@ -113,13 +113,11 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
         const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
         if (hasTarget) {
           return Object.assign({}, state, {
-            questionList: state.questionList?.filter(
-              (_, i) => i != targetItemIndex
-            ),
+            questionList: state.questionList?.filter((e, i) => e.id != id),
           });
         }
       };
-      removeItem(action.payload);
+      return removeItem(action.payload);
     }
     default:
       return state;
