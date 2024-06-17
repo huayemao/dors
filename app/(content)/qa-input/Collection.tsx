@@ -9,19 +9,27 @@ import {
   BaseCard,
   BaseDropdown,
   BaseDropdownItem,
+  BaseIconBox,
 } from "@shuriken-ui/react";
+import localforage from "localforage";
 import { CopyIcon, ImportIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useQAs, useQAsDispatch } from "../contexts";
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { useQAs, useQAsDispatch } from "./contexts";
 
-export default function CollectionLayout({
-  children,
-  params,
-}: {
-  children: JSX.Element;
-  params: { collectionId: string };
-}) {
+export async function collectionLoader({ params }) {
+  const collectionList = await localforage.getItem("collectionList");
+  //@ts-ignore
+  const collection = collectionList.find((e) => e.id == params.collectionId);
+  return { collection };
+}
+
+export default function CollectionLayout({}: {}) {
   const {
     currentCollection,
     collectionList,
@@ -31,9 +39,11 @@ export default function CollectionLayout({
     questionModalMode,
   } = useQAs();
   const dispatch = useQAsDispatch();
-  const pathname = usePathname();
-  const router = useRouter();
+  const navigate = useNavigate();
+  const l = useLocation();
 
+  // @ts-ignore
+  const { collection } = useLoaderData();
   function open() {
     dispatch({ type: "SET_MODAL_OPEN", payload: true });
   }
@@ -100,7 +110,7 @@ export default function CollectionLayout({
             label={currentCollection.name}
           >
             {collectionList?.map((e) => (
-              <Link href={"./" + e.id} shallow key={e.id}>
+              <Link to={"./" + e.id} key={e.id}>
                 <BaseDropdownItem
                   title={e.name}
                   text={e.id + ""}
@@ -113,9 +123,9 @@ export default function CollectionLayout({
               classes={{ wrapper: "text-right" }}
               className="text-right"
             >
-              <BaseButtonIcon color="primary">
+              <BaseIconBox color="primary">
                 <PlusIcon></PlusIcon>
-              </BaseButtonIcon>
+              </BaseIconBox>
             </BaseDropdownItem>
           </BaseDropdown>
           <BaseButtonIcon onClick={copy}>
@@ -126,8 +136,9 @@ export default function CollectionLayout({
           </BaseButtonIcon>
           <BaseButtonIcon
             onClick={() => {
-              open();
-              toAddQA();
+              navigate("./create");
+              // open();
+              // toAddQA();
             }}
           >
             <PlusIcon className="h-4 w-4"></PlusIcon>
@@ -137,13 +148,7 @@ export default function CollectionLayout({
           <div className="bg-slate-50 relative w-full border transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
             <div className="max-w-full  masonry sn:masonry-sm md:masonry-md">
               {questionList?.map((e, i, arr) => (
-                <Link
-                  key={i}
-                  href={{ pathname: pathname + "/" + e.id }}
-                  shallow
-                  prefetch={false}
-                  replace
-                >
+                <Link key={i} to={"./" + e.id}>
                   <BaseCard
                     rounded="md"
                     className=" break-inside-avoid my-3 p-4"
@@ -157,7 +162,7 @@ export default function CollectionLayout({
             </div>
           </div>
         </div>
-        {children}
+        <Outlet />
       </div>
     </>
   );

@@ -5,8 +5,8 @@ import { readFromClipboard } from "@/lib/utils";
 import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
 import { DOMAttributes } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { DEFAULT_OPTIONS } from "../constants";
-import { useQAs, useQAsDispatch } from "../contexts";
+import { DEFAULT_OPTIONS } from "./constants";
+import { useQAs, useQAsDispatch } from "./contexts";
 
 export function QAForm() {
   const { questionModalMode, currentQuestion, questionList } = useQAs();

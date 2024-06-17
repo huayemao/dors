@@ -22,17 +22,21 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  reactStrictMode: true,
-  // async rewrites() {
-  //   return {
-  //     afterFiles: [
-  //       {
-  //         source: '/v1/:path*',
-  //         destination: 'http://house.huayemao.run:8099/v1/:path*',
-  //       },
-  //     ],
-  //   }
-  // },
+  reactStrictMode: false,
+  async rewrites() {
+    return {
+      afterFiles: [
+        // {
+        //   source: '/v1/:path*',
+        //   destination: 'http://house.huayemao.run:8099/v1/:path*',
+        // },
+        {
+          source: '/qa-input/:path*',
+          destination: '/qa-input',
+        },
+      ],
+    }
+  },
 }
 
 export default withPlaiceholder(nextConfig)

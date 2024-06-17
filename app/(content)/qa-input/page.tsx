@@ -1,26 +1,15 @@
 "use client";
-
-import { BasePlaceload } from "@shuriken-ui/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQAs } from "./contexts";
-
-export default function QAsPage() {
+export default function Page() {
   const { currentCollection } = useQAs();
-
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentCollection) {
-      router.replace("/qa-input/" + currentCollection.id, {});
+      navigate("./" + currentCollection.id, { state: { __NA: {} } });
     }
   }, [currentCollection]);
-
-  return (
-    <div className="pt-24 md:px-12">
-      <BasePlaceload className="h-8 w-full rounded" />
-      <BasePlaceload className="h-8 w-full rounded" />
-      <BasePlaceload className="h-8 w-full rounded" />
-    </div>
-  );
+  return <></>;
 }

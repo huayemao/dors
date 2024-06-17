@@ -2,23 +2,28 @@
 import QA from "@/components/Question";
 
 import { Modal } from "@/components/Base/Modal";
+import { Question } from "@/lib/types/Question";
 import { withConfirm } from "@/lib/utils";
 import { BaseButtonIcon } from "@shuriken-ui/react";
+import localforage from "localforage";
 import { Edit2, Trash } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useLayoutEffect } from "react";
-import { useQAs, useQAsDispatch } from "../../contexts";
-import { QAForm } from "../QAForm";
+import { useEffect } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { QAForm } from "./QAForm";
+import { useQAs, useQAsDispatch } from "./contexts";
 
-export const dynamic = "force-static";
-
-export default function Question({
-  params,
-}: {
-  params: {
-    questionId: string;
+export async function QuestionLoader({ params }) {
+  const { questionId, collectionId } = params;
+  const questionList = await localforage.getItem(collectionId);
+  const question = (questionList as Question[]).find(
+    (e) => String(e.id) == questionId
+  );
+  return {
+    question,
   };
-}) {
+}
+
+export default function Question() {
   const dispatch = useQAsDispatch();
 
   const {
@@ -30,32 +35,36 @@ export default function Question({
     modalOpen,
   } = useQAs();
 
-  const router = useRouter();
-  const pathname = usePathname();
+  const { question } = useLoaderData() as { question: Question };
+  const navigate = useNavigate();
+  console.log(question);
 
-  useLayoutEffect(() => {
-    const qid = pathname?.split("/").slice(-1)[0];
-    const targetQuestion = questionList.find((e) => e.id == Number(qid));
-    if (!targetQuestion) {
+  const cancel = () => {
+    console.log(8889);
+    dispatch({ type: "CANCEL" });
+  };
+
+  useEffect(() => {
+    if (!question) {
       return;
     }
     dispatch({
+      type: "SET_QUESTION_MODAL_MODE",
+      payload: "view",
+    });
+    dispatch({
       type: "SET_CURRENT_QUESTION",
-      payload: targetQuestion,
+      payload: question,
     });
     dispatch({
       type: "SET_MODAL_OPEN",
       payload: true,
     });
-    // return () => {
-    //   dispatch({ type: "CANCEL" });
-    // };
-  }, [questionList]);
-
-  const cancel = () => {
-    dispatch({ type: "CANCEL" });
-    router.replace(pathname!.split("/").slice(0, 3).join("/"));
-  };
+    return () => {
+      console.log(999);
+      cancel();
+    };
+  }, []);
 
   const handleRemove = () => {
     withConfirm(() => {
@@ -70,7 +79,13 @@ export default function Question({
   return (
     <Modal
       open={modalOpen}
-      onClose={cancel}
+      onClose={() => {
+        if (history.length) {
+          navigate(-1);
+        } else {
+          navigate("..", { replace: true });
+        }
+      }}
       title={"题目" + currentQuestion.seq}
       actions={
         <>
