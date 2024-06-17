@@ -10,7 +10,7 @@ export default function ContentLayout({
   return (
     <div className="z-0">
       <Nav></Nav>
-      <div className="pt-20 bg-muted-100">{children}</div>
+      <div className="pt-20 bg-muted-100 min-h-screen">{children}</div>
     </div>
   );
 }

@@ -9,9 +9,9 @@ import {
   BaseCard,
   BaseDropdown,
   BaseDropdownItem,
-  BaseIconBox
+  BaseIconBox,
 } from "@shuriken-ui/react";
-import { CopyIcon, EditIcon, ImportIcon, PlusIcon } from "lucide-react";
+import { CopyIcon, EditIcon, PlusIcon, UploadIcon } from "lucide-react";
 import { useEffect } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { useQAs, useQAsDispatch } from "./contexts";
@@ -100,7 +100,7 @@ export default function CollectionLayout() {
                     </Link>
                   }
                   title={e.name}
-                  text={"创建于 "+new Date(e.id).toLocaleDateString()}
+                  text={"创建于 " + new Date(e.id).toLocaleDateString()}
                   rounded="sm"
                 />
               </Link>
@@ -118,13 +118,17 @@ export default function CollectionLayout() {
               </BaseIconBox>
             </BaseDropdownItem>
           </BaseDropdown>
-          <BaseButtonIcon onClick={copy}>
+          <BaseButtonIcon data-nui-tooltip="复制 JSX" onClick={copy}>
             <CopyIcon className="h-4 w-4"></CopyIcon>
           </BaseButtonIcon>
-          <BaseButtonIcon onClick={importQuestionsFromClipBoard}>
-            <ImportIcon className="h-4 w-4"></ImportIcon>
+          <BaseButtonIcon
+            data-nui-tooltip="导入"
+            onClick={importQuestionsFromClipBoard}
+          >
+            <UploadIcon className="h-4 w-4"></UploadIcon>
           </BaseButtonIcon>
           <BaseButtonIcon
+            data-nui-tooltip="新建题目"
             onClick={() => {
               navigate("./create");
               // open();
