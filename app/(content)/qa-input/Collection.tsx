@@ -9,27 +9,16 @@ import {
   BaseCard,
   BaseDropdown,
   BaseDropdownItem,
-  BaseIconBox,
+  BaseIconBox
 } from "@shuriken-ui/react";
-import localforage from "localforage";
-import { CopyIcon, ImportIcon, PlusIcon } from "lucide-react";
-import {
-  Link,
-  Outlet,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { CopyIcon, EditIcon, ImportIcon, PlusIcon } from "lucide-react";
+import { useEffect } from "react";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { useQAs, useQAsDispatch } from "./contexts";
 
-export async function collectionLoader({ params }) {
-  const collectionList = await localforage.getItem("collectionList");
-  //@ts-ignore
-  const collection = collectionList.find((e) => e.id == params.collectionId);
-  return { collection };
-}
+export default function CollectionLayout() {
+  const params = useParams();
 
-export default function CollectionLayout({}: {}) {
   const {
     currentCollection,
     collectionList,
@@ -38,12 +27,24 @@ export default function CollectionLayout({}: {}) {
     modalOpen,
     questionModalMode,
   } = useQAs();
-  const dispatch = useQAsDispatch();
-  const navigate = useNavigate();
-  const l = useLocation();
 
-  // @ts-ignore
-  const { collection } = useLoaderData();
+  const collection = collectionList.find(
+    (e) => e.id == Number(params!.collectionId)
+  );
+
+  const dispatch = useQAsDispatch();
+
+  useEffect(() => {
+    if (collection) {
+      dispatch({
+        type: "SET_CURRENT_COLLECTION",
+        payload: collection!,
+      });
+    }
+  }, [collection]);
+
+  const navigate = useNavigate();
+
   function open() {
     dispatch({ type: "SET_MODAL_OPEN", payload: true });
   }
@@ -91,37 +92,36 @@ export default function CollectionLayout({}: {}) {
     alert("已复制到剪贴板");
   };
 
-  function toAddQA() {
-    dispatch({
-      type: "CANCEL",
-    });
-    dispatch({
-      type: "SET_QUESTION_MODAL_MODE",
-      payload: "edit",
-    });
-    open();
-  }
   return (
     <>
       <div className="md:px-12">
-        <div className="flex gap-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
+        <div className="flex items-center gap-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
           <BaseDropdown
             classes={{ wrapper: "mr-auto" }}
             label={currentCollection.name}
+            headerLabel="题集"
           >
             {collectionList?.map((e) => (
-              <Link to={"./" + e.id} key={e.id}>
+              <Link to={"/" + e.id} key={e.id}>
                 <BaseDropdownItem
+                  end={
+                    <Link to={"/" + e.id + "/edit"}>
+                      <EditIcon className="h-4 w-4"></EditIcon>
+                    </Link>
+                  }
                   title={e.name}
-                  text={e.id + ""}
+                  text={"创建于 "+new Date(e.id).toLocaleDateString()}
                   rounded="sm"
                 />
               </Link>
             ))}
 
             <BaseDropdownItem
+              color="primary"
               classes={{ wrapper: "text-right" }}
-              className="text-right"
+              onClick={() => {
+                navigate("/create");
+              }}
             >
               <BaseIconBox color="primary">
                 <PlusIcon></PlusIcon>

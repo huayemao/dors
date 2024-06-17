@@ -37,10 +37,8 @@ export default function Question() {
 
   const { question } = useLoaderData() as { question: Question };
   const navigate = useNavigate();
-  console.log(question);
 
   const cancel = () => {
-    console.log(8889);
     dispatch({ type: "CANCEL" });
   };
 
@@ -61,7 +59,6 @@ export default function Question() {
       payload: true,
     });
     return () => {
-      console.log(999);
       cancel();
     };
   }, []);

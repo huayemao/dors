@@ -1,44 +1,38 @@
 "use client";
-import { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import CollectionLayout, { collectionLoader } from "./Collection";
+import CollectionLayout from "./Collection";
+import CreateCollectionModal from "./CreateCollectionModal";
 import CreateQuestionModal from "./CreateQuestionModal";
 import Question, { QuestionLoader } from "./Question";
 import QAsPage from "./page";
 
 export default function Route() {
-  useEffect(() => {
-    // window.addEventListener("beforeunload", (e) => {
-    //   e.preventDefault();
-    // });
-
-    // @ts-ignore
-  }, []);
-
   const router = createBrowserRouter(
     [
       {
         path: "/",
-        element: (
-          <div>
-            <QAsPage />
-          </div>
-        ),
+        element: <QAsPage />,
       },
       {
-        path: "/:collectionId",
+        path: "create",
+        element: <CreateCollectionModal></CreateCollectionModal>,
+      },
+      {
+        path: ":collectionId",
         element: <CollectionLayout></CollectionLayout>,
-        loader: collectionLoader,
         children: [
           {
-            path: "/:collectionId/:questionId",
+            path: ":questionId",
             element: <Question></Question>,
             loader: QuestionLoader,
           },
           {
-            path: "/:collectionId/create",
+            path: "create",
             element: <CreateQuestionModal></CreateQuestionModal>,
-            loader: QuestionLoader,
+          },
+          {
+            path: "edit",
+            element: <CreateCollectionModal></CreateCollectionModal>,
           },
         ],
       },

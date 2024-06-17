@@ -42,6 +42,7 @@ type Action =
   | { type: "SET_COLLECTION_LIST"; payload: State["collectionList"] }
   | { type: "REMOVE_QUESTION"; payload: Question["id"] }
   | { type: "SET_MODAL_OPEN"; payload: boolean }
+  | { type: "CREATE_OR_UPDATE_COLLECTION"; payload: State["currentCollection"] }
   | { type: "CANCEL" };
 
 export const QAsContext = createContext(initialState);
@@ -71,6 +72,25 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
         questionList: action.payload,
       });
 
+    case "CREATE_OR_UPDATE_COLLECTION":
+      const { payload } = action;
+      const { collectionList, currentCollection } = state;
+      if (!!currentCollection.name) {
+        const newList = [...collectionList];
+        const targetItemIndex = collectionList?.findIndex(
+          (e) => e.id === currentCollection.id
+        );
+        newList[targetItemIndex] = payload;
+        return Object.assign({}, state, {
+          collectionList: newList,
+        });
+      } else {
+        return Object.assign({}, state, {
+          collectionList: collectionList
+            ? collectionList.concat(payload)
+            : [payload],
+        });
+      }
     // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
     case "SET_COLLECTION_LIST":
       return Object.assign({}, state, {
@@ -136,6 +156,10 @@ export const QAsContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
     localforage.getItem(state.currentCollection.id + "").then((res) => {
       if (!res) {
+        dispatch({
+          type: "SET_QUESTION_LIST",
+          payload: [],
+        });
       } else {
         dispatch({
           type: "SET_QUESTION_LIST",
