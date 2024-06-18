@@ -116,6 +116,7 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
             questionList: state.questionList?.filter((e, i) => e.id != id),
           });
         }
+        return state
       };
       return removeItem(action.payload);
     }
