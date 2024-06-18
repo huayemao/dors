@@ -11,9 +11,11 @@ import { BackButton } from "../BackButton";
 import PostHead from "../PostHead";
 import PostTile from "../PostTile";
 import { ShareButton } from "../ShareButton";
-import ContentModal from "./ContentModal";
 
 const TOC = dynamic(() => import("./toc"), {
+  ssr: false,
+});
+const ContentModal = dynamic(() => import("./ContentModal"), {
   ssr: false,
 });
 
