@@ -49,17 +49,15 @@ const components = {
   img: async (props) => {
     return (
       <figure suppressHydrationWarning>
-        <a suppressHydrationWarning href={props.src}>
-          <Image
-            unoptimized={nextConfig.output === "export"}
-            sizes="100vw"
-            style={{ width: "100%", height: "auto" }}
-            width={800}
-            height={600}
-            referrerPolicy="origin"
-            {...props}
-          />{" "}
-        </a>
+        <Image
+          unoptimized={nextConfig.output === "export"}
+          sizes="100vw"
+          style={{ width: "100%", height: "auto" }}
+          width={800}
+          height={600}
+          referrerPolicy="origin"
+          {...props}
+        />{" "}
         <figcaption>{props.alt}</figcaption>
       </figure>
     );
