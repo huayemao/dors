@@ -101,7 +101,7 @@ export function PostEditor({ post }: PostEditorProps) {
     <>
       <div
         className={cn(
-          "toolbox sticky right-0 left-0 top-[-1px] mb-6  transition-all max-w-screen-lg",
+          "toolbox sticky right-0 left-0 top-[-1px] pt-2 mb-4  transition-all max-w-screen-lg",
           { "p-4": pinned }
         )}
       >
@@ -131,7 +131,7 @@ export function PostEditor({ post }: PostEditorProps) {
           />
         )}
 
-        <div className="w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700  xs:rounded-lg xs:border shadow-lg">
+        <div className="w-full border-stone-200 p-8 md:p-12 md:pt-16 px-4 md:px-8 dark:border-stone-700  xs:rounded-lg xs:border shadow-lg">
           <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
             <input
               id={"title"}
@@ -152,7 +152,7 @@ export function PostEditor({ post }: PostEditorProps) {
             />
           </div>
           {/* todo: 参考这个 https://tailwindcss.com/docs/content */}
-          <div className="grow-wrap" >
+          <div className="grow-wrap">
             <textarea
               id="content"
               name="content"
