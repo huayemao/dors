@@ -17,6 +17,15 @@ module.exports = withShurikenUI({
       typography: {
         DEFAULT: {
           css: [{
+            ul: {
+              breakInside: 'avoid',
+            },
+            ol: {
+              breakInside: 'avoid',
+            },
+            blockquote: {
+              breakInside: 'avoid',
+            },
             table: {
               '@media (max-width: 576px)': {
                 // 如果 table 设置成 display:block 来产生滚动条会导致内容无法自动扩展到全宽
@@ -24,7 +33,6 @@ module.exports = withShurikenUI({
                   wordBreak: 'break-all'
                 }
               },
-
             },
             figure: {
               marginBottom: '2em',
