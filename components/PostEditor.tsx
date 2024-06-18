@@ -12,8 +12,13 @@ import {
 } from "@shuriken-ui/react";
 import { Plus, Save, Settings, TimerReset } from "lucide-react";
 import Link from "next/link";
-import { FormEventHandler, useContext, useEffect, useState } from "react";
-import TextareaAutosize from "react-textarea-autosize";
+import {
+  FormEventHandler,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { Modal } from "./Base/Modal";
 
 const DEFAULT_CATEGORY_ID = 3;
@@ -86,6 +91,12 @@ export function PostEditor({ post }: PostEditorProps) {
     };
   }, []);
 
+  useLayoutEffect(() => {
+    // @ts-ignore
+    document.querySelector(".grow-wrap")!.dataset.replicatedValue =
+      post?.content;
+  }, []);
+
   return (
     <>
       <div
@@ -120,7 +131,7 @@ export function PostEditor({ post }: PostEditorProps) {
           />
         )}
 
-        <div className="min-h-[500px] w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg">
+        <div className="w-full border-stone-200 p-12 pt-16 px-8 dark:border-stone-700  xs:rounded-lg xs:border shadow-lg">
           <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
             <input
               id={"title"}
@@ -140,20 +151,20 @@ export function PostEditor({ post }: PostEditorProps) {
               className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
             />
           </div>
-          <div>
-            <TextareaAutosize
-              minRows={8}
+          {/* todo: 参考这个 https://tailwindcss.com/docs/content */}
+          <div className="grow-wrap" >
+            <textarea
               id="content"
               name="content"
               onInput={(e) => {
-                const thisEl = e.target as HTMLTextAreaElement;
-                setContent(thisEl.value);
+                const thisEl = e.nativeEvent.target as HTMLTextAreaElement;
+                // @ts-ignore
+                thisEl.parentNode!.dataset.replicatedValue = thisEl.value;
               }}
-              value={content}
               defaultValue={post?.content || ""}
               data-original-value={post?.content}
               placeholder="正文"
-              className="resize-none dark:placeholder-text-600 w-full border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
+              className="w-full rounded dark:bg-black dark:text-white border-none px-0 dark:placeholder-text-600 placeholder:text-stone-400 focus:outline-none focus:ring-none"
             />
           </div>
         </div>
