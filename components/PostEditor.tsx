@@ -116,6 +116,7 @@ export function PostEditor({ post }: PostEditorProps) {
         </div>
       </div>
       <form
+        id="post_form"
         className="bg-white dark:bg-black  max-w-screen-lg overflow-x-hidden"
         action={post ? "/api/updatePost" : "/api/createPost"}
         method="POST"
@@ -259,7 +260,8 @@ export function PostEditor({ post }: PostEditorProps) {
             ></input>
           </>
         )}
-        <BaseButtonIcon rounded="md" type="submit" size="sm">
+        {/* @ts-ignore */}
+        <BaseButtonIcon rounded="md" type="submit" form="post_form" size="sm">
           <Save className="h-4 w-4" />
         </BaseButtonIcon>
       </div>
