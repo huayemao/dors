@@ -101,7 +101,7 @@ export function PostEditor({ post }: PostEditorProps) {
     <>
       <div
         className={cn(
-          "toolbox sticky right-0 left-0 top-[-1px] mb-6  transition-all",
+          "toolbox sticky right-0 left-0 top-[-1px] mb-6  transition-all max-w-screen-lg",
           { "p-4": pinned }
         )}
       >
