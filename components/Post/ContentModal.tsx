@@ -6,7 +6,21 @@ import { EyeIcon } from "lucide-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function ContentModal() {
+export default function Wrapper(){
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMounted(true);
+    }, 200); // 延迟 1 秒
+  }, []);
+
+  return mounted ? (
+    <ContentModal></ContentModal>
+  ) : null;
+}
+
+function ContentModal() {
   const [, forceUpdate] = useReducer((bool) => !bool, false);
   const [content, setContent] = useState("");
 
