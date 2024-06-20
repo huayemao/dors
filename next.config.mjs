@@ -42,6 +42,12 @@ const nextConfig = {
   },
   async rewrites() {
     return {
+      beforeFiles: [
+        {
+          source: '/images/:path*',
+          destination: 'https://mvw-pro-ynhr.oss-cn-beijing.aliyuncs.com/:path*'
+        }
+      ],
       afterFiles: [
         // {
         //   source: '/v1/:path*',

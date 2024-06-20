@@ -20,23 +20,28 @@ class WorkerProxy {
     }
     return dbs
   };
-
-  async readWriteDB(fileURL, name) {
-
-    let start = Date.now();
+  async removeDb(path) {
     const root = await navigator.storage.getDirectory();
-    const dbHandle = await root.getFileHandle(name, { create: true });
-    // Get sync access handle
-    const accessHandle = await dbHandle.createSyncAccessHandle();
-    const response = await fetch(fileURL);
-    const content = await response.blob();
-    const bindata = await content.arrayBuffer();
-    const dataview = new DataView(bindata);
-    const writeBuffer = accessHandle.write(dataview);
-    accessHandle.flush();
-    // Always close FileSystemSyncAccessHandle if done.
-    accessHandle.close();
+    await root.removeEntry(path)
+  };
 
+  async readWriteDB(name, fileURL = null) {
+    let start = Date.now();
+
+    if (fileURL) {
+      const root = await navigator.storage.getDirectory();
+      const dbHandle = await root.getFileHandle(name, { create: true });
+      // Get sync access handle
+      const accessHandle = await dbHandle.createSyncAccessHandle();
+      const response = await fetch(fileURL);
+      const content = await response.blob();
+      const bindata = await content.arrayBuffer();
+      const dataview = new DataView(bindata);
+      const writeBuffer = accessHandle.write(dataview);
+      accessHandle.flush();
+      // Always close FileSystemSyncAccessHandle if done.
+      accessHandle.close();
+    }
 
     const timeToFetchDump = Date.now() - start;
     console.log(`Time to write db file ${timeToFetchDump}ms`)
@@ -67,8 +72,8 @@ class WorkerProxy {
       rowMode: 'object',
       resultRows: rows,
     });
-    const results = JSON.stringify(rows, null, 2)
-    return results
+    // const results = JSON.stringify(rows, null, 2)
+    return rows
   };
   getStatus() {
     return status;

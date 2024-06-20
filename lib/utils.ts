@@ -103,3 +103,14 @@ export function getCurrentSegmentContent(el: HTMLElement) {
   }
   return str
 }
+
+
+export function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+

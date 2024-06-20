@@ -11,11 +11,13 @@ export const DBContext = createContext<{
 interface WorkerProxy {
   new (): WorkerProxy;
 
+  removeDb(path: string): Promise<void>;
+
   getDbs(): Promise<string[]>;
 
-  readWriteDB(fileURL: string, name: string): Promise<boolean>;
+  readWriteDB(name: string, fileURL?: string): Promise<boolean>;
 
-  execSql(sql: string): string;
+  execSql(sql: string): any[];
 
   getStatus(): string;
 }
@@ -33,7 +35,7 @@ export function DBContextProvider({ children }) {
       const _dbWorker = new Worker(new URL("dbworker.js", import.meta.url));
       const Myclass = Comlink.wrap<WorkerProxy>(_dbWorker);
       new Myclass().then((_i) => {
-        setDbWorker(()=>_i);
+        setDbWorker(() => _i);
       });
     }
   }, []);
