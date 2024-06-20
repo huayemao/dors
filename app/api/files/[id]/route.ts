@@ -24,6 +24,7 @@ export async function GET(
 
     return new Response(file?.data, {
       headers: {
+        "Access-Control-Allow-Origin": "*",
         "Content-Type": mimeType as string,
       },
       status: 200,
