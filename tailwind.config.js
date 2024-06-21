@@ -41,6 +41,7 @@ module.exports = withShurikenUI({
                 },
               },
               figure: {
+                breakInside: 'avoid',
                 marginBottom: '2em',
                 figcaption: { textAlign: 'center' },
                 img: {
