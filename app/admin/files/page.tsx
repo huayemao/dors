@@ -1,13 +1,12 @@
 import prisma from "@/lib/prisma";
 import {
-  BaseButtonIcon,
   BaseCard,
-  BaseDropdown,
   BaseDropdownItem,
   BaseList,
   BaseListItem,
 } from "@shuriken-ui/react";
-import { EllipsisIcon, FileIcon, TrashIcon } from "lucide-react";
+import { FileIcon, TrashIcon } from "lucide-react";
+import { ActionDropdown } from "../../../components/ActionDropdown";
 import { UploadForm } from "../../../components/UploadForm";
 
 export default async function UploadTest() {
@@ -27,17 +26,11 @@ export default async function UploadTest() {
               key={e.id}
               title={e.name}
               end={
-                <BaseDropdown
-                  renderButton={
-                    <BaseButtonIcon size="sm" rounded="full" className="h-5 w-5">
-                      <EllipsisIcon></EllipsisIcon>
-                    </BaseButtonIcon>
-                  }
-                >
+                <ActionDropdown>
                   <BaseDropdownItem>
                     <TrashIcon></TrashIcon>
                   </BaseDropdownItem>
-                </BaseDropdown>
+                </ActionDropdown>
               }
             >
               <FileIcon className="h-6 w-6"></FileIcon>
