@@ -96,7 +96,7 @@ function ContentModal() {
       >
         <div
           contentEditable
-          className="prose lg:prose-xl prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium w-full h-full max-w-full"
+          className="prose lg:prose-xl w-full h-full max-w-full"
           style={{
             columns: "2 auto",
             columnRule: "1px solid #e5e7eb",

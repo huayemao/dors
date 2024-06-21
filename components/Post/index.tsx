@@ -62,7 +62,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                   className={
                     c.content +
                     " " +
-                    "dark:prose-invert prose lg:prose-xl py-6 prose-code:bg-primary-100 prose-code:text-primary-500 prose-code:font-medium overflow-hidden"
+                    "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
                   }
                 >
                   {content}

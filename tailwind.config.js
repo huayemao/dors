@@ -16,44 +16,50 @@ module.exports = withShurikenUI({
       nui: {},
       typography: {
         DEFAULT: {
-          css: [{
-            ul: {
-              breakInside: 'avoid',
-            },
-            ol: {
-              breakInside: 'avoid',
-            },
-            blockquote: {
-              breakInside: 'avoid',
-            },
-            table: {
-              '@media (max-width: 576px)': {
-                // 如果 table 设置成 display:block 来产生滚动条会导致内容无法自动扩展到全宽
-                td: {
-                  wordBreak: 'break-all'
-                }
+          css: [
+            {
+              code: {
+                fontWeight: 500,
+                color: 'rgb(99,102,241)',
+                backgroundColor: 'rgb(224,231,255)'
               },
-            },
-            figure: {
-              marginBottom: '2em',
-              figcaption: { textAlign: 'center' },
-              img: {
-                marginBottom: 0,
-              }
-            },
-            tr: {
-              th: {
-                '&:first-child': {
-                  whiteSpace: 'nowrap'
-                }
+              ul: {
+                breakInside: 'avoid',
               },
-              td: {
-                '&:first-child': {
-                  whiteSpace: 'nowrap'
+              ol: {
+                breakInside: 'avoid',
+              },
+              blockquote: {
+                breakInside: 'avoid',
+              },
+              table: {
+                '@media (max-width: 576px)': {
+                  // 如果 table 设置成 display:block 来产生滚动条会导致内容无法自动扩展到全宽
+                  td: {
+                    wordBreak: 'break-all'
+                  }
                 },
-              }
-            },
-          }]
+              },
+              figure: {
+                marginBottom: '2em',
+                figcaption: { textAlign: 'center' },
+                img: {
+                  marginBottom: 0,
+                }
+              },
+              tr: {
+                th: {
+                  '&:first-child': {
+                    whiteSpace: 'nowrap'
+                  }
+                },
+                td: {
+                  '&:first-child': {
+                    whiteSpace: 'nowrap'
+                  },
+                }
+              },
+            }]
         }
       },
       fontFamily: {
