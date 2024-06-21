@@ -296,6 +296,7 @@ export function PostEditor({ post }: PostEditorProps) {
           ))}
         </BaseSelect>
         <input
+          form="post_form"
           className="hidden"
           name="category_id"
           id="category_id"
