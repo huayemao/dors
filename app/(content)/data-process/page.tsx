@@ -8,6 +8,7 @@ import {
   BaseInputFile,
   BaseList,
   BaseListItem,
+  BaseSnack,
   BaseTextarea,
 } from "@shuriken-ui/react";
 import mime from "mime";
@@ -30,7 +31,6 @@ export default function Home() {
 
   const [lines, setLines] = useState<any[]>([]);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("");
   const [dbs, setDbs] = useState<string[]>([]);
   const [activeDb, setActiveDb] = useState<string>();
   const [cols, setCols] = useState<Field[]>();
@@ -39,6 +39,8 @@ export default function Home() {
   const defaultTable = useMemo(() => {
     return tables?.[0].name as string;
   }, [tables]);
+
+  const [query, setQuery] = useState<string>();
 
   useEffect(() => {
     if (dbWorker && !!query) {
@@ -62,7 +64,10 @@ export default function Home() {
   }, [activeDb]);
 
   useEffect(() => {
-    dbWorker?.execSql(`PRAGMA table_info(${defaultTable})`).then(setCols);
+    if (defaultTable) {
+      dbWorker?.execSql(`PRAGMA table_info(${defaultTable})`).then(setCols);
+      setQuery(`select * from ${defaultTable} limit 20;`);
+    }
   }, [defaultTable]);
 
   const tableData = useMemo(() => {
@@ -70,6 +75,20 @@ export default function Home() {
     const rows = lines;
     return { headers, rows };
   }, [lines]);
+
+  const isEllipsisActive = (e) => {
+    return e.offsetWidth < e.scrollWidth;
+  };
+
+  useEffect(() => {
+    document
+      .querySelectorAll("[data-nui-tooltip] .overflow-ellipsis")
+      .forEach((e) => {
+        if (!isEllipsisActive(e)) {
+          e.parentElement!.removeAttribute("data-nui-tooltip");
+        }
+      });
+  }, [tableData]);
 
   return (
     <div className="bg-white w-full p-8">
@@ -127,16 +146,24 @@ export default function Home() {
             <br />
           </pre>
           <br />
-          {cols?.map((e) => e.name)}
+        </BaseCard>
+        <BaseCard className="col-span-12">
+          {cols?.map((e) => (
+            <BaseSnack key={e.name} label={e.name}></BaseSnack>
+          ))}
         </BaseCard>
         <BaseCard className="col-span-12">
           <BaseTextarea
+            key={defaultTable}
             rows={5}
-            defaultValue={
-              defaultTable && `select * from ${defaultTable} limit 20;`
-            }
-            onChange={(v) => setQuery(v)}
-          />
+            value={query}
+            onChange={(v) => {
+              console.log(query, v);
+              setQuery(v);
+            }}
+          >
+            {query}
+          </BaseTextarea>
         </BaseCard>
         <BaseCard className="w-full overflow-x-auto col-span-12">
           {lines.length ? (
@@ -195,13 +222,14 @@ export default function Home() {
                         }
                         return (
                           <td
-                            data-nui-tooltip={value}
                             valign="middle"
                             className="border-t border-muted-200 py-4 px-3 font-sans font-normal dark:border-muted-800 text-sm text-muted-400 dark:text-muted-500"
                             key={key}
                           >
-                            <div className="max-w-[8em] min-w-[4em] overflow-hidden overflow-ellipsis">
-                              {value as string}
+                            <div data-nui-tooltip={value}>
+                              <span className="inline-block max-w-[8em] min-w-[4em] overflow-hidden overflow-ellipsis">
+                                {value as string}
+                              </span>
                             </div>
                           </td>
                         );
