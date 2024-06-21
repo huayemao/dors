@@ -19,7 +19,7 @@
     "comlink": "^4.4.1",
     "dayjs": "^1.11.10",
     "localforage": "^1.10.0",
-    "lucide-react": "^0.303.0",
+    "lucide-react": "^0.396.0",
     "mime": "^4.0.3",
     "next": "^14.0.4",
     "next-mdx-remote": "^4.4.1",
