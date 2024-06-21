@@ -1,5 +1,6 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
 const { withShurikenUI } = require("@shuriken-ui/tailwind")
+const colors = require('tailwindcss/colors')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = withShurikenUI({
@@ -18,18 +19,33 @@ module.exports = withShurikenUI({
         DEFAULT: {
           css: [
             {
+              'a code': {
+                color: colors.indigo[500],
+              },
+              'h1 code': {
+                color: colors.indigo[500],
+              },
+              'h2 code': {
+                color: colors.indigo[500],
+              },
+              'h3 code': {
+                color: colors.indigo[500],
+              },
+              'h4 code': {
+                color: colors.indigo[500],
+              },
+              'blockquote code': {
+                color: colors.indigo[500],
+              },
+              'thead th code': {
+                color: colors.indigo[500],
+              },
               code: {
                 fontWeight: 500,
-                color: 'rgb(99,102,241)',
-                backgroundColor: 'rgb(224,231,255)'
+                color: colors.indigo[500],
+                backgroundColor: colors.indigo[100]
               },
-              ul: {
-                breakInside: 'avoid',
-              },
-              ol: {
-                breakInside: 'avoid',
-              },
-              blockquote: {
+              'ul, ol, blockquote, figure': {
                 breakInside: 'avoid',
               },
               table: {
@@ -41,7 +57,6 @@ module.exports = withShurikenUI({
                 },
               },
               figure: {
-                breakInside: 'avoid',
                 marginBottom: '2em',
                 figcaption: { textAlign: 'center' },
                 img: {
@@ -81,30 +96,8 @@ module.exports = withShurikenUI({
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       colors: {
-        muted: {
-          50: 'rgb(248, 250, 252)',
-          100: 'rgb(241, 245, 249)',
-          200: 'rgb(226, 232, 240)',
-          300: 'rgb(203, 213, 225)',
-          400: 'rgb(148, 163, 184)',
-          500: 'rgb(100, 116, 139)',
-          600: 'rgb(71, 85, 105)',
-          700: 'rgb(51, 65, 85)',
-          800: 'rgb(30, 41, 59)',
-          900: 'rgb(15, 23, 42)'
-        },
-        primary: {
-          50: 'rgb(238, 242, 255)',
-          100: 'rgb(224,231,255)',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: 'rgb(129,140,248)',
-          500: 'rgb(99,102,241)',
-          600: 'rgb(79,70,229)',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81'
-        },
+        muted: colors.slate,
+        primary: colors.indigo,
       }
     },
   },
