@@ -1,4 +1,3 @@
-import { BaseButtonIcon } from '@shuriken-ui/react'
 import { CheckIcon, CopyIcon } from 'lucide-react'
 import type { ComponentProps, ReactElement } from 'react'
 import { useCallback, useEffect, useState } from 'react'
@@ -40,8 +39,6 @@ export const CopyToClipboard = ({
 
   return (
     /* @ts-ignore */
-    <BaseButtonIcon size='sm' onClick={handleClick} title="Copy code" tabIndex={0} {...props}>
-      <IconToUse className="h-4 w-4" />
-    </BaseButtonIcon>
+      <IconToUse className="h-4 w-4" onClick={handleClick}  title="Copy code" tabIndex={0} {...props}></IconToUse>
   )
 }
