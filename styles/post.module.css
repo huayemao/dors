@@ -1,5 +1,5 @@
 
 .content :global .code-container {
-    @apply overflow-x-auto;
+    @apply overflow-x-auto nui-slimscroll;
   }
   
