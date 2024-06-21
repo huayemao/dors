@@ -15,6 +15,7 @@ import Columns from "@/components/Columns";
 import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { PersonList } from "@/components/Person";
+import { Pre } from "@/components/Pre";
 import { QuestionList } from "@/components/Question";
 import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
@@ -46,6 +47,7 @@ const components = {
   h3: (props) => <h3 id={encodeURIComponent(props.children)} {...props}></h3>,
   h4: (props) => <h4 id={encodeURIComponent(props.children)} {...props}></h4>,
   h5: (props) => <h5 id={encodeURIComponent(props.children)} {...props}></h5>,
+  pre: Pre,
   img: async (props) => {
     return (
       <figure suppressHydrationWarning>
