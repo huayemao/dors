@@ -26,7 +26,33 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*?)',
+        source: '/data-process',
+        headers: [
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
+      {
+        source: '/(.*?)worker(.*?)',
+        headers: [
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
+      {
+        source: '/(.*?)sqlite(.*?)',
         headers: [
           {
             key: 'Cross-Origin-Embedder-Policy',
