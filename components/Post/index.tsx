@@ -4,8 +4,9 @@ import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import c from "@/styles/post.module.css";
 import "katex/dist/katex.min.css";
-import { Edit } from "lucide-react";
+import { Edit, MessageSquareIcon } from "lucide-react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { join } from "path";
 import { BackButton } from "../BackButton";
 import PostHead from "../PostHead";
@@ -78,13 +79,21 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                         title: post.title,
                       }}
                     />
-                    <a
+                    <Link
+                      prefetch={false}
                       href={`/admin/posts/${post.id}`}
                       className="flex-1 inline-flex justify-center items-center py-4 px-5 rounded bg-muted-200 dark:bg-muted-700 hover:bg-muted-100 dark:hover:bg-muted-600 text-muted-600 dark:text-muted-400 transition-colors duration-300 cursor-pointer tw-accessibility
 "
                     >
                       <Edit className="w-4 h-4 " fill="currentColor" />
-                    </a>
+                    </Link>
+                    <Link
+                      href={`https://www.yuque.com/huayemao/yuque/dc_${post.id}`}
+                      className="flex-1 inline-flex justify-center items-center py-4 px-5 rounded bg-muted-200 dark:bg-muted-700 hover:bg-muted-100 dark:hover:bg-muted-600 text-muted-600 dark:text-muted-400 transition-colors duration-300 cursor-pointer tw-accessibility
+"
+                    >
+                      <MessageSquareIcon className="w-4 h-4 " fill="currentColor" />
+                    </Link>
                   </div>
                 </div>
                 <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
