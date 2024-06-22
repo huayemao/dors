@@ -39,20 +39,7 @@ const nextConfig = {
         ],
       },
       {
-        source: '/(.*?)worker(.*?)',
-        headers: [
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-        ],
-      },
-      {
-        source: '/(.*?)sqlite(.*?)',
+        source: '/(.*?).js',
         headers: [
           {
             key: 'Cross-Origin-Embedder-Policy',
