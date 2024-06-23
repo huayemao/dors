@@ -127,10 +127,10 @@ export default function Home() {
           <BaseInputFile
             id="fileInput"
             onChange={(files) => {
-              const file = files?.[0];
+              const file = files?.[0] as File;
               if (file) {
                 const url = URL.createObjectURL(file);
-                dbWorker?.readWriteDB(encodeURIComponent("测试数据库.db"), url);
+                dbWorker?.readWriteDB(encodeURIComponent(file.name), url);
               }
             }}
           />
