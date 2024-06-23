@@ -53,22 +53,34 @@ export default function Home() {
     dbWorker?.getDbs?.()?.then((dbs) => setDbs(dbs.map(decodeURIComponent)));
   }, [dbWorker]);
 
+  const getTableSql = `select * from sqlite_schema where type = 'table';`;
+  const dataSql = useMemo(
+    () =>
+      `select ${cols
+        ?.map((e) => e.name)
+        .join()} from ${defaultTable} limit 20;`,
+    [cols]
+  );
+
   useEffect(() => {
     if (activeDb) {
       const name = encodeURIComponent(activeDb);
       dbWorker?.readWriteDB?.(name);
-      dbWorker
-        ?.execSql(`select * from sqlite_schema where type = 'table';`)
-        .then(setTables);
+      dbWorker?.execSql(getTableSql).then(setTables);
     }
   }, [activeDb]);
 
   useEffect(() => {
     if (defaultTable) {
       dbWorker?.execSql(`PRAGMA table_info(${defaultTable})`).then(setCols);
-      setQuery(`select * from ${defaultTable} limit 20;`);
     }
   }, [defaultTable]);
+
+  useEffect(() => {
+    if (cols?.length) {
+      setQuery(dataSql);
+    }
+  }, [cols]);
 
   const tableData = useMemo(() => {
     const headers = lines.length ? Object.keys(lines[0]) : [];
@@ -140,9 +152,12 @@ export default function Home() {
           <pre>
             select * from sqlite_schema;
             <br />
-            {defaultTable && <>select * from {defaultTable} limit 20;</>}
+            {defaultTable && !!cols?.length && dataSql}
             <br />
             {defaultTable && `PRAGMA table_info(${defaultTable})`}
+            <br />
+            {cols?.map((e) => e.name).includes("专业要求") &&
+              `select count(*) as cnt, 专业要求  from ${defaultTable} group by 专业要求 order by cnt desc limit 80;`}
             <br />
           </pre>
           <br />
@@ -158,7 +173,6 @@ export default function Home() {
             rows={5}
             value={query}
             onChange={(v) => {
-              console.log(query, v);
               setQuery(v);
             }}
           >
