@@ -62,6 +62,12 @@ export default function Home() {
     [cols]
   );
 
+  const professionsSql = useMemo(
+    () =>
+      `select count(*) as cnt, 专业要求  from ${defaultTable} group by 专业要求 having 学历要求 like '%本科%' and (招录单位全称 like '%昆明%'  or 招录单位全称 like '%云南省%') order by cnt desc;`,
+    [defaultTable]
+  );
+
   useEffect(() => {
     if (activeDb) {
       const name = encodeURIComponent(activeDb);
@@ -77,8 +83,146 @@ export default function Home() {
   }, [defaultTable]);
 
   useEffect(() => {
-    if (cols?.length) {
+    if (defaultTable && cols?.length) {
       setQuery(dataSql);
+      if (tables?.map((e) => e.name).includes("本科专业目录")) {
+        let jobProfessions: { 专业要求: string; cnt: number }[] = [];
+        let professions: any[] = [];
+        dbWorker
+          ?.execSql(professionsSql)
+          .then((res) => {
+            jobProfessions = res;
+          })
+          .then(() => {
+            return dbWorker?.execSql(`select *  from 本科专业目录;`);
+            // ?.execSql(`select 职位代码,专业要求 from ${defaultTable} limit 20;`)
+          })
+          .then((res) => {
+            professions = res.filter(
+              (e) => !["▲", "★"].some((s) => JSON.stringify(e).includes(s))
+            );
+          })
+          .then(() => {
+            console.log(jobProfessions);
+            jobProfessions.forEach((e) => {
+              if (e.专业要求 == "不限") {
+                professions.forEach(
+                  (p) => (p.count = p.count ? p.count + e.cnt : e.cnt)
+                );
+              } else if (e.专业要求.startsWith("专业类")) {
+                const cats = e.专业要求.replace("专业类：", "").split("、");
+                mathAll(cats);
+              } else if (e.专业要求.startsWith("专业名称")) {
+                const cats = e.专业要求.replace("专业名称：", "").split("、");
+                mathAll(cats);
+              } else if (e.专业要求.startsWith("专科专业名称")) {
+                //
+              } else if (e.专业要求.startsWith("本科：")) {
+                const underPs = e.专业要求
+                  .split("；")[0]
+                  .replace("本科：", "")
+                  .split("、");
+
+                mathAll(underPs);
+              } else if (e.专业要求.startsWith("1.本科：")) {
+              } else if (e.专业要求.startsWith("本科:")) {
+                const underPs = e.专业要求
+                  .split("；")[0]
+                  .replace("本科:", "")
+                  .split("、");
+
+                mathAll(underPs);
+              } else if (e.专业要求.startsWith("1.本科：")) {
+                const underPs = e.专业要求
+                  .split("；")[0]
+                  .replace("1.本科：", "")
+                  .split("、");
+
+                mathAll(underPs);
+              } else if (e.专业要求.startsWith("门类：")) {
+                const cats = e.专业要求
+                  .split("；")[0]
+                  .replace("门类：", "")
+                  .split("、");
+
+                cats.forEach((c) => {
+                  professions.forEach((p) => {
+                    const pCat = p.学科门类.replace("【门类】", "");
+                    if (c === pCat) {
+                      p.count = p.count ? p.count + e.cnt : e.cnt;
+                    }
+                  });
+                });
+              } else {
+                mathAll(e.专业要求.split("、"));
+                // console.log(e.专业要求);
+              }
+
+              function mathAll(cats: string[]) {
+                cats.forEach((c) => {
+                  if (c.endsWith("门类")) {
+                    professions.forEach((p) => {
+                      if (p.学科门类 === c.replace("门类", "")) {
+                        p.count = p.count ? p.count + e.cnt : e.cnt;
+                      }
+                    });
+                  } else if (c.endsWith("相关专业")) {
+                    professions.forEach((p) => {
+                      if (
+                        JSON.stringify(p)
+                          .replaceAll("【", "")
+                          .replaceAll("】", "")
+                          .includes(c.replace("相关专业", ""))
+                      ) {
+                        p.count = p.count ? p.count + e.cnt : e.cnt;
+                      }
+                    });
+                  } else if (c.endsWith("类")) {
+                    professions.forEach((p) => {
+                      const pCat = p.专业类.replace("【", "").replace("】", "");
+                      if (c === pCat) {
+                        p.count = p.count ? p.count + e.cnt : e.cnt;
+                      }
+                    });
+                  } else {
+                    professions.forEach((p) => {
+                      if (c === p.专业) {
+                        p.count = p.count ? p.count + e.cnt : e.cnt;
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          })
+          .then(() => {
+            const baseCnt = jobProfessions.find(
+              (e) => e.专业要求 == "不限"
+            )?.cnt;
+            console.log(baseCnt);
+            console.log(
+              `红牌专业 ${professions.filter((e) => e.count == baseCnt).length}`
+            );
+            console.table(
+              professions
+                .sort((a, b) => a.count - b.count)
+                .slice(0, 100)
+                .map((e) => ({
+                  ...e,
+                  除不限外岗位数: e.count - (baseCnt || 0),
+                }))
+            );
+            console.log("top 100");
+            console.log(
+              professions
+                .sort((a, b) => b.count - a.count)
+                .map((e) => ({
+                  ...e,
+                  除不限外岗位数: e.count - (baseCnt || 0),
+                }))
+            );
+          });
+      }
     }
   }, [cols]);
 
@@ -156,18 +300,17 @@ export default function Home() {
             <br />
             {defaultTable && `PRAGMA table_info(${defaultTable})`}
             <br />
-            {cols?.map((e) => e.name).includes("专业要求") &&
-              `select count(*) as cnt, 专业要求  from ${defaultTable} group by 专业要求 order by cnt desc limit 80;`}
+            {cols?.map((e) => e.name).includes("专业要求") && professionsSql}
             <br />
           </pre>
           <br />
         </BaseCard>
-        <BaseCard className="col-span-12">
+        <BaseCard className="col-span-6">
           {cols?.map((e) => (
             <BaseSnack key={e.name} label={e.name}></BaseSnack>
           ))}
         </BaseCard>
-        <BaseCard className="col-span-12">
+        <BaseCard className="col-span-6">
           <BaseTextarea
             key={defaultTable}
             rows={5}
