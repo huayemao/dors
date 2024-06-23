@@ -1,11 +1,33 @@
 "use client";
 import * as Comlink from "comlink";
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export const DBContext = createContext<{
-  state: { dbWorker: Comlink.Remote<WorkerProxy> | null };
+  state: {
+    dbWorker: Comlink.Remote<WorkerProxy> | null;
+    activeDb: string | null;
+    dbs: string[];
+    baseTables: any[];
+  };
+  actions: {
+    refetch: () => void;
+    setActiveDb: (db: string) => void;
+  };
 }>({
-  state: { dbWorker: null },
+  state: { dbWorker: null, dbs: [], baseTables: [], activeDb: null },
+  actions: {
+    refetch() {
+      {
+      }
+    },
+    setActiveDb() {},
+  },
 });
 
 interface WorkerProxy {
@@ -23,9 +45,15 @@ interface WorkerProxy {
 }
 
 export function DBContextProvider({ children }) {
+  const getTableSql = `select * from sqlite_schema where type = 'table';`;
+
   const [dbWorker, setDbWorker] = useState<Comlink.Remote<WorkerProxy> | null>(
     null
   );
+  const [dbs, setDbs] = useState<string[]>([]);
+  const [activeDb, setActiveDb] = useState<string | null>(null);
+  const [baseTables, setBaseTables] = useState<any[]>([]);
+
   // const [query, setQuery] = useState<any>("")
   let needsSetup = true;
 
@@ -34,31 +62,50 @@ export function DBContextProvider({ children }) {
       needsSetup = false;
       const _dbWorker = new Worker(new URL("dbworker.js", import.meta.url));
       const Myclass = Comlink.wrap<WorkerProxy>(_dbWorker);
-      new Myclass().then((_i) => {
-        setDbWorker(() => _i);
-      });
+      new Myclass()
+        .then((instance) => {
+          setDbWorker(() => instance);
+          return instance;
+        })
+        .then((instance) => {
+          instance.getDbs().then((dbs) => setDbs(dbs.map(decodeURIComponent)));
+        });
     }
   }, []);
 
-  let needFileWritten = true;
   useEffect(() => {
-    if (needFileWritten) {
-      needFileWritten = false;
-      const _fileWorker = new Worker(new URL("fileworker.js", import.meta.url));
-      _fileWorker.postMessage(`this is a long text string.
-      Actually not that long.
-      But long enough to do a quick test.
-      `);
+    if (activeDb) {
+      const name = encodeURIComponent(activeDb);
+      dbWorker?.readWriteDB?.(name);
+      dbWorker?.execSql(getTableSql).then(setBaseTables);
     }
+  }, [activeDb]);
+
+  const refetch = useCallback(async () => {
+    const dbs = await dbWorker?.getDbs();
+    if (!dbs) {
+      return setDbs([]);
+    }
+    setDbs(dbs.map(decodeURIComponent));
   }, []);
 
   // create the value for the context provider
   const context = {
     state: {
       dbWorker,
+      dbs: dbs,
+      baseTables,
+      activeDb,
     },
-    actions: {},
+    actions: {
+      refetch,
+      setActiveDb,
+    },
   };
 
   return <DBContext.Provider value={context}>{children}</DBContext.Provider>;
 }
+
+export const useDBContext = () => {
+  return useContext(DBContext);
+};
