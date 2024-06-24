@@ -153,6 +153,9 @@ export async function parseAlltables(dbWorker, baseTables: any[]) {
         } else if (c.includes(",")) {
           const items = c.split(",");
           parseItems(items);
+        } else if (c.includes("所学专业：")) {
+          const items = c.replace("所学专业：", "").split("、");
+          parseItems(items);
         } else if (c.endsWith("门类")) {
           for (const p of professions) {
             if (p.学位授予门类 === c.replace("门类", "")) {
@@ -165,6 +168,8 @@ export async function parseAlltables(dbWorker, baseTables: any[]) {
               await countJobGroup(jobGroup, p);
             }
           }
+        } else if (c.endsWith("专业")) {
+          parseItems([c.replace("专业", "")]);
         } else if (c.endsWith("类")) {
           for (const p of professions) {
             const pCat = p["门类、专业类"];
@@ -204,7 +209,7 @@ export async function parseAlltables(dbWorker, baseTables: any[]) {
           const [professionId, year, JobId, tableName] = items[0];
           const sql = `INSERT INTO qualify (professionId,  year,  JobId,  tableName)
           VALUES ('${professionId}','${year}','${JobId}','${tableName}');`;
-          console.log(sql)
+          console.log(sql);
           await execSql(sql);
         } else {
           const sql =

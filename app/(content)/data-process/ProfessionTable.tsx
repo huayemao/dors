@@ -12,6 +12,8 @@ function ProfessionTable() {
 
   const [data, setData] = useState<any[]>();
 
+  const RankingSql = `select  专业代码, \`门类、专业类\`,专业名称,count(*) as 岗位数 from 普通高等学校本科专业目录 join  qualify on professionId == 专业代码 group by professionId order by 岗位数 desc  limit 50;`;
+
   useEffect(() => {
     if (!dbWorker || !activeDb || !baseTables.length) {
       return;
