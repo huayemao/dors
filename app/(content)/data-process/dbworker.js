@@ -1,5 +1,6 @@
 import * as Comlink from "comlink";
 import sqlite3InitModule from "./sqlite3-bundler-friendly.mjs";
+import { parseAlltables } from './util';
 
 let sqlite3
 let status = 'sqlite3_initing'
@@ -78,6 +79,11 @@ class WorkerProxy {
   getStatus() {
     return status;
   };
+
+  async resolveAllTables(baseTables) {
+    console.log(baseTables)
+    return parseAlltables(this, baseTables)
+  }
 }
 
 Comlink.expose(WorkerProxy)

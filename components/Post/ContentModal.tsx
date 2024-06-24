@@ -6,7 +6,10 @@ import { EyeIcon } from "lucide-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function Wrapper(){
+
+
+
+export default function Wrapper() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -15,9 +18,7 @@ export default function Wrapper(){
     }, 200); // 延迟 1 秒
   }, []);
 
-  return mounted ? (
-    <ContentModal></ContentModal>
-  ) : null;
+  return mounted ? <ContentModal></ContentModal> : null;
 }
 
 function ContentModal() {

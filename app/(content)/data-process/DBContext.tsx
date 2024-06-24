@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { Profession } from "./types";
 
 export const DBContext = createContext<{
   state: {
@@ -42,6 +43,9 @@ interface WorkerProxy {
   execSql(sql: string): any[];
 
   getStatus(): string;
+  
+  resolveAllTables(baseTables:any[]):Promise<(Profession[] | undefined)[]> ;
+
 }
 
 export function DBContextProvider({ children }) {

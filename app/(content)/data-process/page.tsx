@@ -11,7 +11,7 @@ import {
 } from "@shuriken-ui/react";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { DBContext } from "./DBContext";
-import { ProfessionTable } from "./ProfessionTable";
+import ProfessionTable from "./ProfessionTable";
 import { Table } from "./Table";
 import { Field } from "./types";
 
@@ -140,11 +140,11 @@ export default function Home() {
           </BaseTextarea>
         </BaseCard>
         {shouldHavProfessionTable && <ProfessionTable />}
-        {!shouldHavProfessionTable && (
+        {
           <BaseCard className="w-full overflow-x-auto col-span-12">
             {lines.length ? <Table data={lines}></Table> : null}
           </BaseCard>
-        )}
+        }
       </div>
 
       <pre className="w-full h-48 overflow-auto">{JSON.stringify(lines)}</pre>
