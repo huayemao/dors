@@ -33,6 +33,12 @@ export async function markdownToHtml(markdown) {
   return result.toString();
 }
 
+export async function sleep(s:number){
+  return new Promise((resolve)=>{
+    setTimeout(resolve,s)
+  })
+}
+
 export async function markdownExcerpt(markdown) {
   const result = await remark().use(excerpt).process(markdown);
   return result.toString().slice(0, 100);

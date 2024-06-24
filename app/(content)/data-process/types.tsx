@@ -12,7 +12,13 @@ export type Profession = {
   学位授予门类: string;
   "门类、专业类": string;
   专业名称: string;
-  岗位数: number;
+  专业代码:string
+  岗位数?: number;
+  jobs?: {
+    tableName: string,
+    ids: string,
+    year: string,
+  }[];
 };
 export interface Field {
   cid: number;

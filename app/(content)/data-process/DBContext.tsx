@@ -34,6 +34,8 @@ export const DBContext = createContext<{
 interface WorkerProxy {
   new (): WorkerProxy;
 
+  exportDb(path:string):Promise<string>;
+
   removeDb(path: string): Promise<void>;
 
   getDbs(): Promise<string[]>;

@@ -26,6 +26,14 @@ class WorkerProxy {
     await root.removeEntry(path)
   };
 
+  async exportDb(path){
+    const root = await navigator.storage.getDirectory();
+    const handle = await root.getFileHandle(path)
+    const res =await handle.getFile()
+    const url = URL.createObjectURL(res)
+    return url
+  }
+
   async readWriteDB(name, fileURL = null) {
     let start = Date.now();
 
@@ -81,7 +89,6 @@ class WorkerProxy {
   };
 
   async resolveAllTables(baseTables) {
-    console.log(baseTables)
     return parseAlltables(this, baseTables)
   }
 }

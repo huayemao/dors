@@ -1,12 +1,14 @@
 "use client";
+import { ActionDropdown } from "@/components/ActionDropdown";
+import { downloadAsFile } from "@/lib/utils/downloadAsFile";
 import {
-  BaseButton,
-  BaseButtonClose,
   BaseCard,
+  BaseDropdownItem,
   BaseInputFile,
   BaseList,
   BaseListItem,
   BaseSnack,
+  BaseTabs,
   BaseTextarea,
 } from "@shuriken-ui/react";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -30,11 +32,22 @@ export default function Home() {
     return baseTables?.[0]?.name;
   }, [baseTables]);
 
+  const [activeTable, setActiveTable] = useState<string>(defaultTable);
+
+
   const [query, setQuery] = useState<string>();
 
   useEffect(() => {
     if (dbWorker && !!query) {
-      const res = dbWorker.execSql(query);
+      const toE = query.trim().startsWith("select")
+        ? query.includes("limit")
+          ? query
+          : query.includes(";")
+          ? query.replace(";", " limit 100;")
+          : query + " limit 100;"
+        : query;
+      console.log(toE);
+      const res = dbWorker.execSql(toE);
       res.then(setLines).catch((e) => setError(e.message));
     }
   }, [dbWorker, query]);
@@ -43,23 +56,23 @@ export default function Home() {
     () =>
       `select ${cols
         ?.map((e) => e.name)
-        .join()} from ${defaultTable} limit 20;`,
+        .join()} from ${activeTable} limit 20;`,
     [cols]
   );
 
   const professionsSql = useMemo(() => {
-    const tableName = defaultTable;
-    return `select '${tableName}' as tableName,count(*) as cnt, 年度, 专业要求, GROUP_CONCAT(职位代码) AS ids from ${tableName} group by 专业要求 having 学历要求 like '%本科%' order by cnt desc;`;
-  }, [defaultTable]);
+    const tableName = activeTable;
+    return `select '${tableName}' as tableName,count(*) as cnt, 年度, 专业要求, GROUP_CONCAT(职位代码) AS ids from ${tableName} group by 专业要求 having 学历要求 like '%本科%' and 职位代码 not in (select (distinct(jobId)) from Qualify) order by cnt desc;`;
+  }, [activeTable]);
 
   useEffect(() => {
-    if (defaultTable) {
-      dbWorker?.execSql(`PRAGMA table_info(${defaultTable})`).then(setCols);
+    if (activeTable) {
+      dbWorker?.execSql(`PRAGMA table_info(${activeTable})`).then(setCols);
     }
-  }, [defaultTable]);
+  }, [activeTable]);
 
   useEffect(() => {
-    if (defaultTable && cols?.length) {
+    if (activeTable && cols?.length) {
       setQuery(dataSql);
     }
   }, [cols]);
@@ -75,14 +88,13 @@ export default function Home() {
           <BaseList>
             {dbs.map((e, i) => (
               <BaseListItem
+                // @ts-ignore
                 key={i}
                 title={e}
                 end={
-                  <div className="flex items-center gap-4">
-                    <BaseButton onClick={() => e != activeDb && setActiveDb(e)}>
-                      选择
-                    </BaseButton>
-                    <BaseButtonClose
+                  <ActionDropdown>
+                    <BaseDropdownItem
+                      title="删除"
                       onClick={(ev) => {
                         dbWorker?.removeDb?.(encodeURIComponent(e)).then(() => {
                           refetch();
@@ -90,12 +102,23 @@ export default function Home() {
                         });
                         ev.stopPropagation();
                       }}
-                    >
-                      {/* 删除 */}
-                    </BaseButtonClose>
-                  </div>
+                    ></BaseDropdownItem>
+                    <BaseDropdownItem
+                      title="导出"
+                      onClick={(ev) => {
+                        dbWorker
+                          ?.exportDb?.(encodeURIComponent(e))
+                          .then((url) => {
+                            downloadAsFile(url, decodeURIComponent(e));
+                          });
+                        ev.stopPropagation();
+                      }}
+                    ></BaseDropdownItem>
+                  </ActionDropdown>
                 }
-              ></BaseListItem>
+              >
+                <div onClick={() => e != activeDb && setActiveDb(e)}>sd</div>
+              </BaseListItem>
             ))}
           </BaseList>
           <BaseInputFile
@@ -105,7 +128,7 @@ export default function Home() {
               if (file) {
                 const url = URL.createObjectURL(file);
                 await dbWorker?.readWriteDB(encodeURIComponent(file.name), url);
-                refetch()
+                refetch();
               }
             }}
           />
@@ -115,9 +138,9 @@ export default function Home() {
           <pre>
             select * from sqlite_schema;
             <br />
-            {defaultTable && !!cols?.length && dataSql}
+            {activeTable && !!cols?.length && dataSql}
             <br />
-            {defaultTable && `PRAGMA table_info(${defaultTable})`}
+            {activeTable && `PRAGMA table_info(${activeTable})`}
             <br />
             {cols?.map((e) => e.name).includes("专业要求") && professionsSql}
             <br />
@@ -131,7 +154,7 @@ export default function Home() {
         </BaseCard>
         <BaseCard className="col-span-6">
           <BaseTextarea
-            key={defaultTable}
+            key={activeTable}
             rows={5}
             value={query}
             onChange={(v) => {
@@ -142,6 +165,12 @@ export default function Home() {
           </BaseTextarea>
         </BaseCard>
         {shouldHavProfessionTable && <ProfessionTable />}
+        <BaseTabs
+          onChange={setActiveTable}
+          classes={{wrapper:'col-span-12'}}
+          defaultValue={activeTable}
+          tabs={baseTables.map((e) => ({ value: e.name, label: e.name }))}
+        ><></></BaseTabs>
         {
           <BaseCard className="w-full overflow-x-auto col-span-12">
             {lines.length ? <Table data={lines}></Table> : null}
