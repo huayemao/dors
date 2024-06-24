@@ -13,6 +13,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { DBContext } from "./DBContext";
 import ProfessionTable from "./ProfessionTable";
 import { Table } from "./Table";
+import { PROFESSION_TABLE_NAME } from "./constants";
 import { Field } from "./types";
 
 export default function Home() {
@@ -48,7 +49,7 @@ export default function Home() {
 
   const professionsSql = useMemo(() => {
     const tableName = defaultTable;
-    return `select '${tableName}' as tableName,count(*) as cnt, 专业要求, GROUP_CONCAT(职位代码) AS ids from ${tableName} group by 专业要求 having 学历要求 like '%本科%' order by cnt desc;`;
+    return `select '${tableName}' as tableName,count(*) as cnt, 年度, 专业要求, GROUP_CONCAT(职位代码) AS ids from ${tableName} group by 专业要求 having 学历要求 like '%本科%' order by cnt desc;`;
   }, [defaultTable]);
 
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function Home() {
 
   const shouldHavProfessionTable = baseTables
     ?.map((e) => e.name)
-    .includes("本科专业目录");
+    .includes(PROFESSION_TABLE_NAME);
 
   return (
     <div className="bg-white w-full p-8">
@@ -99,11 +100,12 @@ export default function Home() {
           </BaseList>
           <BaseInputFile
             id="fileInput"
-            onChange={(files) => {
+            onChange={async (files) => {
               const file = files?.[0] as File;
               if (file) {
                 const url = URL.createObjectURL(file);
-                dbWorker?.readWriteDB(encodeURIComponent(file.name), url);
+                await dbWorker?.readWriteDB(encodeURIComponent(file.name), url);
+                refetch()
               }
             }}
           />

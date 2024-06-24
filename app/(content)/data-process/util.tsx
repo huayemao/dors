@@ -28,11 +28,11 @@ export async function parseAlltables(dbWorker, baseTables: any[]) {
   async function parseTable(tableName: string) {
     let jobGroupsByProfession: JobGroup[] = [];
     let professions: Profession[] = [];
-    const professionsSql = `select '${tableName}' as tableName,count(*) as cnt, 专业要求, GROUP_CONCAT(职位代码) AS ids from ${tableName} group by 专业要求 having 学历要求 like '%本科%' order by cnt desc;`;
+    const professionsSql = `select '${tableName}' as tableName,count(*) as cnt, 年度, 专业要求, GROUP_CONCAT(职位代码) AS ids from ${tableName} group by 专业要求 having 学历要求 like '%本科%' order by cnt desc;`;
 
     return execSql(professionsSql)
       .then((res) => (jobGroupsByProfession = res as JobGroup[]))
-      .then(() => dbWorker?.execSql(`select *  from 本科专业目录;`))
+      .then(() => dbWorker?.execSql(`select *  from 普通高等学校本科专业目录;`))
       .then((res) => {
         professions = res.filter(
           (e) => !["▲", "★"].some((s) => JSON.stringify(e).includes(s))
@@ -92,8 +92,8 @@ export function parseProfessionJobCount(
 
     cats.forEach((c) => {
       professions.forEach((p) => {
-        const pCat = p.学科门类.replace("【门类】", "");
-        if (c === pCat) {
+        const cats = p.学位授予门类.split(",");
+        if (cats.includes("c")) {
           countJobGroup(jobGroup, p);
         }
       });
@@ -107,7 +107,7 @@ export function parseProfessionJobCount(
     elements.forEach((c) => {
       if (c.endsWith("门类")) {
         professions.forEach((p) => {
-          if (p.学科门类 === c.replace("门类", "")) {
+          if (p.学位授予门类 === c.replace("门类", "")) {
             countJobGroup(jobGroup, p);
           }
         });
@@ -124,14 +124,14 @@ export function parseProfessionJobCount(
         });
       } else if (c.endsWith("类")) {
         professions.forEach((p) => {
-          const pCat = p.专业类.replace("【", "").replace("】", "");
+          const pCat = p["门类、专业类"];
           if (c === pCat) {
             countJobGroup(jobGroup, p);
           }
         });
       } else {
         professions.forEach((p) => {
-          if (c === p.专业) {
+          if (c === p.专业名称) {
             countJobGroup(jobGroup, p);
           }
         });
@@ -140,8 +140,12 @@ export function parseProfessionJobCount(
   }
 }
 function countJobGroup(jobGroup: JobGroup, p) {
+  const el = {
+    tableName: jobGroup.tableName,
+    ids: jobGroup.ids,
+    year: jobGroup.年度
+  };
   // todo: 最后创个新表，记录专业代码、tableName 和 jobId
-  const el = jobGroup.tableName + "_" + jobGroup.ids;
   // p.jobs = p.jobs ? Array.from(new Set([...p.jobs].concat(arr))) : [arr];
   if (p.jobs) {
     p.jobs.push(el);

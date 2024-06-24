@@ -4,13 +4,14 @@ export type JobGroup = {
   专业要求: string;
   cnt: number;
   ids: string;
+  年度: string;
   tableName: string;
 };
 
 export type Profession = {
-  学科门类: string;
-  专业类: string;
-  专业: string;
+  学位授予门类: string;
+  "门类、专业类": string;
+  专业名称: string;
   岗位数: number;
 };
 export interface Field {
