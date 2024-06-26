@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   authors: SITE_META.author,
   openGraph: {
     description: SITE_META.description + SITE_META.introduction,
-    images: "/img/huayemao.png",
+    images: SITE_META.url + "/img/huayemao.png",
   },
 };
 
@@ -61,8 +61,7 @@ export default async function RootLayout({
         </head>
         <body className="transition-all duration-300 min-h-screen flex flex-col">
           <CategoriesContextProvider Categories={categories}>
-            <TagsContextProvider tags={tags}>
-              {children}</TagsContextProvider>
+            <TagsContextProvider tags={tags}>{children}</TagsContextProvider>
           </CategoriesContextProvider>
         </body>
       </html>
