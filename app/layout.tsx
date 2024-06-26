@@ -31,7 +31,7 @@ export default async function RootLayout({
 
   return (
     <ShurikenUIProvider>
-      <html>
+      <html lang="zh-CN">
         <head>
           {/* <style>
           {` 
