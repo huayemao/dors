@@ -14,7 +14,7 @@ export function Table({
 }: {
   data: any[];
   canEdit?: boolean;
-  onRowClick: (any) => void;
+  onRowClick?: (any) => void;
   tagCols?: number[];
   boldCols?: number[];
 }) {
@@ -88,7 +88,7 @@ export function Table({
             <tr
               className="text-sm  border-b border-muted-200 transition-colors duration-300 last:border-none hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-900/60"
               key={i}
-              onClick={() => onRowClick(e)}
+              onClick={() => onRowClick?.(e)}
             >
               {Object.entries(e).map(([key, value], i) => {
                 if (
