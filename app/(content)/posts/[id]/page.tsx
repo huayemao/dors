@@ -29,15 +29,23 @@ export async function generateMetadata({
   const id = params.id;
   const post = await getPost(parseInt(id as string));
 
-  if (!post) {
+  if (!post || !post.content) {
     return notFound();
   }
 
-  const abstract =  post.excerpt || (await markdownExcerpt(post?.content || "")) + "...";
+  const abstract =
+    post.excerpt || (await markdownExcerpt(post.content)) + "...";
+
+  const headerRegex = /^(?!\s)(#{1,6})(.*)/gm;
+  const headers =
+    post.content!.match(headerRegex)?.map((e) => e.replace(/^(#+\s+)/, "")) ||
+    [];
+
   const keywords = post.tags
     .map((e) => e?.name || "")
     .concat([post.title || ""])
     .concat(SITE_META.author.name)
+    .concat(headers)
     .filter((e) => !!e);
 
   return {
@@ -45,6 +53,7 @@ export async function generateMetadata({
     description: abstract,
     abstract: abstract,
     keywords,
+
     openGraph: {
       description: abstract,
       images: [(post.cover_image as PexelsPhoto).src.small],
