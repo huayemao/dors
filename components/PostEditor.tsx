@@ -242,6 +242,7 @@ export function PostEditor({ post }: PostEditorProps) {
                 />
               </div>
               <input
+                form="post_form"
                 className="appearance-none m-0 bg-transparent hidden"
                 type="checkbox"
                 onChange={(e) => {
