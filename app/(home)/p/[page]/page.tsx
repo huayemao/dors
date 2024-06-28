@@ -16,7 +16,7 @@ export async function generateStaticParams() {
   const params = Array.from({ length: count }, (_, i) => ({
     page: String(i + 1),
   }));
-  return params;
+  return params.slice(0, 5);
 }
 
 const getPageCount = cache(async (perPage: number) => {
