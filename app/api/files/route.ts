@@ -5,8 +5,18 @@ export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const href = searchParams.get("href");
   if (href) {
-    const res = await fetch(decodeURIComponent(href));
-    return new Response(await res.arrayBuffer());
+    try {
+      const res = await fetch(decodeURIComponent(href));
+      return new Response(await res.arrayBuffer());
+    } catch (error) {
+      if (error.cause?.code == "UND_ERR_CONNECT_TIMEOUT") {
+        const newHref = href
+          .replace("//", "//47.114.89.18:8993/suburl/")
+          .replaceAll("https", "http");
+        const res = await fetch(decodeURIComponent(newHref));
+        return new Response(await res.arrayBuffer());
+      }
+    }
   }
 
   return new Response(``, {
