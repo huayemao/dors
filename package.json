@@ -23,6 +23,7 @@
     "mime": "^4.0.3",
     "next": "^14.0.4",
     "next-mdx-remote": "^4.4.1",
+    "photoswipe": "^5.4.4",
     "plaiceholder": "^3.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

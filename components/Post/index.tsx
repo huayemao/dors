@@ -20,6 +20,10 @@ const ContentModal = dynamic(() => import("./ContentModal"), {
   ssr: false,
 });
 
+const LightBox = dynamic(() => import("../../components/Lightbox"), {
+  ssr: false,
+});
+
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
   recentPosts: Awaited<ReturnType<typeof getRecentPosts>>;
@@ -108,6 +112,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
         </div>
       </section>
       <ContentModal></ContentModal>
+      <LightBox></LightBox>
     </div>
   );
 }
