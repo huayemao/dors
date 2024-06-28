@@ -1,6 +1,9 @@
 import { SITE_META } from "@/constants";
 import prisma from "@/lib/prisma";
 
+
+export const maxDuration = 25
+
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const href = searchParams.get("href");
@@ -9,13 +12,11 @@ export async function GET(request: Request) {
       const res = await fetch(decodeURIComponent(href));
       return new Response(await res.arrayBuffer());
     } catch (error) {
-      if (error.cause?.code == "UND_ERR_CONNECT_TIMEOUT") {
-        const newHref = href
-          .replace("//", "//47.114.89.18:8993/suburl/")
-          .replaceAll("https", "http");
-        const res = await fetch(decodeURIComponent(newHref));
-        return new Response(await res.arrayBuffer());
-      }
+      const newHref = href
+        .replace("//", "//47.114.89.18:8993/suburl/")
+        .replaceAll("https", "http");
+      const res = await fetch(decodeURIComponent(newHref));
+      return new Response(await res.arrayBuffer());
     }
   }
 

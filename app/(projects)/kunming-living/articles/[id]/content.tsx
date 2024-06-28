@@ -1,7 +1,8 @@
 "use client";
 
-const Content = ({ html }: { html: string }) => {
+import { useEffect } from "react";
 
+const Content = ({ html }: { html: string }) => {
   // todo: 用 jsdom
   const parser = new DOMParser();
   const dom = parser.parseFromString(html, "text/html");
@@ -9,6 +10,17 @@ const Content = ({ html }: { html: string }) => {
   el?.querySelectorAll("img").forEach((e) => {
     e.style.width = "100%";
   });
+
+  useEffect(() => {
+    document.querySelectorAll("img").forEach((e) => {
+      e.onerror = (_) => {
+        console.log(_);
+        if (!e.src.includes("/api/files")) {
+          e.src = "/api/files?href=" + e.src;
+        }
+      };
+    });
+  }, []);
 
   return (
     <div
