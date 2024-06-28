@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
+import { revalidateHomePage } from "@/lib/utils/retalidate";
 import { NextResponse } from "next/server";
-import { revalidateHomePage } from "../updatePost/route";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
