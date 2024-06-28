@@ -11,7 +11,7 @@ export default async function Page({ params }) {
 
   const id = params.id as string;
 
-  const post = await fetch(`http://www.kmajw.com/Article/ContentPage/${id}`, {
+  const post = await fetch(`http://47.114.89.18:8993/suburl/www.kmajw.com/Article/ContentPage/${id}`, {
     headers: {
       accept:
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",

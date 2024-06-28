@@ -1,10 +1,8 @@
 import Link from "next/link";
 
-export const preferredRegion = 'hkg1'
-
 export default async function KunmingLiving() {
   const res = await fetch(
-    "http://www.kmajw.com/api/CMS/ArticleContent/7/2/142f1752daab40df8577096ad3a98394",
+    "http://47.114.89.18:8993/suburl/www.kmajw.com/api/CMS/ArticleContent/7/2/142f1752daab40df8577096ad3a98394",
     {
       headers: {
         accept: "*/*",
