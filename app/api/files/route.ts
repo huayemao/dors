@@ -1,23 +1,23 @@
 import { SITE_META } from "@/constants";
 import prisma from "@/lib/prisma";
 
+export const maxDuration = 25;
 
-export const maxDuration = 25
+export const revalidate = 1200;
 
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const href = searchParams.get("href");
   if (href) {
-    try {
-      const res = await fetch(decodeURIComponent(href));
+    const newHref = href
+      .replace("//", "//47.114.89.18:8993/suburl/")
+      .replaceAll("https", "http");
+    const paths = [decodeURIComponent(href), decodeURIComponent(newHref)];
+    const resPromises = paths.map(async (e) => {
+      const res = await fetch(e);
       return new Response(await res.arrayBuffer());
-    } catch (error) {
-      const newHref = href
-        .replace("//", "//47.114.89.18:8993/suburl/")
-        .replaceAll("https", "http");
-      const res = await fetch(decodeURIComponent(newHref));
-      return new Response(await res.arrayBuffer());
-    }
+    });
+    return Promise.race(resPromises);
   }
 
   return new Response(``, {
