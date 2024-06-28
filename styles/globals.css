@@ -152,3 +152,8 @@ a {
   /* Place on top of each other */
   grid-area: 1 / 1 / 2 / 2;
 }
+
+.pswp__img {
+  object-fit: contain;
+  background-color: white;
+}

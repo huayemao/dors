@@ -50,18 +50,20 @@ const components = {
   pre: Pre,
   img: async (props) => {
     return (
-      <figure suppressHydrationWarning>
-        <Image
-          unoptimized={nextConfig.output === "export"}
-          sizes="100vw"
-          style={{ width: "100%", height: "auto" }}
-          width={800}
-          height={600}
-          referrerPolicy="origin"
-          {...props}
-        />{" "}
-        <figcaption>{props.alt}</figcaption>
-      </figure>
+      <a href={props.src} data-pswp-width="800" data-pswp-height="600">
+        <figure suppressHydrationWarning>
+          <Image
+            unoptimized={nextConfig.output === "export"}
+            sizes="100vw"
+            style={{ width: "100%", height: "auto" }}
+            width={800}
+            height={600}
+            referrerPolicy="origin"
+            {...props}
+          />{" "}
+          <figcaption>{props.alt}</figcaption>
+        </figure>
+      </a>
     );
   },
 };

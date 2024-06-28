@@ -32,7 +32,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                 src={url}
                 alt={post?.title || "featured image"}
                 width={512}
-                height={512}
+                height={373}
                 // quality={80}
                 unoptimized={nextConfig.output === "export"}
                 blurDataURL={typeof url === "string" ? blurDataURL : undefined}
