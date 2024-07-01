@@ -50,7 +50,7 @@ const components = {
   pre: Pre,
   img: async (props) => {
     return (
-      <a href={props.src} data-pswp-width="800" data-pswp-height="600">
+      <a href={props.src} className='!no-underline' data-pswp-width="800" data-pswp-height="600">
         <figure suppressHydrationWarning>
           <Image
             unoptimized={nextConfig.output === "export"}
