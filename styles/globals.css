@@ -153,7 +153,3 @@ a {
   grid-area: 1 / 1 / 2 / 2;
 }
 
-.pswp__img {
-  object-fit: contain;
-  background-color: white;
-}

@@ -14,6 +14,7 @@ import Carousel from "@/components/Carousel";
 import Columns from "@/components/Columns";
 import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
+import { Figure } from "@/components/Figure";
 import { PersonList } from "@/components/Person";
 import { Pre } from "@/components/Pre";
 import { QuestionList } from "@/components/Question";
@@ -21,8 +22,6 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
-import nextConfig from "@/next.config.mjs";
-import Image from "next/image";
 import remarkMath from "remark-math";
 
 const components = {
@@ -48,23 +47,8 @@ const components = {
   h4: (props) => <h4 id={encodeURIComponent(props.children)} {...props}></h4>,
   h5: (props) => <h5 id={encodeURIComponent(props.children)} {...props}></h5>,
   pre: Pre,
-  img: async (props) => {
-    return (
-      <a href={props.src} className='!no-underline' data-pswp-width="800" data-pswp-height="600">
-        <figure suppressHydrationWarning>
-          <Image
-            unoptimized={nextConfig.output === "export"}
-            sizes="100vw"
-            style={{ width: "100%", height: "auto" }}
-            width={800}
-            height={600}
-            referrerPolicy="origin"
-            {...props}
-          />{" "}
-          <figcaption>{props.alt}</figcaption>
-        </figure>
-      </a>
-    );
+  img: (props) => {
+    return <Figure {...props} />;
   },
 };
 
