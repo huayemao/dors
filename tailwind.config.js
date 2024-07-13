@@ -19,8 +19,8 @@ module.exports = withShurikenUI({
         DEFAULT: {
           css: [
             {
-              'a:active': { color: colors.indigo[600] },
-              'a:visited': { color: colors.indigo[800] },
+              'a:active': { color: colors.indigo[700] },
+              'a:visited': { color: colors.indigo[900] },
               'a code': {
                 color: colors.indigo[500],
               },

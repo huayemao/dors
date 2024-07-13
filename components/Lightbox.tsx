@@ -6,19 +6,17 @@ import { useEffect } from "react";
 const LightBox = () => {
   useEffect(() => {
     let lightbox;
-    setTimeout(() => {
-      lightbox = new PhotoSwipeLightbox({
-        // may select multiple "galleries"
-        gallery: "article",
+    lightbox = new PhotoSwipeLightbox({
+      // may select multiple "galleries"
+      gallery: "article",
 
-        // Elements within gallery (slides)
-        children: "a",
+      // Elements within gallery (slides)
+      children: "a[data-pswp-width]",
 
-        // setup PhotoSwipe Core dynamic import
-        pswpModule: () => import("photoswipe"),
-      });
-      lightbox.init();
-    }, 200);
+      // setup PhotoSwipe Core dynamic import
+      pswpModule: () => import("photoswipe"),
+    });
+    lightbox.init();
     return () => {
       lightbox.destroy();
       lightbox = null;
