@@ -3,6 +3,7 @@ import { getDateString } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import Image, { ImageProps } from "next/image";
 import Link from "next/link";
+import { Category } from "./Category";
 import Tag from "./Tag";
 
 type Avatar = {
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
+  const cat = post!.posts_category_links![0].categories!;
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900">
       <div className="w-full max-w-6xl mx-auto">
@@ -62,32 +64,21 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                   {post?.excerpt}
                 </p>
                 <div className="flex items-center justify-start w-full relative">
-                  <div className="print:invisible bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-                    <Image
-                      alt={avatar.alt}
-                      src={avatar.src}
-                      width={44}
-                      height={44}
+                  <div className="print:invisible">
+                    <Category
+                      href={`/categories/${cat.id}`}
+                      name={cat.name as string}
+                      key={cat.id}
                     />
+                    {/* <p className="font-sans text-sm text-muted-400"></p> */}
                   </div>
-                  <div className="pl-2 print:invisible">
-                    <h3
-                      className="
-                      font-heading font-medium 
-                      text-muted-800
-                      dark:text-muted-50
-                    "
-                    >
-                      {avatar.alt}
-                    </h3>
-                    <p className="font-sans text-sm text-muted-400">
+                  <div className="block ml-auto font-sans text-sm text-muted-400 text-right">
+                    <div>
                       {post?.updated_at
                         ? "更新于 " + getDateString(post?.updated_at)
                         : ""}
-                    </p>
-                  </div>
-                  <div className="block ml-auto font-sans text-sm text-muted-400">
-                    <span>— {post?.wordCount} 字</span>
+                    </div>
+                    <div>— {post?.wordCount} 字</div>
                   </div>
                 </div>
               </div>

@@ -5,11 +5,7 @@ import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { updatePostTags } from "./tags";
 import { PexelsPhoto } from "./types/PexelsPhoto";
-import {
-  getPexelImages,
-  getWordCount,
-  markdownToHtml
-} from "./utils";
+import { getPexelImages, getWordCount, markdownToHtml } from "./utils";
 
 async function getBase64Image(url) {
   const buffer = await fetch(url).then(async (res) =>
@@ -26,7 +22,11 @@ export const getPost = cache(async (id: number) => {
       id: id,
     },
     include: {
-      posts_category_links: true,
+      posts_category_links: {
+        include: {
+          categories: true,
+        },
+      },
       tags_posts_links: {
         include: {
           tags: true,
