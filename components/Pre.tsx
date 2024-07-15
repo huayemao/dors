@@ -24,7 +24,7 @@ export const Pre = ({
           {
             <CopyToClipboard
               getValue={() =>
-                preRef.current?.querySelector("code")?.textContent || ""
+                preRef.current?.querySelector("code")?.innerText || ""
               }
             />
           }
