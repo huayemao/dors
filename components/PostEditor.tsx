@@ -242,9 +242,9 @@ export function PostEditor({ post }: PostEditorProps) {
                 />
               </div>
               <input
-                form="post_form"
                 className="appearance-none m-0 bg-transparent hidden"
                 type="checkbox"
+                checked={reserveUpdateTime}
                 onChange={(e) => {
                   setReserveUpdateTime(e.target.checked);
                 }}
@@ -253,6 +253,7 @@ export function PostEditor({ post }: PostEditorProps) {
             </label>
             <input
               hidden
+              form="post_form"
               disabled={!reserveUpdateTime}
               id="updated_at"
               name="updated_at"
