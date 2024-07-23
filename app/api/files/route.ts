@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const files = (await request.formData()).getAll("files");
     const markdown: string[] = [];
     for (const item of files) {
-      console.log(files);
+      // todo: 文件大小等信息
       if (item instanceof File) {
         const file = await prisma.file.create({
           data: {

@@ -25,6 +25,7 @@ export function Figure(props) {
     >
       <figure suppressHydrationWarning>
         <img
+          loading="lazy"
           style={{ width: "100%", height: "auto" }}
           width={800}
           height={600}
