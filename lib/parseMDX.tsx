@@ -15,6 +15,7 @@ import Columns from "@/components/Columns";
 import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { Figure } from "@/components/Figure";
+import Gallery from "@/components/Gallery";
 import { PersonList } from "@/components/Person";
 import { Pre } from "@/components/Pre";
 import { QuestionList } from "@/components/Question";
@@ -41,6 +42,7 @@ const components = {
     </Annotate>
   ),
   Raw: (props) => <Raw {...props}></Raw>,
+  Gallery: (props) => <Gallery {...props}></Gallery>,
   h1: (props) => <h1 id={encodeURIComponent(props.children)} {...props}></h1>,
   h2: (props) => <h2 id={encodeURIComponent(props.children)} {...props}></h2>,
   h3: (props) => <h3 id={encodeURIComponent(props.children)} {...props}></h3>,

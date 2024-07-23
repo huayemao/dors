@@ -140,7 +140,7 @@ export default function CollectionLayout() {
         </div>
         <div className="col-span-12">
           <div className="bg-slate-50 relative w-full border transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            <div className="max-w-full  masonry sn:masonry-sm md:masonry-md">
+            <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
               {questionList?.map((e, i, arr) => (
                 <Link key={i} to={"./" + e.id}>
                   <BaseCard
