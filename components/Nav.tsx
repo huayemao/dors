@@ -887,6 +887,24 @@ export const Nav = () => {
                 管理
               </a>
             </li>
+            <li>
+              <a
+                href="https://vercel.com/huayemaos-projects/dors/deployments"
+                className="
+                block
+                text-base
+                font-sans
+                text-muted-600
+                hover:text-primary-500
+                dark:text-muted-200 dark:hover:text-primary-400
+                py-2
+                md:mx-2
+                tw-accessibility
+              "
+              >
+                部署
+              </a>
+            </li>
             <li className="lg:hidden flex justify-center">
               <ThemeButton />
             </li>
