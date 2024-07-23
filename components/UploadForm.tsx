@@ -13,7 +13,7 @@ export function UploadForm(props: Props) {
       {...props}
     >
       {/* @ts-ignore */}
-      <BaseInputFile label="文件" name="file" id="file"></BaseInputFile>
+      <BaseInputFile multiple label="文件" name="files" id="files"></BaseInputFile>
       {/* @ts-ignore */}
       {/* <BaseInput label="名称" name="filename" id="filename"></BaseInput> */}
       <div className="w-full text-right">
