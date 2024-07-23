@@ -8,7 +8,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { join } from "path";
 
-export const revalidate = 300;
+export const revalidate = 120;
 
 export async function generateStaticParams() {
   const posts = await getPostIds({ protected: true });

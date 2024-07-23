@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import mime from "mime";
 
-export const revalidate = 60 * 60;
+export const revalidate = 4000;
 
 export async function GET(
   request: Request,
