@@ -1,5 +1,5 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
-import prisma, { Prisma } from "@/lib/prisma";
+import prisma, { Prisma, tags } from "@/lib/prisma";
 import { getPlaiceholder } from "plaiceholder";
 import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
@@ -59,10 +59,13 @@ export interface FindManyArgs {
   skip?: number;
 }
 
-export const getPostIds = cache(async () => {
+export const getPostIds = cache(async (params?: { protected?: boolean }) => {
   return await prisma.posts.findMany({
     orderBy: {
       updated_at: "desc",
+    },
+    where: {
+      protected: params?.protected,
     },
     select: {
       id: true,
@@ -295,17 +298,33 @@ export async function getRecentPosts() {
 
 export async function updatePost(
   post: Awaited<ReturnType<typeof getPost>>,
-  tags: string[] | undefined,
-  id: string | undefined,
-  content: string | undefined,
-  excerpt: string | undefined,
-  title: string | undefined,
-  changePhoto: string | undefined,
-  updated_at: string | undefined,
-  created_at: string | undefined,
-  categoryId: string | undefined
+  params: {
+    tags: string[] | undefined;
+    id: string | undefined;
+    content: string | undefined;
+    excerpt: string | undefined;
+    title: string | undefined;
+    changePhoto: string | undefined;
+    isProtected: boolean;
+    updated_at: string | undefined;
+    created_at: string | undefined;
+    categoryId: string | undefined;
+  }
 ) {
   const postTagNames = post?.tags.map((e) => e?.name) as string[];
+
+  const {
+    tags,
+    id,
+    content,
+    excerpt,
+    title,
+    changePhoto,
+    isProtected,
+    updated_at,
+    created_at,
+    categoryId,
+  } = params;
 
   if (tags && tags.sort().toString() !== postTagNames.sort().toString()) {
     const existedTags = await prisma.tags.findMany({
@@ -316,28 +335,7 @@ export async function updatePost(
       },
     });
 
-    const tagsToAdd = tags.filter(
-      (t) => !existedTags.map((e) => e.name).includes(t as string)
-    );
-
-    await prisma.tags.createMany({
-      data: tagsToAdd.map((t) => ({
-        name: t as string,
-      })),
-    });
-
-    const tagsIds = (
-      await prisma.tags.findMany({
-        where: {
-          name: {
-            in: tags as string[],
-          },
-        },
-        select: {
-          id: true,
-        },
-      })
-    ).map((e) => e.id);
+    const tagsIds = await addTags(tags, existedTags);
 
     updatePostTags(post, tagsIds);
   }
@@ -348,6 +346,7 @@ export async function updatePost(
       id: parseInt(id as string),
     },
     data: {
+      protected: isProtected,
       excerpt: excerpt ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
@@ -367,4 +366,66 @@ export async function updatePost(
   });
 
   return res;
+}
+
+export async function createPost(
+  content: string,
+  excerpt?: string,
+  title?: string,
+  categoryId?: string,
+  tags?: string[]
+) {
+  const post = await prisma.posts.create({
+    data: {
+      excerpt: excerpt as string,
+      content: content as string,
+      title: title as string,
+      created_at: new Date(),
+      updated_at: new Date(),
+      posts_category_links: {
+        create: {
+          category_id: parseInt(categoryId as string),
+        },
+      },
+    },
+  });
+
+  if (tags?.length) {
+    const existedTags = await prisma.tags.findMany({
+      where: {
+        name: {
+          in: tags as string[],
+        },
+      },
+    });
+
+    const tagsIds = await addTags(tags, existedTags);
+    await updatePostTags(await getPost(post.id), tagsIds);
+  }
+  return post;
+}
+async function addTags(tags: string[], existedTags: tags[]) {
+  const tagsToAdd = tags.filter(
+    (t) => !existedTags.map((e) => e.name).includes(t as string)
+  );
+
+  await prisma.tags.createMany({
+    data: tagsToAdd.map((t) => ({
+      name: t as string,
+    })),
+  });
+
+  const tagsIds = (
+    await prisma.tags.findMany({
+      where: {
+        name: {
+          in: tags as string[],
+        },
+      },
+      select: {
+        id: true,
+      },
+    })
+  ).map((e) => e.id);
+  return tagsIds;
 }

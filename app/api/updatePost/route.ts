@@ -10,6 +10,7 @@ export async function POST(request: Request) {
   const excerpt = (formData.get("excerpt") as string) || undefined;
   const title = (formData.get("title") as string) || undefined;
   const changePhoto = (formData.get("changePhoto") as string) || undefined;
+  const protectedStr = (formData.get("protected") as string) || undefined;
   const category_id = (formData.get("category_id") as string) || undefined;
   const updated_at = (formData.get("updated_at") as string) || undefined;
   const created_at = (formData.get("created_at") as string) || undefined;
@@ -44,21 +45,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const res = await updatePost(
-    post,
+  const res = await updatePost(post, {
     tags,
     id,
     content,
     excerpt,
     title,
     changePhoto,
+    isProtected: protectedStr === "on" ? true : false,
     updated_at,
     created_at,
-    category_id
-  );
+    categoryId: category_id,
+  });
 
   await revalidateHomePage(res.id);
-
   await revalidatePath("/posts/" + post.id);
   await revalidatePath("/(content)/posts/" + post.id);
 
@@ -80,4 +80,3 @@ export async function POST(request: Request) {
 
   return NextResponse.redirect(path, 303);
 }
-

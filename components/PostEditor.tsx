@@ -10,7 +10,7 @@ import {
   BaseDropdownItem,
   BaseSelect,
 } from "@shuriken-ui/react";
-import { Plus, Save, Settings, TimerReset } from "lucide-react";
+import { Lock, Plus, Save, Settings, TimerReset } from "lucide-react";
 import Link from "next/link";
 import {
   FormEventHandler,
@@ -70,6 +70,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
 export function PostEditor({ post }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
+  const [isProtected, setProtected] = useState(post?.protected);
   const [modalOpen, setModalOpen] = useState(false);
   const [action, setAction] = useState<"upload" | "unicode">("upload");
   const [content, setContent] = useState(post?.content || "");
@@ -260,6 +261,27 @@ export function PostEditor({ post }: PostEditorProps) {
               type="datetime-local"
               defaultValue={getDateForDateTimeInput(post?.updated_at as Date)}
             ></input>
+            <label className="text-stone-400 hover:text-stone-500">
+              <div className="nui-button-icon nui-button-rounded-md nui-button-small nui-button-default">
+                <Lock
+                  className={cn("h-4 w-4 cursor-pointer", {
+                    "text-primary-500": isProtected,
+                  })}
+                />
+              </div>
+              <input
+                form="post_form"
+                id="protected"
+                name="protected"
+                className="appearance-none m-0 bg-transparent hidden"
+                type="checkbox"
+                checked={isProtected}
+                onChange={(e) => {
+                  setProtected(e.target.checked);
+                }}
+                defaultChecked={isProtected}
+              />
+            </label>
           </>
         )}
         {/* @ts-ignore */}

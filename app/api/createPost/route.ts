@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import { createPost } from "@/lib/posts";
 import { revalidateHomePage } from "@/lib/utils/retalidate";
 import { NextResponse } from "next/server";
 
@@ -25,76 +25,4 @@ export async function POST(request: Request) {
   const path = new URL(("/posts/" + post.id) as string, origin || request.url);
 
   return NextResponse.redirect(path, 303);
-}
-
-async function createPost(
-  content: string,
-  excerpt?: string,
-  title?: string,
-  categoryId?: string,
-  tags?: string[]
-) {
-  const post = await prisma.posts.create({
-    data: {
-      excerpt: excerpt as string,
-      content: content as string,
-      title: title as string,
-      created_at: new Date(),
-      updated_at: new Date(),
-      posts_category_links: {
-        create: {
-          category_id: parseInt(categoryId as string),
-        },
-      },
-    },
-  });
-
-  if (tags?.length) {
-    const existedTags = await prisma.tags.findMany({
-      where: {
-        name: {
-          in: tags as string[],
-        },
-      },
-    });
-
-    const tagsToAdd = tags.filter(
-      (t) => !existedTags.map((e) => e.name).includes(t as string)
-    );
-
-    await prisma.tags.createMany({
-      data: tagsToAdd.map((t) => ({
-        name: t as string,
-      })),
-    });
-
-    const tagsIds = (
-      await prisma.tags.findMany({
-        where: {
-          name: {
-            in: tags as string[],
-          },
-        },
-        select: {
-          id: true,
-        },
-      })
-    ).map((e) => e.id);
-
-    await prisma.posts.update({
-      where: {
-        id: post.id,
-      },
-      data: {
-        tags_posts_links: {
-          createMany: {
-            data: tagsIds.map((e) => ({
-              tag_id: e,
-            })),
-          },
-        },
-      },
-    });
-  }
-  return post;
 }

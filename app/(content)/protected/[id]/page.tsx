@@ -5,13 +5,13 @@ import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { join } from "path";
 
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const posts = await getPostIds();
+  const posts = await getPostIds({ protected: true });
   const allPostIds = posts.map((post) => ({
     id: String(post.id),
   }));
@@ -31,10 +31,6 @@ export async function generateMetadata({
 
   if (!post || !post.content) {
     return notFound();
-  }
-
-  if (post.protected) {
-    return redirect("/protected/" + id);
   }
 
   const abstract =

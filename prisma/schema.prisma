@@ -544,6 +544,7 @@ model posts {
   id                                           Int                    @id @default(autoincrement()) @db.UnsignedInt
   content                                      String?                @db.LongText
   excerpt                                      String?                @db.MediumText
+  protected                                    Boolean                @default(false)
   title                                        String?                @db.VarChar(255)
   created_at                                   DateTime?              @db.DateTime(6)
   updated_at                                   DateTime?              @db.DateTime(6)
