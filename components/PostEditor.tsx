@@ -186,44 +186,43 @@ export function PostEditor({ post }: PostEditorProps) {
   function Action() {
     return (
       <div className="space-x-3 flex items-center">
+        <BaseDropdown
+          renderButton={() => (
+            <BaseButtonIcon rounded="md" size="sm">
+              <Plus className="h-4 w-4" />
+            </BaseButtonIcon>
+          )}
+        >
+          <BaseDropdownItem
+            title="上传文件"
+            onClick={() => {
+              setAction("upload");
+              setModalOpen(true);
+            }}
+          ></BaseDropdownItem>
+          <BaseDropdownItem
+            title="Unicode 表情"
+            onClick={() => {
+              setAction("unicode");
+              setModalOpen(true);
+            }}
+          />
+          <BaseDropdownItem
+            title="最近文件"
+            text="获取最近文件的 markdown 标记"
+            onClick={() => {
+              fetch("/api/files/getLatestFile")
+                .then((res) => res.json())
+                .then((json) => `${SITE_META.url}/api/files/${json.name}`)
+                .then(copyTextToClipboard)
+                .then(() => {
+                  alert("已复制到剪切板");
+                });
+            }}
+          ></BaseDropdownItem>
+        </BaseDropdown>
         {post && (
           <>
-            <BaseDropdown
-              renderButton={() => (
-                <BaseButtonIcon rounded="md" size="sm">
-                  <Plus className="h-4 w-4" />
-                </BaseButtonIcon>
-              )}
-            >
-              <BaseDropdownItem
-                title="上传文件"
-                onClick={() => {
-                  setAction("upload");
-                  setModalOpen(true);
-                }}
-              ></BaseDropdownItem>
-              <BaseDropdownItem
-                title="Unicode 表情"
-                onClick={() => {
-                  setAction("unicode");
-                  setModalOpen(true);
-                }}
-              />
-              <BaseDropdownItem
-                title="最近文件"
-                text="获取最近文件的 markdown 标记"
-                onClick={() => {
-                  fetch("/api/files/getLatestFile")
-                    .then((res) => res.json())
-                    .then((json) => `${SITE_META.url}/api/files/${json.name}`)
-                    .then(copyTextToClipboard)
-                    .then(() => {
-                      alert("已复制到剪切板");
-                    });
-                }}
-              ></BaseDropdownItem>
-            </BaseDropdown>
-
             <Link
               legacyBehavior
               passHref
