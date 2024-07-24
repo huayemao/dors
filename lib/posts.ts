@@ -73,29 +73,28 @@ export const getPostIds = cache(async (params?: { protected?: boolean }) => {
   });
 });
 
-export const getPosts = cache(
-  async (
-    options: PaginateOptions & {
-      tagId?: number;
-      categoryId?: number;
-      unCategorized?: boolean;
-    } = {}
-  ) => {
-    return await Promise.all(
-      (
-        await getAllPosts(options)
-      ).map(async (e) => {
-        return {
-          ...e,
-          content: await markdownToHtml(e.content),
-          wordCount: getWordCount(e.content),
-          tags: e.tags_posts_links.map((e) => e.tags),
-          category: e.posts_category_links?.[0]?.categories,
-        };
-      })
-    );
-  }
-);
+type getPostOptions = PaginateOptions & {
+  tagId?: number;
+  categoryId?: number;
+  unCategorized?: boolean;
+  protected?: boolean;
+};
+
+export const getPosts = cache(async (options: getPostOptions = {}) => {
+  return await Promise.all(
+    (
+      await getAllPosts(options)
+    ).map(async (e) => {
+      return {
+        ...e,
+        content: await markdownToHtml(e.content),
+        wordCount: getWordCount(e.content),
+        tags: e.tags_posts_links.map((e) => e.tags),
+        category: e.posts_category_links?.[0]?.categories,
+      };
+    })
+  );
+});
 
 async function randomlyUpdatePhoto(id: number) {
   const cover_image = await getRandomPhoto();
@@ -139,46 +138,11 @@ export async function getFeaturedPostIds() {
   return postIds;
 }
 
-async function getAllPosts(
-  options: PaginateOptions & {
-    tagId?: number;
-    categoryId?: number;
-    unCategorized?: boolean;
-  } = {}
-) {
+async function getAllPosts(options: getPostOptions = {}) {
   const featurePosts = await getFeaturedPostIds();
   const { perPage, skip } = getPrismaPaginationParams(options);
-  const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
-
-  if (options.tagId) {
-    whereInput.push({
-      tags_posts_links: {
-        some: {
-          tag_id: options.tagId,
-        },
-      },
-    });
-  }
-
-  if (options.categoryId) {
-    whereInput.push({
-      posts_category_links: {
-        some: {
-          category_id: options.categoryId,
-        },
-      },
-    });
-  }
-
-  if (options.unCategorized) {
-    whereInput.push({
-      posts_category_links: {
-        none: {
-          id: undefined,
-        },
-      },
-    });
-  }
+  const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> =
+    getWhereInput(options);
 
   return await prisma.posts.findMany({
     where: {
@@ -215,6 +179,45 @@ type ProcessedPost = Awaited<ReturnType<typeof getPosts>>[0] & {
   url: string;
   blurDataURL: string;
 };
+
+function getWhereInput(options: getPostOptions) {
+  const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
+
+  if (options.tagId) {
+    whereInput.push({
+      tags_posts_links: {
+        some: {
+          tag_id: options.tagId,
+        },
+      },
+    });
+  }
+
+  if (options.categoryId) {
+    whereInput.push({
+      posts_category_links: {
+        some: {
+          category_id: options.categoryId,
+        },
+      },
+    });
+  }
+
+  if (options.unCategorized) {
+    whereInput.push({
+      posts_category_links: {
+        none: {
+          id: undefined,
+        },
+      },
+    });
+  }
+
+  whereInput.push({
+    protected: options.protected,
+  });
+  return whereInput;
+}
 
 export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>,
@@ -281,9 +284,17 @@ export async function getProcessedPosts(
 }
 
 export const getPageCount = cache(
-  async (perPage: number = POSTS_COUNT_PER_PAGE) => {
-    const itemCount = await prisma.posts.count();
-    return itemCount / (perPage || POSTS_COUNT_PER_PAGE);
+  async (options: Omit<getPostOptions, "page"> = {}) => {
+    const whereInputArr = getWhereInput(options);
+
+    const where = whereInputArr.reduce((acc, item) => {
+      return Object.assign(item, acc);
+    }, {});
+
+    const itemCount = await prisma.posts.count({ where: where });
+    return Math.ceil(
+      itemCount / (Number(options.perPage) || POSTS_COUNT_PER_PAGE)
+    );
   }
 );
 

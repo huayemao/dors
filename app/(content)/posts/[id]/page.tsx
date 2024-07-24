@@ -11,7 +11,7 @@ import { join } from "path";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const posts = await getPostIds();
+  const posts = await getPostIds({ protected: false });
   const allPostIds = posts.map((post) => ({
     id: String(post.id),
   }));
