@@ -234,22 +234,14 @@ export function PostEditor({ post }: PostEditorProps) {
               </BaseButtonIcon>
             </Link>
             <label className="text-stone-400 hover:text-stone-500">
-              <div className="nui-button-icon nui-button-rounded-md nui-button-small nui-button-default">
-                <TimerReset
-                  className={cn("h-4 w-4 cursor-pointer", {
-                    "text-primary-500": reserveUpdateTime,
-                  })}
-                />
-              </div>
-              <input
-                className="appearance-none m-0 bg-transparent hidden"
-                type="checkbox"
-                checked={reserveUpdateTime}
-                onChange={(e) => {
-                  setReserveUpdateTime(e.target.checked);
-                }}
-                defaultChecked={reserveUpdateTime}
-              />
+              <BaseButtonIcon
+                onClick={() => setReserveUpdateTime((v) => !v)}
+                rounded="md"
+                size="sm"
+                color={reserveUpdateTime ? "primary" : "default"}
+              >
+                <TimerReset className={cn("h-4 w-4 cursor-pointer", {})} />
+              </BaseButtonIcon>
             </label>
             <input
               hidden
@@ -261,13 +253,16 @@ export function PostEditor({ post }: PostEditorProps) {
               defaultValue={getDateForDateTimeInput(post?.updated_at as Date)}
             ></input>
             <label className="text-stone-400 hover:text-stone-500">
-              <div className="nui-button-icon nui-button-rounded-md nui-button-small nui-button-default">
-                <Lock
-                  className={cn("h-4 w-4 cursor-pointer", {
-                    "text-primary-500": isProtected,
-                  })}
-                />
-              </div>
+              <BaseButtonIcon
+                rounded="md"
+                size="sm"
+                color={isProtected ? "primary" : "default"}
+                onClick={() => {
+                  setProtected((v) => !v);
+                }}
+              >
+                <Lock className={cn("h-4 w-4 cursor-pointer")} />
+              </BaseButtonIcon>
               <input
                 form="post_form"
                 id="protected"
@@ -275,10 +270,6 @@ export function PostEditor({ post }: PostEditorProps) {
                 className="appearance-none m-0 bg-transparent hidden"
                 type="checkbox"
                 checked={isProtected}
-                onChange={(e) => {
-                  setProtected(e.target.checked);
-                }}
-                defaultChecked={isProtected}
               />
             </label>
           </>
