@@ -2,7 +2,7 @@
 import { BaseButton, BaseTabs } from "@shuriken-ui/react";
 import { Edit, MessageSquareIcon, ViewIcon } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "../Base/Modal";
 import { MiniPostTile } from "../MiniPostTile";
 import { ShareButton } from "../ShareButton";
@@ -34,6 +34,13 @@ function RecentPosts({ posts }) {
 export default function SideTabs({ post, posts }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [markdownOpen, setMarkdownOpen] = useState(false);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    // 强制 portal 重新渲染，不晓得是否有更好的方法
+    setKey((v) => v + 1);
+  }, []);
+
   const Actions = (
     <div className="flex justify-between gap-3">
       <ShareButton
@@ -82,7 +89,11 @@ export default function SideTabs({ post, posts }) {
         <div className="p-4 "> {renderTabs()}</div>
       </Modal>
       <div className="hidden md:block">{renderTabs()}</div>
-      {<NavListPortal onclick={() => setModalOpen(true)}></NavListPortal>}
+      <NavListPortal
+        onclick={() => setModalOpen(true)}
+        key={post.id + key}
+      ></NavListPortal>
+
       <Modal
         open={markdownOpen}
         onClose={() => {

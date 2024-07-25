@@ -41,7 +41,9 @@ export const Nav = () => {
 
   const MenuButton = (
     <button
-      onClick={() => setMobileOpen((open) => !open)}
+      onClick={() => {
+        setMobileOpen((open) => !open);
+      }}
       className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden"
     >
       <div
@@ -104,7 +106,7 @@ export const Nav = () => {
             "flex  justify-center lg:relative lg:flex lg:text-left opacity-100 flex-grow ease-in-out",
             {
               hidden: !mobileOpen,
-              "absolute inset-8 items-center": mobileOpen,
+              "absolute inset-12 items-center": mobileOpen,
             }
           )}
         >
