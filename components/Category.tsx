@@ -17,7 +17,7 @@ export const Category: React.FC<CategoryProps> = ({
     shadow={active ? "flat" : "hover"}
     suppressHydrationWarning
     href={href}
-    style={{ whiteSpace: "nowrap" }}
+    style={{ whiteSpace: "nowrap", lineHeight: "unset" }}
     color={active ? "primary" : "muted"}
     {...props}
   >
