@@ -13,7 +13,7 @@ const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
 
 export const Nav = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [megamenuOpened, setMegamenuOpened] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   function scrollHeader() {
     // When the scroll is greater than 60 viewport height, add the scroll-header class to the header tag
@@ -31,14 +31,46 @@ export const Nav = () => {
     };
   }, []);
 
+  const MenuButton = (
+    <button
+      onClick={() => setMobileOpen((open) => !open)}
+      className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden"
+    >
+      <div
+        className={cn(
+          "block top-1/2 left-6 w-4 -translate-x-1/2 -translate-y-1/2"
+        )}
+      >
+        <span
+          className={cn(
+            "block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out",
+            mobileOpen ? "rotate-45" : "-translate-y-2"
+          )}
+        ></span>
+        <span
+          className={cn(
+            "block absolute w-5 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out",
+            mobileOpen ? "opacity-0" : ""
+          )}
+        ></span>
+        <span
+          className={cn(
+            "block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out",
+            mobileOpen ? "-rotate-45" : "translate-y-2"
+          )}
+        ></span>
+      </div>
+    </button>
+  );
+
   return (
     <nav
       className={clsx(
         "fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
         {
           "bg-white dark:bg-muted-800 shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10":
-            scrolled || megamenuOpened,
-          "dark:bg-muted-900": !scrolled && !megamenuOpened,
+            scrolled || mobileOpen,
+          "dark:bg-muted-900": !scrolled && !mobileOpen,
         }
       )}
     >
@@ -56,31 +88,16 @@ export const Nav = () => {
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
 
-          <button
-            onClick={() => setMegamenuOpened((open) => !open)}
-            className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden"
-          >
-            <div className="block top-1/2 left-6 w-4 -translate-x-1/2 -translate-y-1/2">
-              <span className="block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out -translate-y-2"></span>
-              <span className="block absolute w-5 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out"></span>
-              <span className="block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out translate-y-2"></span>
-            </div>
-          </button>
+          {MenuButton}
         </div>
         <div
-          className={cn(
-            {
-              hidden: !megamenuOpened,
-            },
-            "text-center lg:text-left lg:flex flex-grow"
-          )}
+          className={cn("flex justify-center lg:flex lg:text-left  flex-grow", {
+            hidden: !mobileOpen,
+          })}
         >
           <ul
             className="
-            flex flex-col 
-            mt-3
-            mb-1
-            lg:flex-row lg:items-center lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4
+            flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4
           "
           >
             <li>
@@ -121,7 +138,7 @@ export const Nav = () => {
             </li>
             <BaseDropdown
               label="管理"
-              classes={{ wrapper: "flex item-center text-muted-600" }}
+              classes={{ wrapper: "flex item-center text-muted-600 py-2" }}
               variant="text"
             >
               <BaseDropdownItem
