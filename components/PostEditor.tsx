@@ -226,6 +226,7 @@ export function PostEditor({ post }: PostEditorProps) {
             <Link
               legacyBehavior
               passHref
+              shallow
               href={`/admin/posts/${post.id}/settings`}
               className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
             >
