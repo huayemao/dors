@@ -33,6 +33,7 @@ function RecentPosts({ posts }) {
 
 export default function SideTabs({ post, posts }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [markdownOpen, setMarkdownOpen] = useState(false);
   const Actions = (
     <div className="flex justify-between gap-4">
       <ShareButton
@@ -60,7 +61,9 @@ export default function SideTabs({ post, posts }) {
         className="flex-1"
         color="muted"
         size="lg"
-        href={`https://www.yuque.com/huayemao/yuque/dc_${post.id}`}
+        onClick={() => {
+          setMarkdownOpen(true);
+        }}
       >
         <ViewIcon className="w-4 h-4 " fill="currentColor" />
       </BaseButton>
@@ -76,33 +79,27 @@ export default function SideTabs({ post, posts }) {
         }}
         title={post.title}
       >
-        <BaseTabs
-          classes={{ wrapper: "p-4" }}
-          defaultValue="toc"
-          tabs={[
-            { label: "文章大纲", value: "toc" },
-            { label: "选项", value: "actions" },
-          ]}
-        >
-          {(activeValue) => (
-            <>
-              {activeValue === "actions" && (
-                <div>
-                  <div>{Actions}</div>
-                  <hr className="my-6 border-t border-muted-200 dark:border-muted-800" />
-                  <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
-                    最近文章
-                  </h2>
-                  <RecentPosts posts={posts} />
-                </div>
-              )}
-              {activeValue === "toc" && <TOC />}
-            </>
-          )}
-        </BaseTabs>
+        <div className="p-4 "> {renderTabs()}</div>
       </Modal>
+      <div className="hidden md:block">{renderTabs()}</div>
+      {<NavListPortal onclick={() => setModalOpen(true)}></NavListPortal>}
+      <Modal
+        open={markdownOpen}
+        onClose={() => {
+          setMarkdownOpen(false);
+        }}
+        title={post.title}
+      >
+        <div className="p-4 whitespace-pre-wrap max-h-[82vh] overflow-y-auto overflow-x-hidden">
+          {post.content}
+        </div>
+      </Modal>
+    </>
+  );
+
+  function renderTabs() {
+    return (
       <BaseTabs
-        classes={{ wrapper: "hidden md:block" }}
         defaultValue="toc"
         tabs={[
           { label: "文章大纲", value: "toc" },
@@ -112,9 +109,9 @@ export default function SideTabs({ post, posts }) {
         {(activeValue) => (
           <>
             {activeValue === "actions" && (
-              <div className="mt-10">
+              <div>
                 <div>{Actions}</div>
-                <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
+                <hr className="my-6 border-t border-muted-200 dark:border-muted-800" />
                 <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
                   最近文章
                 </h2>
@@ -125,8 +122,6 @@ export default function SideTabs({ post, posts }) {
           </>
         )}
       </BaseTabs>
-      {<NavListPortal onclick={() => setModalOpen(true)}></NavListPortal>}
-    </>
-  );
+    );
+  }
 }
-
