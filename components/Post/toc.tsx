@@ -61,7 +61,7 @@ export default function TOC() {
     <section className="my-6 sticky top-24">
       <ul
         key={window.location.pathname}
-        className="max-h-[calc(100vh_-_168px)] overflow-y-auto"
+        className="max-h-[65vh] md:max-h-[calc(100vh_-_168px)] overflow-y-auto"
         style={{ scrollbarWidth: "thin" }}
       >
         {headings.map((item) => {

@@ -35,7 +35,7 @@ export default function SideTabs({ post, posts }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [markdownOpen, setMarkdownOpen] = useState(false);
   const Actions = (
-    <div className="flex justify-between gap-4">
+    <div className="flex justify-between gap-3">
       <ShareButton
         options={{
           title: post.title,

@@ -31,6 +31,14 @@ export const Nav = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (mobileOpen) {
+      window.document.body.style.overflow = "hidden";
+    } else {
+      window.document.body.style.overflow = "auto";
+    }
+  }, [mobileOpen]);
+
   const MenuButton = (
     <button
       onClick={() => setMobileOpen((open) => !open)}
@@ -70,6 +78,7 @@ export const Nav = () => {
         {
           "bg-white dark:bg-muted-800 shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10":
             scrolled || mobileOpen,
+          "h-screen lg:h-fit": mobileOpen,
           "dark:bg-muted-900": !scrolled && !mobileOpen,
         }
       )}
@@ -91,15 +100,17 @@ export const Nav = () => {
           {MenuButton}
         </div>
         <div
-          className={cn("flex justify-center lg:flex lg:text-left  flex-grow", {
-            hidden: !mobileOpen,
-          })}
+          className={cn(
+            "flex  justify-center lg:relative lg:flex lg:text-left opacity-100 flex-grow ease-in-out",
+            {
+              hidden: !mobileOpen,
+              "absolute inset-8 items-center": mobileOpen,
+            }
+          )}
         >
           <ul
             id="nav-list"
-            className="
-            flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4
-          "
+            className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4"
           >
             <li>
               <Link
@@ -162,7 +173,7 @@ export const Nav = () => {
               />
             </BaseDropdown>
           </ul>
-          <div className="lg:hidden absolute right-4 bottom-4 flex justify-center">
+          <div className="lg:hidden absolute bottom-4 flex justify-center">
             <ThemeButton />
           </div>
         </div>
