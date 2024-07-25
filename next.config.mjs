@@ -13,7 +13,7 @@ const nextConfig = {
   },
   experimental: {
     appDir: true,
-    serverComponentsExternalPackages: ["prisma", "@prisma/client", "shiki", "vscode-oniguruma"],
+    serverComponentsExternalPackages: ["prisma", "shiki", "vscode-oniguruma"],
   },
   output: process.env.OUTPUT_MODE,
   basePath: process.env.OUTPUT_MODE === 'export' ? "/dors" : '',

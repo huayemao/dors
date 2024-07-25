@@ -1,21 +1,15 @@
 import { parseMDX } from "@/lib/parseMDX";
-import { getPost, getProcessedPosts, getRecentPosts } from "@/lib/posts";
+import { getPost, getRecentPosts } from "@/lib/posts";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import c from "@/styles/post.module.css";
-import { BaseButton } from "@shuriken-ui/react";
 import "katex/dist/katex.min.css";
-import { Edit, MessageSquareIcon, ViewIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { join } from "path";
 import { BackButton } from "../BackButton";
 import PostHead from "../PostHead";
-import PostTile from "../PostTile";
-import { ShareButton } from "../ShareButton";
+import SideTabs from "./SideTabs";
 
-const TOC = dynamic(() => import("./toc"), {
-  ssr: false,
-});
 const ContentModal = dynamic(() => import("./ContentModal"), {
   ssr: false,
 });
@@ -75,47 +69,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
               </div>
             </div>
             <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">
-              <div className="mt-10">
-                <div>
-                  <div className="flex gap-4">
-                    <ShareButton
-                      options={{
-                        title: post.title,
-                      }}
-                    />
-                    <BaseButton
-                      color="muted"
-                      size="lg"
-                      href={`/admin/posts/${post.id}`}
-                    >
-                      <Edit className="w-4 h-4 " fill="currentColor" />
-                    </BaseButton>
-                    <BaseButton
-                      color="muted"
-                      size="lg"
-                      href={`https://www.yuque.com/huayemao/yuque/dc_${post.id}`}
-                    >
-                      <MessageSquareIcon
-                        className="w-4 h-4 "
-                        fill="currentColor"
-                      />
-                    </BaseButton>
-                    <BaseButton
-                      color="muted"
-                      size="lg"
-                      href={`https://www.yuque.com/huayemao/yuque/dc_${post.id}`}
-                    >
-                      <ViewIcon className="w-4 h-4 " fill="currentColor" />
-                    </BaseButton>
-                  </div>
-                </div>
-                <hr className="my-10 border-t border-muted-200 dark:border-muted-800" />
-                <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
-                  最近文章
-                </h2>
-                <RecentPosts posts={posts} />
-              </div>
-              <TOC />
+              <SideTabs post={post} posts={posts}></SideTabs>
             </div>
           </div>
         </div>
@@ -123,25 +77,5 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
       <ContentModal></ContentModal>
       <LightBox></LightBox>
     </div>
-  );
-}
-
-function RecentPosts({
-  posts,
-}: {
-  posts: Awaited<ReturnType<typeof getProcessedPosts>>;
-}) {
-  return (
-    <ul className="space-y-6">
-      {posts.map((e) => (
-        <PostTile
-          key={e.id}
-          type="mini"
-          post={e}
-          url={e.url}
-          blurDataURL={e.blurDataURL}
-        />
-      ))}
-    </ul>
   );
 }
