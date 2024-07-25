@@ -13,7 +13,7 @@ export const ShareButton = ({ options }) => {
   };
 
   return (
-    <BaseButton size="lg" onClick={share} color="muted">
+    <BaseButton className="flex-1" size="lg" onClick={share} color="muted">
       <Share2 className="w-4 h-4 " fill="currentColor" />
     </BaseButton>
   );

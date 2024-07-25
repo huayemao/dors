@@ -96,6 +96,7 @@ export const Nav = () => {
           })}
         >
           <ul
+            id="nav-list"
             className="
             flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4
           "
@@ -160,10 +161,10 @@ export const Nav = () => {
                 rounded="sm"
               />
             </BaseDropdown>
-            <li className="lg:hidden flex justify-center">
-              <ThemeButton />
-            </li>
           </ul>
+          <div className="lg:hidden absolute right-4 bottom-4 flex justify-center">
+            <ThemeButton />
+          </div>
         </div>
 
         <div className="hidden lg:flex lg:w-1/5 lg:justify-end lg:gap-x-4">
