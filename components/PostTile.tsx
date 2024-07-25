@@ -4,7 +4,7 @@ import { cn, getDateString } from "@/lib/utils";
 import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
-import { Avatar } from "./Avatar";
+import { Category } from "./Category";
 import Tag from "./Tag";
 type Post = Awaited<ReturnType<typeof getPost>>;
 
@@ -73,6 +73,8 @@ function PostTile({
     );
   }
 
+  const cat = post!.posts_category_links![0].categories!;
+
   return (
     <div className="relative" key={id}>
       <Link
@@ -116,22 +118,23 @@ function PostTile({
               {title}
             </h3>
           </div>
-          <div className="w-full mt-auto space-y-6">
-            <div className="flex items-center justify-start w-full relative">
-              <div className="bg-rose-50 mask flex items-center justify-center mask-blob w-12 h-12 text-[36px]">
-                <Avatar />
+          <div
+            suppressHydrationWarning
+            className="flex items-center justify-start w-full relative"
+          >
+            <Category
+              size="sm"
+              href={`/categories/${cat.id}`}
+              name={cat.name as string}
+              key={cat.id}
+            />
+            <div className="block ml-auto font-sans text-sm text-muted-400 text-right">
+              <div>
+                {post?.updated_at
+                  ? "更新于 " + getDateString(post?.updated_at)
+                  : ""}
               </div>
-              <div className="pl-2">
-                <h3 className="font-heading font-medium text-muted-800 dark:text-muted-50">
-                  {SITE_META.author.name}
-                </h3>
-                <p className="font-sans text-sm text-muted-400">
-                  {updatedOrcreatedAtText}
-                </p>
-              </div>
-              <div className="block ml-auto font-sans text-sm text-muted-400">
-                <span>— {post?.wordCount} 字</span>
-              </div>
+              <div>— {post?.wordCount} 字</div>
             </div>
           </div>
         </div>
