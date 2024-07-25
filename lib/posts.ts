@@ -300,10 +300,13 @@ export const getPageCount = cache(
 
 export type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-export async function getRecentPosts() {
-  let posts = await getProcessedPosts(await getPosts({ perPage: 5 }), {
-    imageSize: "small",
-  });
+export async function getRecentPosts(options: getPostOptions = {}) {
+  let posts = await getProcessedPosts(
+    await getPosts({ perPage: 5, ...options }),
+    {
+      imageSize: "small",
+    }
+  );
   return posts;
 }
 

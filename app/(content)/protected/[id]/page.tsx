@@ -78,7 +78,7 @@ export default async function page({ params }) {
     return notFound();
   }
 
-  let posts = await getRecentPosts();
+  let posts = await getRecentPosts({ protected: true });
 
   const tmpDir = join(process.cwd(), "tmp");
   console.log(tmpDir);
