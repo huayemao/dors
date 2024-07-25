@@ -59,14 +59,6 @@ export default function TOC() {
 
   return (
     <section className="my-6 sticky top-24">
-      {headings.length ? (
-        <header>
-          <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
-            文章目录
-          </h2>
-        </header>
-      ) : null}
-
       <ul
         key={window.location.pathname}
         className="max-h-[calc(100vh_-_168px)] overflow-y-auto"
