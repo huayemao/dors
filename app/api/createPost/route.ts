@@ -1,22 +1,31 @@
 import { createPost } from "@/lib/posts";
 import { revalidateHomePage } from "@/lib/utils/retalidate";
 import { NextResponse } from "next/server";
+import { readPostFormData } from "../updatePost/readPostFormData";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
-  const content = formData.get("content");
-  const excerpt = formData.get("excerpt");
-  const title = formData.get("title");
-  const categoryId = formData.get("category_id");
-  const tags = formData.has("tags") ? formData.getAll("tags") : undefined;
+  const {
+    id,
+    content,
+    excerpt,
+    title,
+    changePhoto,
+    protectedStr,
+    updated_at,
+    created_at,
+    category_id: categoryId,
+    tags,
+  } = readPostFormData(formData);
 
-  const post = await createPost(
-    content as string,
-    excerpt as string,
-    title as string,
-    categoryId as string,
-    tags as string[]
-  );
+  const post = await createPost({
+    content,
+    excerpt,
+    title,
+    categoryId,
+    tags,
+    isProtected: protectedStr === "on" ? true : false,
+  });
 
   await revalidateHomePage(post.id);
 

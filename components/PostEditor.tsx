@@ -112,7 +112,29 @@ export function PostEditor({ post }: PostEditorProps) {
               pinned,
           })}
         >
-          {CatSelect()}
+          <div className="flex gap-2 mr-auto">
+            {CatSelect()}
+            <label className="text-stone-400 hover:text-stone-500">
+              <BaseButtonIcon
+                rounded="md"
+                size="sm"
+                color={isProtected ? "primary" : "default"}
+                onClick={() => {
+                  setProtected((v) => !v);
+                }}
+              >
+                <Lock className={cn("h-4 w-4 cursor-pointer")} />
+              </BaseButtonIcon>
+              <input
+                form="post_form"
+                id="protected"
+                name="protected"
+                className="appearance-none m-0 bg-transparent hidden"
+                type="checkbox"
+                checked={isProtected}
+              />
+            </label>
+          </div>
           <Action />
         </div>
       </div>
@@ -253,26 +275,6 @@ export function PostEditor({ post }: PostEditorProps) {
               type="datetime-local"
               defaultValue={getDateForDateTimeInput(post?.updated_at as Date)}
             ></input>
-            <label className="text-stone-400 hover:text-stone-500">
-              <BaseButtonIcon
-                rounded="md"
-                size="sm"
-                color={isProtected ? "primary" : "default"}
-                onClick={() => {
-                  setProtected((v) => !v);
-                }}
-              >
-                <Lock className={cn("h-4 w-4 cursor-pointer")} />
-              </BaseButtonIcon>
-              <input
-                form="post_form"
-                id="protected"
-                name="protected"
-                className="appearance-none m-0 bg-transparent hidden"
-                type="checkbox"
-                checked={isProtected}
-              />
-            </label>
           </>
         )}
         {/* @ts-ignore */}
@@ -288,7 +290,7 @@ export function PostEditor({ post }: PostEditorProps) {
       categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)
     );
     return (
-      <div className="w-20 mr-auto">
+      <div className="w-20">
         <BaseSelect
           size="sm"
           required

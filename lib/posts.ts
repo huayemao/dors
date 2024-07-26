@@ -310,20 +310,24 @@ export async function getRecentPosts(options: getPostOptions = {}) {
   return posts;
 }
 
+type PostPayload = {
+  tags?: string[];
+  id: string;
+  content?: string;
+  excerpt?: string;
+  title?: string;
+  changePhoto?: string;
+  isProtected?: boolean;
+  updated_at?: string;
+  created_at?: string;
+  categoryId?: string;
+};
+
+type CreatePostPayload = Omit<PostPayload, "id">;
+
 export async function updatePost(
   post: Awaited<ReturnType<typeof getPost>>,
-  params: {
-    tags: string[] | undefined;
-    id: string | undefined;
-    content: string | undefined;
-    excerpt: string | undefined;
-    title: string | undefined;
-    changePhoto: string | undefined;
-    isProtected: boolean;
-    updated_at: string | undefined;
-    created_at: string | undefined;
-    categoryId: string | undefined;
-  }
+  params: PostPayload
 ) {
   const postTagNames = post?.tags.map((e) => e?.name) as string[];
 
@@ -382,13 +386,8 @@ export async function updatePost(
   return res;
 }
 
-export async function createPost(
-  content: string,
-  excerpt?: string,
-  title?: string,
-  categoryId?: string,
-  tags?: string[]
-) {
+export async function createPost(params: CreatePostPayload) {
+  const { content, excerpt, title, categoryId, tags, isProtected } = params;
   const post = await prisma.posts.create({
     data: {
       excerpt: excerpt as string,
@@ -401,6 +400,7 @@ export async function createPost(
           category_id: parseInt(categoryId as string),
         },
       },
+      protected: isProtected,
     },
   });
 
