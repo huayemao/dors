@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { GlobeLockIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Avatar } from "./Avatar";
 
 const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
@@ -39,6 +39,10 @@ export const Nav = () => {
       window.document.body.style.overflow = "auto";
     }
   }, [mobileOpen]);
+
+  const closeMobileNav = useCallback(() => {
+    setMobileOpen(false);
+  }, []);
 
   const MenuButton = (
     <button
@@ -95,6 +99,7 @@ export const Nav = () => {
             href="/"
             className="flex title-font font-medium items-center text-muted-900 dark:text-muted-100
         "
+            onClick={closeMobileNav}
           >
             <Avatar alt />
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
@@ -115,17 +120,9 @@ export const Nav = () => {
             <li>
               <Link
                 href="/about"
-                className="
-                block
-                text-base
-                font-sans
-                text-muted-600
-                hover:text-primary-500
-                dark:text-muted-200 dark:hover:text-primary-400
-                py-2
-                md:mx-2
-                tw-accessibility
+                className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
               "
+                onClick={closeMobileNav}
               >
                 关于
               </Link>
@@ -135,6 +132,7 @@ export const Nav = () => {
                 href="/tags"
                 className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
               "
+                onClick={closeMobileNav}
               >
                 标签
               </Link>
@@ -150,12 +148,14 @@ export const Nav = () => {
                   title="后台"
                   text="进入后台页面"
                   rounded="sm"
+                  onClick={closeMobileNav}
                 />
                 <BaseDropdownItem
                   href="https://vercel.com/huayemaos-projects/dors/deployments"
                   title="部署"
                   text="查看部署进度"
                   rounded="sm"
+                  onClick={closeMobileNav}
                 />
               </BaseDropdown>
             </li>
@@ -165,6 +165,7 @@ export const Nav = () => {
                 href="/protected"
                 className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
               "
+                onClick={closeMobileNav}
               >
                 <GlobeLockIcon className="h-5 w-5" strokeWidth={1.5} />
               </Link>
@@ -178,30 +179,10 @@ export const Nav = () => {
         <div className="hidden lg:flex lg:w-1/5 lg:justify-end lg:gap-x-4">
           <button
             type="button"
-            className="
-          group
-          h-12
-          w-12
-          rounded-full
-          flex
-          items-center
-          justify-center
-          tw-accessibility
-        "
+            className=" group h-12 w-12 rounded-full flex items-center justify-center tw-accessibility"
           >
             <div
-              className="
-            h-10
-            w-10
-            flex
-            items-center
-            justify-center
-            rounded-full
-            text-muted-400
-            group-hover:text-muted-500 group-hover:bg-muted-100
-            dark:group-hover:bg-muted-700 dark:group-hover:text-muted-100
-            transition-colors
-            duration-300
+              className="h-10 w-10 flex items-center justify-center rounded-full text-muted-400 group-hover:text-muted-500 group-hover:bg-muted-100 dark:group-hover:bg-muted-700 dark:group-hover:text-muted-100 transition-colors duration-300
           "
             >
               <svg
