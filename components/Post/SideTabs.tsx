@@ -1,6 +1,6 @@
 "use client";
 import { BaseButton, BaseTabs } from "@shuriken-ui/react";
-import { Edit, MessageSquareIcon, ViewIcon } from "lucide-react";
+import { Code2, MessageSquareIcon, PenBox } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Modal } from "../Base/Modal";
@@ -54,7 +54,7 @@ export default function SideTabs({ post, posts }) {
         size="lg"
         href={`/admin/posts/${post.id}`}
       >
-        <Edit className="w-4 h-4 " fill="currentColor" />
+        <PenBox className="w-4 h-4 " fill="currentColor" />
       </BaseButton>
       <BaseButton
         className="flex-1"
@@ -72,7 +72,7 @@ export default function SideTabs({ post, posts }) {
           setMarkdownOpen(true);
         }}
       >
-        <ViewIcon className="w-4 h-4 " fill="currentColor" />
+        <Code2 className="w-4 h-4 " fill="currentColor" />
       </BaseButton>
     </div>
   );
