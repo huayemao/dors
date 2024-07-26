@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
 import clsx from "clsx";
+import { GlobeLockIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -98,7 +99,6 @@ export const Nav = () => {
             <Avatar alt />
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
-
           {MenuButton}
         </div>
         <div
@@ -133,45 +133,42 @@ export const Nav = () => {
             <li>
               <Link
                 href="/tags"
-                className="
-                block
-                text-base
-                font-sans
-                text-muted-600
-                hover:text-primary-500
-                dark:text-muted-200 dark:hover:text-primary-400
-                py-2
-                md:mx-2
-                tw-accessibility
+                className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
               "
               >
                 标签
               </Link>
             </li>
-            <BaseDropdown
-              label="管理"
-              classes={{ wrapper: "flex item-center text-muted-600 py-2" }}
-              variant="text"
-            >
-              <BaseDropdownItem
-                href="/admin"
-                title="后台"
-                text="进入后台页面"
-                rounded="sm"
-              />
-              <BaseDropdownItem
+            <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
+              <BaseDropdown
+                label="管理"
+                classes={{ wrapper: "flex item-center " }}
+                variant="text"
+              >
+                <BaseDropdownItem
+                  href="/admin"
+                  title="后台"
+                  text="进入后台页面"
+                  rounded="sm"
+                />
+                <BaseDropdownItem
+                  href="https://vercel.com/huayemaos-projects/dors/deployments"
+                  title="部署"
+                  text="查看部署进度"
+                  rounded="sm"
+                />
+              </BaseDropdown>
+            </li>
+            <li>
+              <Link
+                prefetch={false}
                 href="/protected"
-                title="私有"
-                text="私有文章列表"
-                rounded="sm"
-              />
-              <BaseDropdownItem
-                href="https://vercel.com/huayemaos-projects/dors/deployments"
-                title="部署"
-                text="查看部署进度"
-                rounded="sm"
-              />
-            </BaseDropdown>
+                className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
+              "
+              >
+                <GlobeLockIcon className="h-5 w-5" strokeWidth={1.5} />
+              </Link>
+            </li>
           </ul>
           <div className="lg:hidden absolute bottom-4 flex justify-center">
             <ThemeButton />
