@@ -1,0 +1,18 @@
+.shiki:hover :global(.dim) {
+  opacity: 1;
+}
+.shiki div:global(.dim) {
+  opacity: 0.5;
+}
+.shiki div:global(.dim),
+.shiki div:glabl(.highlight) {
+  margin: 0;
+  padding: 0;
+}
+.shiki div:glabl(.highlight) {
+  opacity: 1;
+  background-color: #f1f8ff;
+}
+.shiki div:global(.line) {
+  min-height: 1rem;
+}

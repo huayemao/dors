@@ -1,4 +1,6 @@
 "use client";
+import { cn } from "@/lib/utils";
+import c from '@/styles/Pre.module.css';
 import type { ComponentProps, ReactElement } from "react";
 import React, { useRef } from "react";
 import { CopyToClipboard } from "./copy-to-clipboard";
@@ -15,7 +17,7 @@ export const Pre = ({
     e.props.className.includes("code-container")
   );
   return (
-    <pre {...props} ref={preRef} className="relative !pt-10 !overflow-x-hidden">
+    <pre {...props} ref={preRef} className={cn("relative !pt-10 !overflow-x-hidden",c.shiki)}>
       <div className="absolute top-0 right-0 left-0 flex items-center justify-between w-full px-6 py-2 pr-4 bg-muted-700 text-muted-100">
         <span className="text-xs lowercase">
           {lidEl ?? (lidEl as ReactElement).props.children}
