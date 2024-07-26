@@ -15,7 +15,7 @@ export default async function UploadTest() {
   const res =
     (await prisma.$queryRaw`SELECT id, LENGTH(data) AS size FROM File`) as {
       id: number;
-      size: number;
+      size: bigint;
     }[];
 
   console.log(res);

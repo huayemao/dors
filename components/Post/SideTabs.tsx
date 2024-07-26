@@ -3,11 +3,11 @@ import { BaseButton, BaseTabs } from "@shuriken-ui/react";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Code2, MessageSquareIcon, PenBox } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "../Base/Modal";
 import { MiniPostTile } from "../MiniPostTile";
 import { ShareButton } from "../ShareButton";
-
+import { CopyToClipboard } from "../copy-to-clipboard";
 
 const TOC = dynamic(() => import("./toc"), {
   ssr: false,
@@ -37,6 +37,7 @@ export default function SideTabs({ post, posts }) {
   const [markdownOpen, setMarkdownOpen] = useState(false);
   const [key, setKey] = useState(0);
   const isMobile = useMediaQuery("only screen and (max-width : 992px)");
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // 强制 portal 重新渲染，不晓得是否有更好的方法
@@ -86,13 +87,19 @@ export default function SideTabs({ post, posts }) {
         <NavListPortal key={post.id + key}>{renderTabs()}</NavListPortal>
       )}
       <Modal
+        actions={
+          <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
+        }
         open={markdownOpen}
         onClose={() => {
           setMarkdownOpen(false);
         }}
         title={post.title}
       >
-        <div className="p-4 whitespace-pre-wrap max-h-[82vh] overflow-y-auto overflow-x-hidden">
+        <div
+          ref={ref}
+          className="p-4 whitespace-pre-wrap max-h-[82vh] overflow-y-auto overflow-x-hidden"
+        >
           {post.content}
         </div>
       </Modal>
