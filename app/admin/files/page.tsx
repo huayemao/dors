@@ -69,7 +69,9 @@ export default async function UploadTest() {
             <BaseListItem
               key={e.id}
               title={e.name}
-              subtitle={humanFileSize(e.size! / BigInt(8))}
+              subtitle={
+                e.size ? humanFileSize(e.size / BigInt(8)) : "unknown size"
+              }
               end={
                 <BaseDropdown variant="context">
                   <BaseDropdownItem>
