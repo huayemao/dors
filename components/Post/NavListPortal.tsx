@@ -8,13 +8,24 @@ export default function NavListPortal({ children, key }) {
   }, []);
 
   useEffect(() => {
-    const ul = el!.querySelector("ul")!;
+    if (!el) {
+      return;
+    }
+
+    const ul = el.querySelector("ul")!;
     const originalDisplay = ul.style.display;
     ul.style.display = "none";
     return () => {
+      if (!el) {
+        return;
+      }
       ul.style.display = originalDisplay;
     };
   });
+
+  if (!el) {
+    return null;
+  }
 
   return createPortal(
     <div className="w-[100%] h-[80%] ">{children}</div>,
