@@ -6,7 +6,6 @@ import { markdownExcerpt } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { join } from "path";
 
 export const revalidate = 300;
 
@@ -84,8 +83,6 @@ export default async function page({ params }) {
 
   let posts = await getRecentPosts({ protected: false });
 
-  const tmpDir = join(process.cwd(), "tmp");
-  console.log(tmpDir);
 
   return (
     <main className="w-full">

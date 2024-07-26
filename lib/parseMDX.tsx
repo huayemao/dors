@@ -1,4 +1,3 @@
-import { languages } from "@/lib/shiki";
 import { nodeTypes } from "@mdx-js/mdx";
 // import { serialize } from "next-mdx-remote/serialize";
 import { compileMDX } from "next-mdx-remote/rsc";
@@ -74,7 +73,7 @@ export async function parseMDX(post: { content?: string | null | undefined }) {
             remarkShikiTwoslash,
             {
               theme,
-              langs: languages,
+              // langs: languages,
             },
           ],
           remarkGfm,

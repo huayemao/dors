@@ -5,7 +5,6 @@ import huayemao from "@/public/img/huayemao.svg";
 import c from "@/styles/post.module.css";
 import "katex/dist/katex.min.css";
 import dynamic from "next/dynamic";
-import { join } from "path";
 import { BackButton } from "../BackButton";
 import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
@@ -29,8 +28,6 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
     return null;
   }
 
-  const tmpDir = join(process.cwd(), "tmp");
-  console.log(tmpDir);
 
   const { content } = await parseMDX(post);
 
