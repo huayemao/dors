@@ -7,18 +7,10 @@ import {
   BaseList,
   BaseListItem,
 } from "@shuriken-ui/react";
-import { FileIcon, TrashIcon } from "lucide-react";
-import mime from "mime";
+import { FileIcon, ImageIcon, TrashIcon } from "lucide-react";
 import { UploadForm } from "../../../components/UploadForm";
 
 export default async function UploadTest() {
-  const res =
-    (await prisma.$queryRaw`SELECT id, LENGTH(data) AS size FROM File`) as {
-      id: number;
-      size: bigint;
-    }[];
-
-  console.log(res);
 
   const list = await prisma.file.findMany({
     select: {
@@ -29,37 +21,7 @@ export default async function UploadTest() {
     },
   });
 
-  if (res.length) {
-    for (const { id, size } of list) {
-      if (!size) {
-        console.log(id);
-        const trueSize = res.find((e) => e.id == id)?.size;
-        if (!trueSize) {
-          await prisma.file.delete({
-            where: { id },
-          });
-        } else {
-          await prisma.file.update({
-            where: { id },
-            data: {
-              size: trueSize,
-            },
-          });
-        }
-      }
-    }
-  }
-
-  for (const { id, name, mimeType } of list) {
-    if (mimeType) {
-      await prisma.file.update({
-        where: { id },
-        data: {
-          mimeType: mime.getType(name) || "unknown",
-        },
-      });
-    }
-  }
+  
 
   return (
     <div>
@@ -80,7 +42,16 @@ export default async function UploadTest() {
                 </BaseDropdown>
               }
             >
-              <FileIcon className="h-6 w-6"></FileIcon>
+              <div className="flex items-center">
+                {e.mimeType.startsWith("image") ? (
+                  <ImageIcon
+                    strokeWidth={1}
+                    className="h-6 w-6 text-success-600"
+                  ></ImageIcon>
+                ) : (
+                  <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
+                )}
+              </div>
             </BaseListItem>
           ))}
         </BaseList>
