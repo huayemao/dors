@@ -13,7 +13,7 @@ export async function generateStaticParams() {
   const posts = await getPostIds({ protected: true });
   const allPostIds = posts.map((post) => ({
     id: String(post.id),
-  }));
+}));
   const params =
     nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 15);
   return params;

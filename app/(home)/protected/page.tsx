@@ -7,8 +7,7 @@ import Pagination from "./Pagination";
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-export const revalidate = 300;
-//https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
+export const revalidate = 120;
 
 export default async function Protected({
   searchParams,
@@ -25,15 +24,11 @@ export default async function Protected({
   const pageCount = await getPageCount({ protected: true });
 
   return (
-    <section className="w-full bg-muted-100 dark:bg-muted-900">
-      <div className="w-full h-full flex flex-col justify-between px-6">
-        <div className="w-full max-w-6xl mx-auto">
-          <Posts data={posts} />
-          <Suspense>
-            <Pagination pageCount={pageCount}></Pagination>
-          </Suspense>
-        </div>
-      </div>
-    </section>
+    <>
+      <Posts data={posts} />
+      <Suspense>
+        <Pagination pageCount={pageCount}></Pagination>
+      </Suspense>
+    </>
   );
 }
