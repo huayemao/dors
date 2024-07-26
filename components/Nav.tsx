@@ -102,6 +102,7 @@ export const Nav = () => {
           {MenuButton}
         </div>
         <div
+          id="nav-content"
           className={cn(
             "flex  justify-center lg:relative lg:flex lg:text-left opacity-100 flex-grow ease-in-out",
             {
@@ -110,10 +111,7 @@ export const Nav = () => {
             }
           )}
         >
-          <ul
-            id="nav-list"
-            className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4"
-          >
+          <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4">
             <li>
               <Link
                 href="/about"

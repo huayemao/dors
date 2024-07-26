@@ -7,6 +7,7 @@ import "katex/dist/katex.min.css";
 import dynamic from "next/dynamic";
 import { join } from "path";
 import { BackButton } from "../BackButton";
+import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
 
@@ -69,7 +70,9 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
               </div>
             </div>
             <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">
-              <SideTabs post={post} posts={posts}></SideTabs>
+              <ClientOnly>
+                <SideTabs post={post} posts={posts}></SideTabs>
+              </ClientOnly>
             </div>
           </div>
         </div>

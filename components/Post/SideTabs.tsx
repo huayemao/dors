@@ -1,11 +1,13 @@
 "use client";
 import { BaseButton, BaseTabs } from "@shuriken-ui/react";
+import { useMediaQuery } from "@uidotdev/usehooks";
 import { Code2, MessageSquareIcon, PenBox } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Modal } from "../Base/Modal";
 import { MiniPostTile } from "../MiniPostTile";
 import { ShareButton } from "../ShareButton";
+
 
 const TOC = dynamic(() => import("./toc"), {
   ssr: false,
@@ -32,9 +34,9 @@ function RecentPosts({ posts }) {
 }
 
 export default function SideTabs({ post, posts }) {
-  const [modalOpen, setModalOpen] = useState(false);
   const [markdownOpen, setMarkdownOpen] = useState(false);
   const [key, setKey] = useState(0);
+  const isMobile = useMediaQuery("only screen and (max-width : 992px)");
 
   useEffect(() => {
     // 强制 portal 重新渲染，不晓得是否有更好的方法
@@ -79,21 +81,10 @@ export default function SideTabs({ post, posts }) {
 
   return (
     <>
-      <Modal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-        }}
-        title={post.title}
-      >
-        <div className="p-4 "> {renderTabs()}</div>
-      </Modal>
       <div className="hidden md:block">{renderTabs()}</div>
-      <NavListPortal
-        onclick={() => setModalOpen(true)}
-        key={post.id + key}
-      ></NavListPortal>
-
+      {isMobile && (
+        <NavListPortal key={post.id + key}>{renderTabs()}</NavListPortal>
+      )}
       <Modal
         open={markdownOpen}
         onClose={() => {
