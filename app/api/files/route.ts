@@ -1,5 +1,6 @@
 import { SITE_META } from "@/constants";
 import prisma from "@/lib/prisma";
+import mime from "mime";
 
 export const maxDuration = 25;
 
@@ -36,7 +37,8 @@ export async function POST(request: Request) {
           data: {
             name: item.name,
             data: Buffer.from(await item.arrayBuffer()),
-            mimeType: "",
+            mimeType: mime.getType(item.name) || "unknown",
+            size: item.size,
           },
         });
         const markdownText = `![${file.name}](${SITE_META.url}/api/files/${file.name})`;

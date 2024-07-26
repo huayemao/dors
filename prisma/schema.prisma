@@ -585,6 +585,7 @@ model File {
   name      String
   data      Bytes
   mimeType  String
+  size      BigInt?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }

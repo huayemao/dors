@@ -33,10 +33,10 @@ export async function markdownToHtml(markdown) {
   return result.toString();
 }
 
-export async function sleep(s:number){
-  return new Promise((resolve)=>{
-    setTimeout(resolve,s)
-  })
+export async function sleep(s: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, s);
+  });
 }
 
 export async function markdownExcerpt(markdown) {
@@ -53,14 +53,19 @@ export function getWordCount(htmlContent) {
   return wordCount;
 }
 
-export function humanFileSize(size) {
+export function humanFileSize(size: number | bigint) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let i = 0;
   while (size >= 1024) {
-    size /= 1024;
+    if (typeof size == "bigint") {
+      size /= BigInt(1024);
+    } else {
+      size /= 1024;
+    }
     ++i;
   }
-  return `${size.toFixed(2)} ${units[i]}`;
+
+  return `${size} ${units[i]}`;
 }
 
 export function getDateString(date: Date) {
@@ -107,9 +112,8 @@ export function getCurrentSegmentContent(el: HTMLElement) {
     str += current.outerHTML;
     current = current.nextElementSibling;
   }
-  return str
+  return str;
 }
-
 
 export function isValidURL(string) {
   try {
@@ -119,4 +123,3 @@ export function isValidURL(string) {
     return false;
   }
 }
-
