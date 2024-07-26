@@ -1,8 +1,8 @@
-import Pagination from "@/app/(home)/Pagination";
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
 import { Suspense } from "react";
+import Pagination from "./Pagination";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -25,11 +25,15 @@ export default async function Protected({
   const pageCount = await getPageCount({ protected: true });
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
-      <Posts data={posts} />
-      <Suspense>
-        <Pagination pageCount={pageCount}></Pagination>
-      </Suspense>
-    </div>
+    <section className="w-full bg-muted-100 dark:bg-muted-900">
+      <div className="w-full h-full flex flex-col justify-between px-6">
+        <div className="w-full max-w-6xl mx-auto">
+          <Posts data={posts} />
+          <Suspense>
+            <Pagination pageCount={pageCount}></Pagination>
+          </Suspense>
+        </div>
+      </div>
+    </section>
   );
 }
