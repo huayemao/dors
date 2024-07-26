@@ -35,3 +35,19 @@ export async function GET(
     });
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await prisma.file.delete({ where: { id: Number(params.id) } });
+    return new Response("ok", {
+      status: 200,
+    });
+  } catch (error) {
+    return new Response(`error: ${error.message}`, {
+      status: 400,
+    });
+  }
+}

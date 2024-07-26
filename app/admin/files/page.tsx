@@ -7,11 +7,11 @@ import {
   BaseList,
   BaseListItem,
 } from "@shuriken-ui/react";
-import { FileIcon, ImageIcon, TrashIcon } from "lucide-react";
+import { FileIcon, ImageIcon } from "lucide-react";
 import { UploadForm } from "../../../components/UploadForm";
+import { DeleteFileButton } from "./DeleteFileButton";
 
 export default async function UploadTest() {
-
   const list = await prisma.file.findMany({
     select: {
       id: true,
@@ -21,12 +21,11 @@ export default async function UploadTest() {
     },
   });
 
-  
-
   return (
     <div>
       <BaseCard className="py-4 pt-20 md:px-12 bg-white">
-        <BaseList className="max-w-xl">
+        {/* todo: 定制这里面的样式 */}
+        <BaseList className="max-w-md">
           {list.map((e) => (
             <BaseListItem
               key={e.id}
@@ -37,7 +36,7 @@ export default async function UploadTest() {
               end={
                 <BaseDropdown variant="context">
                   <BaseDropdownItem>
-                    <TrashIcon></TrashIcon>
+                  <DeleteFileButton file={e}></DeleteFileButton>
                   </BaseDropdownItem>
                 </BaseDropdown>
               }
@@ -60,3 +59,4 @@ export default async function UploadTest() {
     </div>
   );
 }
+
