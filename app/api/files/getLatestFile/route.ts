@@ -8,12 +8,12 @@ export async function GET(
 ) {
   try {
     const file = await prisma.file.findFirst({
+      select: { name: true, id: true },
       orderBy: {
         updatedAt: "desc",
       },
     });
 
-    
     return new Response(JSON.stringify(file), {
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function GET(
       status: 200,
     });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return new Response(`error: ${error.message}`, {
       status: 400,
     });
