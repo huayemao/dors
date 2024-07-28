@@ -58,7 +58,12 @@ export async function generateMetadata({
 
     openGraph: {
       description: abstract,
-      images: [(post.cover_image as any)?.dataURLs?.small],
+      images: [
+        SITE_META.url +
+          "/_next/image?url=" +
+          encodeURIComponent((post.cover_image as any).src.large)+'&w=640&q=60',
+        (post.cover_image as any)?.dataURLs?.small,
+      ],
     },
   };
 }
@@ -81,7 +86,6 @@ export default async function page({ params }) {
   }
 
   let posts = await getRecentPosts({ protected: false });
-
 
   return (
     <main className="w-full">
