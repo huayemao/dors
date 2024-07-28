@@ -106,6 +106,7 @@ function PostTile({
                 unoptimized={config.output === "export"}
                 blurDataURL={blurDataURL}
                 alt={post.title || SITE_META.name}
+                quality={url.toString().includes(SITE_META.url) ? 100 : 80}
                 width="348"
                 height="208"
               />
