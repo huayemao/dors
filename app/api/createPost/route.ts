@@ -24,7 +24,11 @@ export async function POST(request: Request) {
     title,
     categoryId,
     tags,
-    isProtected: protectedStr === "on" ? true : false,
+    isProtected: protectedStr
+      ? protectedStr === "on"
+        ? true
+        : false
+      : undefined,
   });
 
   await revalidateHomePage(post.id);

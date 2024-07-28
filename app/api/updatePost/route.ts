@@ -55,7 +55,11 @@ export async function POST(request: Request) {
     excerpt,
     title,
     changePhoto,
-    isProtected: protectedStr === "on" ? true : false,
+    isProtected: protectedStr
+      ? protectedStr === "on"
+        ? true
+        : false
+      : undefined,
     updated_at,
     created_at,
     categoryId: category_id,
