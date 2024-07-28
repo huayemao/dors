@@ -8,9 +8,12 @@ export function readPostFormData(formData: FormData) {
   const category_id = (formData.get("category_id") as string) || undefined;
   const updated_at = (formData.get("updated_at") as string) || undefined;
   const created_at = (formData.get("created_at") as string) || undefined;
+  const cover_image_url =
+    (formData.get("cover_image_url") as string) || undefined;
   const tags = formData.has("tags")
-  ? (formData.getAll("tags") as string[])
-  : undefined;
+    ? (formData.getAll("tags") as string[])
+    : undefined;
+
   return {
     id,
     content,
@@ -21,6 +24,7 @@ export function readPostFormData(formData: FormData) {
     updated_at,
     created_at,
     category_id,
-    tags
+    tags,
+    cover_image_url,
   };
 }

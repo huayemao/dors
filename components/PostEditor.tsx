@@ -25,6 +25,7 @@ const DEFAULT_CATEGORY_ID = 3;
 
 export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
+  mdxContent?: any;
 };
 
 export const detectChange = (form: HTMLFormElement) => {
@@ -67,7 +68,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   }
 };
 
-export function PostEditor({ post }: PostEditorProps) {
+export function PostEditor({ post,mdxContent }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
   const [isProtected, setProtected] = useState(post?.protected);
@@ -202,6 +203,7 @@ export function PostEditor({ post }: PostEditorProps) {
       >
         {action == "upload" ? <UploadPanel /> : <EmojiPanel />}
       </Modal>
+      {mdxContent}
     </>
   );
 

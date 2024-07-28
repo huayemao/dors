@@ -53,7 +53,6 @@ function PostTile({
               alt={post.title || "Post image"}
               width="48"
               height="48"
-              quality={60}
               blurDataURL={blurDataURL}
             />
             <div className="truncate">
@@ -103,7 +102,7 @@ function PostTile({
               <Image
                 className="rounded-xl w-[348px] h-[208px] object-cover"
                 src={url}
-                placeholder="blur"
+                placeholder={(blurDataURL && "blur") || undefined}
                 unoptimized={config.output === "export"}
                 blurDataURL={blurDataURL}
                 alt={post.title || SITE_META.name}

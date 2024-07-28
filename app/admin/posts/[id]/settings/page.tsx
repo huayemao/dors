@@ -8,43 +8,13 @@ import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getDateForDateTimeInput } from "@/lib/utils";
-import { BaseButton, BaseCard } from "@shuriken-ui/react";
+import { BaseButton, BaseInput } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import {
-  FC,
-  MouseEventHandler,
-  PropsWithChildren,
-  useContext,
-  useState,
-} from "react";
+import { MouseEventHandler, useContext, useState } from "react";
+import { Panel } from "./Panel";
 
 export const dynamic = "force-dynamic";
-
-const Panel: FC<
-  PropsWithChildren<{
-    title: string;
-    description: string;
-  }>
-> = ({ title, description, children }) => {
-  return (
-    <BaseCard className="max-w-md p-6">
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="nui-heading nui-heading-sm nui-weight-semibold nui-lead-tight text-muted-800 dark:text-white">
-            <span>{title}</span>
-          </h3>
-        </div>
-        <div>
-          <p className="nui-paragraph nui-paragraph-sm nui-weight-normal nui-lead-normal pb-3">
-            <span className="text-muted-400">{description}</span>
-          </p>
-          {children}
-        </div>
-      </div>
-    </BaseCard>
-  );
-};
 
 const SaveButton = ({ postId }: { postId: string }) => {
   const [loading, setLoading] = useState(false);
@@ -93,7 +63,9 @@ const CoverImageSetting = ({
   postId,
   editTime,
 }: {
-  originalPhoto: PexelsPhoto;
+  originalPhoto:
+    | PexelsPhoto
+    | { dataURLs: { large: string }; alt?: string; src: { large: string } };
   postId: string;
   editTime: string;
 }) => {
@@ -102,46 +74,55 @@ const CoverImageSetting = ({
 
   return (
     <>
-      <Image
-        width={300}
-        height={240}
-        className="w-full"
-        alt={photo.alt}
-        src={photo.src.large}
-      />
-      <div className="text-right mt-2">
-        <BaseButton
-          loading={loading}
-          onClick={() => {
-            const formData = new FormData();
-            formData.append("id", postId);
-            formData.append("changePhoto", "on");
-            formData.append("updated_at", editTime);
-            setLoading(true);
-            fetch("/api/updatePost", {
-              method: "POST",
-              body: formData,
-              headers: {
-                accept: "application/json",
-              },
-            })
-              .then((res) => {
-                return res.json();
+      <form>
+        <Image
+          width={300}
+          height={240}
+          className="w-full"
+          alt={photo.alt || ""}
+          src={photo.src?.large || ""}
+        />
+        <div className="text-right mt-2">
+          <BaseButton
+            loading={loading}
+            onClick={() => {
+              const formData = new FormData();
+              formData.append("id", postId);
+              formData.append("changePhoto", "on");
+              formData.append("updated_at", editTime);
+              setLoading(true);
+              fetch("/api/updatePost", {
+                method: "POST",
+                body: formData,
+                headers: {
+                  accept: "application/json",
+                },
               })
-              .then((data) => {
-                const post = data.data as Awaited<ReturnType<typeof getPost>>;
-                setPhoto(post?.cover_image as PexelsPhoto);
-              })
-              .finally(() => {
-                setLoading(false);
-              });
-          }}
-          size="sm"
-          variant="pastel"
-        >
-          随机更换图片
-        </BaseButton>
-      </div>
+                .then((res) => {
+                  return res.json();
+                })
+                .then((data) => {
+                  const post = data.data as Awaited<ReturnType<typeof getPost>>;
+                  setPhoto(post?.cover_image as PexelsPhoto);
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+            }}
+            size="sm"
+            variant="pastel"
+          >
+            随机更换图片
+          </BaseButton>
+        </div>
+        <BaseInput
+          type="url"
+          id="cover_image_url"
+          // @ts-ignore
+          name="cover_image_url"
+        ></BaseInput>
+      </form>
+      <SaveButton postId={String(postId)}></SaveButton>
     </>
   );
 };

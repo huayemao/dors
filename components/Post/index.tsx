@@ -10,6 +10,8 @@ import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
 
+// todo: 这个抽成 content
+
 const ContentModal = dynamic(() => import("./ContentModal"), {
   ssr: false,
 });
@@ -34,7 +36,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
   /* @ts-ignore */
   const url = post.cover_image?.src?.large;
   /* @ts-ignore */
-  const blurDataURL = post.cover_image?.dataURLs?.large;
+  const blurDataURL = post.cover_image?.dataURLs?.blur;
 
   const excerpt =
     post.excerpt || (await markdownExcerpt(post?.content || "")) + "...";

@@ -1,20 +1,11 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma, { Prisma, tags } from "@/lib/prisma";
-import { getPlaiceholder } from "plaiceholder";
 import { cache } from "react";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
+import { getBlurImage, getImageBuffer, getSmallImage } from "./server/image";
 import { updatePostTags } from "./tags";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import { getPexelImages, getWordCount, markdownToHtml } from "./utils";
-
-async function getBase64Image(url) {
-  const buffer = await fetch(url).then(async (res) =>
-    Buffer.from(await res.arrayBuffer())
-  );
-
-  const { base64 } = await getPlaiceholder(buffer);
-  return base64;
-}
 
 export const getPost = cache(async (id: number) => {
   const res = await prisma.posts.findUnique({
@@ -115,9 +106,11 @@ export async function getRandomPhoto() {
   // imageData.photos 有可能为空数组
   const imageJson = imageData.photos[0] as PexelsPhoto;
 
+  const buffer = await getImageBuffer((imageJson as PexelsPhoto).src.large);
+
   const dataURLs = {
-    large: await getBase64Image((imageJson as PexelsPhoto).src.large),
-    small: await getBase64Image((imageJson as PexelsPhoto).src.small),
+    blur: await getBlurImage(buffer),
+    small: await getSmallImage(buffer),
   };
 
   const cover_image = {
@@ -228,9 +221,7 @@ export async function getProcessedPosts(
     .filter(
       (e) =>
         /* @ts-ignore */
-        !e.cover_image?.dataURLs ||
-        /* @ts-ignore */
-        e.cover_image?.dataURLs.large?.length > 10000
+        !e.cover_image?.dataURLs
     )
     .map((e) => e.id);
 
@@ -244,10 +235,13 @@ export async function getProcessedPosts(
         const post = posts.find((e) => e.id === id) as (typeof posts)[0];
 
         const imageJson = imageData.photos[i] as PexelsPhoto;
+        const buffer = await getImageBuffer(
+          (imageJson as PexelsPhoto).src.large
+        );
 
         const dataURLs = {
-          large: await getBase64Image((imageJson as PexelsPhoto).src.large),
-          small: await getBase64Image((imageJson as PexelsPhoto).src.small),
+          blur: await getBlurImage(buffer),
+          small: await getSmallImage(buffer),
         };
 
         await prisma.posts.update({
@@ -276,7 +270,7 @@ export async function getProcessedPosts(
       /* @ts-ignore */
       url: p.cover_image?.src?.[options?.imageSize || "large"],
       /* @ts-ignore */
-      blurDataURL: p.cover_image?.dataURLs?.[options?.imageSize || "large"],
+      blurDataURL: p.cover_image?.dataURLs?.blur,
     };
   });
 
@@ -321,6 +315,7 @@ type PostPayload = {
   updated_at?: string;
   created_at?: string;
   categoryId?: string;
+  cover_image_url?: string;
 };
 
 type CreatePostPayload = Omit<PostPayload, "id">;
@@ -359,6 +354,23 @@ export async function updatePost(
   }
   // await prisma.tags.find; tags 也必须要查？或者如果对比结果相同就不用查
   // todo: 应该有 diff 的
+
+  const coverImage = await (async () => {
+    if (!params.cover_image_url || (post?.cover_image as any).dataURLs?.blur) {
+      return undefined;
+    }
+    const buffer = await getImageBuffer(params.cover_image_url);
+    return {
+      src: {
+        large: params.cover_image_url,
+      },
+      dataURLs: {
+        blur: await getBlurImage(buffer),
+        small: await getSmallImage(buffer),
+      },
+    };
+  })();
+
   const res = await prisma.posts.update({
     where: {
       id: parseInt(id as string),
@@ -368,7 +380,7 @@ export async function updatePost(
       excerpt: excerpt ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
-      cover_image: changePhoto === "on" ? await getRandomPhoto() : undefined,
+      cover_image: changePhoto === "on" ? await getRandomPhoto() : coverImage,
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       created_at: created_at ? new Date(created_at as string) : undefined,
       tags_posts_links: {},
@@ -388,6 +400,7 @@ export async function updatePost(
 
 export async function createPost(params: CreatePostPayload) {
   const { content, excerpt, title, categoryId, tags, isProtected } = params;
+
   const post = await prisma.posts.create({
     data: {
       excerpt: excerpt as string,
