@@ -1,10 +1,6 @@
 import Post from "@/components/Post";
-import { SITE_META } from "@/constants";
 import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
-import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
-import { markdownExcerpt } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const revalidate = 120;
@@ -17,47 +13,6 @@ export async function generateStaticParams() {
   const params =
     nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 15);
   return params;
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
-  // read route params
-  const id = params.id;
-  const post = await getPost(parseInt(id as string));
-
-  if (!post || !post.content) {
-    return notFound();
-  }
-
-  const abstract =
-    post.excerpt || (await markdownExcerpt(post.content)) + "...";
-
-  const headerRegex = /^(?!\s)(#{1,6})(.*)/gm;
-  const headers =
-    post.content!.match(headerRegex)?.map((e) => e.replace(/^(#+\s+)/, "")) ||
-    [];
-
-  const keywords = post.tags
-    .map((e) => e?.name || "")
-    .concat([post.title || ""])
-    .concat(SITE_META.author.name)
-    .concat(headers)
-    .filter((e) => !!e);
-
-  return {
-    title: `${post.title} | ${SITE_META.name}——${SITE_META.description}`,
-    description: abstract,
-    abstract: abstract,
-    keywords,
-
-    openGraph: {
-      description: abstract,
-      images: [(post.cover_image as PexelsPhoto).src.small],
-    },
-  };
 }
 
 export default async function page({ params }) {

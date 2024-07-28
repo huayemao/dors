@@ -1,7 +1,6 @@
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
 import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
-import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { markdownExcerpt } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
@@ -59,7 +58,7 @@ export async function generateMetadata({
 
     openGraph: {
       description: abstract,
-      images: [(post.cover_image as PexelsPhoto).src.small],
+      images: [(post.cover_image as any)?.dataURLs?.small],
     },
   };
 }
