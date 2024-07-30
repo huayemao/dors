@@ -28,10 +28,30 @@ export type PostEditorProps = {
   mdxContent?: any;
 };
 
+function getTopEl(el: HTMLElement) {
+  let e = el;
+  while (e && e.parentElement) {
+    e = e.parentElement;
+  }
+  return e;
+}
+
 export const detectChange = (form: HTMLFormElement) => {
   const changedFields = [];
   const formData = new FormData(form);
-  const inputs = form.querySelectorAll("input, select, textarea");
+  const topE = getTopEl(form);
+
+  const inputs = Array.from(
+    form.querySelectorAll("input, select, textarea")
+  ) as (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)[];
+  // .concat(
+  //   Array.from(
+  //     topE.querySelectorAll(
+  //       "input[form='post_form'], select[form='post_form'], textarea[form='post_form']"
+  //     )
+  //   )
+  // );
+
   inputs.forEach((el) => {
     // @ts-ignore
     const formDataValue = el.multiple
@@ -41,8 +61,15 @@ export const detectChange = (form: HTMLFormElement) => {
         formData.get(el.name);
     // @ts-ignore
     const originalValue = el.dataset.originalValue;
-    if (String(originalValue) === String(formDataValue) && el.id !== "id") {
-      // @ts-ignore
+    if (
+      el.id == "id" ||
+      el.name == "updated_at" ||
+      (el as HTMLInputElement).disabled
+    ) {
+    } else if (
+      String(originalValue) === String(formDataValue) ||
+      !(el as HTMLInputElement).name
+    ) {
       el.disabled = true;
     } else {
       // @ts-ignore
@@ -68,10 +95,10 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   }
 };
 
-export function PostEditor({ post,mdxContent }: PostEditorProps) {
+export function PostEditor({ post, mdxContent }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
-  const [isProtected, setProtected] = useState(post?.protected);
+  const [isProtected, setProtected] = useState(post?.protected || false);
   const [modalOpen, setModalOpen] = useState(false);
   const [action, setAction] = useState<"upload" | "unicode">("upload");
   const [content, setContent] = useState(post?.content || "");
@@ -100,7 +127,12 @@ export function PostEditor({ post,mdxContent }: PostEditorProps) {
   }, []);
 
   return (
-    <>
+    <form
+      id="post_form"
+      action={post ? "/api/updatePost" : "/api/createPost"}
+      method="POST"
+      onSubmit={handleOnSubmit}
+    >
       <div
         className={cn(
           "toolbox sticky right-0 left-0 top-[-1px] pt-2 mb-4  transition-all max-w-screen-lg",
@@ -131,21 +163,19 @@ export function PostEditor({ post,mdxContent }: PostEditorProps) {
                 id="protected"
                 name="protected"
                 className="appearance-none m-0 bg-transparent hidden"
-                type="checkbox"
+                // type="checkbox"
+                // checked 和 defualtCheckd 好像不能一起用？
+                // defaultChecked={post?.protected}
                 checked={isProtected}
+                data-original-value={post?.protected ? "on" : "off"}
+                value={isProtected ? "on" : "off"}
               />
             </label>
           </div>
           <Action />
         </div>
       </div>
-      <form
-        id="post_form"
-        className="bg-white dark:bg-black  max-w-screen-lg overflow-x-hidden"
-        action={post ? "/api/updatePost" : "/api/createPost"}
-        method="POST"
-        onSubmit={handleOnSubmit}
-      >
+      <div className="bg-white dark:bg-black  max-w-screen-lg overflow-x-hidden">
         {post && (
           <input
             hidden
@@ -171,7 +201,7 @@ export function PostEditor({ post,mdxContent }: PostEditorProps) {
               placeholder="摘要"
               id="excerpt"
               name="excerpt"
-              data-original-value={post?.excerpt}
+              data-original-value={post?.excerpt || ""}
               defaultValue={post?.excerpt || ""}
               className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
             />
@@ -193,7 +223,7 @@ export function PostEditor({ post,mdxContent }: PostEditorProps) {
             />
           </div>
         </div>
-      </form>
+      </div>
       <Modal
         title={action == "upload" ? "上传文件" : "常用 Unicode"}
         open={modalOpen}
@@ -204,7 +234,7 @@ export function PostEditor({ post,mdxContent }: PostEditorProps) {
         {action == "upload" ? <UploadPanel /> : <EmojiPanel />}
       </Modal>
       {mdxContent}
-    </>
+    </form>
   );
 
   function Action() {
@@ -275,6 +305,9 @@ export function PostEditor({ post,mdxContent }: PostEditorProps) {
               id="updated_at"
               name="updated_at"
               type="datetime-local"
+              data-original-value={getDateForDateTimeInput(
+                post?.updated_at as Date
+              )}
               defaultValue={getDateForDateTimeInput(post?.updated_at as Date)}
             ></input>
           </>
