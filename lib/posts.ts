@@ -207,8 +207,11 @@ export async function getProcessedPosts(
   const postsWithImageURLs = posts.map((p) => {
     return {
       ...p,
-      /* @ts-ignore */
-      url: p.cover_image?.src?.[options?.imageSize || "large"],
+      url:
+        /* @ts-ignore */
+        p.cover_image?.src?.[options?.imageSize || "large"] ||
+        /* @ts-ignore */
+        p.cover_image?.dataURLs?.[options?.imageSize],
       /* @ts-ignore */
       blurDataURL: p.cover_image?.dataURLs?.blur,
     };
