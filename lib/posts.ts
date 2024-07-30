@@ -360,7 +360,7 @@ export async function createPost(params: CreatePostPayload) {
 
   if (images) {
     const urlRegex =
-      /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/;
+      /(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/;
     const url = images[0].match(urlRegex)?.[0];
     if (url) {
       coverImage = await buildCoverImage(url);
