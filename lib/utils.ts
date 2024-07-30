@@ -14,7 +14,16 @@ export function cn(...inputs: ClassValue[]) {
 export async function getPexelImages(
   length
 ): Promise<{ photos: PexelsPhoto[] }> {
-  const query = Math.random() < 0.5 ? "pastel" : "pure";
+  const keywordArr = [
+    "pastel",
+    "pure",
+    "minimalist",
+    "wallpaper",
+    "bright",
+    "minimalistic",
+    "design",
+  ];
+  const query = keywordArr[Math.floor(Math.random() * keywordArr.length)];
   return await fetch(
     `https://api.pexels.com/v1/search?query=${query}&per_page=${length}&page=${
       Math.floor(Math.random() * (888 / length)) + 1
