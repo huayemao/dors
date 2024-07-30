@@ -58,7 +58,7 @@ export default function TOC() {
   );
 
   return (
-    <section className="my-6 sticky top-24">
+    <section className="my-6">
       <ul
         key={window.location.pathname}
         className="max-h-[65vh] md:max-h-[calc(100vh_-_168px)] overflow-y-auto"

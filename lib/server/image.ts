@@ -11,7 +11,6 @@ export async function getSmallImage(imageBuffer: Buffer) {
     .then((buffer: Buffer) => {
       const mimeType = "image/jpeg";
       const dataURL = `data:${mimeType};base64,${buffer.toString("base64")}`;
-      console.log(dataURL);
       return dataURL;
     });
 }

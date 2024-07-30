@@ -82,7 +82,7 @@ export default function SideTabs({ post, posts }) {
 
   return (
     <>
-      <div className="hidden md:block">{renderTabs()}</div>
+      <div className="hidden md:block sticky top-20">{renderTabs()}</div>
       {isMobile && (
         <NavListPortal key={post.id + key}>{renderTabs()}</NavListPortal>
       )}
