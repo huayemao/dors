@@ -117,6 +117,7 @@ const CoverImageSetting = ({
         </div>
         <BaseInput
           type="url"
+          defaultValue={photo.src.large}
           id="cover_image_url"
           // @ts-ignore
           name="cover_image_url"

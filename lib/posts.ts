@@ -88,7 +88,7 @@ export const getPosts = cache(async (options: getPostOptions = {}) => {
 });
 
 async function randomlyUpdatePhoto(id: number) {
-  const cover_image = await getRandomPhoto();
+  const cover_image = await buildRandomCoverImage();
 
   await prisma.posts.update({
     where: {
@@ -101,23 +101,11 @@ async function randomlyUpdatePhoto(id: number) {
   return cover_image;
 }
 
-export async function getRandomPhoto() {
+export async function buildRandomCoverImage() {
   const imageData = await getPexelImages(1);
   // imageData.photos 有可能为空数组
   const imageJson = imageData.photos[0] as PexelsPhoto;
-
-  const buffer = await getImageBuffer((imageJson as PexelsPhoto).src.large);
-
-  const dataURLs = {
-    blur: await getBlurImage(buffer),
-    small: await getSmallImage(buffer),
-  };
-
-  const cover_image = {
-    ...imageJson,
-    dataURLs,
-  };
-  return cover_image;
+  return { ...imageJson, ...(await buildCoverImage(imageJson.src.large)) };
 }
 
 export async function getFeaturedPostIds() {
@@ -216,54 +204,6 @@ export async function getProcessedPosts(
   posts: Awaited<ReturnType<typeof getPosts>>,
   options?: { imageSize: "large" | "small" }
 ): Promise<ProcessedPost[]> {
-  const needImageIds = posts
-    /* @ts-ignore */
-    .filter(
-      (e) =>
-        /* @ts-ignore */
-        !e.cover_image?.dataURLs
-    )
-    .map((e) => e.id);
-
-  let imageData: { photos: PexelsPhoto[] };
-
-  if (needImageIds.length) {
-    imageData = await getPexelImages(needImageIds.length);
-
-    await Promise.all(
-      needImageIds.map(async (id, i) => {
-        const post = posts.find((e) => e.id === id) as (typeof posts)[0];
-
-        const imageJson = imageData.photos[i] as PexelsPhoto;
-        const buffer = await getImageBuffer(
-          (imageJson as PexelsPhoto).src.large
-        );
-
-        const dataURLs = {
-          blur: await getBlurImage(buffer),
-          small: await getSmallImage(buffer),
-        };
-
-        await prisma.posts.update({
-          where: {
-            id,
-          },
-          data: {
-            cover_image: {
-              ...imageJson,
-              dataURLs,
-            },
-          },
-        });
-
-        post.cover_image = {
-          ...imageJson,
-          dataURLs,
-        };
-      })
-    );
-  }
-
   const postsWithImageURLs = posts.map((p) => {
     return {
       ...p,
@@ -355,21 +295,15 @@ export async function updatePost(
   // await prisma.tags.find; tags 也必须要查？或者如果对比结果相同就不用查
   // todo: 应该有 diff 的
 
-  const coverImage = await (async () => {
-    if (!params.cover_image_url || (post?.cover_image as any).dataURLs?.blur) {
-      return undefined;
-    }
-    const buffer = await getImageBuffer(params.cover_image_url);
-    return {
-      src: {
-        large: params.cover_image_url,
-      },
-      dataURLs: {
-        blur: await getBlurImage(buffer),
-        small: await getSmallImage(buffer),
-      },
-    };
-  })();
+  const shouldChangeCoverImage =
+    // 没有 dataURLs?.blur 的，说明是之前的，
+    params.cover_image_url || !(post?.cover_image as any).dataURLs?.blur;
+
+  const coverImage = shouldChangeCoverImage
+    ? await buildCoverImage(
+        params.cover_image_url || (post?.cover_image as any).src.large
+      )
+    : undefined;
 
   const res = await prisma.posts.update({
     where: {
@@ -380,7 +314,8 @@ export async function updatePost(
       excerpt: excerpt ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
-      cover_image: changePhoto === "on" ? await getRandomPhoto() : coverImage,
+      cover_image:
+        changePhoto === "on" ? await buildRandomCoverImage() : coverImage,
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       created_at: created_at ? new Date(created_at as string) : undefined,
       tags_posts_links: {},
@@ -398,8 +333,38 @@ export async function updatePost(
   return res;
 }
 
+async function buildCoverImage(url: string) {
+  return await (async () => {
+    const buffer = await getImageBuffer(url);
+    return {
+      src: {
+        large: url,
+      },
+      dataURLs: {
+        blur: await getBlurImage(buffer),
+        small: await getSmallImage(buffer),
+      },
+    };
+  })();
+}
+
 export async function createPost(params: CreatePostPayload) {
   const { content, excerpt, title, categoryId, tags, isProtected } = params;
+
+  let coverImage: any;
+
+  const images = content!.match(/!\[([^\]]+)\]\(([^)]+)\)/g);
+
+  if (images) {
+    const urlRegex =
+      /(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/;
+    const url = images[0].match(urlRegex)?.[0];
+    if (url) {
+      coverImage = await buildCoverImage(url);
+    } else {
+      coverImage = await buildRandomCoverImage();
+    }
+  }
 
   const post = await prisma.posts.create({
     data: {
@@ -413,6 +378,7 @@ export async function createPost(params: CreatePostPayload) {
           category_id: parseInt(categoryId as string),
         },
       },
+      cover_image: coverImage,
       protected: isProtected,
     },
   });

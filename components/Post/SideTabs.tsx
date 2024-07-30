@@ -25,7 +25,7 @@ function RecentPosts({ posts }) {
           key={e.id}
           type="mini"
           post={e}
-          url={e.url}
+          url={e.cover_image?.src?.small || e.cover_image?.dataURLs?.small}
           blurDataURL={e.blurDataURL}
         />
       ))}
