@@ -51,11 +51,10 @@ export async function generateMetadata({
     .filter((e) => !!e);
 
   return {
-    title: `${post.title} | ${SITE_META.name}——${SITE_META.description}`,
+    title: `${post.title} | ${SITE_META.name}`,
     description: abstract,
     abstract: abstract,
     keywords,
-
     openGraph: {
       description: abstract,
       images: [

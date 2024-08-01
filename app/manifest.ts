@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: SITE_META.name,
     short_name: SITE_META.name,
-    description: SITE_META.description,
+    description: SITE_META.description + "——" + SITE_META.introduction,
     start_url: "/",
     display: "standalone",
     background_color: "#fff",
@@ -93,17 +93,7 @@ export default function manifest(): MetadataRoute.Manifest {
       // @ts-ignore
       method: "POST",
       enctype: "multipart/form-data",
-      files: [
-        {
-          name: "files",
-          accept: ["image/svg+xml", ".svg", ".jpg", ".jpeg", ".png", ".webp"],
-        },
-      ],
       params: {
-        // @ts-ignore
-        title: "name",
-        text: "description",
-        url: "link",
         // @ts-ignore
         files: {
           name: "files",
