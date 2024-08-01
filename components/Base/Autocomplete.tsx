@@ -514,7 +514,8 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
     // eslint-disable-next-line no-plusplus
     for (let i = values.length - 1; i >= 0; --i) {
       if (props.properties?.value) {
-        if (values[i] === item) {
+        const valueKey = props.properties?.value
+        if (values[i][valueKey] === item[valueKey]) {
           values.splice(i, 1);
         }
       }
