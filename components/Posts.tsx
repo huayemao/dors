@@ -15,7 +15,7 @@ export function Posts({
     <>
       <div className="flex flex-col gap-12 py-12">
         {showFeature && <FeaturedPosts posts={[data[0]]} />}
-        <div className="grid grid-cols-1 ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 ptablet:grid-cols-2 ltablet:grid-cols-3 lg:grid-cols-3 gap-4 -m-2">
           {data.map((e) => (
             <PostTile
               rounded={mini}

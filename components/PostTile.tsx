@@ -81,8 +81,8 @@ function PostTile({
         className="block h-full w-full rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 overflow-hidden
          "
       >
-        <div className="h-full flex flex-col items-start gap-4 p-6">
-          <div className="relative w-full space-y-4">
+        <div className="h-full flex flex-col items-start gap-3 p-6 md:gap-4">
+          <div className="relative w-full space-y-3  md:space-y-4">
             <div className="relative">
               <div className="space-x-2 absolute top-3 left-3">
                 {tags &&
@@ -112,8 +112,7 @@ function PostTile({
               />
             </div>
             <h3
-              className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6
-               "
+              className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6"
             >
               {title}
             </h3>
