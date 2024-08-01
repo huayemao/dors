@@ -69,11 +69,23 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: "题目编辑器",
         url: "/qa-input",
+        icons: [
+          {
+            src: "img/icons/notebook-pen.svg",
+            sizes: "any",
+          },
+        ],
         // description: "List of events planned for today",
       },
       {
         name: "私有文章",
         url: "/protected",
+        icons: [
+          {
+            src: "img/icons/globe-lock.svg",
+            sizes: "any",
+          },
+        ],
       },
     ],
   };
