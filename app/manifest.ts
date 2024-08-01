@@ -71,5 +71,16 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
     ],
+    shortcuts: [
+      {
+        name: "题目编辑器",
+        url: "/qa-input",
+        // description: "List of events planned for today",
+      },
+      {
+        name: "私有文章",
+        url: "/protected",
+      },
+    ],
   };
 }

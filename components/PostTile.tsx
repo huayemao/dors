@@ -82,7 +82,7 @@ function PostTile({
          "
       >
         <div className="h-full flex flex-col items-start gap-3 p-6 md:gap-4">
-          <div className="relative w-full space-y-3  md:space-y-4">
+          <div className="relative w-full space-y-4">
             <div className="relative">
               <div className="space-x-2 absolute top-3 left-3">
                 {tags &&
