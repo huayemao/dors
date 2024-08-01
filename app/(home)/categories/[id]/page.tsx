@@ -18,6 +18,7 @@ export default async function PostsByCategory({
 }) {
   const posts = await getProcessedPosts(
     await getPosts({
+      includeHiddenCategories: true,
       categoryId: Number(params.id),
       perPage: 600,
       protected: false,

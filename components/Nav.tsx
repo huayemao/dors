@@ -1,11 +1,12 @@
 "use client";
+import { CategoriesContext } from "@/contexts/categories";
 import { cn } from "@/lib/utils";
 import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
 import clsx from "clsx";
 import { GlobeLockIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Avatar } from "./Avatar";
 
 const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
@@ -13,6 +14,7 @@ const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
 });
 
 export const Nav = () => {
+  const categories = useContext(CategoriesContext);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -137,6 +139,20 @@ export const Nav = () => {
                 标签
               </Link>
             </li>
+            {categories
+              .filter((e) => !!e.hidden)
+              .map((e) => (
+                <li key={e.id + "cat"}>
+                  <Link
+                    href={"/categories/" + e.id}
+                    className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
+              "
+                    onClick={closeMobileNav}
+                  >
+                    {e.name}
+                  </Link>
+                </li>
+              ))}
             <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
               <BaseDropdown
                 label="管理"

@@ -20,14 +20,16 @@ export function Categories() {
           !segments.includes("unCategorized")
         }
       />
-      {categories.map((cat) => (
-        <Category
-          href={`/categories/${cat.id}`}
-          name={cat.name as string}
-          key={cat.id}
-          active={Number(id) === cat.id && segments.includes("categories")}
-        />
-      ))}
+      {categories
+        .filter((e) => !e.hidden)
+        .map((cat) => (
+          <Category
+            href={`/categories/${cat.id}`}
+            name={cat.name as string}
+            key={cat.id}
+            active={Number(id) === cat.id && segments.includes("categories")}
+          />
+        ))}
     </div>
   );
 }

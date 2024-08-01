@@ -26,7 +26,7 @@ export default async function RootLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const categories = await getAllCategories();
+  const categories = await getAllCategories({ includeHidden: true });
   const tags = await getTags();
 
   return (

@@ -1,6 +1,7 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma, { Prisma, tags } from "@/lib/prisma";
 import { cache } from "react";
+import { getHiddenCategoryIds } from "./categories";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { getBlurImage, getImageBuffer, getSmallImage } from "./server/image";
 import { updatePostTags } from "./tags";
@@ -69,6 +70,7 @@ type getPostOptions = PaginateOptions & {
   categoryId?: number;
   unCategorized?: boolean;
   protected?: boolean;
+  includeHiddenCategories?: boolean;
 };
 
 export const getPosts = cache(async (options: getPostOptions = {}) => {
@@ -125,8 +127,26 @@ async function getAllPosts(options: getPostOptions = {}) {
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> =
     getWhereInput(options);
 
+  const NONE_HIDDEN_CATS = await (async () => {
+    if (!options.includeHiddenCategories) {
+      const ids = await getHiddenCategoryIds();
+      return {
+        posts_category_links: {
+          none: {
+            category_id: {
+              in: ids,
+            },
+          },
+        },
+      };
+    } else {
+      return {};
+    }
+  })();
+
   return await prisma.posts.findMany({
     where: {
+      ...NONE_HIDDEN_CATS,
       AND: whereInput,
       NOT: {
         id: {

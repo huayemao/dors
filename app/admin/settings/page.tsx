@@ -4,7 +4,7 @@ import { HiddenCatsForm } from "./HiddenCatsForm";
 import { RevalidateButton } from "./RevalidateButton";
 
 export default async function AdminSettingsPage({ params }) {
-  const cats = await getAllCategories();
+  const cats = await getAllCategories({ includeHidden: true });
   const settings = await prisma.settings.findMany({});
 
   return (
@@ -17,4 +17,3 @@ export default async function AdminSettingsPage({ params }) {
     </main>
   );
 }
-
