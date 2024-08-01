@@ -18,6 +18,12 @@ export default function manifest(): MetadataRoute.Manifest {
       },
       {
         src: "img/icons/icon-48x48.png",
+        sizes: "32x32",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "img/icons/icon-48x48.png",
         sizes: "48x48",
         type: "image/png",
         purpose: "any",
@@ -37,18 +43,6 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         src: "img/icons/icon-128x128.png",
         sizes: "128x128",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "img/icons/icon-144x144.png",
-        sizes: "144x144",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "img/icons/icon-152x152.png",
-        sizes: "152x152",
         type: "image/png",
         purpose: "any",
       },
