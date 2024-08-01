@@ -88,5 +88,28 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
     ],
+    share_target: {
+      action: "/api/files",
+      // @ts-ignore
+      method: "POST",
+      enctype: "multipart/form-data",
+      files: [
+        {
+          name: "files",
+          accept: ["image/svg+xml", ".svg", ".jpg", ".jpeg", ".png", ".webp"],
+        },
+      ],
+      params: {
+        // @ts-ignore
+        title: "name",
+        text: "description",
+        url: "link",
+        // @ts-ignore
+        files: {
+          name: "files",
+          accept: ["image/*"],
+        },
+      },
+    },
   };
 }
