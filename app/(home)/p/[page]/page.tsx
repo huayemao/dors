@@ -42,7 +42,7 @@ export default async function Home({
 
   return (
     <>
-      <Posts data={posts} showFeature={isFirstPage} />
+      <Posts data={posts}  />
       <Suspense>
         <Pagination pageCount={pageCount} />
       </Suspense>

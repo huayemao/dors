@@ -11,7 +11,7 @@ export function Categories() {
 
   return (
     <div className="relative w-full flex justify-center gap-4 flex-wrap">
-      <Category
+      {/* <Category
         href={`/`}
         name={"全部"}
         key={9999}
@@ -19,7 +19,7 @@ export function Categories() {
           !segments.includes("categories") &&
           !segments.includes("unCategorized")
         }
-      />
+      /> */}
       {categories
         .filter((e) => !e.hidden)
         .map((cat) => (

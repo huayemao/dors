@@ -26,7 +26,7 @@ export default async function Home({
 
   return (
     <>
-      <Posts showFeature data={posts} />
+      <Posts data={posts} />
       <Suspense>
         <Pagination pageCount={pageCount}></Pagination>
       </Suspense>

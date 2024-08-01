@@ -125,28 +125,10 @@ async function getAllPosts(options: getPostOptions = {}) {
   const featurePosts = await getFeaturedPostIds();
   const { perPage, skip } = getPrismaPaginationParams(options);
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> =
-    getWhereInput(options);
-
-  const NONE_HIDDEN_CATS = await (async () => {
-    if (!options.includeHiddenCategories) {
-      const ids = await getHiddenCategoryIds();
-      return {
-        posts_category_links: {
-          none: {
-            category_id: {
-              in: ids,
-            },
-          },
-        },
-      };
-    } else {
-      return {};
-    }
-  })();
+    await getWhereInput(options);
 
   return await prisma.posts.findMany({
     where: {
-      ...NONE_HIDDEN_CATS,
       AND: whereInput,
       NOT: {
         id: {
@@ -181,7 +163,7 @@ type ProcessedPost = Awaited<ReturnType<typeof getPosts>>[0] & {
   blurDataURL: string;
 };
 
-function getWhereInput(options: getPostOptions) {
+async function getWhereInput(options: getPostOptions) {
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
 
   if (options.tagId) {
@@ -209,6 +191,19 @@ function getWhereInput(options: getPostOptions) {
       posts_category_links: {
         none: {
           id: undefined,
+        },
+      },
+    });
+  }
+
+  if (!options.includeHiddenCategories) {
+    const ids = await getHiddenCategoryIds();
+    whereInput.push({
+      posts_category_links: {
+        none: {
+          category_id: {
+            in: ids,
+          },
         },
       },
     });
@@ -242,7 +237,7 @@ export async function getProcessedPosts(
 
 export const getPageCount = cache(
   async (options: Omit<getPostOptions, "page"> = {}) => {
-    const whereInputArr = getWhereInput(options);
+    const whereInputArr = await getWhereInput(options);
 
     const where = whereInputArr.reduce((acc, item) => {
       return Object.assign(item, acc);
