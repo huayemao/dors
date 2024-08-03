@@ -65,17 +65,17 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "maskable",
       },
     ],
+    // todo: 动态化，存到 settings 表
     shortcuts: [
       {
-        name: "题目编辑器",
-        url: "/qa-input",
+        name: "随手记",
+        url: "/posts/213",
         icons: [
           {
             src: "img/icons/notebook-pen.svg",
             sizes: "any",
           },
         ],
-        // description: "List of events planned for today",
       },
       {
         name: "私有文章",
@@ -86,6 +86,17 @@ export default function manifest(): MetadataRoute.Manifest {
             sizes: "any",
           },
         ],
+      },
+      {
+        name: "题目编辑器",
+        url: "/qa-input",
+        icons: [
+          {
+            src: "img/icons/notebook-pen.svg",
+            sizes: "any",
+          },
+        ],
+        // description: "List of events planned for today",
       },
     ],
     share_target: {
