@@ -18,6 +18,7 @@ export default async function Protected({
     await getPosts({
       ...searchParams,
       protected: true,
+      includeHiddenCategories:true
     })
   );
 

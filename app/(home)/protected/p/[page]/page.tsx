@@ -14,6 +14,7 @@ export async function generateStaticParams() {
   const count = await getPageCount({
     perPage: POSTS_COUNT_PER_PAGE,
     protected: true,
+    includeHiddenCategories: true,
   });
   const params = Array.from({ length: count }, (_, i) => ({
     page: String(i + 1),
@@ -31,7 +32,11 @@ export default async function Home({
   };
 }) {
   const posts = await getProcessedPosts(
-    await getPosts({ page: params.page, protected: true })
+    await getPosts({
+      page: params.page,
+      protected: true,
+      includeHiddenCategories: true,
+    })
   );
   const pageCount = await getPageCount({
     perPage: POSTS_COUNT_PER_PAGE,
