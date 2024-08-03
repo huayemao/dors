@@ -155,6 +155,21 @@ export const Nav = () => {
               ))}
             <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
               <BaseDropdown
+                label="资源"
+                classes={{ wrapper: "flex item-center " }}
+                variant="text"
+              >
+                <BaseDropdownItem
+                  href="/unicode"
+                  title="unicode"
+                  text="常用 unicode 图标"
+                  rounded="sm"
+                  onClick={closeMobileNav}
+                />
+              </BaseDropdown>
+            </li>
+            <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
+              <BaseDropdown
                 label="管理"
                 classes={{ wrapper: "flex item-center " }}
                 variant="text"
