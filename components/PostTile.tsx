@@ -1,6 +1,6 @@
 import { SITE_META } from "@/constants";
 import { getPost } from "@/lib/posts";
-import { cn, getDateString } from "@/lib/utils";
+import { cn, getDateString, isDataURL } from "@/lib/utils";
 import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +47,7 @@ function PostTile({
         <Link href={"/posts/" + id} className="flex items-center">
           <div className="relative flex justify-start gap-2 w-full">
             <Image
-              unoptimized={config.output === "export"}
+              unoptimized={config.output === "export" || isDataURL(url)}
               className="h-12 w-12 mask mask-blob object-cover"
               src={url}
               alt={post.title || "Post image"}
@@ -103,7 +103,7 @@ function PostTile({
                 className="rounded-xl w-[348px] h-[208px] object-cover"
                 src={url}
                 placeholder={(blurDataURL && "blur") || undefined}
-                unoptimized={config.output === "export"}
+                unoptimized={config.output === "export" || isDataURL(url)}
                 blurDataURL={blurDataURL}
                 alt={post.title || SITE_META.name}
                 quality={url.toString().includes(SITE_META.url) ? 100 : 80}

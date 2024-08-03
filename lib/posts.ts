@@ -6,7 +6,7 @@ import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { getBlurImage, getImageBuffer, getSmallImage } from "./server/image";
 import { updatePostTags } from "./tags";
 import { PexelsPhoto } from "./types/PexelsPhoto";
-import { getPexelImages, getWordCount, markdownToHtml } from "./utils";
+import { getPexelImages, getWordCount, isDataURL, markdownToHtml } from "./utils";
 
 export const getPost = cache(async (id: number) => {
   const res = await prisma.posts.findUnique({
@@ -360,7 +360,7 @@ async function buildCoverImage(url: string) {
       },
       dataURLs: {
         blur: await getBlurImage(buffer),
-        small: await getSmallImage(buffer),
+        small: isDataURL(url) ? url : await getSmallImage(buffer),
       },
     };
   })();

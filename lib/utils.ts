@@ -132,3 +132,9 @@ export function isValidURL(string) {
     return false;
   }
 }
+
+export function isDataURL(url) {
+  var regex =
+    /^data:([a-zA-Z0-9]+\/[a-zA-Z0-9+.-]+)?(;charset=[a-zA-Z0-9\-]+)?;base64,[a-zA-Z0-9+/]+={0,2}$/;
+  return regex.test(url);
+}

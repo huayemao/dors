@@ -1,6 +1,6 @@
 import { SITE_META } from "@/constants";
 import { getPost } from "@/lib/posts";
-import { getDateString } from "@/lib/utils";
+import { getDateString, isDataURL } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import Image, { ImageProps } from "next/image";
 import Link from "next/link";
@@ -37,7 +37,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                 width={512}
                 height={373}
                 quality={url.toString().includes(SITE_META.url) ? 100 : 80}
-                unoptimized={nextConfig.output === "export"}
+                unoptimized={nextConfig.output === "export" || isDataURL(url)}
                 blurDataURL={typeof url === "string" ? blurDataURL : undefined}
                 placeholder={(blurDataURL && "blur") || undefined}
               />
