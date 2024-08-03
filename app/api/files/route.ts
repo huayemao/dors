@@ -41,8 +41,9 @@ export async function POST(request: Request) {
             size: item.size,
           },
         });
-        const markdownText = `![${file.name}](${SITE_META.url}/api/files/${file.name})`;
-        markdown.push(markdownText);
+        const url = encodeURI(`${SITE_META.url}/api/files/${file.name}`)
+        const markdownText = `![${file.name}](${url})`;
+        markdown.push((markdownText));
       }
     }
     return new Response(markdown.join("\n"), {
