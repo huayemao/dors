@@ -329,7 +329,7 @@ export async function updatePost(
     },
     data: {
       protected: isProtected,
-      excerpt: excerpt ? (excerpt as string) : undefined,
+      excerpt: typeof excerpt == "string" ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
       cover_image:

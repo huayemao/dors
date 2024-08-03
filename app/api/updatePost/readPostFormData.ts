@@ -1,7 +1,7 @@
 export function readPostFormData(formData: FormData) {
   const id = (formData.get("id") as string) || undefined;
   const content = (formData.get("content") as string) || undefined;
-  const excerpt = (formData.get("excerpt") as string) || undefined;
+  const excerpt = formData.get("excerpt") as string | undefined;
   const title = (formData.get("title") as string) || undefined;
   const changePhoto = (formData.get("changePhoto") as string) || undefined;
   const protectedStr = (formData.get("protected") as string) || undefined;
