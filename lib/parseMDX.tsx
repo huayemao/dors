@@ -24,6 +24,41 @@ import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import remarkMath from "remark-math";
 
+import { BaseCard } from "@shuriken-ui/react";
+import { h } from "hastscript";
+import remarkDirective from "remark-directive";
+import { visit } from "unist-util-visit";
+
+function myRemarkPlugin() {
+  /**
+   * @param {import('mdast').Root} tree
+   *   Tree.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  return (tree) => {
+    visit(tree, (node) => {
+      if (
+        node.type === "containerDirective" ||
+        node.type === "leafDirective" ||
+        node.type === "textDirective"
+      ) {
+        if (node.name !== "note") return;
+
+        const data = node.data || (node.data = {});
+        const tagName = node.type === "textDirective" ? "span" : "div";
+
+        data.hName = tagName;
+        if (!node.attributes.className) {
+          node.attributes.className = [];
+        }
+        node.attributes.className.push("note");
+        data.hProperties = h(tagName, node.attributes || {}).properties;
+      }
+    });
+  };
+}
+
 const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
   QuestionList: (props) => <QuestionList {...props} />,
@@ -51,6 +86,26 @@ const components = {
   img: (props) => {
     return <Figure {...props} />;
   },
+  div: (props) => {
+    const { className, children, rest } = props;
+    if (!className.includes("note")) {
+      return <div {...props} />;
+    }
+
+    return (
+      <BaseCard color="info" className="p-6 not-prose my-2">
+        {children}
+      </BaseCard>
+    );
+    // return (
+    //   <div
+    //     className={cn("bg-info-100 my-2 rounded !text-info-600 p-4", className)}
+    //     {...rest}
+    //   >
+    //     {children}
+    //   </div>
+    // );
+  },
 };
 
 export async function parseMDX(post: { content?: string | null | undefined }) {
@@ -64,20 +119,28 @@ export async function parseMDX(post: { content?: string | null | undefined }) {
           allowDangerousHtml: true,
         },
         rehypePlugins: [
+          //@ts-ignore
           [rehypeRaw, { passThrough: nodeTypes }],
           //@ts-ignore
           [rehypeKatex],
         ],
         remarkPlugins: [
+          // myRemarkPlugin,
           [
+            //@ts-ignore
             remarkShikiTwoslash,
             {
               theme,
               // langs: languages,
             },
           ],
+          //@ts-ignore
           remarkGfm,
+          //@ts-ignore
           remarkMath,
+          remarkDirective,
+          myRemarkPlugin,
+          //@ts-ignore
         ],
         format: "mdx",
       },
