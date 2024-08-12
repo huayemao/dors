@@ -166,6 +166,13 @@ export const Nav = () => {
                   rounded="sm"
                   onClick={closeMobileNav}
                 />
+                <BaseDropdownItem
+                  href="https://www.yuque.com/huayemao/yuque/dc_213"
+                  title="随手记"
+                  text="语雀链接"
+                  rounded="sm"
+                  onClick={closeMobileNav}
+                />
               </BaseDropdown>
             </li>
             <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
