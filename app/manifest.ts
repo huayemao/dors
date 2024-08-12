@@ -92,7 +92,7 @@ export default function manifest(): MetadataRoute.Manifest {
         url: "/qa-input",
         icons: [
           {
-            src: "img/icons/notebook-pen.svg",
+            src: "img/icons/table-properties.svg",
             sizes: "any",
           },
         ],
