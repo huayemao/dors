@@ -10,11 +10,13 @@ const theme = require("shiki/themes/nord.json");
 
 import Annotate from "@/components/Annotate";
 import Carousel from "@/components/Carousel";
+import { ClientOnly } from "@/components/ClientOnly";
 import Columns from "@/components/Columns";
 import DataList from "@/components/DataList";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { Figure } from "@/components/Figure";
 import Gallery from "@/components/Gallery";
+import Iframe from "@/components/Iframe";
 import { PersonList } from "@/components/Person";
 import { Pre } from "@/components/Pre";
 import { QuestionList } from "@/components/Question";
@@ -22,11 +24,10 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
-import remarkMath from "remark-math";
-
 import { BaseCard } from "@shuriken-ui/react";
 import { h } from "hastscript";
 import remarkDirective from "remark-directive";
+import remarkMath from "remark-math";
 import { visit } from "unist-util-visit";
 
 function myRemarkPlugin() {
@@ -83,6 +84,7 @@ const components = {
   h4: (props) => <h4 id={encodeURIComponent(props.children)} {...props}></h4>,
   h5: (props) => <h5 id={encodeURIComponent(props.children)} {...props}></h5>,
   pre: Pre,
+  Iframe:(props) =><ClientOnly><Iframe {...props}></Iframe></ClientOnly>,
   img: (props) => {
     return <Figure {...props} />;
   },
