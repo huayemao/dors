@@ -36,7 +36,7 @@
     "remark-directive": "^3.0.0",
     "remark-gfm": "^4.0.0",
     "remark-html": "^16.0.1",
-    "remark-math": "^5.0.0",
+    "remark-math": "^6.0.0",
     "remark-shiki-twoslash": "^3.1.2",
     "sharp": "^0.32.5",
     "strip-markdown": "^5.0.0",
