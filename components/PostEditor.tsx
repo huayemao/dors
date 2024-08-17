@@ -116,6 +116,14 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
       { threshold: [1] }
     );
     observer.observe(el);
+
+    document.addEventListener("beforeunload", (event) => {
+      // Cancel the event as stated by the standard.
+      event.preventDefault();
+      // Chrome requires returnValue to be set.
+      event.returnValue = false;
+    });
+
     return () => {
       observer.disconnect();
     };
@@ -401,5 +409,3 @@ function UploadPanel() {
     />
   );
 }
-
-
