@@ -67,6 +67,13 @@ export async function POST(request: Request) {
   });
 
   await revalidateHomePage(res.id);
+
+
+  if(post.protected){
+    await revalidatePath("/protected/" + post.id);
+    await revalidatePath("/(content)/protected/" + post.id);
+  }
+
   await revalidatePath("/posts/" + post.id);
   await revalidatePath("/(content)/posts/" + post.id);
 
