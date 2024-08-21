@@ -12,7 +12,7 @@ import { BaseButton, BaseInput } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MouseEventHandler, useContext, useState } from "react";
-import { Panel } from "./Panel";
+import { Panel } from "@/components/Base/Panel";
 
 export const dynamic = "force-dynamic";
 

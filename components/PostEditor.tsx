@@ -17,10 +17,13 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
+  useReducer
 } from "react";
 import { Modal } from "./Base/Modal";
 import { EmojiPanel } from "./EmojiPanel";
+import CollectionEditor from "./CollectionEditor";
 
 const DEFAULT_CATEGORY_ID = 3;
 
@@ -94,6 +97,7 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     alert("尚未修改内容");
   }
+  window.removeEventListener("beforeunload", handleOnBeforeUnload);
 };
 
 export function PostEditor({ post, mdxContent }: PostEditorProps) {
@@ -117,12 +121,7 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
     );
     observer.observe(el);
 
-    window.addEventListener("beforeunload", (event) => {
-      // Cancel the event as stated by the standard.
-      event.preventDefault();
-      // Chrome requires returnValue to be set.
-      event.returnValue = true;
-    });
+    window.addEventListener("beforeunload", handleOnBeforeUnload);
 
     return () => {
       observer.disconnect();
@@ -131,9 +130,12 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
 
   useLayoutEffect(() => {
     // @ts-ignore
-    document.querySelector(".grow-wrap")!.dataset.replicatedValue =
-      post?.content;
-  }, []);
+    document.querySelector(".grow-wrap")!.dataset.replicatedValue = content;
+  }, [content]);
+
+  const [, forceUpdate] = useReducer((bool) => !bool, false);
+
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   return (
     <form
@@ -173,7 +175,6 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
                 name="protected"
                 className="appearance-none m-0 bg-transparent hidden"
                 // type="checkbox"
-                // checked 和 defualtCheckd 好像不能一起用？
                 // defaultChecked={post?.protected}
                 checked={isProtected}
                 data-original-value={post?.protected ? "on" : "off"}
@@ -215,17 +216,38 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
               className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
             />
           </div>
+          <CollectionEditor
+            onChange={(v) => {
+              setContent(v);
+              // console.log(contentRef.current?.value);
+              if (contentRef.current) {
+                // @ts-ignore
+                contentRef.current.parentNode!.dataset.replicatedValue = v;
+                forceUpdate()
+                // contentRef.current.value = v;
+              }
+              console.log(v);
+            }}
+          ></CollectionEditor>
           {/* todo: 参考这个 https://tailwindcss.com/docs/content */}
           <div className="grow-wrap">
             <textarea
               id="content"
               name="content"
+              onChange={(e) => {
+                const thisEl = e.nativeEvent
+                  .target as HTMLTextAreaElement;
+                // @ts-ignore
+                thisEl.parentNode!.dataset.replicatedValue = thisEl.value;
+                forceUpdate()
+              }}
               onInput={(e) => {
+                setContent(e.currentTarget.value);
                 const thisEl = e.nativeEvent.target as HTMLTextAreaElement;
                 // @ts-ignore
                 thisEl.parentNode!.dataset.replicatedValue = thisEl.value;
               }}
-              defaultValue={post?.content || ""}
+              value={content}
               data-original-value={post?.content}
               placeholder="正文"
               className="w-full rounded dark:bg-black dark:text-white border-none px-0 dark:placeholder-text-600 placeholder:text-stone-400 focus:outline-none focus:ring-none"
@@ -333,6 +355,7 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
     const [v, setV] = useState(
       categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)
     );
+    const [type, setType] = useState(post?.type);
     return (
       <div className="w-20">
         <BaseSelect
@@ -364,30 +387,50 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
           data-original-value={categoryId ? categoryId : undefined}
           defaultValue={v}
         ></input>
+
+        <BaseSelect
+          size="sm"
+          required
+          labelFloat
+          label="类型"
+          onChange={(v) => {
+            (document.querySelector("input#type") as HTMLInputElement).value =
+              v;
+            setType(v);
+          }}
+          // 组件不支持传 props ... 用它来作 input 的代理好了。。。
+          // defaultValue={String(categoryId) ? String(categoryId) : undefined}
+          value={type}
+        >
+          {["normal", "collection"].map((e) => (
+            <option
+              key={e}
+              defaultChecked={e == (post ? post.type : "normal")}
+              value={e}
+            >
+              {e}
+            </option>
+          ))}
+        </BaseSelect>
+        <input
+          form="post_form"
+          className="hidden"
+          name="type"
+          id="type"
+          data-original-value={post?.type || "normal"}
+          defaultValue={type || "normal"}
+        ></input>
       </div>
     );
   }
-  // return (
-  //   <form
-  //     action="/api/updatePost"
-  //     method="post"
-  //     className="grid grid-cols-1 md:grid-cols-12 gap-8"
-  //     onSubmit={handleOnSubmit}
-  //   >
-  //     <div className="col-span-4 space-y-4">
-  //       <input hidden name="id" id="id" defaultValue={post.id} />
-
-  //       <div className="grid grid-cols-2 gap-4">
-  //         <div>
-
-  //         </div>
-  //         <div>
-
-  //         </div>
-  //       </div>
-  //   </form>
-  // );
 }
+function handleOnBeforeUnload(event: BeforeUnloadEvent) {
+  // Cancel the event as stated by the standard.
+  event.preventDefault();
+  // Chrome requires returnValue to be set.
+  event.returnValue = true;
+}
+
 function UploadPanel() {
   return (
     <UploadForm

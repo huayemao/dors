@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     category_id,
     tags,
     cover_image_url,
+    type
   } = readPostFormData(formData);
 
  
@@ -51,6 +52,7 @@ export async function POST(request: Request) {
   const res = await updatePost(post, {
     tags,
     id: id!,
+    type:type!,
     content,
     excerpt,
     title,

@@ -263,6 +263,7 @@ export async function getRecentPosts(options: getPostOptions = {}) {
 }
 
 type PostPayload = {
+  type: string,
   tags?: string[];
   id: string;
   content?: string;
@@ -319,8 +320,8 @@ export async function updatePost(
 
   const coverImage = shouldChangeCoverImage
     ? await buildCoverImage(
-        params.cover_image_url || (post?.cover_image as any).src.large
-      )
+      params.cover_image_url || (post?.cover_image as any).src.large
+    )
     : undefined;
 
   const res = await prisma.posts.update({
@@ -339,11 +340,11 @@ export async function updatePost(
       tags_posts_links: {},
       posts_category_links: categoryId
         ? {
-            deleteMany: { post_id: parseInt(id as string) },
-            create: {
-              category_id: parseInt(categoryId as string),
-            },
-          }
+          deleteMany: { post_id: parseInt(id as string) },
+          create: {
+            category_id: parseInt(categoryId as string),
+          },
+        }
         : undefined,
     },
   });
@@ -367,7 +368,7 @@ async function buildCoverImage(url: string) {
 }
 
 export async function createPost(params: CreatePostPayload) {
-  const { content, excerpt, title, categoryId, tags, isProtected } = params;
+  const { content, excerpt, title, categoryId, tags, isProtected, type } = params;
 
   let coverImage: any;
 
@@ -386,6 +387,7 @@ export async function createPost(params: CreatePostPayload) {
 
   const post = await prisma.posts.create({
     data: {
+      type,
       excerpt: excerpt as string,
       content: content as string,
       title: title as string,

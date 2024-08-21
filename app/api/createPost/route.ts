@@ -16,9 +16,11 @@ export async function POST(request: Request) {
     created_at,
     category_id: categoryId,
     tags,
+    type,
   } = readPostFormData(formData);
 
   const post = await createPost({
+    type: type!,
     content,
     excerpt,
     title,

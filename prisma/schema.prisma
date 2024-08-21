@@ -543,6 +543,7 @@ model tags_posts_links {
 model posts {
   id                                           Int                    @id @default(autoincrement()) @db.UnsignedInt
   content                                      String?                @db.LongText
+  type                                         String                 @default("normal")
   excerpt                                      String?                @db.MediumText
   protected                                    Boolean                @default(false)
   title                                        String?                @db.VarChar(255)
