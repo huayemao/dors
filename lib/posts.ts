@@ -263,7 +263,7 @@ export async function getRecentPosts(options: getPostOptions = {}) {
 }
 
 type PostPayload = {
-  type: string,
+  type?: string,
   tags?: string[];
   id: string;
   content?: string;
@@ -296,6 +296,7 @@ export async function updatePost(
     updated_at,
     created_at,
     categoryId,
+    type
   } = params;
 
   if (tags && tags.sort().toString() !== postTagNames.sort().toString()) {
@@ -329,6 +330,7 @@ export async function updatePost(
       id: parseInt(id as string),
     },
     data: {
+      type,
       protected: isProtected,
       excerpt: typeof excerpt == "string" ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,

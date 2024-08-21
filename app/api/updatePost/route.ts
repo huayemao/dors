@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     type
   } = readPostFormData(formData);
 
- 
+
 
   if (Number.isNaN(parseInt(id as string))) {
     return new NextResponse(
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   const res = await updatePost(post, {
     tags,
     id: id!,
-    type:type!,
+    type: type,
     content,
     excerpt,
     title,
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   await revalidateHomePage(res.id);
 
 
-  if(post.protected){
+  if (post.protected) {
     await revalidatePath("/protected/" + post.id);
     await revalidatePath("/(content)/protected/" + post.id);
   }
