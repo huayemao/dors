@@ -22,7 +22,7 @@
     "localforage": "^1.10.0",
     "lucide-react": "^0.427.0",
     "mime": "^4.0.3",
-    "next": "^14.0.4",
+    "next": "^14.2.5",
     "next-mdx-remote": "^5.0.0",
     "photoswipe": "^5.4.4",
     "plaiceholder": "^3.0.0",

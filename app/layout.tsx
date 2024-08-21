@@ -26,8 +26,6 @@ export default async function RootLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const categories = await getAllCategories({ includeHidden: true });
-  const tags = await getTags();
 
   return (
     <ShurikenUIProvider>
@@ -60,9 +58,7 @@ export default async function RootLayout({
           ></Script>
         </head>
         <body className="transition-all duration-300 min-h-screen flex flex-col">
-          <CategoriesContextProvider Categories={categories}>
-            <TagsContextProvider tags={tags}>{children}</TagsContextProvider>
-          </CategoriesContextProvider>
+          {children}
         </body>
       </html>
     </ShurikenUIProvider>
