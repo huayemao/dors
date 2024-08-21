@@ -12,7 +12,6 @@ const nextConfig = {
     }))
   },
   experimental: {
-    appDir: true,
     serverComponentsExternalPackages: ["prisma", "shiki", "vscode-oniguruma"],
   },
   output: process.env.OUTPUT_MODE,
