@@ -5,7 +5,7 @@ import { useSelectedLayoutSegments } from "next/navigation";
 import { useContext } from "react";
 
 export function Categories() {
-  const segments = useSelectedLayoutSegments();
+  const segments = useSelectedLayoutSegments() || [];
   const categories = useContext(CategoriesContext);
   const [seg, id] = segments;
 

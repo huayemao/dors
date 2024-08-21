@@ -1,5 +1,5 @@
 import { SITE_META } from "@/constants";
-import { Posts } from "@/lib/posts";
+import { type Posts } from "@/lib/posts";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString, isDataURL } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";

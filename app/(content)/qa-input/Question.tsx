@@ -2,7 +2,7 @@
 import QA from "@/components/Question";
 
 import { Modal } from "@/components/Base/Modal";
-import { Question } from "@/lib/types/Question";
+import { type Question } from "@/lib/types/Question";
 import { withConfirm } from "@/lib/utils";
 import { BaseButtonIcon } from "@shuriken-ui/react";
 import localforage from "localforage";

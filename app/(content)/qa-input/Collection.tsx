@@ -1,7 +1,7 @@
 "use client";
 
 import QA from "@/components/Question";
-import { Question } from "@/lib/types/Question";
+import { type Question } from "@/lib/types/Question";
 import { readFromClipboard } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
 import {

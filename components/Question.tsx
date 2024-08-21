@@ -1,4 +1,4 @@
-import { Question } from "@/lib/types/Question";
+import { type Question } from "@/lib/types/Question";
 import { cn } from "@/lib/utils";
 
 export default function QA({

@@ -1,6 +1,6 @@
 "use client";
 import Select from "@/components/Base/Select";
-import { Question } from "@/lib/types/Question";
+import { type Question } from "@/lib/types/Question";
 import { readFromClipboard } from "@/lib/utils";
 import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
 import { DOMAttributes } from "react";

@@ -12,7 +12,7 @@ import {
   useState,
 } from "react";
 
-import { Question } from "@/lib/types/Question";
+import { type Question } from "@/lib/types/Question";
 import localforage from "localforage";
 import { DEFAULT_COLLECTION, DEFAULT_QUESTION } from "./constants";
 
@@ -116,7 +116,7 @@ const reducer: Reducer<State, Action> = (state = initialState, action) => {
             questionList: state.questionList?.filter((e, i) => e.id != id),
           });
         }
-        return state
+        return state;
       };
       return removeItem(action.payload);
     }

@@ -29,7 +29,7 @@ export function AdminMenu() {
     },
   ];
 
-  const segs = useSelectedLayoutSegments();
+  const segs = useSelectedLayoutSegments() || [];
 
   return (
     <div className="nui-slimscroll relative flex w-full grow flex-col overflow-y-auto py-6 px-6">
