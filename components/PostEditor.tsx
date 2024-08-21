@@ -19,7 +19,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  useReducer
+  useReducer,
 } from "react";
 import { Modal } from "./Base/Modal";
 import { EmojiPanel } from "./EmojiPanel";
@@ -216,30 +216,32 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
               className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
             />
           </div>
-          <CollectionEditor
-            onChange={(v) => {
-              setContent(v);
-              // console.log(contentRef.current?.value);
-              if (contentRef.current) {
-                // @ts-ignore
-                contentRef.current.parentNode!.dataset.replicatedValue = v;
-                forceUpdate()
-                // contentRef.current.value = v;
-              }
-              console.log(v);
-            }}
-          ></CollectionEditor>
+          {post?.type == "collection" && (
+            <CollectionEditor
+              markdown={content}
+              onChange={(v) => {
+                setContent(v);
+                // console.log(contentRef.current?.value);
+                if (contentRef.current) {
+                  // @ts-ignore
+                  contentRef.current.parentNode!.dataset.replicatedValue = v;
+                  forceUpdate();
+                  // contentRef.current.value = v;
+                }
+                console.log(v);
+              }}
+            ></CollectionEditor>
+          )}
           {/* todo: 参考这个 https://tailwindcss.com/docs/content */}
           <div className="grow-wrap">
             <textarea
               id="content"
               name="content"
               onChange={(e) => {
-                const thisEl = e.nativeEvent
-                  .target as HTMLTextAreaElement;
+                const thisEl = e.nativeEvent.target as HTMLTextAreaElement;
                 // @ts-ignore
                 thisEl.parentNode!.dataset.replicatedValue = thisEl.value;
-                forceUpdate()
+                forceUpdate();
               }}
               onInput={(e) => {
                 setContent(e.currentTarget.value);
