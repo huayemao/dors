@@ -10,14 +10,20 @@ import {
   BaseTextarea,
   IconCheckCircle,
 } from "@shuriken-ui/react";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { CheckCircle2, Link, Link2 } from "lucide-react";
 import { Panel } from "./Base/Panel";
+import { markdownExcerpt } from "@/lib/utils";
+import { evaluateSync } from '@mdx-js/mdx';
+import remarkGfm from "remark-gfm";
+import * as runtime from 'react/jsx-runtime'
 
 type Item = {
   content: string;
   tags: string[];
+  excerpt?: string;
+  mdxContent?: FC;
 };
 
 const markdownText = `
@@ -72,7 +78,7 @@ function markdownToJson(markdownText) {
     console.log(lastTag, currentContent);
     if (headerMatch) {
       // 找到新的标题，保存之前的内容
-      if (currentContent[0].length > 0) {
+      if (currentContent[0]?.length > 0) {
         patchItem();
       }
       lastTag = headerMatch[1].trim();
@@ -80,7 +86,7 @@ function markdownToJson(markdownText) {
       currentContent = [];
     } else if (separatorMatch) {
       // 找到分隔符，保存当前内容，并添加新标签
-      if (currentContent[0].length > 0) {
+      if (currentContent[0]?.length > 0) {
         patchItem();
       }
       currentContent = []; // 重置内容数组
@@ -91,7 +97,7 @@ function markdownToJson(markdownText) {
   });
 
   // 添加最后一个条目
-  if (currentContent[0].length > 0) {
+  if (currentContent[0]?.length > 0) {
     patchItem();
   }
 
@@ -101,16 +107,38 @@ function markdownToJson(markdownText) {
 export default function CollectionEditor({
   markdown,
   onChange,
+  json,
 }: {
   markdown?: string;
   onChange?: (v) => void;
+  json?: Item[]
 }) {
-  const d = useMemo(() => markdownToJson(markdown || markdownText), [markdown]);
+  const d = useMemo(() => json || markdownToJson(markdown || markdownText), [markdown]);
 
   const [items, setItems] = useState<Item[]>(d);
   const [tags, setTags] = useState<string[]>([]);
 
   const allTags = Array.from(new Set(items.flatMap((e) => e.tags)));
+
+  useEffect(() => {
+    if (!items.some(e => e.excerpt)) {
+      Promise.all(items.map(async (e) => {
+
+        const Content = evaluateSync(e.content, {
+          ...runtime as any,
+          remarkPlugins: [remarkGfm],
+        }).default
+
+        return {
+          ...e,
+          excerpt: await markdownExcerpt(e.content),
+          mdxContent: Content,
+        }
+      })).then(v => { setItems(v) })
+    }
+
+
+  }, [items])
 
   const getMd = useCallback((items) => {
     const allTags = Array.from(new Set(items.flatMap((e) => e.tags)));
@@ -145,7 +173,6 @@ export default function CollectionEditor({
   );
 
   const [content, setContent] = useState("");
-  console.log(tags);
 
   // 反序列化
   // 1. 正则匹配出标题
@@ -211,8 +238,8 @@ export default function CollectionEditor({
                     <BaseListItem
                       key={e.content}
                       // @ts-ignore
-                      title={<a href="sdfsdf">{e.content}</a>}
-                      subtitle={e.content}
+                      title={e.mdxContent?.()}
+                      subtitle={e.excerpt}
                       end={
                         <div>
                           {e.tags.map((e) => (
