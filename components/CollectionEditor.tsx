@@ -59,6 +59,9 @@ function markdownToJson(markdownText) {
   const separatorRegex = /^---$/; // 匹配分隔线
 
   function patchItem() {
+    if (!lastTag) {
+      return
+    }
     const targetItem = jsonArr.find(
       (e) => e.content == currentContent.join("\n")
     );
@@ -116,9 +119,14 @@ export default function CollectionEditor({
   const d = useMemo(() => json || markdownToJson(markdown || markdownText), [markdown]);
 
   const [items, setItems] = useState<Item[]>(d);
+
   const [tags, setTags] = useState<string[]>([]);
 
   const allTags = Array.from(new Set(items.flatMap((e) => e.tags)));
+
+  useEffect(() => {
+    setItems(d)
+  }, [d])
 
   useEffect(() => {
     if (!items.some(e => e.excerpt)) {
