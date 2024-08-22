@@ -39,6 +39,7 @@ dsafassdfsdf
 dsafassdfsdf
 `;
 
+
 export default function CollectionEditor({
   markdown,
   onChange,

@@ -59,7 +59,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                 <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
                 </div>
-                {post.type == 'collection' && <CollectionContent items={markdownToJson(post.content)}></CollectionContent>}
+                {post.type == 'collection' && <CollectionContent items={markdownToJson(post.content!)}></CollectionContent>}
                 <article
                   className={
                     c.content +

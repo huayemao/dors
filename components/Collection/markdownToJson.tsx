@@ -1,7 +1,7 @@
 import { type Item } from "./CollectionEditor";
 
 
-export function markdownToJson(markdownText) {
+export function markdownToJson(markdownText: string) {
   const lines = markdownText.split("\n");
   const jsonArr: Item[] = [];
   let currentContent: string[] = [];
@@ -11,7 +11,7 @@ export function markdownToJson(markdownText) {
   const separatorRegex = /^---$/; // 匹配分隔线
 
   function patchItem() {
-    if (!lastTag) {
+    if (!lastTag || !currentContent.join("\n").trim()) {
       return;
     }
     const targetItem = jsonArr.find(
@@ -26,35 +26,40 @@ export function markdownToJson(markdownText) {
       });
     }
   }
+  const isList = (lines.filter(e => !!e.trim() && !e.startsWith('#')).every(l => l.startsWith('+ ')))
 
-  lines.forEach((line) => {
+  lines.forEach((line, i) => {
     const headerMatch = line.match(headerRegex);
     const separatorMatch = line.match(separatorRegex);
     console.log(lastTag, currentContent);
     if (headerMatch) {
       // 找到新的标题，保存之前的内容
-      if (currentContent[0]?.length > 0) {
-        patchItem();
-      }
+      patchItem();
       lastTag = headerMatch[1].trim();
       // 重置内容数组
       currentContent = [];
-    } else if (separatorMatch) {
+    }
+
+    else if (separatorMatch) {
       // 找到分隔符，保存当前内容，并添加新标签
-      if (currentContent[0]?.length > 0) {
-        patchItem();
-      }
+      patchItem();
       currentContent = []; // 重置内容数组
-    } else {
+    }
+
+    else if (isList && line.startsWith('+ ')) {
+      currentContent.push(line);
+      patchItem();
+      currentContent = []; // 重置内容数组
+    }
+
+    else {
       // 收集内容
       currentContent.push(line);
     }
   });
 
   // 添加最后一个条目
-  if (currentContent[0]?.length > 0) {
-    patchItem();
-  }
+  patchItem();
 
   return jsonArr;
 }
