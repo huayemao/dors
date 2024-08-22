@@ -6,6 +6,7 @@ import { Combobox } from "@headlessui/react";
 import { Icon } from "@iconify/react";
 import {
   BaseAutocompleteItem,
+  BaseButton,
   BaseInputHelpText,
   BasePlaceload,
   useNuiDefaultProperty,
@@ -201,18 +202,18 @@ type BaseAutocompleteProps<T = string> = {
    * The placement of the component via floating-ui.
    */
   placement?:
-    | "top"
-    | "top-start"
-    | "top-end"
-    | "right"
-    | "right-start"
-    | "right-end"
-    | "bottom"
-    | "bottom-start"
-    | "bottom-end"
-    | "left"
-    | "left-start"
-    | "left-end";
+  | "top"
+  | "top-start"
+  | "top-end"
+  | "right"
+  | "right-start"
+  | "right-end"
+  | "bottom"
+  | "bottom-start"
+  | "bottom-end"
+  | "left"
+  | "left-start"
+  | "left-end";
 
   /**
    * The properties to use for the value, label, sublabel, media, and icon of the options items.
@@ -633,20 +634,20 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                           displayValue: displayValueResolved(item),
                           removeItem,
                         }) || (
-                          <div className="nui-autocomplete-multiple-list-item">
-                            {displayValueResolved(item)}
+                            <div className="nui-autocomplete-multiple-list-item">
+                              {displayValueResolved(item)}
 
-                            <button
-                              type="button"
-                              onClick={() => removeItem(item)}
-                            >
-                              <Icon
-                                icon={chipClearIcon}
-                                className="nui-autocomplete-multiple-list-item-icon"
-                              />
-                            </button>
-                          </div>
-                        )}
+                              <button
+                                type="button"
+                                onClick={() => removeItem(item)}
+                              >
+                                <Icon
+                                  icon={chipClearIcon}
+                                  className="nui-autocomplete-multiple-list-item-icon"
+                                />
+                              </button>
+                            </div>
+                          )}
                       </li>
                     ))}
                   </ul>
@@ -765,8 +766,8 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
           <Combobox.Options
             as="div"
             className={cn(
-              (filteredItems.length > 0 || !allowCreate) &&
-                "nui-autocomplete-results"
+              (filteredItems.length > 0 || allowCreate) &&
+              "nui-autocomplete-results"
             )}
           >
             {filteredItems.length === 0 && pending ? (
@@ -777,10 +778,10 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                   pending,
                   items,
                 }) || (
-                  <span className="nui-autocomplete-results-placeholder-text text-sm">
-                    {i18n.pending}
-                  </span>
-                )}
+                    <span className="nui-autocomplete-results-placeholder-text text-sm">
+                      {i18n.pending}
+                    </span>
+                  )}
               </div>
             ) : filteredItems.length === 0 && !allowCreate ? (
               <div className="nui-autocomplete-results-placeholder">
@@ -790,10 +791,10 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                   pending,
                   items,
                 }) || (
-                  <span className="nui-autocomplete-results-placeholder-text text-sm">
-                    {i18n.empty}
-                  </span>
-                )}
+                    <span className="nui-autocomplete-results-placeholder-text text-sm">
+                      {i18n.empty}
+                    </span>
+                  )}
               </div>
             ) : (
               <>
@@ -807,28 +808,6 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                     })}
                   </div>
                 )}
-
-                {allowCreate && queryCreate && (
-                  <Combobox.Option as="div" value={queryCreate}>
-                    {({ active, selected }) => (
-                      <>
-                        {props.renderCreateItem?.({
-                          query,
-                          filteredItems,
-                          pending,
-                          items,
-                          active,
-                          selected,
-                        }) || (
-                          <span className="nui-autocomplete-results-item">
-                            Create {query}
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </Combobox.Option>
-                )}
-
                 {filteredItems.map((item) => (
                   <Combobox.Option
                     key={key(item)}
@@ -851,25 +830,47 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                           active,
                           selected,
                         }) || (
-                          <BaseAutocompleteItem
-                            context={{ query }}
-                            rounded={props.rounded || rounded}
-                            item={
-                              props.properties
-                                ? item
-                                : ({
+                            <BaseAutocompleteItem
+                              context={{ query }}
+                              rounded={props.rounded || rounded}
+                              item={
+                                props.properties
+                                  ? item
+                                  : ({
                                     label: displayValueResolved(item),
                                   } as T)
-                            }
-                            active={active}
-                            selected={selected}
-                            properties={props.properties as any}
-                          />
-                        )}
+                              }
+                              active={active}
+                              selected={selected}
+                              properties={props.properties as any}
+                            />
+                          )}
                       </>
                     )}
                   </Combobox.Option>
                 ))}
+                {allowCreate && queryCreate && (
+                  <Combobox.Option as="div" value={queryCreate}>
+                    {({ active, selected }) => (
+                      <>
+                        {props.renderCreateItem?.({
+                          query,
+                          filteredItems,
+                          pending,
+                          items,
+                          active,
+                          selected,
+                        }) || (
+                            <div className="w-full text-right p-2">
+                              <BaseButton color="primary" size="sm">
+                                Create {query}
+                              </BaseButton>
+                            </div>
+                          )}
+                      </>
+                    )}
+                  </Combobox.Option>
+                )}
 
                 {props.renderEndItem && (
                   <div className="nui-autocomplete-results-footer">

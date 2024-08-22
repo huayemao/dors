@@ -122,14 +122,13 @@ export default function CollectionEditor({
 
   const [tags, setTags] = useState<string[]>([]);
 
-  const allTags = Array.from(new Set(items.flatMap((e) => e.tags)));
 
   useEffect(() => {
     setItems(d)
   }, [d])
 
   useEffect(() => {
-    if (!items.some(e => e.excerpt)) {
+    if (items.some(e => e.content && !e.excerpt && !e.mdxContent)) {
       Promise.all(items.map(async (e) => {
 
         const Content = evaluateSync(e.content, {
@@ -164,21 +163,7 @@ export default function CollectionEditor({
       .join("\n");
   }, []);
 
-  const [filters, dispatch] = useReducer(
-    (state, action) => {
-      if (action.type == "setTags") {
-        return {
-          tags: action.payload,
-        };
-      }
-      return {
-        tags: [],
-      };
-    },
-    {
-      tags: [],
-    }
-  );
+
 
   const [content, setContent] = useState("");
 
@@ -214,66 +199,85 @@ export default function CollectionEditor({
             确定
           </BaseButton>
         </Panel>
-        <Panel title="列表" description="" className="md:col-span-2 max-w-4xl">
-          <section className="space-y-4 p-6">
-            filer
-            {/* todo：选择标签 */}
-            {/* todo: 这个 在 focus 时就应该打开 dropdown 了 */}
-            <BaseAutocomplete
-              multiple
-              label="标签"
-              items={allTags}
-              onChange={(v) => {
-                dispatch({
-                  payload: v,
-                  type: "setTags",
-                });
-              }}
-              value={filters.tags}
-              rounded="md"
-              icon="lucide:list-filter"
-              placeholder="搜索..."
-            ></BaseAutocomplete>
-            {/* todo: 如果是链接也不能直接打开吗 */}
-            <BaseCard className="p-6">
-              <BaseList media className="bg-white max-w-4xl">
-                {/* todo：还要能够打开详情 */}
-                {items
-                  .filter((item) =>
-                    filters.tags.every((t) => item.tags.includes(t))
-                  )
-                  .map((e) => (
-                    <BaseListItem
-                      key={e.content}
-                      // @ts-ignore
-                      title={e.mdxContent?.()}
-                      subtitle={e.excerpt}
-                      end={
-                        <div>
-                          {e.tags.map((e) => (
-                            <BaseTag key={e} size="sm" color="primary">
-                              {e}
-                            </BaseTag>
-                          ))}
-                        </div>
-                      }
-                    >
-                      <div className="flex items-center justify-center mr-2">
-                        <BaseIconBox mask="blob">
-                          <a href="baidu.com">
-                            <Link2 className="w-5 h-5" strokeWidth={1} />
-                          </a>
-                        </BaseIconBox>
-                      </div>
-                    </BaseListItem>
-                  ))}
-              </BaseList>
-            </BaseCard>
-            {/* <pre>{md}</pre>
-            <pre>{JSON.stringify(items)}</pre> */}
-          </section>
-        </Panel>
+        {CollectionContent({ items })}
       </div>
     </>
   );
 }
+function CollectionContent({ items }: { items: Item[]; }) {
+  const allTags = Array.from(new Set(items.flatMap((e) => e.tags)));
+
+  const [filters, dispatch] = useReducer(
+    (state, action) => {
+      if (action.type == "setTags") {
+        return {
+          tags: action.payload,
+        };
+      }
+      return {
+        tags: [],
+      };
+    },
+    {
+      tags: [],
+    }
+  );
+
+  return <Panel title="列表" description="" className="md:col-span-2 max-w-4xl">
+    <div className="space-y-4">
+      <div className="flex h-60">
+        filers
+        {/* todo：选择标签 */}
+        {/* todo: 这个 在 focus 时就应该打开 dropdown 了 */}
+        <BaseAutocomplete
+          multiple
+          label="标签"
+          items={allTags}
+          onChange={(v) => {
+            dispatch({
+              payload: v,
+              type: "setTags",
+            });
+          }}
+          value={filters.tags}
+          rounded="md"
+          icon="lucide:list-filter"
+          placeholder="搜索..."
+        ></BaseAutocomplete>
+      </div>
+      {/* todo: 如果是链接也不能直接打开吗 */}
+      <BaseCard className="p-6">
+        <BaseList media className="bg-white max-w-4xl">
+          {/* todo：还要能够打开详情 */}
+          {items
+            .filter((item) => filters.tags.every((t) => item.tags.includes(t))
+            )
+            .map((e) => (
+              <BaseListItem
+                key={e.content}
+                // @ts-ignore
+                title={e.mdxContent?.()}
+                subtitle={e.excerpt}
+                end={<div className="flex gap-2">
+                  {e.tags.map((e) => (
+                    <BaseTag key={e} size="sm" color="primary">
+                      {e}
+                    </BaseTag>
+                  ))}
+                </div>}
+              >
+                <div className="flex items-center justify-center mr-2">
+                  <BaseIconBox mask="blob">
+                    <a href="baidu.com">
+                      <Link2 className="w-5 h-5" strokeWidth={1} />
+                    </a>
+                  </BaseIconBox>
+                </div>
+              </BaseListItem>
+            ))}
+        </BaseList>
+      </BaseCard>
+    </div>
+  </Panel>;
+}
+
