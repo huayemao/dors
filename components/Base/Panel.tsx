@@ -11,7 +11,7 @@ export const Panel: FC<
   }>
 > = ({ title, description = '', children, className }) => {
   return (
-    <BaseCard className={cn("max-w-md p-6", className)}>
+    <BaseCard className={cn("max-w-md p-3 md:p-6", className)}>
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="nui-heading nui-heading-sm nui-weight-semibold nui-lead-tight text-muted-800 dark:text-white">

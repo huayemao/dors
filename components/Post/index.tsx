@@ -59,9 +59,11 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                   <BackButton />
                 </div>
                 {post.type == "collection" ? (
-                  <CollectionContent
-                    items={markdownToJson(post.content!)}
-                  ></CollectionContent>
+                  <ClientOnly>
+                    <CollectionContent
+                      items={markdownToJson(post.content!)}
+                    ></CollectionContent>
+                  </ClientOnly>
                 ) : (
                   <article
                     className={
@@ -83,7 +85,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
           </div>
         </div>
       </section>
-      <ContentModal></ContentModal>
+      {post.type != "collection" && <ContentModal></ContentModal>}
       <LightBox></LightBox>
     </div>
   );
