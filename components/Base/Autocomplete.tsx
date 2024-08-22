@@ -9,6 +9,7 @@ import {
   BaseButton,
   BaseInputHelpText,
   BasePlaceload,
+  BaseSnack,
   useNuiDefaultProperty,
 } from "@shuriken-ui/react";
 import {
@@ -623,30 +624,18 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
           )}
 
           {multiple && (
-            <div className="nui-autocomplete-multiple absolute -top-4">
+            <div className="nui-autocomplete-multiple">
               {Array.isArray(autocompleteValue) &&
                 autocompleteValue.length > 0 && (
-                  <ul className="nui-autocomplete-multiple-list">
+                  <ul className="nui-autocomplete-multiple-list h-full py-1 !flex-nowrap overflow-x-scroll w-full nui-slimscroll">
                     {autocompleteValue.map((item) => (
-                      <li key={String(item)}>
+                      <li key={String(item)} className="flex-shrink-0">
                         {props.renderAutocompleteMultipleListItem?.({
                           item,
                           displayValue: displayValueResolved(item),
                           removeItem,
                         }) || (
-                            <div className="nui-autocomplete-multiple-list-item">
-                              {displayValueResolved(item)}
-
-                              <button
-                                type="button"
-                                onClick={() => removeItem(item)}
-                              >
-                                <Icon
-                                  icon={chipClearIcon}
-                                  className="nui-autocomplete-multiple-list-item-icon"
-                                />
-                              </button>
-                            </div>
+                            <BaseSnack label={displayValueResolved(item)} color="muted" size="xs" onClick={() => removeItem(item)}></BaseSnack>
                           )}
                       </li>
                     ))}
@@ -655,7 +644,6 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
             </div>
           )}
         </>
-
         <Float.Reference>
           <div className="nui-autocomplete-outer">
             <Combobox.Input
@@ -723,16 +711,17 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
               <Combobox.Button className="nui-autocomplete-clear nui-autocomplete-chevron">
                 {({ open }) => (
                   <>
-                    props.renderDropdownIcon?.({open}) || (
-                    <Icon
-                      icon={dropdownIcon}
-                      className={cn(
-                        "nui-autocomplete-clear-inner transition-transform duration-300",
-                        classes?.icon,
-                        open && "rotate-180"
-                      )}
-                    />
+                    {props.renderDropdownIcon?.({ open }) || (
+                      <Icon
+                        icon={dropdownIcon}
+                        className={cn(
+                          "nui-autocomplete-clear-inner transition-transform duration-300",
+                          classes?.icon,
+                          open && "rotate-180"
+                        )}
+                      />
                     )
+                    }
                   </>
                 )}
               </Combobox.Button>

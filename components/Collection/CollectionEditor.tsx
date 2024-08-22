@@ -49,16 +49,18 @@ export default function CollectionEditor({
   onChange?: (v) => void;
   json?: Item[]
 }) {
-  const d = useMemo(() => json || markdownToJson(markdown || markdownText), [markdown]);
+  const data = useMemo(() => json || markdownToJson(markdown || markdownText), [markdown]);
 
-  const [items, setItems] = useState<Item[]>(d);
+  const [items, setItems] = useState<Item[]>(data);
+
+  const allTags = useMemo(() => Array.from(new Set(items.flatMap((e) => e.tags))), [items]);
 
   const [tags, setTags] = useState<string[]>([]);
 
 
   useEffect(() => {
-    setItems(d)
-  }, [d])
+    setItems(data)
+  }, [data])
 
 
 
@@ -91,12 +93,16 @@ export default function CollectionEditor({
   return (
     <>
       <div suppressHydrationWarning className="grid md:grid-cols-3 gap-4">
-        <Panel title="表单" description="表单">
+
+        <Panel title="表单" description="表单" className="">
           <BaseAutocomplete
+            labelFloat
+            size="sm"
+            dropdown
             multiple
             allowCreate
             label="标签"
-            items={["sdfa", "xxx"]}
+            items={allTags}
             onChange={setTags}
             value={tags}
             rounded="md"
@@ -104,17 +110,24 @@ export default function CollectionEditor({
             placeholder="搜索..."
           ></BaseAutocomplete>
           <BaseTextarea label="内容" onChange={setContent} value={content} />
-          <BaseButton
-            color="primary"
-            onClick={() => {
-              setItems((items) => items.concat({ tags, content }));
-              onChange?.(getMd(items.concat({ tags, content })));
-            }}
-          >
-            确定
-          </BaseButton>
+          <div className="text-right">
+            <BaseButton
+              size="sm"
+              shadow="flat"
+              color="primary"
+              onClick={() => {
+                setItems((items) => items.concat({ tags, content }));
+                onChange?.(getMd(items.concat({ tags, content })));
+              }}
+            >
+              确定
+            </BaseButton>
+          </div>
+
         </Panel>
-        <CollectionContent items={items} />
+        <Panel title="列表" description="" className="md:col-span-2 max-w-4xl">
+          <CollectionContent items={items} />
+        </Panel>
       </div>
     </>
   );

@@ -7,9 +7,9 @@ export const Panel: FC<
   PropsWithChildren<{
     className?: string;
     title: string;
-    description: string;
+    description?: string;
   }>
-> = ({ title, description, children, className }) => {
+> = ({ title, description = '', children, className }) => {
   return (
     <BaseCard className={cn("max-w-md p-6", className)}>
       <div>
@@ -18,10 +18,12 @@ export const Panel: FC<
             <span>{title}</span>
           </h3>
         </div>
-        <div>
-          <p className="nui-paragraph nui-paragraph-sm nui-weight-normal nui-lead-normal pb-3">
-            <span className="text-muted-400">{description}</span>
-          </p>
+        <div className="space-y-4">
+          {description.trim() &&
+            <p className="nui-paragraph nui-paragraph-sm nui-weight-normal nui-lead-normal pb-3">
+              <span className="text-muted-400">{description}</span>
+            </p>
+          }
           {children}
         </div>
       </div>
