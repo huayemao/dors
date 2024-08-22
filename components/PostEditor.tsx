@@ -23,7 +23,7 @@ import {
 } from "react";
 import { Modal } from "./Base/Modal";
 import { EmojiPanel } from "./EmojiPanel";
-import CollectionEditor from "./CollectionEditor";
+import CollectionEditor from "./Collection/CollectionEditor";
 
 const DEFAULT_CATEGORY_ID = 3;
 

@@ -1,6 +1,6 @@
 "use client"
 import { BaseAutocomplete, BaseTextarea } from "@shuriken-ui/react";
-import CollectionEditor from "../../../components/CollectionEditor";
+import CollectionEditor from "../../../components/Collection/CollectionEditor";
 import { ClientOnly } from "@/components/ClientOnly";
 
 

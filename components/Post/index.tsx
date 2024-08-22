@@ -9,6 +9,8 @@ import { BackButton } from "../BackButton";
 import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
+import CollectionContent from "../Collection/Content";
+import { markdownToJson } from "../Collection/markdownToJson";
 
 // todo: 这个抽成 content
 
@@ -57,6 +59,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                 <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
                 </div>
+                {post.type == 'collection' && <CollectionContent items={markdownToJson(post.content)}></CollectionContent>}
                 <article
                   className={
                     c.content +

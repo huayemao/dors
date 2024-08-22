@@ -623,7 +623,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
           )}
 
           {multiple && (
-            <div className="nui-autocomplete-multiple">
+            <div className="nui-autocomplete-multiple absolute -top-4">
               {Array.isArray(autocompleteValue) &&
                 autocompleteValue.length > 0 && (
                   <ul className="nui-autocomplete-multiple-list">
