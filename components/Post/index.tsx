@@ -32,7 +32,6 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
     return null;
   }
 
-
   const { content } = await parseMDX(post);
 
   /* @ts-ignore */
@@ -59,16 +58,21 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                 <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
                 </div>
-                {post.type == 'collection' && <CollectionContent items={markdownToJson(post.content!)}></CollectionContent>}
-                <article
-                  className={
-                    c.content +
-                    " " +
-                    "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
-                  }
-                >
-                  {content}
-                </article>
+                {post.type == "collection" ? (
+                  <CollectionContent
+                    items={markdownToJson(post.content!)}
+                  ></CollectionContent>
+                ) : (
+                  <article
+                    className={
+                      c.content +
+                      " " +
+                      "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
+                    }
+                  >
+                    {content}
+                  </article>
+                )}
               </div>
             </div>
             <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">

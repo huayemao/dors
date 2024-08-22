@@ -121,13 +121,13 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                                     ))}
                                 </div>}
                         >
-                            <div className="flex items-center justify-center mr-2">
+                            {/* <div className="flex items-center justify-center mr-2">
                                 <BaseIconBox mask="blob">
                                     <a href="baidu.com">
                                         <Link2 className="w-5 h-5" strokeWidth={1} />
                                     </a>
                                 </BaseIconBox>
-                            </div>
+                            </div> */}
                         </BaseListItem>
                     ))}
             </BaseList>
