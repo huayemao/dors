@@ -113,7 +113,7 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                             end={
                                 <div className="flex gap-2 flex-nowrap max-w-24 md:max-w-xs lg:max-w-sm items-start overflow-x-auto p-2">
                                     {e.tags.map((e) => (
-                                        <div key={e} className="cursor-pointe flex-shrink-0" >
+                                        <div key={e} className="cursor-pointer flex-shrink-0" >
                                             <BaseTag rounded="sm" onClick={() => { dispatch({ type: 'setTags', payload: Array.from(new Set(filters.tags.concat(e))) }) }} key={e} size="sm" color="primary">
                                                 <span>{e}</span>
                                             </BaseTag>
