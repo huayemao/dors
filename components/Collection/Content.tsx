@@ -170,7 +170,7 @@ export default function CollectionContent({ items }: { items: Item[] }) {
                 }
                 key={e.excerpt}
                 end={
-                  <BaseDropdown label="Dropdown" variant="context">
+                  <BaseDropdown label="Dropdown" variant="context" fixed>
                     <BaseDropdownItem
                       title="详情"
                       text="查看详情"
