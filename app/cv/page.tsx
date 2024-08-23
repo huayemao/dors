@@ -1,4 +1,4 @@
-import { parseMDX } from "@/lib/parseMDX";
+import { parseMDX } from "@/lib/mdx/parseMDX";
 import { Github, Link, Mail, Phone } from "lucide-react";
 
 const ContactMethods = () => {
