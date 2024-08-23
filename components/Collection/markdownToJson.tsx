@@ -15,7 +15,7 @@ export function markdownToJson(markdownText: string) {
       return;
     }
     const targetItem = jsonArr.find(
-      (e) => e.content == currentContent.join("\n")
+      (e) => e.content.trim() == currentContent.join("\n").trim()
     );
     if (targetItem) {
       targetItem.tags.push(lastTag);

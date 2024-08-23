@@ -20,10 +20,16 @@ import {
 } from "@shuriken-ui/react";
 import { Panel } from "../Base/Panel";
 import { type Item } from "./CollectionEditor";
+import { Modal } from "../Base/Modal";
 
 
 export default function CollectionContent({ items }: { items: Item[]; }) {
     const [derivedItems, setDerivedItems] = useState(items)
+    useEffect(() => {
+        setDerivedItems(items)
+    }, [items])
+
+    const [activeItem, setActiveItem] = useState<Item | null>(null)
     const allTags = useMemo(() => Array.from(new Set(derivedItems.flatMap((e) => e.tags))), [derivedItems]);
 
     const [filters, dispatch] = useReducer(
@@ -106,10 +112,9 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                     )
                     .map((e) => (
                         <BaseListItem
-                            key={e.content}
                             // @ts-ignore
-                            title={e.mdxContent?.()}
-                            subtitle={e.excerpt}
+                            title={<div onClick={() => { setActiveItem(e) }}>{e.excerpt}</div>}
+                            key={e.excerpt}
                             end={
                                 <div className="flex gap-2 flex-nowrap max-w-24 md:max-w-xs lg:max-w-sm items-start overflow-x-auto p-2">
                                     {e.tags.map((e) => (
@@ -131,6 +136,13 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                         </BaseListItem>
                     ))}
             </BaseList>
+            <Modal title={activeItem?.excerpt?.slice(0, 20) || ''} open={!!activeItem} onClose={() => { setActiveItem(null) }}>
+                <div className="flex justify-center">
+                    <article className="dark:prose-invert prose lg:prose-xl p-6 overflow-hidden">
+                        {activeItem?.mdxContent?.({})}
+                    </article>
+                </div>
+            </Modal>
         </BaseCard>
     </div>
         ;
