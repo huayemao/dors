@@ -6,7 +6,7 @@ import { evaluateSync } from '@mdx-js/mdx';
 import remarkGfm from "remark-gfm";
 import * as runtime from 'react/jsx-runtime'
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
-import { CheckCircle2, Link, Link2 } from "lucide-react";
+
 import {
     BaseButton,
     BaseCard,
@@ -18,9 +18,9 @@ import {
     BaseTextarea,
     IconCheckCircle,
 } from "@shuriken-ui/react";
-import { Panel } from "../Base/Panel";
 import { type Item } from "./CollectionEditor";
 import { Modal } from "../Base/Modal";
+import { components } from "@/lib/mdx/useComponents";
 
 
 export default function CollectionContent({ items }: { items: Item[]; }) {
@@ -54,6 +54,9 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                 const Content = evaluateSync(e.content, {
                     ...runtime as any,
                     remarkPlugins: [remarkGfm],
+                    useMDXComponents: () => {
+                        return components
+                    }
                 }).default
 
                 return {
