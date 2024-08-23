@@ -10,6 +10,8 @@ import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import {
     BaseButton,
     BaseCard,
+    BaseDropdown,
+    BaseDropdownItem,
     BaseIconBox,
     BaseList,
     BaseListboxItem,
@@ -85,11 +87,10 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
     }, [derivedItems])
 
     return <div className="space-y-4">
-        <div className="flex h-32 border-b gap-4" >
-            filers
-            {/* todo：选择标签 */}
-            {/* todo: 这个 在 focus 时就应该打开 dropdown 了 */}
+        <div className="flex py-2 border-b gap-4 items-center" >
+
             <BaseAutocomplete
+                labelFloat
                 size="sm"
                 multiple
                 label="标签"
@@ -106,6 +107,13 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                 placeholder="搜索..."
                 dropdown
             ></BaseAutocomplete>
+            <BaseDropdown label="Dropdown" size="md" variant="context">
+                <BaseDropdownItem
+                    title="Profile"
+                    text="View your profile"
+                    rounded="sm"
+                />
+            </BaseDropdown>
         </div>
         {/* todo: 如果是链接也不能直接打开吗 */}
         <BaseCard className="p-6">
@@ -117,18 +125,36 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
                     .map((e) => (
                         <BaseListItem
                             // @ts-ignore
-                            title={<div onClick={() => { setActiveItem(e) }}>{e.excerpt}</div>}
-                            key={e.excerpt}
-                            end={
-                                <div className="flex gap-2 flex-nowrap max-w-24 md:max-w-xs lg:max-w-sm items-start overflow-x-auto p-2">
+                            title={e.excerpt}
+                            // @ts-ignore
+                            subtitle={<>
+                                <div className="flex gap-2 flex-nowrap  items-start overflow-x-auto py-1">
                                     {e.tags.map((e) => (
                                         <div key={e} className="cursor-pointer flex-shrink-0" >
-                                            <BaseTag rounded="sm" onClick={() => { dispatch({ type: 'setTags', payload: Array.from(new Set(filters.tags.concat(e))) }) }} key={e} size="sm" color="primary">
-                                                <span>{e}</span>
+                                            <BaseTag
+                                                onClick={() => {
+                                                    dispatch({ type: 'setTags', payload: Array.from(new Set(filters.tags.concat(e))) })
+                                                }}
+                                                key={e}
+                                                size="sm"
+                                                variant="outline"
+                                                color="primary"
+                                            >
+                                                {e}
                                             </BaseTag>
                                         </div>
-                                    ))}
-                                </div>}
+                                    ))}</div></>}
+                            key={e.excerpt}
+                            end={
+                                <BaseDropdown label="Dropdown" variant="context">
+                                    <BaseDropdownItem
+                                        title="详情"
+                                        text="查看详情"
+                                        rounded="sm"
+                                        onClick={() => { setActiveItem(e) }}
+                                    />
+                                </BaseDropdown>
+                            }
                         >
                             {/* <div className="flex items-center justify-center mr-2">
                                 <BaseIconBox mask="blob">
