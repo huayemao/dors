@@ -423,7 +423,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
 
   function handleChange(value: T) {
     if (multiple) {
-      const newList = [...(autocompleteValue as T[]), value];
+      const newList = Array.from(new Set([...(autocompleteValue as T[]), value]));
       props.onChange?.(newList);
       return;
     }
@@ -627,7 +627,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
             <div className="nui-autocomplete-multiple">
               {Array.isArray(autocompleteValue) &&
                 autocompleteValue.length > 0 && (
-                  <ul className="nui-autocomplete-multiple-list h-full py-1 !flex-nowrap overflow-x-scroll w-full nui-slimscroll">
+                  <ul className="nui-autocomplete-multiple-list h-full py-1 !flex-nowrap overflow-x-scroll w-full nui-slimscroll !my-0">
                     {autocompleteValue.map((item) => (
                       <li key={String(item)} className="flex-shrink-0">
                         {props.renderAutocompleteMultipleListItem?.({
