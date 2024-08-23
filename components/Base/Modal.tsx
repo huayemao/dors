@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   Transition,
@@ -6,13 +7,14 @@ import {
 import { BaseButtonClose } from "@shuriken-ui/react";
 
 export const Modal = ({
-  open, onClose, children, title, actions,
+  open, onClose, children, title, actions, className
 }: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
   title: React.ReactNode;
   actions?: React.ReactNode;
+  className?: React.ReactNode;
 }) => {
   return (
     <>
@@ -42,7 +44,12 @@ export const Modal = ({
                         <BaseButtonClose onClick={onClose}></BaseButtonClose>
                       </div>
                     </div>
-                    {children}
+                    <div
+                      className={cn("p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden", className)}
+                    >
+                      {children}
+                    </div>
+
                   </div>
                 </div>
               </Dialog.Panel>

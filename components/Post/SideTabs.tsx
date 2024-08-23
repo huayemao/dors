@@ -90,6 +90,7 @@ export default function SideTabs({ post, posts }) {
         actions={
           <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
         }
+        className={"whitespace-pre-wra"}
         open={markdownOpen}
         onClose={() => {
           setMarkdownOpen(false);
@@ -98,7 +99,6 @@ export default function SideTabs({ post, posts }) {
       >
         <div
           ref={ref}
-          className="p-4 whitespace-pre-wrap max-h-[82vh] overflow-y-auto overflow-x-hidden"
         >
           {post.content}
         </div>

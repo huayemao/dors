@@ -1,8 +1,6 @@
-import { parseMDX } from "@/lib/parseMDX";
 import { getPost, getRecentPosts } from "@/lib/posts";
 import { markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
-import c from "@/styles/post.module.css";
 import "katex/dist/katex.min.css";
 import dynamic from "next/dynamic";
 import { BackButton } from "../BackButton";
@@ -11,6 +9,8 @@ import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
 import CollectionContent from "../Collection/Content";
 import { markdownToJson } from "../Collection/markdownToJson";
+import { parseMDX } from "@/lib/mdx/parseMDX";
+import Prose from "../Base/Prose";
 
 // todo: 这个抽成 content
 
@@ -65,15 +65,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                     ></CollectionContent>
                   </ClientOnly>
                 ) : (
-                  <article
-                    className={
-                      c.content +
-                      " " +
-                      "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
-                    }
-                  >
-                    {content}
-                  </article>
+                  <Prose content={content} />
                 )}
               </div>
             </div>
@@ -90,3 +82,5 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
     </div>
   );
 }
+
+

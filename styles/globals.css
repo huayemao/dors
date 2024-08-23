@@ -153,3 +153,6 @@ a {
   grid-area: 1 / 1 / 2 / 2;
 }
 
+#headlessui-portal-root{
+  z-index: 10;
+}

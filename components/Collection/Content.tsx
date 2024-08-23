@@ -21,6 +21,7 @@ import {
 import { type Item } from "./CollectionEditor";
 import { Modal } from "../Base/Modal";
 import { components } from "@/lib/mdx/useComponents";
+import Prose from "../Base/Prose";
 
 
 export default function CollectionContent({ items }: { items: Item[]; }) {
@@ -141,9 +142,7 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
             </BaseList>
             <Modal title={activeItem?.excerpt?.slice(0, 20) || ''} open={!!activeItem} onClose={() => { setActiveItem(null) }}>
                 <div className="flex justify-center">
-                    <article className="dark:prose-invert prose lg:prose-xl p-6 overflow-hidden">
-                        {activeItem?.mdxContent?.({})}
-                    </article>
+                    <Prose content={activeItem?.mdxContent?.({})}></Prose>
                 </div>
             </Modal>
         </BaseCard>
