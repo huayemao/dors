@@ -62,7 +62,7 @@ export default function CollectionContent({ items }: { items: Item[]; }) {
     }, [items, derivedItems])
 
     useLayoutEffect(() => {
-        const items = document.querySelectorAll('.nui-list-item h6,p');
+        const items = document.querySelectorAll('.nui-list-item h6, nui-list-item p');
         items.forEach((e) => {
             const node = Array.from(e.querySelectorAll('*')).find(e => e.childNodes.length == 1 && e.childNodes[0].nodeType == 3) || e
             if (node && !node.classList.contains('truncate')) {
