@@ -13,7 +13,15 @@ const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
 });
 
-export const Nav = () => {
+export const Nav = ({
+  resourceItems = [],
+}: {
+  resourceItems?: {
+    title: string;
+    subtitle: string;
+    url: string;
+  }[];
+}) => {
   const categories = useContext(CategoriesContext);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -173,6 +181,18 @@ export const Nav = () => {
                   rounded="sm"
                   onClick={closeMobileNav}
                 />
+                {resourceItems.map((e) => {
+                  return (
+                    <BaseDropdownItem
+                      key={e.url}
+                      href={e.url}
+                      title={e.title}
+                      text={e.subtitle}
+                      rounded="sm"
+                      onClick={closeMobileNav}
+                    />
+                  );
+                })}
               </BaseDropdown>
             </li>
             <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">

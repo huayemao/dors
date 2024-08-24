@@ -6,6 +6,10 @@ import { getAllCategories } from "@/lib/categories";
 import { getTags } from "@/lib/tags";
 import { CategoriesContextProvider } from "@/contexts/categories";
 import { TagsContextProvider } from "@/contexts/tags";
+import prisma from "@/lib/prisma";
+import { getNavResourceItems } from "../../lib/getNavResourceItems";
+
+export const revalidate = 3600;
 
 export default async function MainLayout({
   children,
@@ -16,11 +20,16 @@ export default async function MainLayout({
 }) {
   const categories = await getAllCategories({ includeHidden: true });
   const tags = await getTags();
+  const resourceItemsRes = (
+    await prisma.settings.findFirst({ where: { key: "nav_resource" } })
+  )?.value;
+  const resourceItems = getNavResourceItems(resourceItemsRes);
+
   return (
     <>
       <CategoriesContextProvider Categories={categories}>
         <TagsContextProvider tags={tags}>
-          <Nav></Nav>
+          <Nav resourceItems={resourceItems}></Nav>
           <main className="flex-1 bg-muted-100">
             <section className="w-full bg-muted-100 dark:bg-muted-900">
               <div className="w-full max-w-6xl mx-auto">
@@ -44,8 +53,9 @@ export default async function MainLayout({
             </section>
           </main>
           <Footer />
-        </TagsContextProvider >
+        </TagsContextProvider>
       </CategoriesContextProvider>
     </>
   );
 }
+

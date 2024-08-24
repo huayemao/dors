@@ -26,7 +26,6 @@ export default async function RootLayout({
   children: JSX.Element;
   params: any;
 }) {
-
   return (
     <ShurikenUIProvider>
       <html lang="zh-CN">
