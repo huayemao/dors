@@ -1,5 +1,5 @@
 import { Posts } from "@/components/Posts";
-import { getAllCategories } from "@/lib/server/categories";
+import { getAllCategories } from "@/lib/categories";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
 

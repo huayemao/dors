@@ -1,14 +1,14 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma, { Prisma, tags } from "@/lib/prisma";
-import { cache } from "react";
-import { getHiddenCategoryIds } from "./server/categories";
+import { getHiddenCategoryIds } from "./categories";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { getBlurImage, getImageBuffer, getSmallImage } from "./server/image";
 import { updatePostTags } from "./server/tags";
 import { PexelsPhoto } from "./types/PexelsPhoto";
 import { getPexelImages, getWordCount, isDataURL, markdownToHtml } from "./utils";
+import { unstable_cache } from "next/cache";
 
-export const getPost = cache(async (id: number) => {
+export const getPost = unstable_cache(async (id: number) => {
   const res = await prisma.posts.findUnique({
     where: {
       id: id,
@@ -44,6 +44,8 @@ export const getPost = cache(async (id: number) => {
     tags: res?.tags_posts_links.map((e) => e.tags),
     wordCount,
   };
+}, ['post'], {
+  tags: ['post']
 });
 
 export interface FindManyArgs {
@@ -51,7 +53,7 @@ export interface FindManyArgs {
   skip?: number;
 }
 
-export const getPostIds = cache(async (params?: { protected?: boolean }) => {
+export const getPostIds = unstable_cache(async (params?: { protected?: boolean }) => {
   return await prisma.posts.findMany({
     orderBy: {
       updated_at: "desc",
@@ -73,7 +75,7 @@ type getPostOptions = PaginateOptions & {
   includeHiddenCategories?: boolean;
 };
 
-export const getPosts = cache(async (options: getPostOptions = {}) => {
+export const getPosts = unstable_cache(async (options: getPostOptions = {}) => {
   return await Promise.all(
     (
       await getAllPosts(options)
@@ -87,6 +89,8 @@ export const getPosts = cache(async (options: getPostOptions = {}) => {
       };
     })
   );
+}, ['all-posts'], {
+  tags: ['posts']
 });
 
 async function randomlyUpdatePhoto(id: number) {
@@ -131,7 +135,7 @@ async function getAllPosts(options: getPostOptions = {}) {
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> =
     await getWhereInput(options);
 
-  return await prisma.posts.findMany({
+  const res = await prisma.posts.findMany({
     where: {
       AND: whereInput,
       NOT: {
@@ -160,6 +164,7 @@ async function getAllPosts(options: getPostOptions = {}) {
     take: perPage,
     skip,
   });
+  return res
 }
 
 type ProcessedPost = Awaited<ReturnType<typeof getPosts>>[0] & {
@@ -239,7 +244,7 @@ export async function getProcessedPosts(
   return postsWithImageURLs;
 }
 
-export const getPageCount = cache(
+export const getPageCount = unstable_cache(
   async (options: Omit<getPostOptions, "page"> = {}) => {
     const whereInputArr = await getWhereInput(options);
 

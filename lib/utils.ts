@@ -25,8 +25,7 @@ export async function getPexelImages(
   ];
   const query = keywordArr[Math.floor(Math.random() * keywordArr.length)];
   return await fetch(
-    `https://api.pexels.com/v1/search?query=${query}&per_page=${length}&page=${
-      Math.floor(Math.random() * (888 / length)) + 1
+    `https://api.pexels.com/v1/search?query=${query}&per_page=${length}&page=${Math.floor(Math.random() * (888 / length)) + 1
     }&orientation=landscape`,
     {
       headers: {
@@ -78,7 +77,10 @@ export function humanFileSize(size: number | bigint) {
   return `${size} ${units[i]}`;
 }
 
-export function getDateString(date: Date) {
+export function getDateString(date: Date | string) {
+  if (typeof date == 'string') {
+    date = new Date(date);
+  }
   const year = date.getFullYear(); // 获取年份
   const month = date.getMonth() + 1; // 获取月份（加 1 是因为月份从 0 开始）
   const day = date.getDate(); // 获取日期

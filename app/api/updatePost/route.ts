@@ -1,6 +1,6 @@
 import { getPost, updatePost } from "@/lib/posts";
 import { revalidateHomePage } from "@/lib/utils/retalidate";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { readPostFormData } from "./readPostFormData";
 
@@ -69,15 +69,18 @@ export async function POST(request: Request) {
   });
 
   await revalidateHomePage(res.id);
+  await revalidateTag('post')
 
 
   if (post.protected) {
-    await revalidatePath("/protected/" + post.id);
-    await revalidatePath("/(content)/protected/" + post.id);
+    revalidatePath("/protected/" + post.id);
+    revalidatePath("/(content)/protected/" + post.id);
+  }
+  else {
+    revalidatePath("/posts/" + post.id);
+    revalidatePath("/(content)/posts/" + post.id);
   }
 
-  await revalidatePath("/posts/" + post.id);
-  await revalidatePath("/(content)/posts/" + post.id);
 
   if (request.headers.get("accept") === "application/json") {
     return new NextResponse(

@@ -2,7 +2,7 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { SITE_META } from "@/constants";
 import { Categories } from "../../components/Categories";
-import { getAllCategories } from "@/lib/server/categories";
+import { getAllCategories } from "@/lib/categories";
 import { getTags } from "@/lib/server/tags";
 import { CategoriesContextProvider } from "@/contexts/categories";
 import { TagsContextProvider } from "@/contexts/tags";
@@ -20,7 +20,7 @@ export default async function MainLayout({
 }) {
   const categories = await getAllCategories({ includeHidden: true });
   const tags = await getTags();
-  const resourceItems = await unstable_cache(getResourceItems)();
+  const resourceItems = await getResourceItems();
 
   return (
     <>

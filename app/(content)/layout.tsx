@@ -2,8 +2,6 @@ import { Nav } from "@/components/Nav";
 import { getResourceItems } from "@/lib/server/resource";
 import { unstable_cache } from "next/cache";
 
-export const revalidate = 3600;
-
 export default async function ContentLayout({
   children,
   params,
@@ -11,7 +9,7 @@ export default async function ContentLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const resourceItems = await unstable_cache(getResourceItems)();
+  const resourceItems = await getResourceItems();
 
   return (
     <div className="z-0">

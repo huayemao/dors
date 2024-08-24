@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request, response: Response) {
@@ -33,6 +34,8 @@ export async function POST(request: Request, response: Response) {
 
       return NextResponse.json(res);
     }
-    console.log(error)
+    console.error(error)
   }
+
+  revalidateTag('settings_' + key)
 }
