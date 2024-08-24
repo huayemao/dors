@@ -78,9 +78,6 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
         </div>
       </section>
       {post.type != "collection" && <ContentModal></ContentModal>}
-      <LightBox></LightBox>
     </div>
   );
 }
-
-

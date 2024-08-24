@@ -90,7 +90,7 @@ export default function SideTabs({ post, posts }) {
         actions={
           <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
         }
-        className={"whitespace-pre-wra"}
+        className={"whitespace-pre-wrap"}
         open={markdownOpen}
         onClose={() => {
           setMarkdownOpen(false);
