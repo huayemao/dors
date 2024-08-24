@@ -21,6 +21,7 @@ import {
   BaseDropdownItem,
   BaseIconBox,
   BaseList,
+  BaseListbox,
   BaseListboxItem,
   BaseListItem,
   BaseTag,
@@ -105,24 +106,19 @@ export default function CollectionContent({ items }: { items: Item[] }) {
   return (
     <div className="space-y-4">
       <div className="flex py-2 border-b gap-4 items-center">
-        <BaseAutocomplete
-          labelFloat
-          size="sm"
-          multiple
+        <BaseListbox
           label="标签"
-          items={allTags}
+          labelFloat
           onChange={(v) => {
             dispatch({
               payload: v,
               type: "setTags",
             });
           }}
-          value={filters.tags}
-          rounded="md"
-          icon="lucide:list-filter"
-          placeholder="搜索..."
-          dropdown
-        ></BaseAutocomplete>
+          multiple
+          items={allTags}
+          size="sm"
+        ></BaseListbox>
         <BaseDropdown label="Dropdown" size="md" variant="context">
           <BaseDropdownItem
             title="Profile"
@@ -170,7 +166,12 @@ export default function CollectionContent({ items }: { items: Item[] }) {
                 }
                 key={e.excerpt}
                 end={
-                  <BaseDropdown label="Dropdown" variant="context" fixed>
+                  <BaseDropdown
+                    placement="bottom-end"
+                    label="Dropdown"
+                    variant="context"
+                    fixed
+                  >
                     <BaseDropdownItem
                       title="详情"
                       text="查看详情"
