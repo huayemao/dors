@@ -1,20 +1,22 @@
 "use client";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  Transition,
-} from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { BaseButtonClose } from "@shuriken-ui/react";
 
 export const Modal = ({
-  open, onClose, children, title, actions, className
+  open,
+  onClose,
+  children,
+  title,
+  actions,
+  className,
 }: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
   title: React.ReactNode;
   actions?: React.ReactNode;
-  className?: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <>
@@ -45,11 +47,13 @@ export const Modal = ({
                       </div>
                     </div>
                     <div
-                      className={cn("p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden", className)}
+                      className={cn(
+                        "p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden",
+                        className
+                      )}
                     >
                       {children}
                     </div>
-
                   </div>
                 </div>
               </Dialog.Panel>
