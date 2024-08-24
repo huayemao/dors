@@ -1,5 +1,6 @@
 "use client";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
+import { type Prisma } from "@prisma/client";
 import { useState } from "react";
 
 export function HiddenCatsForm({
@@ -8,20 +9,24 @@ export function HiddenCatsForm({
 }: {
   settings: {
     key: string;
-    value: string;
+    value: Prisma.JsonValue;
   }[];
   cats: { id: number; name: string | null }[];
 }) {
-  let hiddenCats = JSON.parse(
-    settings.find((e) => e.key === "hidden_categories")?.value || "[]"
-  );
+  let hiddenCats =
+    (settings.find((e) => e.key === "hidden_categories")?.value as []) || [];
+
+  if (typeof hiddenCats === "string") {
+    hiddenCats = JSON.parse(hiddenCats);
+  }
 
   if (!Array.isArray(hiddenCats)) {
+    // @ts-ignore
     hiddenCats = [hiddenCats];
   }
 
   const [value, setValue] = useState(
-    hiddenCats.map((e) => cats.find((c) => c.id == e)).sort()
+    hiddenCats.map((e) => cats.find((c) => c.id == e)!).sort()
   );
 
   return (

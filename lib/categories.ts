@@ -29,8 +29,12 @@ export const getHiddenCategoryIds = cache(async () => {
     where: { key: "hidden_categories" },
   });
 
+  if (typeof settings?.value === 'string') {
+    settings.value = JSON.parse(settings.value)
+  }
+
   const ids = settings?.value
-    ? JSON.parse(settings.value).map((e) => parseInt(e))
+    ? (settings.value as any[]).map((e) => parseInt(e))
     : [];
   return ids as number[];
 });

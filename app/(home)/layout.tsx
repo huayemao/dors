@@ -23,7 +23,7 @@ export default async function MainLayout({
   const resourceItemsRes = (
     await prisma.settings.findFirst({ where: { key: "nav_resource" } })
   )?.value;
-  const resourceItems = getNavResourceItems(resourceItemsRes);
+  const resourceItems = getNavResourceItems(resourceItemsRes as string[]);
 
   return (
     <>

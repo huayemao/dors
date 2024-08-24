@@ -5,14 +5,14 @@ import { ResourceForm } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
 import { Panel } from "@/components/Base/Panel";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default async function AdminSettingsPage({ params }) {
   const cats = await getAllCategories({ includeHidden: true });
   const settings = await prisma.settings.findMany({});
 
   return (
-    <main className="w-full px-8 py-4">
+    <main className="w-full px-4 lg:px-8 py-4">
       <section className="space-y-4">
         <Panel title="缓存">
           <RevalidateButton></RevalidateButton>

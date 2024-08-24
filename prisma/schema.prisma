@@ -578,7 +578,7 @@ model posts_category_links {
 
 model settings {
   key   String @id
-  value String
+  value Json
 }
 
 model File {

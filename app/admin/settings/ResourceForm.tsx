@@ -1,6 +1,7 @@
 "use client";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { getNavResourceItems } from "@/lib/getNavResourceItems";
+import { type Prisma } from "@prisma/client";
 import {
   BaseButton,
   BaseDropdown,
@@ -18,14 +19,14 @@ export function ResourceForm({
 }: {
   settings: {
     key: string;
-    value: string;
+    value: Prisma.JsonValue;
   }[];
 }) {
   const settingItemValue = settings.find(
     (e) => e.key === "nav_resource"
   )?.value;
 
-  let resourceList = getNavResourceItems(settingItemValue);
+  let resourceList = getNavResourceItems(settingItemValue as any[] | undefined);
 
   if (!Array.isArray(resourceList)) {
     resourceList = [resourceList];
@@ -58,9 +59,15 @@ export function ResourceForm({
         确定
       </BaseButton>
       <form action="/api/settings" method="POST">
-        <input type="text" name="key" value={"nav_resource"} />
+        <input
+          className="hidden"
+          type="text"
+          name="key"
+          value={"nav_resource"}
+        />
         {value.map((v) => (
           <textarea
+            className="hidden"
             key={v.url}
             name="value"
             value={JSON.stringify(v)}

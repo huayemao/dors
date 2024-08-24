@@ -14,7 +14,7 @@ export default async function ContentLayout({
   const resourceItemsRes = (
     await prisma.settings.findFirst({ where: { key: "nav_resource" } })
   )?.value;
-  const resourceItems = getNavResourceItems(resourceItemsRes);
+  const resourceItems = getNavResourceItems(resourceItemsRes as string[]);
 
   return (
     <div className="z-0">

@@ -117,8 +117,12 @@ export async function getFeaturedPostIds() {
     },
   });
 
-  const postIds = res ? JSON.parse(res?.value || "") : [];
-  return postIds;
+  if (typeof res?.value === 'string') {
+    res.value = JSON.parse(res.value)
+  }
+  const postIds = res?.value || [];
+
+  return postIds as number[];
 }
 
 async function getAllPosts(options: getPostOptions = {}) {

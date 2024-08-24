@@ -17,7 +17,7 @@ export async function POST(request: Request, response: Response) {
       },
       data: {
         key,
-        value: JSON.stringify(value),
+        value: value,
       },
     });
 
@@ -27,11 +27,12 @@ export async function POST(request: Request, response: Response) {
       const res = await prisma.settings.create({
         data: {
           key,
-          value: JSON.stringify(value),
+          value: value,
         },
       });
 
       return NextResponse.json(res);
     }
+    console.log(error)
   }
 }
