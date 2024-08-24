@@ -4,7 +4,7 @@ import QA from "@/components/Question";
 import { Modal } from "@/components/Base/Modal";
 import { type Question } from "@/lib/types/Question";
 import { withConfirm } from "@/lib/utils";
-import { BaseButtonIcon } from "@shuriken-ui/react";
+import { BaseButton, BaseButtonIcon } from "@shuriken-ui/react";
 import localforage from "localforage";
 import { Edit2, Trash } from "lucide-react";
 import { useEffect } from "react";
@@ -119,7 +119,38 @@ export default function Question() {
           </div>
         </div>
       ) : (
-        <QAForm />
+        <>
+          <QAForm />
+          <div className="sticky bg-white flex w-full items-center gap-x-2 justify-end -bottom-4 left-0 right-0">
+            <div className="p-4 md:p-6">
+              <div className="flex gap-x-2">
+                <BaseButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (history.length) {
+                      navigate(-1);
+                    } else {
+                      navigate("..", { replace: true });
+                    }
+                  }}
+                  type="button"
+                >
+                  取消
+                </BaseButton>
+                <BaseButton
+                  type="submit"
+                  variant="solid"
+                  color="primary"
+                  size="md"
+                  // @ts-ignore
+                  form="qa"
+                >
+                  确定
+                </BaseButton>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </Modal>
   );

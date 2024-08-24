@@ -10,6 +10,6 @@ export default function Page() {
     if (currentCollection) {
       navigate("./" + currentCollection.id, { state: { __NA: {} } });
     }
-  }, [currentCollection]);
+  }, [currentCollection, navigate]);
   return <></>;
 }

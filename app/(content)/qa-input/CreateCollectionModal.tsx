@@ -4,13 +4,14 @@ import { BaseButton, BaseInput } from "@shuriken-ui/react";
 import { DOMAttributes, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQAs, useQAsDispatch } from "./contexts";
+import { useCloseModal } from "./useCloseModal";
 
 export default function CreateCollectionModal() {
   const dispatch = useQAsDispatch();
   const cancel = () => {
     dispatch({ type: "CANCEL" });
   };
-  const navigate = useNavigate();
+  const close = useCloseModal();
   const { currentCollection, collectionList, modalOpen, questionModalMode } =
     useQAs();
   useEffect(() => {
@@ -20,22 +21,10 @@ export default function CreateCollectionModal() {
     };
   }, []);
   return (
-    <Modal
-      open={modalOpen}
-      onClose={handleOnClose}
-      title={currentCollection.name}
-    >
-      <CollectionForm onClose={handleOnClose} />
+    <Modal open={modalOpen} onClose={close} title={currentCollection.name}>
+      <CollectionForm onClose={close} />
     </Modal>
   );
-
-  function handleOnClose() {
-    if (history.length) {
-      navigate(-1);
-    } else {
-      navigate("..", { replace: true });
-    }
-  }
 }
 
 function CollectionForm({ onClose }) {
