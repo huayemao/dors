@@ -75,7 +75,7 @@ function PostTile({
   const cat = post!.posts_category_links![0].categories!;
 
   return (
-    <div className="relative" key={id}>
+    <hgroup className="relative" key={id}>
       <Link
         href={"/posts/" + id}
         className="block h-full w-full rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 overflow-hidden
@@ -126,6 +126,7 @@ function PostTile({
               href={`/categories/${cat.id}`}
               name={cat.name as string}
               key={cat.id}
+              as={'span'}
             />
             <div className="block ml-auto font-sans text-sm text-muted-400 text-right">
               <div>
@@ -138,7 +139,7 @@ function PostTile({
           </div>
         </div>
       </Link>
-    </div>
+    </hgroup>
   );
 }
 

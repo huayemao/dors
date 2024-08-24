@@ -30,6 +30,10 @@ export default async function RootLayout({
     <ShurikenUIProvider>
       <html lang="zh-CN">
         <head>
+          <meta
+            name="msvalidate.01"
+            content="367ED36ACEB18DEFBDC5FD0CE17B995B"
+          />
           {/* <style>
           {` 
           @page {

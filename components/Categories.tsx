@@ -24,6 +24,7 @@ export function Categories() {
         .filter((e) => !e.hidden)
         .map((cat) => (
           <Category
+            as={"h2"}
             href={`/categories/${cat.id}`}
             name={cat.name as string}
             key={cat.id}
