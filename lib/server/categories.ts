@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
-import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
-export const getAllCategories = cache(
+export const getAllCategories = unstable_cache(
   async (options?: { includeHidden?: boolean }) => {
     const where = {};
     const ids = await getHiddenCategoryIds();
@@ -24,7 +24,7 @@ export const getAllCategories = cache(
   }
 );
 
-export const getHiddenCategoryIds = cache(async () => {
+export const getHiddenCategoryIds = unstable_cache(async () => {
   const settings = await prisma.settings.findFirst({
     where: { key: "hidden_categories" },
   });
@@ -39,7 +39,7 @@ export const getHiddenCategoryIds = cache(async () => {
   return ids as number[];
 });
 
-export const getHiddenCategories = cache(async () => {
+export const getHiddenCategories = unstable_cache(async () => {
   const ids = await getHiddenCategoryIds();
   return await prisma.categories.findMany({
     orderBy: {

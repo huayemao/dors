@@ -1,4 +1,4 @@
-import { getTags } from "@/lib/tags";
+import { getTags } from "@/lib/server/tags";
 import Link from "next/link";
 import { TagForm } from "./TagForm";
 

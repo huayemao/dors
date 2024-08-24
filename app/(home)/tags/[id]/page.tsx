@@ -1,7 +1,7 @@
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/posts";
-import { getTagIds } from "@/lib/tags";
+import { getTagIds } from "@/lib/server/tags";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;

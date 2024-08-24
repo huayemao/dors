@@ -1,4 +1,4 @@
-import { getAllCategories } from "@/lib/categories";
+import { getAllCategories } from "@/lib/server/categories";
 import prisma from "@/lib/prisma";
 import { HiddenCatsForm } from "./HiddenCatsForm";
 import { ResourceForm } from "./ResourceForm";

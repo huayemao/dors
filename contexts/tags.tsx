@@ -1,6 +1,6 @@
 "use client";
 
-import { getTags } from "@/lib/tags";
+import { getTags } from "@/lib/server/tags";
 import { FC, PropsWithChildren, createContext } from "react";
 
 const initialState = [];

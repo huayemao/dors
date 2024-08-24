@@ -1,11 +1,11 @@
 import prisma from "@/lib/prisma";
-import { cache } from "react";
-import { getPost } from "./posts";
+import { getPost } from "../posts";
+import { unstable_cache } from "next/cache";
 
 // todo: 如果要能检索全部文章的话，摘要得单独拿出来，方便用来渲染文章
 // 否则会导致渲染摘要时总是要取出 content，数据量过大
 
-export const getTagIds = cache(async () => {
+export const getTagIds = unstable_cache(async () => {
   return await Promise.all(
     await prisma.tags.findMany({
       orderBy: {
@@ -18,7 +18,7 @@ export const getTagIds = cache(async () => {
   );
 });
 
-export const getTags = cache(async () => {
+export const getTags = unstable_cache(async () => {
   return await Promise.all(
     await prisma.tags.findMany({
       orderBy: {

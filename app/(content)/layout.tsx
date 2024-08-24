@@ -1,6 +1,6 @@
 import { Nav } from "@/components/Nav";
-import { getNavResourceItems } from "@/lib/getNavResourceItems";
-import prisma from "@/lib/prisma";
+import { getResourceItems } from "@/lib/server/resource";
+import { unstable_cache } from "next/cache";
 
 export const revalidate = 3600;
 
@@ -11,10 +11,7 @@ export default async function ContentLayout({
   children: JSX.Element;
   params: any;
 }) {
-  const resourceItemsRes = (
-    await prisma.settings.findFirst({ where: { key: "nav_resource" } })
-  )?.value;
-  const resourceItems = getNavResourceItems(resourceItemsRes as string[]);
+  const resourceItems = await unstable_cache(getResourceItems)();
 
   return (
     <div className="z-0">

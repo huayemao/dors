@@ -1,5 +1,5 @@
-import { getAllCategories } from "@/lib/categories";
-import { getTags } from "@/lib/tags";
+import { getAllCategories } from "@/lib/server/categories";
+import { getTags } from "@/lib/server/tags";
 import { CategoriesContextProvider } from "@/contexts/categories";
 import { TagsContextProvider } from "@/contexts/tags";
 import { Nav } from "./Nav";

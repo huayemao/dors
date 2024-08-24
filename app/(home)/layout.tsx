@@ -2,12 +2,12 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { SITE_META } from "@/constants";
 import { Categories } from "../../components/Categories";
-import { getAllCategories } from "@/lib/categories";
-import { getTags } from "@/lib/tags";
+import { getAllCategories } from "@/lib/server/categories";
+import { getTags } from "@/lib/server/tags";
 import { CategoriesContextProvider } from "@/contexts/categories";
 import { TagsContextProvider } from "@/contexts/tags";
-import prisma from "@/lib/prisma";
-import { getNavResourceItems } from "../../lib/getNavResourceItems";
+import { getResourceItems } from "@/lib/server/resource";
+import { unstable_cache } from "next/cache";
 
 export const revalidate = 3600;
 
@@ -20,10 +20,7 @@ export default async function MainLayout({
 }) {
   const categories = await getAllCategories({ includeHidden: true });
   const tags = await getTags();
-  const resourceItemsRes = (
-    await prisma.settings.findFirst({ where: { key: "nav_resource" } })
-  )?.value;
-  const resourceItems = getNavResourceItems(resourceItemsRes as string[]);
+  const resourceItems = await unstable_cache(getResourceItems)();
 
   return (
     <>
@@ -58,4 +55,3 @@ export default async function MainLayout({
     </>
   );
 }
-

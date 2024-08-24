@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllCategories } from "@/lib/categories";
+import { getAllCategories } from "@/lib/server/categories";
 import { FC, PropsWithChildren, createContext } from "react";
 
 const initialState = [];
