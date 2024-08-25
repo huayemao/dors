@@ -8,10 +8,10 @@ import {
 } from "./contexts";
 import { QAForm } from "./QAForm";
 import NotesPage from "./page";
-
-const Route = dynamic(() => import("@/lib/client/createEntity/Route"), {
-  ssr: false,
-});
+import Route from "@/lib/client/createEntity/Route";
+import { ClientOnly } from "@/components/ClientOnly";
+import Prose from "@/components/Base/Prose";
+import { DEFAULT_QUESTION } from "./constants";
 
 const Container = () => {
   const state = useEntity();
@@ -19,6 +19,9 @@ const Container = () => {
 
   return (
     <Route
+      renderEntity={(el) => (
+        <Prose content={(el as typeof DEFAULT_QUESTION).content}></Prose>
+      )}
       state={state}
       dispatch={dispatch}
       RootPage={NotesPage}
@@ -32,7 +35,9 @@ const Container = () => {
 export default function QAsLayout({}) {
   return (
     <EntityContextProvider>
-      <Container></Container>
+      <ClientOnly>
+        <Container></Container>
+      </ClientOnly>
     </EntityContextProvider>
   );
 }

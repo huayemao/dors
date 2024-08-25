@@ -3,7 +3,7 @@ import CollectionLayout from "@/lib/client/createEntity/Collection";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
-import { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, ReactNode } from "react";
 import {
   BaseEntity,
   createEntityContext,
@@ -30,7 +30,9 @@ export default function Route({
   createForm,
   updateForm,
   RootPage,
+  renderEntity,
 }: {
+  renderEntity: (entity: BaseEntity) => ReactNode;
   basename: string;
   createForm: FC<PropsWithChildren>;
   updateForm: FC<PropsWithChildren>;
@@ -61,6 +63,7 @@ export default function Route({
             path: ":entityId",
             element: (
               <ViewOrEditEntityModal
+                renderEntity={renderEntity}
                 state={state}
                 dispatch={dispatch}
                 form={createForm}

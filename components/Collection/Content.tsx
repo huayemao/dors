@@ -34,6 +34,7 @@ import { Modal } from "../Base/Modal";
 import { components } from "@/lib/mdx/useComponents";
 import Prose from "../Base/Prose";
 import { Edit } from "lucide-react";
+import { parseMDXClient } from "@/lib/mdx/parseMDXClient";
 
 export default function CollectionContent({ items }: { items: Item[] }) {
   const [derivedItems, setDerivedItems] = useState(items);
@@ -67,14 +68,7 @@ export default function CollectionContent({ items }: { items: Item[] }) {
     if (derivedItems.some((e) => e.content && !e.excerpt && !e.mdxContent)) {
       Promise.all(
         derivedItems.map(async (e) => {
-          const Content = evaluateSync(e.content, {
-            ...(runtime as any),
-            remarkPlugins: [remarkGfm],
-            useMDXComponents: () => {
-              return components;
-            },
-          }).default;
-
+          const Content = parseMDXClient(e.content);
           return {
             ...e,
             excerpt: await markdownExcerpt(e.content),

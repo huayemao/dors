@@ -6,16 +6,19 @@ import { withConfirm } from "@/lib/utils";
 import { BaseButton, BaseButtonIcon } from "@shuriken-ui/react";
 import localforage from "localforage";
 import { Edit2, Trash } from "lucide-react";
-import { FC, PropsWithChildren, useEffect } from "react";
+import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
 import { BaseEntity, EntityDispatch, EntityState } from "./createEntityContext";
+import Prose from "@/components/Base/Prose";
 
 export default function ViewOrEditEntityModal({
   state,
   dispatch,
   form: Form,
+  renderEntity,
 }: {
+  renderEntity: (entity: BaseEntity) => ReactNode;
   form: FC<PropsWithChildren>;
   state: EntityState;
   dispatch: EntityDispatch;
@@ -109,8 +112,7 @@ export default function ViewOrEditEntityModal({
       {questionModalMode == "view" ? (
         <div className="md:px-12">
           <div className="p-8 flex justify-center w-full ">
-            xxx
-            {/* <QA data={currentQuestion} /> */}
+            {renderEntity(currentQuestion)}
           </div>
         </div>
       ) : (
