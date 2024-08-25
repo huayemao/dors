@@ -23,7 +23,9 @@ import react, {
   useState,
 } from "react";
 import { Avatar } from "../Avatar";
-import { NavigationItem, NavigationItemProps } from "./Menu";
+import { NavigationItem, NavigationItemProps } from "./NavigationItem";
+import { MenuButton } from "./MenuButton";
+import useScrolled from "./useScroll";
 
 const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
@@ -39,24 +41,8 @@ export const Nav = ({
   }[];
 }) => {
   const categories = useContext(CategoriesContext);
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  function scrollHeader() {
-    // When the scroll is greater than 60 viewport height, add the scroll-header class to the header tag
-    if (window.scrollY >= 60 && !scrolled) {
-      setScrolled(true);
-    } else setScrolled(false);
-  }
-
-  useEffect(() => {
-    scrollHeader();
-    window.addEventListener("scroll", scrollHeader);
-
-    return () => {
-      window.removeEventListener("scroll", scrollHeader);
-    };
-  }, []);
+  const scrolled = useScrolled(60);
 
   useEffect(() => {
     if (mobileOpen) {
@@ -69,40 +55,6 @@ export const Nav = ({
   const closeMobileNav = useCallback(() => {
     setMobileOpen(false);
   }, []);
-
-  const MenuButton = (
-    <button
-      onClick={() => {
-        setMobileOpen((open) => !open);
-      }}
-      className="flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden"
-    >
-      <div
-        className={cn(
-          "block top-1/2 left-6 w-4 -translate-x-1/2 -translate-y-1/2"
-        )}
-      >
-        <span
-          className={cn(
-            "block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out",
-            mobileOpen ? "rotate-45" : "-translate-y-2"
-          )}
-        ></span>
-        <span
-          className={cn(
-            "block absolute w-5 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out",
-            mobileOpen ? "opacity-0" : ""
-          )}
-        ></span>
-        <span
-          className={cn(
-            "block absolute w-7 h-0.5 text-primary-500 bg-current transition duration-500 ease-in-out",
-            mobileOpen ? "-rotate-45" : "translate-y-2"
-          )}
-        ></span>
-      </div>
-    </button>
-  );
 
   const menuItems: NavigationItemProps[] = [
     {
@@ -197,7 +149,10 @@ export const Nav = ({
             <Avatar alt />
             <span className="font-heading font-bold text-2xl ml-3">Dors</span>
           </Link>
-          {MenuButton}
+          <MenuButton
+            setMobileOpen={setMobileOpen}
+            mobileOpen={mobileOpen}
+          ></MenuButton>
         </div>
         <div
           id="nav-content"
@@ -211,7 +166,11 @@ export const Nav = ({
         >
           <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
             {menuItems.map((e) => (
-              <NavigationItem key={e.href} {...e} onClick={closeMobileNav}></NavigationItem>
+              <NavigationItem
+                key={e.href}
+                {...e}
+                onClick={closeMobileNav}
+              ></NavigationItem>
             ))}
           </ul>
           <div className="lg:hidden absolute bottom-4 flex justify-center">
