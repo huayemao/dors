@@ -2,8 +2,9 @@ import { Modal } from "@/components/Base/Modal";
 import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { FormFoot } from "./FormFoot";
 import { EntityDispatch, EntityState } from "./createEntityContext";
+import { useCloseModal } from "./useCloseModal";
 
-export default function CreateQuestionModal({
+export default function CreateEntityModal({
   state,
   dispatch,
   form: Form,
@@ -20,6 +21,8 @@ export default function CreateQuestionModal({
     modalOpen,
     questionModalMode,
   } = state;
+
+  const close = useCloseModal();
   
   useEffect(() => {
     dispatch({ type: "SET_MODAL_OPEN", payload: true });

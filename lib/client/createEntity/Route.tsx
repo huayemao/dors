@@ -1,7 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import CollectionLayout from "@/lib/client/createEntity/Collection";
 import CreateCollectionModal from "./CreateCollectionModal";
-import CreateQuestionModal from "./CreateEntityModal";
+import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
 import { FC, PropsWithChildren } from "react";
 import {
@@ -71,11 +71,11 @@ export default function Route({
           {
             path: "create",
             element: (
-              <CreateQuestionModal
+              <CreateEntityModal
                 state={state}
                 dispatch={dispatch}
                 form={updateForm}
-              ></CreateQuestionModal>
+              ></CreateEntityModal>
             ),
           },
           {
