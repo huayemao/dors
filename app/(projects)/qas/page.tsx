@@ -1,9 +1,9 @@
 "use client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQAs } from "./contexts";
-export default function Page() {
-  const { currentCollection } = useQAs();
+import { useEntity } from "./contexts";
+export default function QAsPage() {
+  const { currentCollection } = useEntity();
   const navigate = useNavigate();
 
   useEffect(() => {

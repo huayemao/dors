@@ -1,6 +1,3 @@
-"use client";
-
-import QA from "@/components/Question";
 import { type Question } from "@/lib/types/Question";
 import { readFromClipboard } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/utils/copyToClipboard";
@@ -12,11 +9,22 @@ import {
   BaseIconBox,
 } from "@shuriken-ui/react";
 import { CopyIcon, EditIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
-import { useEntity, useEntityDispatch } from "../../../app/(projects)/notes/contexts";
+import { BaseEntity, EntityDispatch, EntityState } from "./createEntityContext";
 
-export default function CollectionLayout() {
+export default function CollectionLayout({
+  renderEntity,
+  state,
+  dispatch,
+}: {
+  state: EntityState;
+  dispatch: EntityDispatch;
+  renderEntity: (
+    entity: BaseEntity,
+    options: { preview: boolean }
+  ) => ReactNode;
+}) {
   const params = useParams();
 
   const {
@@ -26,13 +34,11 @@ export default function CollectionLayout() {
     entityList: entityList,
     modalOpen,
     questionModalMode,
-  } = useEntity();
+  } = state;
 
   const collection = collectionList.find(
     (e) => e.id == Number(params!.collectionId)
   );
-
-  const dispatch = useEntityDispatch();
 
   useEffect(() => {
     if (collection) {
@@ -131,6 +137,7 @@ export default function CollectionLayout() {
             data-nui-tooltip="新建题目"
             onClick={() => {
               navigate("./create");
+
               // open();
               // toAddQA();
             }}
@@ -148,7 +155,7 @@ export default function CollectionLayout() {
                     className=" break-inside-avoid my-3 p-4"
                   >
                     <div className="relative">
-                      <QA preview data={e} />
+                      {renderEntity(e, { preview: true })}
                     </div>
                   </BaseCard>
                 </Link>

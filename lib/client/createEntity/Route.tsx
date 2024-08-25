@@ -32,7 +32,10 @@ export default function Route({
   RootPage,
   renderEntity,
 }: {
-  renderEntity: (entity: BaseEntity) => ReactNode;
+  renderEntity: (
+    entity: BaseEntity,
+    options: { preview: boolean }
+  ) => ReactNode;
   basename: string;
   createForm: FC<PropsWithChildren>;
   updateForm: FC<PropsWithChildren>;
@@ -57,7 +60,13 @@ export default function Route({
       },
       {
         path: ":collectionId",
-        element: <CollectionLayout></CollectionLayout>,
+        element: (
+          <CollectionLayout
+            state={state}
+            dispatch={dispatch}
+            renderEntity={renderEntity}
+          ></CollectionLayout>
+        ),
         children: [
           {
             path: ":entityId",

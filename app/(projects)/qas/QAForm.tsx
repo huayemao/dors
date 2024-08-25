@@ -3,16 +3,20 @@ import Select from "@/components/Base/Select";
 import { type Question } from "@/lib/types/Question";
 import { readFromClipboard } from "@/lib/utils";
 import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
-import { DOMAttributes } from "react";
+import { DOMAttributes, FC, PropsWithChildren } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { DEFAULT_OPTIONS } from "./constants";
-import { useQAs, useQAsDispatch } from "./contexts";
-import { useCloseModal } from "./useCloseModal";
+import { useEntity, useEntityDispatch } from "./contexts";
+import { useCloseModal } from "@/lib/client/createEntity/useCloseModal";
 
-export function QAForm() {
-  const close = useCloseModal()
-  const { questionModalMode, currentQuestion, questionList } = useQAs();
-  const dispatch = useQAsDispatch();
+export const QAForm: FC<PropsWithChildren> = ({ children }) => {
+  const close = useCloseModal();
+  const {
+    questionModalMode,
+    currentEntity: currentQuestion,
+    entityList: questionList,
+  } = useEntity();
+  const dispatch = useEntityDispatch();
   const options = currentQuestion?.options || DEFAULT_OPTIONS;
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
@@ -54,15 +58,15 @@ export function QAForm() {
       const newList = [...questionList];
       newList[targetItemIndex] = question;
       // todo: 改成 editQuestion
-      dispatch({ type: "SET_QUESTION_LIST", payload: newList });
+      dispatch({ type: "SET_ENTITY_LIST", payload: newList });
     } else {
       // todo: 改成 addQuestion
       dispatch({
-        type: "SET_QUESTION_LIST",
+        type: "SET_ENTITY_LIST",
         payload: questionList ? questionList.concat(question) : [question],
       });
     }
-    close()
+    close();
   };
 
   const handlePasteInput = async () => {
@@ -86,7 +90,7 @@ export function QAForm() {
       return;
     }
     dispatch({
-      type: "SET_CURRENT_QUESTION",
+      type: "SET_CURRENT_ENTITY",
       payload: {
         ...currentQuestion,
         options,
@@ -96,7 +100,7 @@ export function QAForm() {
     alert("自动解析成功");
   };
   return (
-    <form method="POST" onSubmit={handleSubmit} id="qa">
+    <form method="POST" onSubmit={handleSubmit}>
       <div className="ltablet:col-span-6 col-span-12 lg:col-span-7">
         <div className="relative w-full bg-white transition-all duration-300 rounded-md">
           <div className="lg:grid border rounded lg:grid-cols-12">
@@ -238,6 +242,7 @@ export function QAForm() {
           </div>
         </div>
       </div>
+      {children}
     </form>
   );
-}
+};

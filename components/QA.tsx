@@ -1,3 +1,4 @@
+import Prose from "@/components/Base/Prose";
 import { type Question } from "@/lib/types/Question";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +15,7 @@ export default function QA({
   const optionsMobileHorizontal = optionCharLength < 16;
   return (
     <section className="mb-4 prose">
-      <p className="whitespace-pre-wrap">{`${data.seq}. ${data.content}`}</p>
+      <Prose content={data.seq + ". " + data.content}></Prose>
       {!preview && (
         <>
           <ul

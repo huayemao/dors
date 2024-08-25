@@ -9,7 +9,7 @@ import Gallery from "@/components/Gallery";
 import Iframe from "@/components/Iframe";
 import { PersonList } from "@/components/Person";
 import { Pre } from "@/components/Pre";
-import { QuestionList } from "@/components/Question";
+import { QuestionList } from "@/components/QA";
 import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";

@@ -1,5 +1,3 @@
-import QA from "@/components/Question";
-
 import { Modal } from "@/components/Base/Modal";
 import { type Question } from "@/lib/types/Question";
 import { withConfirm } from "@/lib/utils";
@@ -18,7 +16,10 @@ export default function ViewOrEditEntityModal({
   form: Form,
   renderEntity,
 }: {
-  renderEntity: (entity: BaseEntity) => ReactNode;
+  renderEntity: (
+    entity: BaseEntity,
+    options: { preview: boolean }
+  ) => ReactNode;
   form: FC<PropsWithChildren>;
   state: EntityState;
   dispatch: EntityDispatch;
@@ -112,7 +113,7 @@ export default function ViewOrEditEntityModal({
       {questionModalMode == "view" ? (
         <div className="md:px-12">
           <div className="p-8 flex justify-center w-full ">
-            {renderEntity(currentQuestion)}
+            {renderEntity(currentQuestion, { preview: false })}
           </div>
         </div>
       ) : (
