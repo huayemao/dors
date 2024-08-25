@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FC } from "react";
 
 export interface NavigationItemProps {
+  prefetch?: boolean;
   href?: string;
   className?: string;
   title: string;
@@ -15,6 +16,7 @@ export interface NavigationItemProps {
 }
 
 export const NavigationItem: React.FC<NavigationItemProps> = ({
+  prefetch,
   onClick,
   children,
   icon: Icon,
@@ -53,6 +55,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
   return (
     <li>
       <Link
+        prefetch={prefetch}
         onClick={onClick}
         href={href!}
         className={cn(

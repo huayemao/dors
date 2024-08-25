@@ -76,6 +76,7 @@ export const Nav = ({
       title: "自留地",
       href: "/protected",
       icon: GlobeLockIcon,
+      prefetch: false,
     },
     {
       title: "资源",
