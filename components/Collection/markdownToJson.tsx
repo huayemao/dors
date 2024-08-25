@@ -26,7 +26,7 @@ export function markdownToJson(markdownText: string) {
       });
     }
   }
-  const isList = (lines.filter(e => !!e.trim() && !e.startsWith('#')).every(l => l.startsWith('+ ')))
+  const isList = (lines.filter(e => !!e?.trim() && !e.startsWith('#')).every(l => l.startsWith('+ ')))
 
   lines.forEach((line, i) => {
     const headerMatch = line.match(headerRegex);

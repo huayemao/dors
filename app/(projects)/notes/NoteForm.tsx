@@ -52,7 +52,10 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
   };
 
   const allTags = useMemo(
-    () => Array.from(new Set(entityList.flatMap((e) => e.tags))),
+    () =>
+      Array.from(
+        new Set(entityList.flatMap((e) => e.tags).filter((e) => !!e?.trim()))
+      ),
     [entityList]
   );
 

@@ -1,9 +1,13 @@
 "use client";
+import { BaseButton, BaseTextarea } from "@shuriken-ui/react";
 import {
-  BaseButton,
-  BaseTextarea,
-} from "@shuriken-ui/react";
-import { FC, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { Panel } from "../Base/Panel";
 import CollectionContent from "./Content";
@@ -39,7 +43,6 @@ dsafassdfsdf
 dsafassdfsdf
 `;
 
-
 export default function CollectionEditor({
   markdown,
   onChange,
@@ -47,25 +50,33 @@ export default function CollectionEditor({
 }: {
   markdown?: string;
   onChange?: (v) => void;
-  json?: Item[]
+  json?: Item[];
 }) {
-  const data = useMemo(() => json || markdownToJson(markdown || markdownText), [markdown]);
+  const data = useMemo(
+    () => json || markdownToJson(markdown || markdownText),
+    [markdown]
+  );
 
   const [items, setItems] = useState<Item[]>(data);
 
-  const allTags = useMemo(() => Array.from(new Set(items.flatMap((e) => e.tags))), [items]);
+  const allTags = useMemo(
+    () =>
+      Array.from(
+        new Set(items.flatMap((e) => e.tags).filter((e) => !!e?.trim()))
+      ),
+    [items]
+  );
 
   const [tags, setTags] = useState<string[]>([]);
 
-
   useEffect(() => {
-    setItems(data)
-  }, [data])
-
-
+    setItems(data);
+  }, [data]);
 
   const getMd = useCallback((items) => {
-    const allTags = Array.from(new Set(items.flatMap((e) => e.tags)));
+    const allTags = Array.from(
+      new Set(items.flatMap((e) => e.tags).filter((e) => !!e?.trim()))
+    );
     return allTags
       .map((t) => {
         // todo: 如果不存在换行，序列化成列表，而非用 --- 分割
@@ -80,8 +91,6 @@ export default function CollectionEditor({
       .join("\n");
   }, []);
 
-
-
   const [content, setContent] = useState("");
 
   // 反序列化
@@ -93,7 +102,6 @@ export default function CollectionEditor({
   return (
     <>
       <div suppressHydrationWarning className="grid md:grid-cols-3 gap-4">
-
         <Panel title="表单" description="表单" className="">
           <BaseAutocomplete
             labelFloat
@@ -123,7 +131,6 @@ export default function CollectionEditor({
               确定
             </BaseButton>
           </div>
-
         </Panel>
         <Panel title="列表" description="" className="md:col-span-2 max-w-4xl">
           <CollectionContent items={items} />
@@ -132,6 +139,3 @@ export default function CollectionEditor({
     </>
   );
 }
-
-
-

@@ -44,7 +44,10 @@ export default function CollectionContent({ items }: { items: Item[] }) {
 
   const [activeItem, setActiveItem] = useState<Item | null>(null);
   const allTags = useMemo(
-    () => Array.from(new Set(derivedItems.flatMap((e) => e.tags))),
+    () =>
+      Array.from(
+        new Set(derivedItems.flatMap((e) => e.tags).filter((e) => !!e?.trim()))
+      ),
     [derivedItems]
   );
 
