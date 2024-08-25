@@ -1,17 +1,16 @@
 "use client";
-
-import dynamic from "next/dynamic";
 import {
   EntityContextProvider,
   useEntity,
   useEntityDispatch,
 } from "./contexts";
-import { QAForm } from "./QAForm";
+import { NoteForm } from "./NoteForm";
 import NotesPage from "./page";
 import Route from "@/lib/client/createEntity/Route";
 import { ClientOnly } from "@/components/ClientOnly";
 import Prose from "@/components/Base/Prose";
-import { DEFAULT_QUESTION } from "./constants";
+import { Note } from "./constants";
+import { BaseTag } from "@shuriken-ui/react";
 
 const Container = () => {
   const state = useEntity();
@@ -19,15 +18,37 @@ const Container = () => {
 
   return (
     <Route
-      renderEntity={(el) => (
-        <Prose content={(el as typeof DEFAULT_QUESTION).content}></Prose>
+      renderEntity={(e: Note) => (
+        <div>
+          <div className="flex gap-2 flex-nowrap  items-start overflow-x-auto py-1">
+            {e.tags?.map((e) => (
+              <div key={e} className="cursor-pointer flex-shrink-0">
+                <BaseTag
+                  // onClick={() => {
+                  //   dispatch({
+                  //     type: "setTags",
+                  //     payload: Array.from(new Set(filters.tags.concat(e))),
+                  //   });
+                  // }}
+                  key={e}
+                  size="sm"
+                  variant="outline"
+                  color="primary"
+                >
+                  {e}
+                </BaseTag>
+              </div>
+            ))}
+          </div>
+          <Prose content={e.content}></Prose>
+        </div>
       )}
       state={state}
       dispatch={dispatch}
       RootPage={NotesPage}
       basename={"/notes"}
-      createForm={QAForm}
-      updateForm={QAForm}
+      createForm={NoteForm}
+      updateForm={NoteForm}
     ></Route>
   );
 };

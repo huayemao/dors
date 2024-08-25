@@ -1,36 +1,16 @@
-export const DEFAULT_OPTIONS = [
-  {
-    label: "A",
-    value: "",
-  },
-  {
-    label: "B",
-    value: "",
-  },
-  {
-    label: "C",
-    value: "",
-  },
-  {
-    label: "D",
-    value: "",
-  },
-];
-
-export const DEFAULT_QUESTION = {
+export const DEFAULT_NOTE = {
   seq: "0",
   id: Date.now(),
   content: "",
-  type: "single",
-  solution: "",
-  answer: "A",
-  options: ["A", "B", "C", "D"].map((e) => ({
-    label: e,
-    value: "",
-  })),
+  tags: [] as string[],
+  updatedAt: Date.now()
 };
 
 export const DEFAULT_COLLECTION = {
   id: 1100,
   name: new Date().toLocaleDateString(),
+  online: false
 };
+
+
+export type Note = typeof DEFAULT_NOTE
