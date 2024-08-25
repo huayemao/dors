@@ -18,9 +18,25 @@ export const getTagIds = unstable_cache(async () => {
   );
 });
 
-export const getTags = unstable_cache(async () => {
+export const getTags = unstable_cache(async ({ protected: isProtected }: { protected?: boolean } = { protected: false }) => {
+
   return await Promise.all(
     await prisma.tags.findMany({
+      where: {
+        AND: [{
+          tags_posts_links: isProtected ? {
+            some: {
+              posts: {
+                protected: true
+              }
+            }
+          } : {
+            none: {
+              posts: { protected: true }
+            }
+          }
+        }]
+      },
       orderBy: {
         updated_at: "desc",
       },
