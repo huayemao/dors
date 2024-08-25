@@ -3,7 +3,14 @@ import { CategoriesContext } from "@/contexts/categories";
 import { cn } from "@/lib/utils";
 import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
 import clsx from "clsx";
-import { GlobeLockIcon } from "lucide-react";
+import {
+  GlobeLockIcon,
+  HandshakeIcon,
+  HomeIcon,
+  LinkIcon,
+  Settings2,
+  TagIcon,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -126,44 +133,65 @@ export const Nav = ({
             }
           )}
         >
-          <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-4">
+          <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
+            <li>
+              <Link
+                href="/"
+                className="flex items-center gap-2 font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
+              "
+                onClick={closeMobileNav}
+              >
+                <HomeIcon className="h-4 w-4" strokeWidth={1.5}></HomeIcon>
+                主页
+              </Link>
+            </li>
             <li>
               <Link
                 href="/about"
-                className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
+                className="flex items-center gap-2 font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
               "
                 onClick={closeMobileNav}
               >
+                <HandshakeIcon
+                  className="h-4 w-4"
+                  strokeWidth={1.5}
+                ></HandshakeIcon>
                 关于
+              </Link>
+            </li>
+            <li className="">
+              <Link
+                data-nui-tooltip="标签"
+                href="/tags"
+                className="flex items-center gap-2 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
+              "
+                onClick={closeMobileNav}
+              >
+                <TagIcon className="h-4 w-4" strokeWidth={1.5} />
+                标签
               </Link>
             </li>
             <li>
               <Link
-                href="/tags"
-                className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
+                prefetch={false}
+                href="/protected"
+                className="flex items-center gap-2 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
               "
                 onClick={closeMobileNav}
               >
-                标签
+                <GlobeLockIcon className="h-4 w-4" strokeWidth={1.5} />
+                自留地
               </Link>
             </li>
-            {categories
-              .filter((e) => !!e.hidden)
-              .map((e) => (
-                <li key={e.id + "cat"}>
-                  <Link
-                    href={"/categories/" + e.id}
-                    className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
-              "
-                    onClick={closeMobileNav}
-                  >
-                    {e.name}
-                  </Link>
-                </li>
-              ))}
             <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
               <BaseDropdown
-                label="资源"
+                // @ts-ignore
+                label={
+                  <div className="flex items-center gap-2">
+                    <LinkIcon className="h-4 w-4" strokeWidth={1.5}></LinkIcon>
+                    资源
+                  </div>
+                }
                 classes={{ wrapper: "flex item-center " }}
                 variant="text"
               >
@@ -181,6 +209,19 @@ export const Nav = ({
                   rounded="sm"
                   onClick={closeMobileNav}
                 />
+                {categories
+                  .filter((e) => !!e.hidden)
+                  .map((e) => (
+                    <BaseDropdownItem
+                      key={e.name}
+                      href={"/categories/" + e.id}
+                      title={e.name!}
+                      // todo: 增加说明
+                      text={" "}
+                      rounded="sm"
+                      onClick={closeMobileNav}
+                    />
+                  ))}
                 {resourceItems.map((e) => {
                   return (
                     <BaseDropdownItem
@@ -197,7 +238,16 @@ export const Nav = ({
             </li>
             <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
               <BaseDropdown
-                label="管理"
+                // @ts-ignore
+                label={
+                  <div className="flex items-center gap-2">
+                    <Settings2
+                      className="h-4 w-4"
+                      strokeWidth={1.5}
+                    ></Settings2>
+                    管理
+                  </div>
+                }
                 classes={{ wrapper: "flex item-center " }}
                 variant="text"
               >
@@ -217,24 +267,13 @@ export const Nav = ({
                 />
               </BaseDropdown>
             </li>
-            <li>
-              <Link
-                prefetch={false}
-                href="/protected"
-                className="block text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
-              "
-                onClick={closeMobileNav}
-              >
-                <GlobeLockIcon className="h-5 w-5" strokeWidth={1.5} />
-              </Link>
-            </li>
           </ul>
           <div className="lg:hidden absolute bottom-4 flex justify-center">
             <ThemeButton />
           </div>
         </div>
 
-        <div className="hidden lg:flex lg:w-1/5 lg:justify-end lg:gap-x-4">
+        <div className="hidden lg:flex items-center lg:w-1/5 lg:justify-end lg:gap-x-4">
           <button
             type="button"
             className=" group h-12 w-12 rounded-full flex items-center justify-center tw-accessibility"
