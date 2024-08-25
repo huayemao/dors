@@ -1,6 +1,6 @@
 "use client";
 import localforage from "localforage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useStorageState = <T>(defaultKey: string, defaultValue?: T) => {
   const [key, setKey] = useState(defaultKey);
@@ -18,12 +18,12 @@ export const useStorageState = <T>(defaultKey: string, defaultValue?: T) => {
     });
   };
 
-  useEffect(fetch, [key]);
-
-  function mutate(v: T) {
+  const mutate = useCallback((v: T) => {
     setData(v);
     localforage.setItem(key, v);
-  }
+  }, [key])
+
+  useEffect(fetch, [defaultValue, key, mutate]);
 
   return { data, pending, mutate, setKey };
 };

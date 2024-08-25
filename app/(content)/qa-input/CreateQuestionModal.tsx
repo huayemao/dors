@@ -30,6 +30,7 @@ export default function CreateQuestionModal() {
   return (
     <Modal open={modalOpen} onClose={close} title={currentQuestion.seq}>
       <QAForm />
+      {/* todo: 下面这个组件抽一下 */}
       <div className="sticky bg-white flex w-full items-center gap-x-2 justify-end -bottom-4 left-0 right-0">
         <div className="p-4 md:p-6">
           <div className="flex gap-x-2">

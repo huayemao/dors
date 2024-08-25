@@ -1,0 +1,96 @@
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import CollectionLayout from "@/lib/client/createEntity/Collection";
+import CreateCollectionModal from "./CreateCollectionModal";
+import CreateQuestionModal from "./CreateEntityModal";
+import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
+import { FC, PropsWithChildren } from "react";
+import {
+  BaseEntity,
+  createEntityContext,
+  EntityDispatch,
+  EntityState,
+} from "./createEntityContext";
+import localforage from "localforage";
+
+async function EntityLoader({ params }) {
+  const { entityId, collectionId } = params;
+  const entityList = await localforage.getItem(collectionId);
+  const entity = (entityList as BaseEntity[]).find(
+    (e) => String(e.id) == entityId
+  );
+  return {
+    entity,
+  };
+}
+
+export default function Route({
+  state,
+  dispatch,
+  basename,
+  createForm,
+  updateForm,
+  RootPage,
+}: {
+  basename: string;
+  createForm: FC<PropsWithChildren>;
+  updateForm: FC<PropsWithChildren>;
+  RootPage: FC<PropsWithChildren>;
+  state: EntityState;
+  dispatch: EntityDispatch;
+}) {
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: <RootPage />,
+      },
+      {
+        path: "create",
+        element: (
+          <CreateCollectionModal
+            state={state}
+            dispatch={dispatch}
+          ></CreateCollectionModal>
+        ),
+      },
+      {
+        path: ":collectionId",
+        element: <CollectionLayout></CollectionLayout>,
+        children: [
+          {
+            path: ":entityId",
+            element: (
+              <ViewOrEditEntityModal
+                state={state}
+                dispatch={dispatch}
+                form={createForm}
+              ></ViewOrEditEntityModal>
+            ),
+            loader: EntityLoader,
+          },
+          {
+            path: "create",
+            element: (
+              <CreateQuestionModal
+                state={state}
+                dispatch={dispatch}
+                form={updateForm}
+              ></CreateQuestionModal>
+            ),
+          },
+          {
+            path: "edit",
+            element: (
+              <CreateCollectionModal
+                state={state}
+                dispatch={dispatch}
+              ></CreateCollectionModal>
+            ),
+          },
+        ],
+      },
+    ],
+    { basename }
+  );
+  return <RouterProvider router={router} />;
+}

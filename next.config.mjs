@@ -66,8 +66,12 @@ const nextConfig = {
         //   destination: 'http://house.huayemao.run:8099/v1/:path*',
         // },
         {
-          source: '/qa-input/:path*',
-          destination: '/qa-input',
+          source: '/qas/:path*',
+          destination: '/qas',
+        },
+        {
+          source: '/notes/:path*',
+          destination: '/notes',
         },
       ],
     }

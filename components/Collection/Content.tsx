@@ -16,6 +16,7 @@ import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 
 import {
   BaseButton,
+  BaseButtonIcon,
   BaseCard,
   BaseDropdown,
   BaseDropdownItem,
@@ -32,6 +33,7 @@ import { type Item } from "./CollectionEditor";
 import { Modal } from "../Base/Modal";
 import { components } from "@/lib/mdx/useComponents";
 import Prose from "../Base/Prose";
+import { Edit } from "lucide-react";
 
 export default function CollectionContent({ items }: { items: Item[] }) {
   const [derivedItems, setDerivedItems] = useState(items);
@@ -199,6 +201,13 @@ export default function CollectionContent({ items }: { items: Item[] }) {
           onClose={() => {
             setActiveItem(null);
           }}
+          actions={
+            <>
+              <BaseButtonIcon>
+                <Edit></Edit>
+              </BaseButtonIcon>
+            </>
+          }
         >
           <div className="flex justify-center">
             <Prose content={activeItem?.mdxContent?.({})}></Prose>
