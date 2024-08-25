@@ -8,13 +8,22 @@ import {
   HandshakeIcon,
   HomeIcon,
   LinkIcon,
+  LucideProps,
   Settings2,
   TagIcon,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { Avatar } from "./Avatar";
+import react, {
+  FC,
+  PropsWithRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Avatar } from "../Avatar";
+import { NavigationItem, NavigationItemProps } from "./Menu";
 
 const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
@@ -95,6 +104,73 @@ export const Nav = ({
     </button>
   );
 
+  const menuItems: NavigationItemProps[] = [
+    {
+      title: "主页",
+      href: "/",
+      icon: HomeIcon,
+    },
+    {
+      title: "关于",
+      href: "/about",
+      icon: HandshakeIcon,
+    },
+    {
+      title: "标签",
+      href: "/tags",
+      icon: TagIcon,
+    },
+    {
+      title: "自留地",
+      href: "/protected",
+      icon: GlobeLockIcon,
+    },
+    {
+      title: "资源",
+      icon: LinkIcon,
+      children: categories
+        .filter((e) => !!e.hidden)
+        .map((e) => ({ title: e.name!, href: "/categories/" + e.id, text: "" }))
+        .concat([
+          {
+            title: "小记",
+            href: "/notes",
+            text: "本地记录功能",
+          },
+          {
+            title: "随手记",
+            href: "https://www.yuque.com/huayemao/yuque/dc_213",
+            text: "语雀链接",
+          },
+        ])
+        .concat(
+          ...resourceItems.map((e) => {
+            return {
+              title: e.title,
+              text: e.subtitle,
+              href: e.url,
+            };
+          })
+        ),
+    },
+    {
+      title: "管理",
+      icon: Settings2,
+      children: [
+        {
+          title: "后台",
+          href: "admin",
+          text: "后台管理页面",
+        },
+        {
+          title: "部署",
+          href: "https://vercel.com/huayemaos-projects/dors/deployments",
+          text: "vercel 部署页面",
+        },
+      ],
+    },
+  ];
+
   return (
     <nav
       className={clsx(
@@ -134,139 +210,9 @@ export const Nav = ({
           )}
         >
           <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
-            <li>
-              <Link
-                href="/"
-                className="flex items-center gap-2 font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
-              "
-                onClick={closeMobileNav}
-              >
-                <HomeIcon className="h-4 w-4" strokeWidth={1.5}></HomeIcon>
-                主页
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className="flex items-center gap-2 font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
-              "
-                onClick={closeMobileNav}
-              >
-                <HandshakeIcon
-                  className="h-4 w-4"
-                  strokeWidth={1.5}
-                ></HandshakeIcon>
-                关于
-              </Link>
-            </li>
-            <li className="">
-              <Link
-                data-nui-tooltip="标签"
-                href="/tags"
-                className="flex items-center gap-2 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
-              "
-                onClick={closeMobileNav}
-              >
-                <TagIcon className="h-4 w-4" strokeWidth={1.5} />
-                标签
-              </Link>
-            </li>
-            <li>
-              <Link
-                prefetch={false}
-                href="/protected"
-                className="flex items-center gap-2 text-base font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility
-              "
-                onClick={closeMobileNav}
-              >
-                <GlobeLockIcon className="h-4 w-4" strokeWidth={1.5} />
-                自留地
-              </Link>
-            </li>
-            <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
-              <BaseDropdown
-                // @ts-ignore
-                label={
-                  <div className="flex items-center gap-2">
-                    <LinkIcon className="h-4 w-4" strokeWidth={1.5}></LinkIcon>
-                    资源
-                  </div>
-                }
-                classes={{ wrapper: "flex item-center " }}
-                variant="text"
-              >
-                <BaseDropdownItem
-                  href="/unicode"
-                  title="unicode"
-                  text="常用 unicode 图标"
-                  rounded="sm"
-                  onClick={closeMobileNav}
-                />
-                <BaseDropdownItem
-                  href="https://www.yuque.com/huayemao/yuque/dc_213"
-                  title="随手记"
-                  text="语雀链接"
-                  rounded="sm"
-                  onClick={closeMobileNav}
-                />
-                {categories
-                  .filter((e) => !!e.hidden)
-                  .map((e) => (
-                    <BaseDropdownItem
-                      key={e.name}
-                      href={"/categories/" + e.id}
-                      title={e.name!}
-                      // todo: 增加说明
-                      text={" "}
-                      rounded="sm"
-                      onClick={closeMobileNav}
-                    />
-                  ))}
-                {resourceItems.map((e) => {
-                  return (
-                    <BaseDropdownItem
-                      key={e.url}
-                      href={e.url}
-                      title={e.title}
-                      text={e.subtitle}
-                      rounded="sm"
-                      onClick={closeMobileNav}
-                    />
-                  );
-                })}
-              </BaseDropdown>
-            </li>
-            <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
-              <BaseDropdown
-                // @ts-ignore
-                label={
-                  <div className="flex items-center gap-2">
-                    <Settings2
-                      className="h-4 w-4"
-                      strokeWidth={1.5}
-                    ></Settings2>
-                    管理
-                  </div>
-                }
-                classes={{ wrapper: "flex item-center " }}
-                variant="text"
-              >
-                <BaseDropdownItem
-                  href="/admin"
-                  title="后台"
-                  text="进入后台页面"
-                  rounded="sm"
-                  onClick={closeMobileNav}
-                />
-                <BaseDropdownItem
-                  href="https://vercel.com/huayemaos-projects/dors/deployments"
-                  title="部署"
-                  text="查看部署进度"
-                  rounded="sm"
-                  onClick={closeMobileNav}
-                />
-              </BaseDropdown>
-            </li>
+            {menuItems.map((e) => (
+              <NavigationItem key={e.href} {...e} onClick={closeMobileNav}></NavigationItem>
+            ))}
           </ul>
           <div className="lg:hidden absolute bottom-4 flex justify-center">
             <ThemeButton />
