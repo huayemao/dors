@@ -68,8 +68,8 @@ export default function manifest(): MetadataRoute.Manifest {
     // todo: 动态化，存到 settings 表
     shortcuts: [
       {
-        name: "随手记",
-        url: "/posts/213",
+        name: "小记",
+        url: "/notes",
         icons: [
           {
             src: "img/icons/notebook-pen.svg",
@@ -78,7 +78,7 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
       {
-        name: "私有文章",
+        name: "自留地",
         url: "/protected",
         icons: [
           {
@@ -89,7 +89,7 @@ export default function manifest(): MetadataRoute.Manifest {
       },
       {
         name: "题目编辑器",
-        url: "/qa-input",
+        url: "/qas",
         icons: [
           {
             src: "img/icons/table-properties.svg",
