@@ -6,9 +6,10 @@ const colors = require('tailwindcss/colors')
 module.exports = withShurikenUI({
   // mode: 'jit',
   content: [
-    "app/**/*.{ts,tsx}",
+    "app/**/*.{js,jsx,ts,tsx}",
     "pages/**/*.{js,ts,jsx,tsx}",
-    "components/**/*.{ts,tsx}",
+    "components/**/*.{js,jsx,ts,tsx}",
+    "lib/**/*.{js,jsx,tsx}",
     "node_modules/@shuriken-ui/react/dist/**/*.js",
   ],
   darkMode: ['class'],

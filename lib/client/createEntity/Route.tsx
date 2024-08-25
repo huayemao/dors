@@ -31,8 +31,13 @@ export default function Route({
   updateForm,
   RootPage,
   renderEntity,
+  renderEntityModalTitle,
 }: {
   renderEntity: (
+    entity: BaseEntity,
+    options: { preview: boolean }
+  ) => ReactNode;
+  renderEntityModalTitle?: (
     entity: BaseEntity,
     options: { preview: boolean }
   ) => ReactNode;
@@ -72,6 +77,7 @@ export default function Route({
             path: ":entityId",
             element: (
               <ViewOrEditEntityModal
+                renderEntityModalTitle={renderEntityModalTitle}
                 renderEntity={renderEntity}
                 state={state}
                 dispatch={dispatch}

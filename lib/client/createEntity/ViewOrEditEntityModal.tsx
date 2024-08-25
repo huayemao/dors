@@ -1,9 +1,14 @@
 import { Modal } from "@/components/Base/Modal";
 import { type Question } from "@/lib/types/Question";
 import { withConfirm } from "@/lib/utils";
-import { BaseButton, BaseButtonIcon } from "@shuriken-ui/react";
+import {
+  BaseButton,
+  BaseButtonIcon,
+  BaseDropdown,
+  BaseDropdownItem,
+} from "@shuriken-ui/react";
 import localforage from "localforage";
-import { Edit2, Trash } from "lucide-react";
+import { ArrowLeftIcon, Edit2, Trash } from "lucide-react";
 import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
@@ -14,8 +19,13 @@ export default function ViewOrEditEntityModal({
   state,
   dispatch,
   form: Form,
+  renderEntityModalTitle = (e) => e.seq,
   renderEntity,
 }: {
+  renderEntityModalTitle?: (
+    entity: BaseEntity,
+    options: { preview: boolean }
+  ) => ReactNode;
   renderEntity: (
     entity: BaseEntity,
     options: { preview: boolean }
@@ -85,28 +95,46 @@ export default function ViewOrEditEntityModal({
           navigate("..", { replace: true });
         }
       }}
-      title={"题目" + currentQuestion.seq}
+      title={renderEntityModalTitle(currentQuestion, { preview: false })}
       actions={
         <>
           {questionModalMode == "view" ? (
-            <>
-              <BaseButtonIcon
+            <BaseDropdown variant="context">
+              <BaseDropdownItem
                 rounded="md"
-                size="sm"
+                data-nui-tooltip="编辑"
+                title="编辑"
                 onClick={() => {
                   dispatch({
                     type: "SET_QUESTION_MODAL_MODE",
                     payload: "edit",
                   });
                 }}
-              >
-                <Edit2 className="h-4 w-4" />
-              </BaseButtonIcon>
-              <BaseButtonIcon rounded="md" size="sm" onClick={handleRemove}>
-                <Trash className="h-4 w-4" />
-              </BaseButtonIcon>
-            </>
-          ) : null}
+                start={<Edit2 className="h-4 w-4" />}
+              ></BaseDropdownItem>
+              <BaseDropdownItem
+                rounded="md"
+                data-nui-tooltip="删除"
+                title="删除"
+                onClick={handleRemove}
+                start={<Trash className="h-4 w-4" />}
+              ></BaseDropdownItem>
+            </BaseDropdown>
+          ) : (
+            <BaseButtonIcon
+              rounded="md"
+              size="sm"
+              data-nui-tooltip="返回"
+              onClick={() => {
+                dispatch({
+                  type: "SET_QUESTION_MODAL_MODE",
+                  payload: "view",
+                });
+              }}
+            >
+              <ArrowLeftIcon className="h-4 w-4"></ArrowLeftIcon>
+            </BaseButtonIcon>
+          )}
         </>
       }
     >

@@ -34,7 +34,7 @@ export const Modal = ({
               <Dialog.Panel className="fixed inset-0">
                 <div className="flex min-h-full items-center justify-center p-4 text-center">
                   <div className="dark:bg-muted-800 w-full bg-white text-left align-middle shadow-xl transition-all rounded-md max-w-5xl">
-                    <div className="flex w-full items-center justify-between p-4 md:p-6">
+                    <div className="flex w-full items-center justify-between p-4 md:p-6 border-b">
                       <Dialog.Title
                         as="h3"
                         className="font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"

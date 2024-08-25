@@ -84,7 +84,7 @@ export default function CollectionLayout({
 
   const copy = (e) => {
     e.preventDefault();
-    copyToClipboard(`<QuestionList  data={${JSON.stringify(entityList)}}/>`);
+    copyToClipboard(`${JSON.stringify(entityList)}`);
     alert("已复制到剪贴板");
   };
 
@@ -95,7 +95,7 @@ export default function CollectionLayout({
           <BaseDropdown
             classes={{ wrapper: "mr-auto" }}
             label={currentCollection.name}
-            headerLabel="题集"
+            headerLabel="合集"
           >
             {collectionList?.map((e) => (
               <Link to={"/" + e.id} key={e.id}>
@@ -124,7 +124,7 @@ export default function CollectionLayout({
               </BaseIconBox>
             </BaseDropdownItem>
           </BaseDropdown>
-          <BaseButtonIcon data-nui-tooltip="复制 JSX" onClick={copy}>
+          <BaseButtonIcon data-nui-tooltip="复制 JSON" onClick={copy}>
             <CopyIcon className="h-4 w-4"></CopyIcon>
           </BaseButtonIcon>
           <BaseButtonIcon
