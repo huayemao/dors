@@ -55,11 +55,11 @@ export function Table({
 
   return (
     <table className="w-full overflow-x-auto whitespace-nowrap">
-      <colgroup>
+      {/* <colgroup>
         {tableData.headers.map((e) => (
           <col className="w-[20%]" key={e}></col>
         ))}
-      </colgroup>
+      </colgroup> */}
       <thead className="bg-muted-100 dark:bg-muted-900 font-bold text-muted-500 dark:text-muted-100">
         <tr>
           {tableData.headers.map((e) => (
@@ -126,16 +126,21 @@ export function Table({
                         {value as string}
                       </BaseTag>
                     ) : (
-                      <div data-nui-tooltip={value}>
+                      <div data-nui-tooltip={value} className={cn(
+                        "max-w-[8em] min-w-[4em] ",
+                        {
+                          "min-w-fit text-center": typeof value == 'number' || value instanceof Date,
+                        }
+                      )}>
                         <span
                           className={cn(
-                            "inline-block max-w-[8em] min-w-[4em] overflow-hidden overflow-ellipsis",
+                            "inline-block overflow-hidden overflow-ellipsis",
                             {
                               "font-semibold": boldCols.includes(i + 1),
                             }
                           )}
                         >
-                          {value as string}
+                          {value instanceof Date ? (<time>{value.toLocaleDateString()} <br /> {value.toLocaleTimeString()}</time>) : value as string}
                         </span>
                       </div>
                     )}
