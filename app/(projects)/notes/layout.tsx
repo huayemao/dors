@@ -15,9 +15,11 @@ export const metadata: Metadata = {
 export default function QAsLayout({ }) {
   return (
     <EntityContextProvider>
+      <header className="h-12 mb-2 justify-center flex items-center font-semibold">UltraNotes</header>
       <ClientOnly>
         <Container></Container>
       </ClientOnly>
+      <footer></footer>
     </EntityContextProvider>
   );
 }

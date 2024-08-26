@@ -12,7 +12,7 @@ export const Container = () => {
     const dispatch = useEntityDispatch();
 
     return (
-        <>
+        <main>
             <Route
                 renderEntityModalTitle={(e: Note) => (
                     <>
@@ -77,6 +77,6 @@ export const Container = () => {
                 createForm={NoteForm}
                 updateForm={NoteForm}
             ></Route>
-        </>
+        </main>
     );
 };
