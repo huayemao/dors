@@ -177,10 +177,56 @@ import nord from "shiki/themes/nord.json";
 //   | "yaml"
 //   | "zenscript";
 
-export async function parseMDXClient(mdx: string) {
+function cache<R>(fn: () => Promise<R>) {
+  let promise: Promise<R> | undefined;
+  return async () => {
+    if (promise) {
+      return promise;
+    } else {
+      promise = fn();
+      return promise;
+    }
+  };
+}
+
+async function loadWasmAndLangs() {
   const responseWasm = await fetch("/shiki/onig.wasm");
   const wasmArrayBuffer = await responseWasm.arrayBuffer();
   await setWasm(wasmArrayBuffer);
+
+  const res = remarkShikiTwoslash({
+    // @ts-ignore
+    theme: nord,
+    langs: [
+      "ts",
+      "js",
+      "jsx",
+      "tsx",
+      "json",
+      "html",
+      "css",
+      "powershell",
+      "bash",
+      "java",
+      "c",
+      "cpp",
+      "sql",
+      "vue",
+    ],
+    paths: {
+      languages: "/shiki/languages/",
+    },
+  });
+
+  const h = () => res;
+
+  return h;
+}
+
+const initShiki = cache(loadWasmAndLangs);
+
+export async function parseMDXClient(mdx: string) {
+  const shikiTwoSlash = await initShiki();
 
   // @ts-ignore
   const res = await evaluate(mdx, {
@@ -193,31 +239,7 @@ export async function parseMDXClient(mdx: string) {
     },
     rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }], [rehypeKatex]],
     remarkPlugins: [
-      [
-        remarkShikiTwoslash,
-        {
-          theme: nord,
-          langs: [
-            "ts",
-            "js",
-            "jsx",
-            "tsx",
-            "json",
-            "html",
-            "css",
-            "powershell",
-            "bash",
-            "java",
-            "c",
-            "cpp",
-            "sql",
-            "vue",
-          ],
-          paths: {
-            languages: "/shiki/languages/",
-          },
-        },
-      ],
+      [shikiTwoSlash],
       remarkGfm,
       remarkMath,
       remarkDirective,
