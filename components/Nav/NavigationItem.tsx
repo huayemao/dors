@@ -33,7 +33,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
           label={
             <div className="flex items-center gap-2">
               <Icon className="h-4 w-4" strokeWidth={1.5}></Icon>
-              资源
+              {title}
             </div>
           }
           classes={{ wrapper: "flex item-center " }}
