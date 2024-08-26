@@ -1,6 +1,6 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma, { Prisma, tags } from "@/lib/prisma";
-import { getHiddenCategoryIds } from "./categories";
+import { getHiddenCategoryIds } from "./server/categories";
 import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
 import { getBlurImage, getImageBuffer, getSmallImage } from "./server/image";
 import { updatePostTags } from "./server/tags";

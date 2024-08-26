@@ -83,7 +83,7 @@ export const Nav = ({
       icon: LinkIcon,
       children: categories
         .filter((e) => !!e.hidden)
-        .map((e) => ({ title: e.name!, href: "/categories/" + e.id, text: "" }))
+        .map((e) => ({ title: e.name!, href: "/categories/" + e.id, text: e.description || "" }))
         .concat([
           {
             title: "小记",
