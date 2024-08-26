@@ -8,8 +8,10 @@ import { PexelsPhoto } from "./types/PexelsPhoto";
 import { getPexelImages, getWordCount, isDataURL, markdownToHtml } from "./utils";
 import { unstable_cache } from "next/cache";
 
-export const getPost = unstable_cache(async (id: number) => {
-  const res = await prisma.posts.findUnique({
+export const getPost = async (id: number) => {
+  const res = await unstable_cache(prisma.posts.findUnique, ['post_' + id], {
+    tags: ['post_' + id]
+  })({
     where: {
       id: id,
     },
@@ -44,9 +46,7 @@ export const getPost = unstable_cache(async (id: number) => {
     tags: res?.tags_posts_links.map((e) => e.tags),
     wordCount,
   };
-}, ['post'], {
-  tags: ['post']
-});
+};
 
 export interface FindManyArgs {
   take?: number;

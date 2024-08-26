@@ -69,7 +69,7 @@ export async function POST(request: Request) {
   });
 
   await revalidateHomePage(res.id);
-  await revalidateTag('post')
+  await revalidateTag('post_' + res.id)
 
 
   if (post.protected) {
