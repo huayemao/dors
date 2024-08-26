@@ -124,17 +124,21 @@ export default function CollectionLayout({
               </BaseIconBox>
             </BaseDropdownItem>
           </BaseDropdown>
-          <BaseButtonIcon data-nui-tooltip="复制 JSON" onClick={copy}>
+          <BaseButtonIcon
+            data-nui-tooltip="复制 JSON"
+            data-nui-tooltip-position="down" onClick={copy}>
             <CopyIcon className="h-4 w-4"></CopyIcon>
           </BaseButtonIcon>
           <BaseButtonIcon
             data-nui-tooltip="导入"
+            data-nui-tooltip-position="down"
             onClick={importQuestionsFromClipBoard}
           >
             <UploadIcon className="h-4 w-4"></UploadIcon>
           </BaseButtonIcon>
           <BaseButtonIcon
             data-nui-tooltip="新建题目"
+            data-nui-tooltip-position="down"
             onClick={() => {
               navigate("./create");
 
