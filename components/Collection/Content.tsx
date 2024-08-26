@@ -71,7 +71,7 @@ export default function CollectionContent({ items }: { items: Item[] }) {
     if (derivedItems.some((e) => e.content && !e.excerpt && !e.mdxContent)) {
       Promise.all(
         derivedItems.map(async (e) => {
-          const Content = parseMDXClient(e.content);
+          const Content = await parseMDXClient(e.content);
           return {
             ...e,
             excerpt: await markdownExcerpt(e.content),

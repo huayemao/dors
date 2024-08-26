@@ -1,13 +1,9 @@
 import c from "@/styles/prose.module.css";
 import LightBox from "../Lightbox";
-import { parseMDXClient } from "@/lib/mdx/parseMDXClient";
-import { MDXContent } from "mdx/types";
+
+import ParsedMdx from "./parsedMdx";
 
 export default function Prose({ content }: { content }) {
-  let result: MDXContent | undefined;
-  if (typeof content === "string") {
-    result = parseMDXClient(content);
-  }
   return (
     <>
       <article
@@ -17,7 +13,7 @@ export default function Prose({ content }: { content }) {
           "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
         }
       >
-        {result?.({}) || content}
+        {typeof content == 'string' ? <ParsedMdx content={content} /> : content}
       </article>
       <LightBox></LightBox>
     </>

@@ -31,7 +31,7 @@ export function markdownToJson(markdownText: string) {
   lines.forEach((line, i) => {
     const headerMatch = line.match(headerRegex);
     const separatorMatch = line.match(separatorRegex);
-    console.log(lastTag, currentContent);
+    // console.log(lastTag, currentContent);
     if (headerMatch) {
       // 找到新的标题，保存之前的内容
       patchItem();
