@@ -6,6 +6,8 @@ import { Note } from "./constants";
 import { useEntity, useEntityDispatch } from "./contexts";
 import { NoteForm } from "./NoteForm";
 import NotesPage from "./page";
+import { cn } from "@/lib/utils";
+import { ClientOnly } from "@/components/ClientOnly";
 
 export const Container = () => {
     const state = useEntity();
@@ -44,7 +46,7 @@ export const Container = () => {
                     </>
                 )}
                 renderEntity={(e: Note, { preview }) => (
-                    <div className="min-w-80">
+                    <div className={cn({ "min-w-80": !preview })}>
                         {preview && (
                             <div className="-mb-3 flex gap-2 flex-nowrap  items-start overflow-x-auto">
                                 {e.tags?.map((e) => (
@@ -67,7 +69,9 @@ export const Container = () => {
                                 ))}
                             </div>
                         )}
-                        <Prose content={e.content}></Prose>
+                        <ClientOnly>
+                            <Prose content={e.content}></Prose>
+                        </ClientOnly>
                     </div>
                 )}
                 state={state}

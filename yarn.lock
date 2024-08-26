@@ -4343,7 +4343,7 @@ remark-rehype@^11.0.0:
     unified "^11.0.0"
     vfile "^6.0.0"
 
-remark-shiki-twoslash@^3.1.2:
+remark-shiki-twoslash@^3.1.3:
   version "3.1.3"
   resolved "https://registry.npmmirror.com/remark-shiki-twoslash/-/remark-shiki-twoslash-3.1.3.tgz#0edc4929a68ca24da2cdd80d662feb7811a6194b"
   integrity sha512-4e8OH3ySOCw5wUbDcPszokOKjKuebOqlP2WlySvC7ITBOq27BiGsFlq+FNWhxppZ+JzhTWah4gQrnMjX3KDbAQ==

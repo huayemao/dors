@@ -9,43 +9,10 @@ import remarkShikiTwoslash from "remark-shiki-twoslash";
 const theme = require("shiki/themes/nord.json");
 
 
-import { h } from "hastscript";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
-import { visit } from "unist-util-visit";
 import { components } from "./useComponents";
-
-function myRemarkPlugin() {
-  /**
-   * @param {import('mdast').Root} tree
-   *   Tree.
-   * @returns {undefined}
-   *   Nothing.
-   */
-  return (tree) => {
-    visit(tree, (node) => {
-      if (
-        node.type === "containerDirective" ||
-        node.type === "leafDirective" ||
-        node.type === "textDirective"
-      ) {
-        if (node.name !== "note") return;
-
-        const data = node.data || (node.data = {});
-        const tagName = node.type === "textDirective" ? "span" : "div";
-
-        data.hName = tagName;
-        if (!node.attributes.className) {
-          node.attributes.className = [];
-        }
-        node.attributes.className.push("note");
-        data.hProperties = h(tagName, node.attributes || {}).properties;
-      }
-    });
-  };
-}
-
-
+import { myRemarkPlugin } from "./myRemarkPlugin";
 
 export async function parseMDX(post: { content?: string | null | undefined }) {
   return await compileMDX({
