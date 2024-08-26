@@ -45,7 +45,7 @@ export const Nav = ({ children }) => {
             </div>
           </button>
           <h1 className="nui-heading nui-heading-2xl nui-weight-light nui-lead-normal text-muted-800 hidden md:block dark:text-white">
-            Apex Charts
+            {/* Apex Charts */}
           </h1>
           <div className="ms-auto"></div>
           <label

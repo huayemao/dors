@@ -1,6 +1,6 @@
 "use client";
 import { ActionDropdown } from "@/components/ActionDropdown";
-import { cn, isValidURL } from "@/lib/utils";
+import { cn, isDataURL, isValidURL } from "@/lib/utils";
 import { BaseTag } from "@shuriken-ui/react";
 import mime from "mime";
 import { useCallback, useEffect, useMemo } from "react";
@@ -93,7 +93,7 @@ export function Table({
               {Object.entries(e).map(([key, value], i) => {
                 if (
                   isValidURL(value) &&
-                  mime.getType(value as string)?.startsWith("image")
+                  ((value as string).startsWith('https://images.pexels.com/photos/') || isDataURL(value) || mime.getType(value as string)?.startsWith("image"))
                 ) {
                   return (
                     <td
@@ -103,9 +103,10 @@ export function Table({
                       key={key}
                     >
                       <img
-                        src={("/api/files?href=" + value) as string}
+                        src={value as string}
+                        // src={("/api/files?href=" + value) as string}
                         crossOrigin=""
-                        className="w-36 max-w-[9rem] h-auto object-contain"
+                        className="w-24 max-w-[8rem] h-auto object-contain"
                       />
                     </td>
                   );
