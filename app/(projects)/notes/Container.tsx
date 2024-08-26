@@ -44,7 +44,7 @@ export const Container = () => {
                     </>
                 )}
                 renderEntity={(e: Note, { preview }) => (
-                    <div>
+                    <div className="min-w-80">
                         {preview && (
                             <div className="-mb-3 flex gap-2 flex-nowrap  items-start overflow-x-auto">
                                 {e.tags?.map((e) => (
