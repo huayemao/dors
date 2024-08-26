@@ -46,7 +46,7 @@ export const Container = () => {
                 renderEntity={(e: Note, { preview }) => (
                     <div>
                         {preview && (
-                            <div className="flex gap-2 flex-nowrap  items-start overflow-x-auto py-1">
+                            <div className="-mb-3 flex gap-2 flex-nowrap  items-start overflow-x-auto">
                                 {e.tags?.map((e) => (
                                     <div key={e} className="cursor-pointer flex-shrink-0">
                                         <BaseTag
