@@ -26,7 +26,6 @@ export default function CollectionLayout({
   ) => ReactNode;
 }) {
   const params = useParams();
-
   const {
     currentCollection,
     collectionList,
@@ -58,16 +57,6 @@ export default function CollectionLayout({
   function close() {
     dispatch({ type: "SET_MODAL_OPEN", payload: false });
   }
-
-  // todo: questions 放到最后一级去 render。外层只提供一个 context
-
-  function setCurrentQuestion(q: Question) {
-    dispatch({
-      type: "SET_CURRENT_ENTITY",
-      payload: q,
-    });
-  }
-
   const importQuestionsFromClipBoard = () => {
     readFromClipboard().then((text) => {
       try {
@@ -94,7 +83,7 @@ export default function CollectionLayout({
         <div className="flex items-center gap-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
           <BaseDropdown
             classes={{ wrapper: "mr-auto" }}
-            label={currentCollection.name}
+            label={currentCollection?.name}
             headerLabel="合集"
           >
             {collectionList?.map((e) => (

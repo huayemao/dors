@@ -7,7 +7,7 @@ export default function ParsedMdx({ content }: { content: string }) {
   const [result, setRes] = useState<MDXContent>();
   useEffect(() => {
     parseMDXClient(content).then(setRes);
-  }, []);
+  }, [content]);
 
   return (
     <>

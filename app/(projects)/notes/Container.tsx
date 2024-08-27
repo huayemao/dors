@@ -1,7 +1,7 @@
 "use client"
 import Prose from "@/components/Base/Prose";
 import { BaseTag } from "@shuriken-ui/react";
-import Route from "@/lib/client/createEntity/Route";
+import EntityRoute from "@/lib/client/createEntity/EntityRoute";
 import { Note } from "./constants";
 import { useEntity, useEntityDispatch } from "./contexts";
 import { NoteForm } from "./NoteForm";
@@ -15,7 +15,7 @@ export const Container = () => {
 
     return (
         <main>
-            <Route
+            <EntityRoute
                 renderEntityModalTitle={(e: Note) => (
                     <>
                         <span className="flex mb-2 gap-2 flex-nowrap  items-start overflow-x-auto py-1 leading-normal">
@@ -80,7 +80,7 @@ export const Container = () => {
                 basename={"/notes"}
                 createForm={NoteForm}
                 updateForm={NoteForm}
-            ></Route>
+            ></EntityRoute>
         </main>
     );
 };

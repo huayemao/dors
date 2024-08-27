@@ -8,7 +8,7 @@ import {
 } from "./contexts";
 import { QAForm } from "./QAForm";
 import QAsPage from "./page";
-import Route from "@/lib/client/createEntity/Route";
+import EntityRoute from "@/lib/client/createEntity/EntityRoute";
 import { ClientOnly } from "@/components/ClientOnly";
 import { DEFAULT_QUESTION } from "./constants";
 import QA from "@/components/QA";
@@ -18,7 +18,7 @@ const Container = () => {
   const dispatch = useEntityDispatch();
 
   return (
-    <Route
+    <EntityRoute
       renderEntity={(el, { preview }) => (
         <QA preview={preview} data={el as typeof DEFAULT_QUESTION}></QA>
       )}
@@ -28,7 +28,7 @@ const Container = () => {
       basename={"/qas"}
       createForm={QAForm}
       updateForm={QAForm}
-    ></Route>
+    ></EntityRoute>
   );
 };
 

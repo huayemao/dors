@@ -24,7 +24,7 @@ export default function CreateCollectionModal({
   }, [dispatch]);
 
   return (
-    <Modal open={modalOpen} onClose={close} title={currentCollection.name}>
+    <Modal open={modalOpen} onClose={close} title={currentCollection?.name || "创建合集"}>
       <CollectionForm state={state} dispatch={dispatch} />
     </Modal>
   );
@@ -37,11 +37,12 @@ function CollectionForm({
   state: EntityState;
   dispatch: EntityDispatch;
 }) {
-  const onClose = useCloseModal();
+  const close = useCloseModal();
   const params = useParams();
   const navigate = useNavigate();
   const { currentCollection, collectionList, modalOpen, questionModalMode } =
     state;
+
   const isEditing = !!params.collectionId;
 
   useEffect(() => {
@@ -54,43 +55,44 @@ function CollectionForm({
     } else {
       dispatch({
         type: "SET_CURRENT_COLLECTION",
-        payload: { name: "", id: Date.now() },
+        payload: null,
       });
     }
-    return () => {};
+    return () => { };
   }, [collectionList, dispatch, isEditing, params.collectionId]);
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
     e.preventDefault();
     const formEl = e.target as HTMLFormElement;
     const formData = new FormData(formEl);
-    const obj = Object.fromEntries(formData.entries()) as { name: string };
+    const obj = Object.fromEntries(formData.entries()) as { name: string, id: string };
 
     const collection = {
-      ...currentCollection,
       ...obj,
+      id: Number(obj.id)
     };
 
     dispatch({ type: "CREATE_OR_UPDATE_COLLECTION", payload: collection });
 
-    navigate("/" + collection.id);
+    navigate("/" + collection.id, { state: { __NA: {} } });
   };
 
   return (
     <form method="POST" onSubmit={handleSubmit}>
       <div className="p-8">
+        <input className="hidden" name="id" value={currentCollection?.id || new Date().valueOf()}></input>
         <BaseInput
-          key={currentCollection.id}
+          key={currentCollection?.name}
           label="名称"
           id="seq"
           // @ts-ignore
           name="name"
-          defaultValue={currentCollection.name}
+          defaultValue={currentCollection?.name}
         />
         <div className="flex w-full items-center gap-x-2 justify-end">
           <div className="p-4 md:p-6">
             <div className="flex gap-x-2">
-              <BaseButton onClick={onClose} type="button">
+              <BaseButton onClick={close} type="button">
                 取消
               </BaseButton>
               <BaseButton

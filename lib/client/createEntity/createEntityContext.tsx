@@ -36,7 +36,7 @@ export const createEntityContext = <
   type State<EntityType, CollectionType> = {
     modalOpen: boolean;
     questionModalMode: "view" | "edit";
-    currentCollection: CollectionType;
+    currentCollection: CollectionType | null;
     currentEntity: EntityType;
     collectionList: CollectionType[];
     entityList: EntityType[];
@@ -45,7 +45,7 @@ export const createEntityContext = <
   const initialState: State<EntityType, CollectionType> = {
     modalOpen: false,
     questionModalMode: "view",
-    currentCollection: defaultCollection,
+    currentCollection: null,
     currentEntity: defaultEntity,
     collectionList: [],
     entityList: [],
@@ -53,37 +53,37 @@ export const createEntityContext = <
 
   type Action<EntityType, CollectionType> =
     | {
-        type: "SET_QUESTION_MODAL_MODE";
-        payload: State<EntityType, CollectionType>["questionModalMode"];
-      }
+      type: "SET_QUESTION_MODAL_MODE";
+      payload: State<EntityType, CollectionType>["questionModalMode"];
+    }
     | {
-        type: "SET_CURRENT_COLLECTION";
-        payload: State<EntityType, CollectionType>["currentCollection"];
-      }
+      type: "SET_CURRENT_COLLECTION";
+      payload: State<EntityType, CollectionType>["currentCollection"];
+    }
     | {
-        type: "SET_CURRENT_ENTITY";
-        payload: State<EntityType, CollectionType>["currentEntity"];
-      }
+      type: "SET_CURRENT_ENTITY";
+      payload: State<EntityType, CollectionType>["currentEntity"];
+    }
     | {
-        type: "SET_ENTITY_LIST";
-        payload: State<EntityType, CollectionType>["entityList"];
-      }
+      type: "SET_ENTITY_LIST";
+      payload: State<EntityType, CollectionType>["entityList"];
+    }
     | {
-        type: "SET_COLLECTION_LIST";
-        payload: State<EntityType, CollectionType>["collectionList"];
-      }
-    | { type: "REMOVE_QUESTION"; payload: Question["id"] }
+      type: "SET_COLLECTION_LIST";
+      payload: State<EntityType, CollectionType>["collectionList"];
+    }
+    | { type: "REMOVE_ENTITY"; payload: Question["id"] }
     | { type: "SET_MODAL_OPEN"; payload: boolean }
     | {
-        type: "CREATE_OR_UPDATE_COLLECTION";
-        payload: State<EntityType, CollectionType>["currentCollection"];
-      }
+      type: "CREATE_OR_UPDATE_COLLECTION";
+      payload: NonNullable<State<EntityType, CollectionType>["currentCollection"]>;
+    }
     | { type: "CANCEL" };
 
   const EnitityContext = createContext(initialState);
   const EntityDispatchContext = createContext<
     Dispatch<Action<EntityType, CollectionType>>
-  >(() => {});
+  >(() => { });
 
   const reducer: Reducer<
     State<EntityType, CollectionType>,
@@ -115,7 +115,8 @@ export const createEntityContext = <
       case "CREATE_OR_UPDATE_COLLECTION":
         const { payload } = action;
         const { collectionList, currentCollection } = state;
-        if (!!currentCollection.name) {
+        // isEditing
+        if (!!currentCollection) {
           const newList = [...collectionList];
           const targetItemIndex = collectionList?.findIndex(
             (e) => e.id === currentCollection.id
@@ -145,7 +146,7 @@ export const createEntityContext = <
           currentEntity: { ...defaultEntity, seq: maxSeq + 1 },
           questionModalMode: "view",
         });
-      case "REMOVE_QUESTION": {
+      case "REMOVE_ENTITY": {
         const removeItem = (id: number) => {
           const targetItemIndex = state.entityList?.findIndex(
             (e) => e.id === id
@@ -173,20 +174,32 @@ export const createEntityContext = <
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
+      setPending(true)
       localforage.getItem(collectionListKey).then((res) => {
+        let list: CollectionType[]
         if (!res) {
-          dispatch({
-            type: "SET_COLLECTION_LIST",
-            payload: [defaultCollection],
-          });
+          list = [defaultCollection]
+
         } else {
-          dispatch({
-            type: "SET_COLLECTION_LIST",
-            payload: res as State<EntityType, CollectionType>["collectionList"],
-          });
+          list = res as CollectionType[]
+
         }
-        setPending(false);
-      });
+        dispatch({
+          type: "SET_COLLECTION_LIST",
+          payload: list,
+        });
+        dispatch({
+          type: "SET_CURRENT_COLLECTION",
+          payload: list[0]
+        });
+
+      })
+        .catch(e => {
+          alert(e.message)
+        }).finally(() => {
+          setPending(false);
+        });
+
     }, []);
 
     useEffect(() => {
@@ -194,6 +207,10 @@ export const createEntityContext = <
     }, [state.collectionList]);
 
     useEffect(() => {
+      if (!state.currentCollection?.id) {
+        return
+      }
+
       setPending(true);
 
       localforage.getItem(state.currentCollection.id + "").then((res) => {
@@ -208,17 +225,24 @@ export const createEntityContext = <
             payload: res as State<EntityType, CollectionType>["entityList"],
           });
         }
+      }).catch(e => {
+        alert(e.message)
+      }).finally(() => {
         setPending(false);
       });
-    }, [state.currentCollection.id]);
+
+    }, [state.currentCollection?.id]);
 
     // 如果 collection 变了，不去同步，questionList 会变
 
     useEffect(() => {
+      if (!state.currentCollection?.id) {
+        return
+      }
       if (!pending) {
         localforage.setItem(state.currentCollection.id + "", state.entityList);
       }
-    }, [state.entityList, pending, state.currentCollection.id]);
+    }, [state.entityList, pending]);
 
     return (
       <EnitityContext.Provider value={state}>
@@ -251,4 +275,4 @@ export type EntityState = ReturnType<
 >;
 
 export type EntityDispatch = ReturnType<
-ReturnType<typeof createEntityContext>["useEntityDispatch"]>
+  ReturnType<typeof createEntityContext>["useEntityDispatch"]>

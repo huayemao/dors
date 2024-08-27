@@ -74,7 +74,7 @@ export default function ViewOrEditEntityModal({
   const handleRemove = () => {
     withConfirm(() => {
       dispatch({
-        type: "REMOVE_QUESTION",
+        type: "REMOVE_ENTITY",
         payload: currentQuestion.id,
       });
       if (history.length) {

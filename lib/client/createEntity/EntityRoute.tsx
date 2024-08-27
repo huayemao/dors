@@ -23,7 +23,7 @@ async function EntityLoader({ params }) {
   };
 }
 
-export default function Route({
+export default function EntityRoute({
   state,
   dispatch,
   basename,

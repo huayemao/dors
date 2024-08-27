@@ -7,7 +7,7 @@ export const DEFAULT_NOTE = {
 };
 
 export const DEFAULT_COLLECTION = {
-  id: 1100,
+  id: Date.now(),
   name: new Date().toLocaleDateString(),
   online: false
 };
