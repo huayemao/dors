@@ -1,15 +1,14 @@
 import prisma from "@/lib/prisma";
 import mime from "mime";
-import { unstable_cache } from "next/cache";
 
-export const revalidate = 4000;
+export const revalidate = 7200;
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const file = await unstable_cache(prisma.file.findFirst)({
+    const file = await prisma.file.findFirst({
       where: {
         name: decodeURIComponent(params.id),
       },
