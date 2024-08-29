@@ -131,7 +131,7 @@ export async function getFeaturedPostIds() {
 
 async function getAllPosts(options: getPostOptions = {}) {
   const featurePosts = await getFeaturedPostIds();
-  const { perPage, skip } = getPrismaPaginationParams(options);
+  const { take, skip } = getPrismaPaginationParams(options);
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> =
     await getWhereInput(options);
 
@@ -161,7 +161,7 @@ async function getAllPosts(options: getPostOptions = {}) {
       },
       _count: true,
     },
-    take: perPage,
+    take: take,
     skip,
   });
   return res
