@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { humanFileSize } from "@/lib/utils";
 import mime from 'mime'
 import {
+  BaseButton,
   BaseCard,
   BaseDropdown,
   BaseDropdownItem,
@@ -12,6 +13,10 @@ import {
 import { FileIcon, ImageIcon } from "lucide-react";
 import { UploadForm } from "../../../components/UploadForm";
 import { DeleteFileButton } from "./DeleteFileButton";
+import { SITE_META } from "@/constants";
+import LightBox from "@/components/Lightbox";
+import { ClientOnly } from "@/components/ClientOnly";
+import { Figure } from "@/components/Figure";
 
 function withPagination<T, P>(fn: (args: P) => Promise<T>, getPaginationOption: () => PaginateOptions) {
   return async function (args: P): Promise<T> {
@@ -35,6 +40,7 @@ export default async function UploadTest({ searchParams }) {
       name: true,
       size: true,
       mimeType: true,
+
     },
   });
 
@@ -67,38 +73,42 @@ export default async function UploadTest({ searchParams }) {
     <div>
       <BaseCard shadow="flat" className="py-4 pt-20 md:px-12 bg-white">
         {/* todo: 定制这里面的样式 */}
-        <BaseList className="max-w-md border">
-          {list.map((e) => (
-            <BaseListItem
-              key={e.id}
-              title={e.name}
-              subtitle={
-                e.size ? humanFileSize(e.size / BigInt(8)) : "unknown size" + e.mimeType
-              }
-              end={
-                <BaseDropdown variant="context">
-                  <BaseDropdownItem>
-                    <DeleteFileButton file={e}></DeleteFileButton>
-                  </BaseDropdownItem>
-                </BaseDropdown>
-              }
-            >
-              <div className="flex items-center">
-                {e.mimeType.startsWith("image") ? (
-                  <ImageIcon
-                    strokeWidth={1}
-                    className="h-6 w-6 text-success-600"
-                  ></ImageIcon>
-                ) : (
-                  <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
-                )}
-              </div>
-            </BaseListItem>
+        <BaseList className="max-w-md border p-4">
+          {list.map((e, i) => (
+            <>
+              {/* @ts-ignore */}
+              <BaseListItem
+                key={e.id}
+                title={e.name}
+                subtitle={
+                  e.size ? humanFileSize(e.size / BigInt(8)) : "unknown size" + e.mimeType
+                }
+                end={
+                  <BaseDropdown variant="context">
+                    <BaseDropdownItem>
+                      <DeleteFileButton file={e}></DeleteFileButton>
+                    </BaseDropdownItem>
+                  </BaseDropdown>
+                }
+              >
+                <div className="flex items-center w-10 h-10">
+                  {e.mimeType.startsWith("image") ? (
+                    // @ts-ignore
+                    <Figure loading="lazy" ignoreCaption width={40} height={40} alt={e.name} src={encodeURI(`${SITE_META.url}/api/files/${e.name}`)} />
+                  ) : (
+                    <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
+                  )}
+                </div>
+              </BaseListItem>
+            </>
           ))}
         </BaseList>
       </BaseCard>
+      <ClientOnly>
+        <LightBox gallery=".nui-list"></LightBox>
+      </ClientOnly>
       <UploadForm />
-    </div>
+    </div >
   );
 }
 

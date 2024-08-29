@@ -3,15 +3,15 @@ import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
 import { useEffect } from "react";
 
-const LightBox = () => {
+const LightBox = ({ gallery = "article", childrenSelector = 'a[data-pswp-width]' }: { gallery?: string, childrenSelector?: string }) => {
   useEffect(() => {
     let lightbox;
     lightbox = new PhotoSwipeLightbox({
       // may select multiple "galleries"
-      gallery: "article",
+      gallery: gallery,
 
       // Elements within gallery (slides)
-      children: "a[data-pswp-width]",
+      children: childrenSelector,
 
       // setup PhotoSwipe Core dynamic import
       pswpModule: () => import("photoswipe"),

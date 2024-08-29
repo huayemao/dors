@@ -3,7 +3,7 @@ import mime from "mime";
 import { useEffect, useRef } from "react";
 
 export function Figure(props) {
-  const { src } = props;
+  const { src, width, height, ignoreCaption } = props;
   const mimetype = mime.getType(src)
   mime.getType(src)
   const ref = useRef<HTMLAnchorElement>(null);
@@ -39,19 +39,19 @@ export function Figure(props) {
       suppressHydrationWarning
       ref={ref}
       className="!no-underline"
-      data-pswp-width="800"
-      data-pswp-height="600"
+      data-pswp-width={width || 800}
+      data-pswp-height={height || 600}
     >
       <figure suppressHydrationWarning>
         <img
           loading="lazy"
           style={{ width: "100%", height: "auto" }}
-          width={800}
-          height={600}
+          width={width || 800}
+          height={height || 600}
           referrerPolicy="origin"
           {...props}
         />
-        <figcaption suppressHydrationWarning>{props.alt}</figcaption>
+        {!ignoreCaption && <figcaption suppressHydrationWarning>{props.alt}</figcaption>}
       </figure>
     </a>
   );
