@@ -1,6 +1,6 @@
 import { type Question } from "@/lib/types/Question";
 import { readFromClipboard } from "@/lib/utils";
-import { copyToClipboard } from "@/lib/utils/copyToClipboard";
+import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import {
   BaseButtonIcon,
   BaseCard,

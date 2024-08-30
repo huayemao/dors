@@ -1,6 +1,6 @@
 "use client";
 import { ActionDropdown } from "@/components/ActionDropdown";
-import { downloadAsFile } from "@/lib/utils/downloadAsFile";
+import { downloadAsFile } from "@/lib/client/utils/downloadAsFile";
 import {
   BaseCard,
   BaseDropdownItem,

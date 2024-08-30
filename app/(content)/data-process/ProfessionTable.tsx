@@ -1,5 +1,5 @@
 "use client";
-import withDeferredMount from "@/lib/utils/deferredMount";
+import withDeferredMount from "@/lib/client/utils/deferredMount";
 import { BaseCard, BaseHeading } from "@shuriken-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useDBContext } from "./DBContext";

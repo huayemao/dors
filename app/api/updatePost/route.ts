@@ -1,5 +1,5 @@
 import { getPost, updatePost } from "@/lib/posts";
-import { revalidateHomePage } from "@/lib/utils/retalidate";
+import { revalidateHomePage } from "@/lib/client/utils/retalidate";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { readPostFormData } from "./readPostFormData";

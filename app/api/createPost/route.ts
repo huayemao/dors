@@ -1,5 +1,5 @@
 import { createPost } from "@/lib/posts";
-import { revalidateHomePage } from "@/lib/utils/retalidate";
+import { revalidateHomePage } from "@/lib/client/utils/retalidate";
 import { NextResponse } from "next/server";
 import { readPostFormData } from "../updatePost/readPostFormData";
 

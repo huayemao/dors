@@ -1,6 +1,6 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { revalidatePath, revalidateTag } from "next/cache";
-import prisma from "../prisma";
+import prisma from "../../prisma";
 
 export async function revalidateHomePage(id: number) {
   const firstPagePosts = await prisma.posts.findMany({
