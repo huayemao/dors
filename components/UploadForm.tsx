@@ -9,7 +9,7 @@ export function UploadForm(props: Props) {
       action="/api/files"
       encType="multipart/form-data"
       method="POST"
-      className="w-96 rounded  bg-white p-8 mx-auto space-y-4"
+      className="max-w-sm rounded  bg-white p-8 mx-auto space-y-4"
       {...props}
     >
       {/* @ts-ignore */}
