@@ -12,14 +12,13 @@ export const metadata: Metadata = {
 };
 
 const menuItems: NavigationItemProps[] = [
-
-  {
-    title: "关于",
-    href: "/",
-  },
   {
     title: "相关链接",
     children: [
+      {
+        title: "关于",
+        href: "/",
+      },
       {
         title: "dors",
         href: "https://dors.huayemao.run",
@@ -37,7 +36,7 @@ export default function QAsLayout({ }) {
           UltraNotes
         </h1>
         <nav className="absolute right-4 top-2 text-sm">
-          <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
+          <ul className="flex flex-col lg:items-center justify-between mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
             {menuItems.map((e) => (
               <NavigationItem
                 key={e.href}
