@@ -1,7 +1,8 @@
 "use client"
 
-import { humanFileSize } from "@/lib/utils";
+import { copyTextToClipboard, humanFileSize } from "@/lib/utils";
 import {
+    BaseButton,
     BaseCard,
     BaseDropdown,
     BaseDropdownItem,
@@ -9,14 +10,17 @@ import {
     BaseList,
     BaseListItem,
 } from "@shuriken-ui/react";
-import { FileIcon, ImageIcon } from "lucide-react";
-import { DeleteFileButton } from "./DeleteFileButton";
+import { CopyIcon, FileIcon, ImageIcon, TrashIcon } from "lucide-react";
 import { SITE_META } from "@/constants";
 import LightBox from "@/components/Lightbox";
 import { Figure } from "@/components/Figure";
 import { Popover } from "@headlessui/react";
+import { CopyToClipboard } from "@/components/copy-to-clipboard";
+import { getFilePath } from "@/lib/client/utils/getFilePath";
 
-export function FileList({ list }: { list: { id: number; name: string; size: bigint | null; mimeType: string; }[]; }) {
+type FileItem = { id: number; name: string; size: bigint | null; mimeType: string; }
+
+export function FileList({ list, admin = false }: { list: FileItem[]; admin?: boolean }) {
     return <BaseList className="w-full">
         {list.map((e, i) => {
             const sizeStr = e.size ? humanFileSize(e.size / BigInt(8)) : "unknown size";
@@ -25,11 +29,26 @@ export function FileList({ list }: { list: { id: number; name: string; size: big
                 //  @ts-ignore 
                 title={<span className="truncate inline-block max-w-[12em] md:max-w-xs">{e.name}</span>}
                 subtitle={['#' + e.id, sizeStr, e.mimeType,].join('  ')}
-                end={<BaseDropdown variant="context">
-                    <BaseDropdownItem>
-                        <DeleteFileButton file={e}></DeleteFileButton>
-                    </BaseDropdownItem>
-                </BaseDropdown>}
+                end={
+                    <BaseDropdown variant="context">
+                        <BaseDropdownItem
+                            start={<CopyIcon className="w-5 h-5"></CopyIcon>}
+                            title="复制文件路径"
+                            onClick={() => { copyTextToClipboard(getFilePath(e.name)) }}>
+                        </BaseDropdownItem>
+                        {admin && <BaseDropdownItem
+                            start={
+                                <TrashIcon className="w-5 h-5"></TrashIcon>} title="删除文件" onClick={() => {
+                                    fetch("/api/files/" + e.id, { method: "DELETE" }).then(
+                                        (res) => {
+                                            if (res.status == 200) {
+                                                alert("删除成功");
+                                            }
+                                        }
+                                    );
+                                }}>
+                        </BaseDropdownItem>}
+                    </BaseDropdown>}
             >
                 <BaseDropdown variant="text" renderButton={() => {
                     return <BaseIconBox mask="blob" color="success" rounded="none" variant="pastel" size="md">

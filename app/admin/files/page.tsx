@@ -14,11 +14,11 @@ const PER_PAGE = 20;
 
 export default async function UploadTest({ searchParams }) {
 
-  const withPa = withPagination(prisma.file.findMany, () => ({
+  const getPaginatedFileList = withPagination(prisma.file.findMany, () => ({
     page: searchParams.page || 1, perPage: PER_PAGE,
   }))
 
-  const list = await withPa({
+  const list = await getPaginatedFileList({
     select: {
       id: true,
       name: true,
@@ -40,7 +40,7 @@ export default async function UploadTest({ searchParams }) {
     <div className="md:px-12">
       <div className="grid lg:grid-cols-2 py-4 gap-4">
         <BaseCard shadow="flat" className="p-4">
-          <FileList list={list}></FileList>
+          <FileList list={list} admin></FileList>
         </BaseCard>
         <BaseCard shadow="flat" className="p-4">
           <UploadForm />
@@ -77,7 +77,6 @@ async function addMimeTypes(list: { id: number; name: string; size: bigint | nul
         }
       });
     }
-
   }
 }
 

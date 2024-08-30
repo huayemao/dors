@@ -1,5 +1,4 @@
 "use client";
-import { UploadForm } from "@/components/UploadForm";
 import { SITE_META } from "@/constants";
 import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
@@ -21,9 +20,10 @@ import {
   useState,
   useReducer,
 } from "react";
-import { Modal } from "./Base/Modal";
-import { EmojiPanel } from "./EmojiPanel";
-import CollectionEditor from "./Collection/CollectionEditor";
+import { Modal } from "../Base/Modal";
+import { EmojiPanel } from "../EmojiPanel";
+import CollectionEditor from "../Collection/CollectionEditor";
+import { UploadPanel } from "./UploadPanel";
 
 const DEFAULT_CATEGORY_ID = 3;
 
@@ -433,24 +433,4 @@ function handleOnBeforeUnload(event: BeforeUnloadEvent) {
   event.returnValue = true;
 }
 
-function UploadPanel() {
-  return (
-    <UploadForm
-      onSubmit={(e) => {
-        e.preventDefault();
-        const formEl = e.target as HTMLFormElement;
-        const formData = new FormData(formEl);
-        fetch("/api/files", {
-          method: "POST",
-          body: formData,
-        })
-          .then((res) => res.text())
-          .then(copyTextToClipboard)
-          .then(() => {
-            alert("已复制到剪贴板");
-            close();
-          });
-      }}
-    />
-  );
-}
+
