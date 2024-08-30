@@ -6,7 +6,7 @@ import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
 import { DOMAttributes, FC, PropsWithChildren, useMemo, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useEntity, useEntityDispatch } from "./contexts";
-import { useCloseModal } from "@/lib/client/createEntity/useCloseModal";
+import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 import { Note } from "./constants";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 

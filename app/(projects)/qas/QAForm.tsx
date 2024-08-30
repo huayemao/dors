@@ -7,7 +7,7 @@ import { DOMAttributes, FC, PropsWithChildren } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { DEFAULT_OPTIONS } from "./constants";
 import { useEntity, useEntityDispatch } from "./contexts";
-import { useCloseModal } from "@/lib/client/createEntity/useCloseModal";
+import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 
 export const QAForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();

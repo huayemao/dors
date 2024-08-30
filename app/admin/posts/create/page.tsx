@@ -1,8 +1,11 @@
-import { PostEditor } from "@/components/PostEditor";
+import { ClientOnly } from "@/components/ClientOnly";
+import PostEditor from "@/components/PostEditor";
 
 export default async function CreatePostPage({ params }) {
 
   return (
-      <PostEditor post={null} />
+    <ClientOnly>
+      <PostEditor post={null} basePath="/posts/create" />
+    </ClientOnly>
   );
 }

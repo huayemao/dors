@@ -1,5 +1,3 @@
-"use client"
-
 import { copyTextToClipboard, humanFileSize } from "@/lib/utils";
 import {
     BaseButton,
@@ -18,7 +16,7 @@ import { Popover } from "@headlessui/react";
 import { CopyToClipboard } from "@/components/copy-to-clipboard";
 import { getFilePath } from "@/lib/client/utils/getFilePath";
 
-type FileItem = { id: number; name: string; size: bigint | null; mimeType: string; }
+export type FileItem = { id: number; name: string; size: bigint | null; mimeType: string; }
 
 export function FileList({ list, admin = false }: { list: FileItem[]; admin?: boolean }) {
     return <BaseList className="w-full">

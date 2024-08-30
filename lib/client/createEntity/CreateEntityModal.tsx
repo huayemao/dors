@@ -2,7 +2,7 @@ import { Modal } from "@/components/Base/Modal";
 import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { FormFoot } from "./FormFoot";
 import { EntityDispatch, EntityState } from "./createEntityContext";
-import { useCloseModal } from "./useCloseModal";
+import { useCloseModal } from "../utils/useCloseModal";
 
 export default function CreateEntityModal({
   state,

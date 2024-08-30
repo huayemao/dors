@@ -3,7 +3,7 @@ import { BaseButton, BaseInput } from "@shuriken-ui/react";
 import { DOMAttributes, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useCloseModal } from "./useCloseModal";
+import { useCloseModal } from "../utils/useCloseModal";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 
 export default function CreateCollectionModal({

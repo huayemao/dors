@@ -1,4 +1,3 @@
-"use client";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import Input from "@/components/Base/Input";
 import { detectChange } from "@/components/PostEditor";
@@ -64,8 +63,8 @@ const CoverImageSetting = ({
   editTime,
 }: {
   originalPhoto:
-    | PexelsPhoto
-    | { dataURLs: { large: string }; alt?: string; src: { large: string } };
+  | PexelsPhoto
+  | { dataURLs: { large: string }; alt?: string; src: { large: string } };
   postId: string;
   editTime: string;
 }) => {
@@ -128,7 +127,7 @@ const CoverImageSetting = ({
   );
 };
 
-export default function Page({ params }) {
+export default function Settings({ params }) {
   const post = useContext(PostContext);
   const tags = useContext(TagsContext);
 

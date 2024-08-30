@@ -1,4 +1,5 @@
-import { PostEditor } from "@/components/PostEditor";
+import { ClientOnly } from "@/components/ClientOnly";
+import PostEditor from "@/components/PostEditor";
 import { getPost } from "@/lib/posts";
 import { notFound } from "next/navigation";
 
@@ -16,6 +17,8 @@ export default async function page({ params }) {
   }
 
   return (
-      <PostEditor post={post}  />
+    <ClientOnly>
+      <PostEditor post={post} basePath={"/admin/posts/" + params.id} />
+    </ClientOnly>
   );
 }

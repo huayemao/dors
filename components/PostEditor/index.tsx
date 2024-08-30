@@ -1,5 +1,5 @@
 "use client";
-import { SITE_META } from "@/constants";
+import { Link, RouterProvider, createBrowserRouter, useNavigate } from "react-router-dom";
 import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
 import { cn, copyTextToClipboard, getDateForDateTimeInput } from "@/lib/utils";
@@ -10,7 +10,6 @@ import {
   BaseSelect,
 } from "@shuriken-ui/react";
 import { Lock, Plus, Save, Settings, TimerReset } from "lucide-react";
-import Link from "next/link";
 import {
   FormEventHandler,
   useContext,
@@ -19,32 +18,75 @@ import {
   useRef,
   useState,
   useReducer,
+  FC,
 } from "react";
 import { Modal } from "../Base/Modal";
 import { EmojiPanel } from "../EmojiPanel";
 import CollectionEditor from "../Collection/CollectionEditor";
 import { UploadPanel } from "./UploadPanel";
+import SettingsComponent from "./Settings";
+import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 
 const DEFAULT_CATEGORY_ID = 3;
+
+
+function withModal<Props>(Comp: FC<Props>, title: string, modalOpen: boolean, setModalOpen: (v) => void) {
+  return (props) => {
+    const close = useCloseModal()
+    useEffect(() => {
+      setModalOpen(true)
+      return () => {
+        setModalOpen(false)
+      };
+    }, []);
+
+    return <Modal
+      title={title}
+      open={modalOpen}
+      onClose={close}
+    >
+      <Comp {...props} />
+    </Modal>
+  }
+}
+
+export default function (props: PostEditorProps) {
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const routes = createBrowserRouter([
+    {
+      path: "/",
+      element: <PostEditorContent {...props} />,
+    },
+    {
+      path: 'settings',
+      Component: withModal(SettingsComponent, '设置', modalOpen, setModalOpen),
+    },
+    {
+      path: 'upload',
+      Component: withModal(UploadPanel, '文件', modalOpen, setModalOpen),
+    },
+    {
+      path: 'emoji',
+      Component: withModal(EmojiPanel, '常用表情符号', modalOpen, setModalOpen),
+    },
+  ], { basename: props.basePath })
+
+  return <RouterProvider router={routes}></RouterProvider>
+}
+
+
 
 export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
   mdxContent?: any;
+  basePath: string,
 };
-
-function getTopEl(el: HTMLElement) {
-  let e = el;
-  while (e && e.parentElement) {
-    e = e.parentElement;
-  }
-  return e;
-}
 
 export const detectChange = (form: HTMLFormElement) => {
   const changedFields = [];
   const formData = new FormData(form);
-  const topE = getTopEl(form);
-
   const inputs = Array.from(
     form.querySelectorAll("input, select, textarea")
   ) as (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)[];
@@ -60,9 +102,9 @@ export const detectChange = (form: HTMLFormElement) => {
     // @ts-ignore
     const formDataValue = el.multiple
       ? // @ts-ignore
-        formData.getAll(el.name).sort().join(",")
+      formData.getAll(el.name).sort().join(",")
       : // @ts-ignore
-        formData.get(el.name);
+      formData.get(el.name);
     // @ts-ignore
     const originalValue = el.dataset.originalValue;
     if (
@@ -100,11 +142,11 @@ const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
   window.removeEventListener("beforeunload", handleOnBeforeUnload);
 };
 
-export function PostEditor({ post, mdxContent }: PostEditorProps) {
+export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
+  const nav = useNavigate()
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
   const [isProtected, setProtected] = useState(post?.protected || false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [action, setAction] = useState<"upload" | "unicode">("upload");
   const [content, setContent] = useState(post?.content || "");
   const [pinned, setPinned] = useState(false);
@@ -257,15 +299,7 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
           </div>
         </div>
       </div>
-      <Modal
-        title={action == "upload" ? "上传文件" : "常用 Unicode"}
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-        }}
-      >
-        {action == "upload" ? <UploadPanel /> : <EmojiPanel />}
-      </Modal>
+
       {mdxContent}
     </form>
   );
@@ -281,40 +315,19 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
           )}
         >
           <BaseDropdownItem
+            onClick={() => nav('./upload')}
             title="上传文件"
-            onClick={() => {
-              setAction("upload");
-              setModalOpen(true);
-            }}
           ></BaseDropdownItem>
           <BaseDropdownItem
+            onClick={() => nav('./emoji')}
+
             title="Unicode 表情"
-            onClick={() => {
-              setAction("unicode");
-              setModalOpen(true);
-            }}
           />
-          <BaseDropdownItem
-            title="最近文件"
-            text="获取最近文件的 markdown 标记"
-            onClick={() => {
-              fetch("/api/files/getLatestFile")
-                .then((res) => res.json())
-                .then((json) => `${SITE_META.url}/api/files/${json.name}`)
-                .then(copyTextToClipboard)
-                .then(() => {
-                  alert("已复制到剪切板");
-                });
-            }}
-          ></BaseDropdownItem>
         </BaseDropdown>
         {post && (
           <>
             <Link
-              legacyBehavior
-              passHref
-              shallow
-              href={`/admin/posts/${post.id}/settings`}
+              to={`./settings`}
               className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
             >
               <BaseButtonIcon rounded="md" size="sm">
@@ -371,8 +384,6 @@ export function PostEditor({ post, mdxContent }: PostEditorProps) {
             ).value = v;
             setV(v);
           }}
-          // 组件不支持传 props ... 用它来作 input 的代理好了。。。
-          // defaultValue={String(categoryId) ? String(categoryId) : undefined}
           value={v}
         >
           {categories.map((e) => (

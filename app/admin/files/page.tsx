@@ -8,7 +8,7 @@ import { UploadForm } from "@/components/UploadForm";
 import LightBox from "@/components/Lightbox";
 import { ClientOnly } from "@/components/ClientOnly";
 import { withPagination } from "@/lib/server/withPagination";
-import { FileList } from "./FileList";
+import { FileList } from "@/components/FileList";
 
 const PER_PAGE = 20;
 

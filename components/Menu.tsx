@@ -52,7 +52,7 @@ export function AdminMenu() {
                   )}
                 >
                   <LucideIcon className="icon w-5 h-5  shrink-0" />
-                  <span className="block whitespace-nowrap font-sans text-sm block">
+                  <span className="whitespace-nowrap font-sans text-sm block">
                     {e.title}
                   </span>
                 </Link>
