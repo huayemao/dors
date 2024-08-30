@@ -9,8 +9,8 @@ export interface NavigationItemProps {
   href?: string;
   className?: string;
   title: string;
-  icon: FC<LucideProps>;
-  children?: Omit<NavigationItemProps, "icon">[];
+  icon?: FC<LucideProps>;
+  children?: NavigationItemProps[];
   text?: string;
   onClick?: () => void;
 }
@@ -26,13 +26,13 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
 }) => {
   if (children) {
     return (
-      <li className="text-base text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
+      <li className="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
         <BaseDropdown
           oonClick={onClick}
           // @ts-ignore
           label={
             <div className="flex items-center gap-2">
-              <Icon className="h-4 w-4" strokeWidth={1.5}></Icon>
+              {Icon && <Icon className="h-4 w-4" strokeWidth={1.5}></Icon>}
               {title}
             </div>
           }
@@ -63,7 +63,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
           className
         )}
       >
-        <Icon strokeWidth={1.5} className="h-4 w-4" />
+        {Icon && <Icon strokeWidth={1.5} className="h-4 w-4" />}
         {title}
       </Link>
     </li>
