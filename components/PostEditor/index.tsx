@@ -107,6 +107,7 @@ export const detectChange = (form: HTMLFormElement) => {
       formData.get(el.name);
     // @ts-ignore
     const originalValue = el.dataset.originalValue;
+
     if (
       el.id == "id" ||
       el.name == "updated_at" ||
@@ -147,7 +148,6 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
   const [isProtected, setProtected] = useState(post?.protected || false);
-  const [action, setAction] = useState<"upload" | "unicode">("upload");
   const [content, setContent] = useState(post?.content || "");
   const [pinned, setPinned] = useState(false);
 
@@ -199,7 +199,18 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           })}
         >
           <div className="flex gap-2 mr-auto">
-            {CatSelect()}
+
+            <SelectWithName label="分类"
+              defaultValue={categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)}
+              name="category_id" data={categories.map(e => ({ value: e.id, label: e.name! }))}></SelectWithName>
+            <SelectWithName label="分类" defaultValue={post!.type || 'normal'} name="type" data={[
+              {
+                label: '普通', value: 'normal'
+              },
+              {
+                label: '收藏夹', value: 'collection'
+              },
+            ]}></SelectWithName>
             <label className="text-stone-400 hover:text-stone-500">
               <BaseButtonIcon
                 rounded="md"
@@ -366,76 +377,50 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
     );
   }
 
-  function CatSelect() {
+
+  function SelectWithName(
+    { name, label, defaultValue, data }
+      : { name: string, label: string, defaultValue: string | number, data: { label: string; value: string | number }[] }) {
     const [v, setV] = useState(
-      categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)
+      defaultValue
     );
-    const [type, setType] = useState(post?.type);
     return (
       <div className="w-20">
         <BaseSelect
           size="sm"
           required
           labelFloat
-          label="分类"
+          label={label}
           onChange={(v) => {
             (
-              document.querySelector("input#category_id") as HTMLInputElement
+              document.querySelector(`input#${name}`) as HTMLInputElement
             ).value = v;
             setV(v);
           }}
           value={v}
         >
-          {categories.map((e) => (
-            <option key={e.id} defaultChecked={e.id == categoryId} value={e.id}>
-              {e.name}
+          {data.map((e) => (
+            <option key={e.value} defaultChecked={e.value == defaultValue} value={e.value}>
+              {e.label}
             </option>
           ))}
         </BaseSelect>
         <input
-          form="post_form"
           className="hidden"
-          name="category_id"
-          id="category_id"
-          data-original-value={categoryId ? categoryId : undefined}
+          name={name}
+          id={name}
+          data-original-value={defaultValue || undefined}
           defaultValue={v}
-        ></input>
-
-        <BaseSelect
-          size="sm"
-          required
-          labelFloat
-          label="类型"
-          onChange={(v) => {
-            (document.querySelector("input#type") as HTMLInputElement).value =
-              v;
-            setType(v);
-          }}
-          // 组件不支持传 props ... 用它来作 input 的代理好了。。。
-          // defaultValue={String(categoryId) ? String(categoryId) : undefined}
-          value={type}
-        >
-          {["normal", "collection"].map((e) => (
-            <option
-              key={e}
-              defaultChecked={e == (post ? post.type : "normal")}
-              value={e}
-            >
-              {e}
-            </option>
-          ))}
-        </BaseSelect>
-        <input
-          form="post_form"
-          className="hidden"
-          name="type"
-          id="type"
-          data-original-value={post?.type || "normal"}
-          defaultValue={type || "normal"}
         ></input>
       </div>
     );
   }
+
+
+
+
+
+
 }
 function handleOnBeforeUnload(event: BeforeUnloadEvent) {
   // Cancel the event as stated by the standard.
