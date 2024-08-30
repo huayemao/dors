@@ -21,7 +21,7 @@ export type FileItem = { id: number; name: string; size: bigint | null; mimeType
 export function FileList({ list, admin = false }: { list: FileItem[]; admin?: boolean }) {
     return <BaseList className="w-full">
         {list.map((e, i) => {
-            const sizeStr = e.size ? humanFileSize(e.size / BigInt(8)) : "unknown size";
+            const sizeStr = e.size ? humanFileSize(e.size) : "unknown size";
             return <BaseListItem
                 key={e.id}
                 //  @ts-ignore 

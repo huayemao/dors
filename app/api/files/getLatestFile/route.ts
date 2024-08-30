@@ -24,7 +24,12 @@ export async function GET(
       }
     });
 
-    return new Response(JSON.stringify(list), {
+    return new Response(JSON.stringify(list.map(e => {
+      return {
+        ...e,
+        size: String(e.size)
+      }
+    })), {
       headers: {
         "Content-Type": "application/json",
       },

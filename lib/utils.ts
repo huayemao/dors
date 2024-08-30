@@ -62,9 +62,19 @@ export function getWordCount(htmlContent) {
   return wordCount;
 }
 
-export function humanFileSize(size: number | bigint) {
+export function humanFileSize(size: number | bigint | string) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let i = 0;
+  if (typeof size == 'string') {
+    size = BigInt(size)
+  }
+
+  if (typeof size == "bigint") {
+    size /= BigInt(8);
+  } else {
+    size /= 8;
+  }
+
   while (size >= 1024) {
     if (typeof size == "bigint") {
       size /= BigInt(1024);
