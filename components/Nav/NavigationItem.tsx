@@ -53,7 +53,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
     );
   }
   return (
-    <li>
+    <li key={href}>
       <Link
         prefetch={prefetch}
         onClick={onClick}

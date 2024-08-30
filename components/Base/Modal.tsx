@@ -1,4 +1,3 @@
-"use client";
 import { cn } from "@/lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { BaseButtonClose } from "@shuriken-ui/react";
