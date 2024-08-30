@@ -317,7 +317,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
 
   function Action() {
     return (
-      <div className="space-x-3 flex items-center">
+      <div className="space-x-2 flex items-center">
         <BaseDropdown
           renderButton={() => (
             <BaseButtonIcon rounded="md" size="sm">
@@ -354,19 +354,19 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
               >
                 <TimerReset className={cn("h-4 w-4 cursor-pointer", {})} />
               </BaseButtonIcon>
+              <input
+                hidden
+                form="post_form"
+                disabled={!reserveUpdateTime}
+                id="updated_at"
+                name="updated_at"
+                type="datetime-local"
+                data-original-value={getDateForDateTimeInput(
+                  post?.updated_at as Date
+                )}
+                defaultValue={getDateForDateTimeInput(post?.updated_at as Date)}
+              ></input>
             </label>
-            <input
-              hidden
-              form="post_form"
-              disabled={!reserveUpdateTime}
-              id="updated_at"
-              name="updated_at"
-              type="datetime-local"
-              data-original-value={getDateForDateTimeInput(
-                post?.updated_at as Date
-              )}
-              defaultValue={getDateForDateTimeInput(post?.updated_at as Date)}
-            ></input>
           </>
         )}
         {/* @ts-ignore */}
@@ -385,7 +385,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
       defaultValue
     );
     return (
-      <div className="w-20">
+      <div className="w-16">
         <BaseSelect
           size="sm"
           required
