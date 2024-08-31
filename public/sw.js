@@ -18,7 +18,7 @@ const ASSETS = [
   "/shiki/languages/yaml.tmLanguage.json",
   "/shiki/onig.wasm",
 ];
-const VERSION = "578006c24bcb68408d7b01f8f28483d1092c0fb1";
+const VERSION = "578006c24bcb68408d7b01f8f28483d1092c0fb2";
 
 self.addEventListener("fetch", (e) => {
   const { request: s } = e,
@@ -31,7 +31,6 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
       (async () => {
         return caches.match(s).then((e) => {
-          console.log(t.pathname, e);
           return e || fetch(s);
         });
       })()

@@ -1,17 +1,36 @@
 import { type Question } from "@/lib/types/Question";
-import { readFromClipboard } from "@/lib/utils";
+import { readFromClipboard, withConfirm } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import {
+  BaseButton,
   BaseButtonIcon,
   BaseCard,
   BaseDropdown,
   BaseDropdownItem,
   BaseIconBox,
 } from "@shuriken-ui/react";
-import { CopyIcon, EditIcon, PlusIcon, UploadIcon } from "lucide-react";
-import { ReactNode, useEffect } from "react";
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
-import { BaseEntity, EntityDispatch, EntityState } from "./createEntityContext";
+import {
+  CloudUpload,
+  CopyIcon,
+  EditIcon,
+  PlusIcon,
+  RefreshCcw,
+  UploadIcon,
+} from "lucide-react";
+import { ReactNode, useEffect, useState } from "react";
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import {
+  BaseCollection,
+  BaseEntity,
+  EntityDispatch,
+  EntityState,
+} from "./createEntityContext";
 
 export default function CollectionLayout({
   renderEntity,
@@ -25,38 +44,64 @@ export default function CollectionLayout({
     options: { preview: boolean }
   ) => ReactNode;
 }) {
-  const params = useParams();
   const {
     currentCollection,
     collectionList,
     currentEntity: currentQuestion,
-    entityList: entityList,
+    entityList,
     modalOpen,
     questionModalMode,
   } = state;
 
-  const collection = collectionList.find(
-    (e) => e.id == Number(params!.collectionId)
-  );
+  const { collection } = useLoaderData() as { collection: BaseCollection };
+  const [fetching, setFetching] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
+    console.log(collection);
     if (collection) {
+      if (
+        collection.id &&
+        collectionList.length &&
+        collectionList.every((item) => item.id != collection.id)
+      ) {
+        dispatch({
+          type: "SET_COLLECTION_LIST",
+          payload: collectionList.concat(collection),
+        });
+      }
+
       dispatch({
         type: "SET_CURRENT_COLLECTION",
-        payload: collection!,
+        payload: collection,
+        // payload: Object.assign({}, { ...collection, entityList: undefined }),
       });
+
+      if ((collection as any)._entityList?.length && !entityList.length) {
+        const list = (
+          collection as BaseCollection & { _entityList: BaseEntity[] }
+        )._entityList;
+
+        // 覆盖掉本地版本，但只是最初下载时覆盖。
+        dispatch({
+          type: "SET_ENTITY_LIST",
+          payload: list,
+        });
+      }
     }
-  }, [collection, dispatch]);
+  }, [collection, collectionList, dispatch, entityList]);
+
+  useEffect(() => {
+    // 非初次同步，每次打开的时候拉数据
+    // 问题是 _entityList 也被存到本地了，无法判断是不是刚打开页面的时候拉的
+    // @ts-ignore
+    if (collection && collection.online && !collection._entityList) {
+      syncFromCloud();
+    }
+  }, []);
 
   const navigate = useNavigate();
 
-  function open() {
-    dispatch({ type: "SET_MODAL_OPEN", payload: true });
-  }
-
-  function close() {
-    dispatch({ type: "SET_MODAL_OPEN", payload: false });
-  }
   const importQuestionsFromClipBoard = () => {
     readFromClipboard().then((text) => {
       try {
@@ -80,51 +125,125 @@ export default function CollectionLayout({
   return (
     <>
       <div className="md:px-12">
-        <div className="flex items-center gap-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
-          <BaseDropdown
-            classes={{ wrapper: "mr-auto" }}
-            label={currentCollection?.name}
-            headerLabel="合集"
-          >
-            {collectionList?.map((e) => (
-              <Link to={"/" + e.id} key={e.id}>
-                <BaseDropdownItem
-                  end={
-                    <Link to={"/" + e.id + "/edit"}>
-                      <EditIcon className="h-4 w-4"></EditIcon>
-                    </Link>
-                  }
-                  title={e.name}
-                  text={"创建于 " + new Date(e.id).toLocaleDateString()}
-                  rounded="sm"
-                />
-              </Link>
-            ))}
+        <div className="flex items-center gap-2 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
+          <div className="inline-flex space-x-2 mr-auto">
+            <BaseDropdown label={currentCollection?.name} headerLabel="合集">
+              {collectionList?.map((e) => (
+                <Link to={"/" + e.id} key={e.id}>
+                  <BaseDropdownItem
+                    end={
+                      <Link to={"/" + e.id + "/edit"}>
+                        <EditIcon className="h-4 w-4"></EditIcon>
+                      </Link>
+                    }
+                    title={e.name}
+                    text={"创建于 " + new Date(e.id).toLocaleDateString()}
+                    rounded="sm"
+                  />
+                </Link>
+              ))}
 
-            <BaseDropdownItem
-              color="primary"
-              classes={{ wrapper: "text-right" }}
+              <BaseDropdownItem
+                color="primary"
+                classes={{ wrapper: "text-right" }}
+                onClick={() => {
+                  navigate("/create");
+                }}
+              >
+                <BaseIconBox color="primary">
+                  <PlusIcon></PlusIcon>
+                </BaseIconBox>
+              </BaseDropdownItem>
+            </BaseDropdown>
+            <BaseButtonIcon
+              loading={fetching}
               onClick={() => {
-                navigate("/create");
+                setFetching(true);
+                syncFromCloud()
+                  .then(() => {
+                    dispatch({
+                      type: "SET_ENTITY_LIST",
+                      // @ts-ignore
+                      payload: collection._entityList,
+                    });
+                  })
+                  .finally(() => {
+                    setFetching(false);
+                  });
+              }}
+              data-nui-tooltip="同步数据到本地"
+              data-nui-tooltip-position="down"
+            >
+              <RefreshCcw className="h-4 w-4" />
+            </BaseButtonIcon>
+            {/* <BaseButton
+              onClick={() => {
+                dispatch({
+                  type: "SET_ENTITY_LIST",
+                  // @ts-ignore
+                  payload: collection._entityList,
+                });
               }}
             >
-              <BaseIconBox color="primary">
-                <PlusIcon></PlusIcon>
-              </BaseIconBox>
-            </BaseDropdownItem>
+              覆盖
+            </BaseButton> */}
+            <BaseButtonIcon
+              data-nui-tooltip="同步到云"
+              data-nui-tooltip-position="down"
+              loading={uploading}
+              onClick={() => {
+                setUploading(true);
+                const fd = new FormData();
+                fd.append("id", collection.id + "");
+                fd.append("content", JSON.stringify(entityList));
+                fetch("/api/updatePost", {
+                  method: "POST",
+                  headers: { accept: "application/json" },
+                  body: fd,
+                })
+                  .then((res) => res.json())
+                  .then((json) => json.data)
+                  .then((obj) => {
+                    return {
+                      ...obj,
+                      id: obj.id,
+                      name: obj.title,
+                      online: true,
+                      _entityList: JSON.parse(obj.content),
+                    };
+                  })
+                  .then((res) => {
+                    dispatch({
+                      type: "SET_COLLECTION_LIST",
+                      payload: collectionList
+                        .filter((e) => e.id != collection.id)
+                        .concat(res),
+                    });
+                    setUploading(false);
+                  })
+                  .finally(() => {
+                    setUploading(false);
+                  });
+              }}
+            >
+              <CloudUpload className="size-4" />
+            </BaseButtonIcon>
+          </div>
+          <BaseDropdown variant="context">
+            <BaseDropdownItem
+              data-nui-tooltip-position="down"
+              onClick={copy}
+              start={<CopyIcon className="h-4 w-4"></CopyIcon>}
+              title="导出"
+              text="复制 JSON"
+            ></BaseDropdownItem>
+            <BaseDropdownItem
+              start={<UploadIcon className="h-4 w-4"></UploadIcon>}
+              onClick={importQuestionsFromClipBoard}
+              title="导入"
+              text="导入 JSON"
+            ></BaseDropdownItem>
           </BaseDropdown>
-          <BaseButtonIcon
-            data-nui-tooltip="复制 JSON"
-            data-nui-tooltip-position="down" onClick={copy}>
-            <CopyIcon className="h-4 w-4"></CopyIcon>
-          </BaseButtonIcon>
-          <BaseButtonIcon
-            data-nui-tooltip="导入"
-            data-nui-tooltip-position="down"
-            onClick={importQuestionsFromClipBoard}
-          >
-            <UploadIcon className="h-4 w-4"></UploadIcon>
-          </BaseButtonIcon>
           <BaseButtonIcon
             data-nui-tooltip="新建题目"
             data-nui-tooltip-position="down"
@@ -160,4 +279,26 @@ export default function CollectionLayout({
       </div>
     </>
   );
+
+  function syncFromCloud() {
+    return fetch("/api/getPost?id=" + collection.id)
+      .then((e) => e.json())
+      .then((obj) => {
+        return {
+          ...obj,
+          id: obj.id,
+          name: obj.title,
+          online: true,
+          _entityList: JSON.parse(obj.content),
+        };
+      })
+      .then((res) => {
+        dispatch({
+          type: "SET_COLLECTION_LIST",
+          payload: collectionList
+            .filter((e) => e.id != collection.id)
+            .concat(res),
+        });
+      });
+  }
 }

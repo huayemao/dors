@@ -20,8 +20,8 @@ export interface BaseEntity {
   seq: string;
 }
 
-interface BaseCollection {
-  id: number;
+export interface BaseCollection {
+  id: number | string;
   name: string;
 }
 
@@ -53,37 +53,39 @@ export const createEntityContext = <
 
   type Action<EntityType, CollectionType> =
     | {
-      type: "SET_QUESTION_MODAL_MODE";
-      payload: State<EntityType, CollectionType>["questionModalMode"];
-    }
+        type: "SET_QUESTION_MODAL_MODE";
+        payload: State<EntityType, CollectionType>["questionModalMode"];
+      }
     | {
-      type: "SET_CURRENT_COLLECTION";
-      payload: State<EntityType, CollectionType>["currentCollection"];
-    }
+        type: "SET_CURRENT_COLLECTION";
+        payload: State<EntityType, CollectionType>["currentCollection"];
+      }
     | {
-      type: "SET_CURRENT_ENTITY";
-      payload: State<EntityType, CollectionType>["currentEntity"];
-    }
+        type: "SET_CURRENT_ENTITY";
+        payload: State<EntityType, CollectionType>["currentEntity"];
+      }
     | {
-      type: "SET_ENTITY_LIST";
-      payload: State<EntityType, CollectionType>["entityList"];
-    }
+        type: "SET_ENTITY_LIST";
+        payload: State<EntityType, CollectionType>["entityList"];
+      }
     | {
-      type: "SET_COLLECTION_LIST";
-      payload: State<EntityType, CollectionType>["collectionList"];
-    }
+        type: "SET_COLLECTION_LIST";
+        payload: State<EntityType, CollectionType>["collectionList"];
+      }
     | { type: "REMOVE_ENTITY"; payload: Question["id"] }
     | { type: "SET_MODAL_OPEN"; payload: boolean }
     | {
-      type: "CREATE_OR_UPDATE_COLLECTION";
-      payload: NonNullable<State<EntityType, CollectionType>["currentCollection"]>;
-    }
+        type: "CREATE_OR_UPDATE_COLLECTION";
+        payload: NonNullable<
+          State<EntityType, CollectionType>["currentCollection"]
+        >;
+      }
     | { type: "CANCEL" };
 
   const EnitityContext = createContext(initialState);
   const EntityDispatchContext = createContext<
     Dispatch<Action<EntityType, CollectionType>>
-  >(() => { });
+  >(() => {});
 
   const reducer: Reducer<
     State<EntityType, CollectionType>,
@@ -174,32 +176,31 @@ export const createEntityContext = <
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
-      setPending(true)
-      localforage.getItem(collectionListKey).then((res) => {
-        let list: CollectionType[]
-        if (!res) {
-          list = [defaultCollection]
-
-        } else {
-          list = res as CollectionType[]
-
-        }
-        dispatch({
-          type: "SET_COLLECTION_LIST",
-          payload: list,
-        });
-        dispatch({
-          type: "SET_CURRENT_COLLECTION",
-          payload: list[0]
-        });
-
-      })
-        .catch(e => {
-          alert(e.message)
-        }).finally(() => {
+      setPending(true);
+      localforage
+        .getItem(collectionListKey)
+        .then((res) => {
+          let list: CollectionType[];
+          if (!res) {
+            list = [defaultCollection];
+          } else {
+            list = res as CollectionType[];
+          }
+          dispatch({
+            type: "SET_COLLECTION_LIST",
+            payload: list,
+          });
+          dispatch({
+            type: "SET_CURRENT_COLLECTION",
+            payload: list[0],
+          });
+        })
+        .catch((e) => {
+          alert(e.message);
+        })
+        .finally(() => {
           setPending(false);
         });
-
     }, []);
 
     useEffect(() => {
@@ -208,36 +209,38 @@ export const createEntityContext = <
 
     useEffect(() => {
       if (!state.currentCollection?.id) {
-        return
+        return;
       }
 
       setPending(true);
 
-      localforage.getItem(state.currentCollection.id + "").then((res) => {
-        if (!res) {
-          dispatch({
-            type: "SET_ENTITY_LIST",
-            payload: [],
-          });
-        } else {
-          dispatch({
-            type: "SET_ENTITY_LIST",
-            payload: res as State<EntityType, CollectionType>["entityList"],
-          });
-        }
-      }).catch(e => {
-        alert(e.message)
-      }).finally(() => {
-        setPending(false);
-      });
-
+      localforage
+        .getItem(state.currentCollection.id + "")
+        .then((res) => {
+          if (!res) {
+            dispatch({
+              type: "SET_ENTITY_LIST",
+              payload: [],
+            });
+          } else {
+            dispatch({
+              type: "SET_ENTITY_LIST",
+              payload: res as State<EntityType, CollectionType>["entityList"],
+            });
+          }
+        })
+        .catch((e) => {
+          alert(e.message);
+        })
+        .finally(() => {
+          setPending(false);
+        });
     }, [state.currentCollection?.id]);
 
-    // 如果 collection 变了，不去同步，questionList 会变
-
+    // entityList 变化时同步到 storage
     useEffect(() => {
       if (!state.currentCollection?.id) {
-        return
+        return;
       }
       if (!pending) {
         localforage.setItem(state.currentCollection.id + "", state.entityList);
@@ -275,4 +278,5 @@ export type EntityState = ReturnType<
 >;
 
 export type EntityDispatch = ReturnType<
-  ReturnType<typeof createEntityContext>["useEntityDispatch"]>
+  ReturnType<typeof createEntityContext>["useEntityDispatch"]
+>;

@@ -23,13 +23,9 @@ export const Container = () => {
             return;
           }
           if (persistent) {
-            alert(
-              "Storage will not be cleared except by explicit user action"
-            );
+            alert("Storage will not be cleared except by explicit user action");
           } else {
-            alert(
-              "Storage may be cleared by the UA under storage pressure."
-            );
+            alert("Storage may be cleared by the UA under storage pressure.");
           }
           localforage.setItem("alerted", true);
         });
@@ -40,6 +36,7 @@ export const Container = () => {
   return (
     <main>
       <EntityRoute
+        key="notes"
         renderEntityModalTitle={(e: Note) => (
           <>
             <span className="flex mb-2 gap-2 flex-nowrap  items-start overflow-x-auto py-1 leading-normal">

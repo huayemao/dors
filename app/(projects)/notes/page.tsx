@@ -1,14 +1,15 @@
 "use client";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEntity } from "./contexts";
 import { registerServiceWorker } from "@/lib/client/registerSW";
 export default function NotesPage() {
   const { currentCollection } = useEntity();
   const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
-    if (currentCollection) {
+    if (currentCollection && !params.id) {
       navigate("./" + currentCollection.id, { state: { __NA: {} } });
     }
 
@@ -20,6 +21,6 @@ export default function NotesPage() {
         }
       },
     });
-  }, [currentCollection, navigate]);
+  }, [currentCollection, navigate, params.id]);
   return <></>;
 }

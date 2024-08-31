@@ -247,7 +247,6 @@ export async function parseMDXClient(mdx: string) {
     ],
     format: "mdx",
   });
-  console.log(res.default);
 
   return res.default;
 }
