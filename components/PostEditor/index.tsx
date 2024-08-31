@@ -25,6 +25,7 @@ import {
   useState,
   useReducer,
   FC,
+  useMemo,
 } from "react";
 import { Modal } from "../Base/Modal";
 import { EmojiPanel } from "../EmojiPanel";
@@ -142,7 +143,10 @@ export const detectChange = (form: HTMLFormElement) => {
       // @ts-ignore
       changedFields.push(el.name);
     }
+    // console.log(el.name, originalValue, formDataValue);
   });
+
+  // console.log(changedFields);
 
   if (!changedFields.length) {
     inputs.forEach((el) => {
@@ -163,7 +167,14 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
   const [pinned, setPinned] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const categoryId = post?.posts_category_links[0]?.category_id;
+  const categoryId = useMemo(() => {
+    const _cid = post?.posts_category_links[0]?.category_id;
+    return _cid ? String(_cid) : String(DEFAULT_CATEGORY_ID);
+  }, [post]);
+
+  const postType = useMemo(() => {
+    return post!.type || "normal";
+  }, [post]);
 
   const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     setSaving(true);
@@ -225,15 +236,13 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           <div className="flex gap-2 mr-auto">
             <SelectWithName
               label="分类"
-              defaultValue={
-                categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)
-              }
+              defaultValue={categoryId}
               name="category_id"
               data={categories.map((e) => ({ value: e.id, label: e.name! }))}
             ></SelectWithName>
             <SelectWithName
-              label="分类"
-              defaultValue={post!.type || "normal"}
+              label="类型"
+              defaultValue={postType}
               name="type"
               data={[
                 {
@@ -309,14 +318,12 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
               markdown={content}
               onChange={(v) => {
                 setContent(v);
-                // console.log(contentRef.current?.value);
                 if (contentRef.current) {
                   // @ts-ignore
                   contentRef.current.parentNode!.dataset.replicatedValue = v;
                   forceUpdate();
                   // contentRef.current.value = v;
                 }
-                console.log(v);
               }}
             ></CollectionEditor>
           )}
@@ -420,54 +427,46 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
       </div>
     );
   }
+}
 
-  function SelectWithName({
-    name,
-    label,
-    defaultValue,
-    data,
-  }: {
-    name: string;
-    label: string;
-    defaultValue: string | number;
-    data: { label: string; value: string | number }[];
-  }) {
-    const [v, setV] = useState(defaultValue);
-    return (
-      <div className="w-16">
-        <BaseSelect
-          size="sm"
-          required
-          labelFloat
-          label={label}
-          onChange={(v) => {
-            (
-              document.querySelector(`input#${name}`) as HTMLInputElement
-            ).value = v;
-            setV(v);
-          }}
-          value={v}
-        >
-          {data.map((e) => (
-            <option
-              key={e.value}
-              defaultChecked={e.value == defaultValue}
-              value={e.value}
-            >
-              {e.label}
-            </option>
-          ))}
-        </BaseSelect>
-        <input
-          className="hidden"
-          name={name}
-          id={name}
-          data-original-value={defaultValue || undefined}
-          defaultValue={v}
-        ></input>
-      </div>
-    );
-  }
+function SelectWithName({
+  name,
+  label,
+  defaultValue,
+  data,
+}: {
+  name: string;
+  label: string;
+  defaultValue: string | number;
+  data: { label: string; value: string | number }[];
+}) {
+  const [v, setV] = useState(defaultValue);
+  return (
+    <div className="w-16">
+      <BaseSelect
+        size="sm"
+        required
+        labelFloat
+        label={label}
+        onChange={setV}
+        value={v}
+      >
+        {data.map((e) => (
+          <option key={e.value} defaultChecked={e.value == v} value={e.value}>
+            {e.label}
+          </option>
+        ))}
+      </BaseSelect>
+      <input
+        readOnly
+        className="hidden"
+        name={name}
+        id={name}
+        data-original-value={defaultValue || undefined}
+        value={v}
+      ></input>
+    </div>
+  );
 }
 
 function handleOnBeforeUnload(event: BeforeUnloadEvent) {
