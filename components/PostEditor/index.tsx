@@ -1,9 +1,15 @@
 "use client";
-import { Link, RouterProvider, createBrowserRouter, useNavigate } from "react-router-dom";
+import {
+  Link,
+  RouterProvider,
+  createBrowserRouter,
+  useNavigate,
+} from "react-router-dom";
 import { CategoriesContext } from "@/contexts/categories";
 import { getPost } from "@/lib/posts";
 import { cn, copyTextToClipboard, getDateForDateTimeInput } from "@/lib/utils";
 import {
+  BaseButton,
   BaseButtonIcon,
   BaseDropdown,
   BaseDropdownItem,
@@ -29,59 +35,73 @@ import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 
 const DEFAULT_CATEGORY_ID = 3;
 
-
-function withModal<Props>(Comp: FC<Props>, title: string, modalOpen: boolean, setModalOpen: (v) => void) {
-  return (props) => {
-    const close = useCloseModal()
+function withModal<Props>(
+  Comp: FC<Props>,
+  title: string,
+  modalOpen: boolean,
+  setModalOpen: (v: any) => void
+) {
+  return function ModalWrapped(props: JSX.IntrinsicAttributes & Props) {
+    const close = useCloseModal();
     useEffect(() => {
-      setModalOpen(true)
+      setModalOpen(true);
       return () => {
-        setModalOpen(false)
+        setModalOpen(false);
       };
     }, []);
 
-    return <Modal
-      title={title}
-      open={modalOpen}
-      onClose={close}
-    >
-      <Comp {...props} />
-    </Modal>
-  }
+    return (
+      <Modal title={title} open={modalOpen} onClose={close}>
+        <Comp {...props} />
+      </Modal>
+    );
+  };
 }
 
-export default function (props: PostEditorProps) {
-
+function PostEditor(props: PostEditorProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const routes = createBrowserRouter([
-    {
-      path: "/",
-      element: <PostEditorContent {...props} />,
-    },
-    {
-      path: 'settings',
-      Component: withModal(SettingsComponent, '设置', modalOpen, setModalOpen),
-    },
-    {
-      path: 'upload',
-      Component: withModal(UploadPanel, '文件', modalOpen, setModalOpen),
-    },
-    {
-      path: 'emoji',
-      Component: withModal(EmojiPanel, '常用表情符号', modalOpen, setModalOpen),
-    },
-  ], { basename: props.basePath })
+  const routes = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: <PostEditorContent {...props} />,
+      },
+      {
+        path: "settings",
+        Component: withModal(
+          SettingsComponent,
+          "设置",
+          modalOpen,
+          setModalOpen
+        ),
+      },
+      {
+        path: "upload",
+        Component: withModal(UploadPanel, "文件", modalOpen, setModalOpen),
+      },
+      {
+        path: "emoji",
+        Component: withModal(
+          EmojiPanel,
+          "常用表情符号",
+          modalOpen,
+          setModalOpen
+        ),
+      },
+    ],
+    { basename: props.basePath }
+  );
 
-  return <RouterProvider router={routes}></RouterProvider>
+  return <RouterProvider router={routes}></RouterProvider>;
 }
 
-
+export default PostEditor;
 
 export type PostEditorProps = {
   post: Awaited<ReturnType<typeof getPost>>;
   mdxContent?: any;
-  basePath: string,
+  basePath: string;
 };
 
 export const detectChange = (form: HTMLFormElement) => {
@@ -102,9 +122,9 @@ export const detectChange = (form: HTMLFormElement) => {
     // @ts-ignore
     const formDataValue = el.multiple
       ? // @ts-ignore
-      formData.getAll(el.name).sort().join(",")
+        formData.getAll(el.name).sort().join(",")
       : // @ts-ignore
-      formData.get(el.name);
+        formData.get(el.name);
     // @ts-ignore
     const originalValue = el.dataset.originalValue;
 
@@ -134,24 +154,27 @@ export const detectChange = (form: HTMLFormElement) => {
   return true;
 };
 
-const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-  const changed = detectChange(e.target as HTMLFormElement);
-  if (!changed) {
-    e.preventDefault();
-    alert("尚未修改内容");
-  }
-  window.removeEventListener("beforeunload", handleOnBeforeUnload);
-};
-
 export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
-  const nav = useNavigate()
+  const nav = useNavigate();
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
   const [isProtected, setProtected] = useState(post?.protected || false);
   const [content, setContent] = useState(post?.content || "");
   const [pinned, setPinned] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const categoryId = post?.posts_category_links[0]?.category_id;
+
+  const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    setSaving(true);
+    const changed = detectChange(e.target as HTMLFormElement);
+    if (!changed) {
+      e.preventDefault();
+      alert("尚未修改内容");
+      setSaving(false);
+    }
+    window.removeEventListener("beforeunload", handleOnBeforeUnload);
+  };
 
   useEffect(() => {
     const el = document.querySelector(".toolbox") as HTMLDivElement;
@@ -182,6 +205,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
   return (
     <form
       id="post_form"
+      className="max-w-screen-lg"
       action={post ? "/api/updatePost" : "/api/createPost"}
       method="POST"
       onSubmit={handleOnSubmit}
@@ -199,18 +223,29 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           })}
         >
           <div className="flex gap-2 mr-auto">
-
-            <SelectWithName label="分类"
-              defaultValue={categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)}
-              name="category_id" data={categories.map(e => ({ value: e.id, label: e.name! }))}></SelectWithName>
-            <SelectWithName label="分类" defaultValue={post!.type || 'normal'} name="type" data={[
-              {
-                label: '普通', value: 'normal'
-              },
-              {
-                label: '收藏夹', value: 'collection'
-              },
-            ]}></SelectWithName>
+            <SelectWithName
+              label="分类"
+              defaultValue={
+                categoryId ? String(categoryId) : String(DEFAULT_CATEGORY_ID)
+              }
+              name="category_id"
+              data={categories.map((e) => ({ value: e.id, label: e.name! }))}
+            ></SelectWithName>
+            <SelectWithName
+              label="分类"
+              defaultValue={post!.type || "normal"}
+              name="type"
+              data={[
+                {
+                  label: "普通",
+                  value: "normal",
+                },
+                {
+                  label: "收藏夹",
+                  value: "collection",
+                },
+              ]}
+            ></SelectWithName>
             <label className="text-stone-400 hover:text-stone-500">
               <BaseButtonIcon
                 rounded="md"
@@ -238,7 +273,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           <Action />
         </div>
       </div>
-      <div className="bg-white dark:bg-black  max-w-screen-lg overflow-x-hidden">
+      <div className="bg-white dark:bg-black  overflow-x-hidden">
         {post && (
           <input
             hidden
@@ -310,6 +345,20 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           </div>
         </div>
       </div>
+      <div className="sticky bottom-0 text-center lg:text-right p-4 lg:p-6">
+        <BaseButton
+          type="submit"
+          size="lg"
+          //@ts-ignore
+          form="post_form"
+          color="primary"
+          shadow="flat"
+          loading={saving}
+          disabled={saving}
+        >
+          保存
+        </BaseButton>
+      </div>
 
       {mdxContent}
     </form>
@@ -326,12 +375,11 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           )}
         >
           <BaseDropdownItem
-            onClick={() => nav('./upload')}
+            onClick={() => nav("./upload")}
             title="上传文件"
           ></BaseDropdownItem>
           <BaseDropdownItem
-            onClick={() => nav('./emoji')}
-
+            onClick={() => nav("./emoji")}
             title="Unicode 表情"
           />
         </BaseDropdown>
@@ -369,21 +417,22 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
             </label>
           </>
         )}
-        {/* @ts-ignore */}
-        <BaseButtonIcon rounded="md" type="submit" form="post_form" size="sm">
-          <Save className="h-4 w-4" />
-        </BaseButtonIcon>
       </div>
     );
   }
 
-
-  function SelectWithName(
-    { name, label, defaultValue, data }
-      : { name: string, label: string, defaultValue: string | number, data: { label: string; value: string | number }[] }) {
-    const [v, setV] = useState(
-      defaultValue
-    );
+  function SelectWithName({
+    name,
+    label,
+    defaultValue,
+    data,
+  }: {
+    name: string;
+    label: string;
+    defaultValue: string | number;
+    data: { label: string; value: string | number }[];
+  }) {
+    const [v, setV] = useState(defaultValue);
     return (
       <div className="w-16">
         <BaseSelect
@@ -400,7 +449,11 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           value={v}
         >
           {data.map((e) => (
-            <option key={e.value} defaultChecked={e.value == defaultValue} value={e.value}>
+            <option
+              key={e.value}
+              defaultChecked={e.value == defaultValue}
+              value={e.value}
+            >
               {e.label}
             </option>
           ))}
@@ -415,18 +468,11 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
       </div>
     );
   }
-
-
-
-
-
-
 }
+
 function handleOnBeforeUnload(event: BeforeUnloadEvent) {
   // Cancel the event as stated by the standard.
   event.preventDefault();
   // Chrome requires returnValue to be set.
   event.returnValue = true;
 }
-
-
