@@ -204,82 +204,78 @@ export default function CollectionLayout({
                 </BaseIconBox>
               </BaseDropdownItem>
             </BaseDropdown>
-            <BaseButtonIcon
-              loading={fetching}
-              onClick={() => {
-                syncFromCloud()
-                  ?.then?.(() => {
-                    dispatch({
-                      type: "SET_ENTITY_LIST",
-                      // @ts-ignore
-                      payload: collection._entityList,
-                    });
-                  })
-                  .catch((e) => {
-                    toast(e.message);
-                  });
-              }}
-              data-nui-tooltip="同步数据到本地"
-              data-nui-tooltip-position="down"
-            >
-              <RefreshCcw className="h-4 w-4" />
-            </BaseButtonIcon>
-            {/* <BaseButton
-              onClick={() => {
-                dispatch({
-                  type: "SET_ENTITY_LIST",
-                  // @ts-ignore
-                  payload: collection._entityList,
-                });
-              }}
-            >
-              覆盖
-            </BaseButton> */}
-            <BaseButtonIcon
-              data-nui-tooltip="同步到云"
-              data-nui-tooltip-position="down"
-              loading={uploading}
-              onClick={() => {
-                setUploading(true);
-                const fd = new FormData();
-                fd.append("id", collection.id + "");
-                fd.append("content", JSON.stringify(entityList));
+            {
+              // @ts-ignore
+              collection.online && (
+                <>
+                  <BaseButtonIcon
+                    loading={fetching}
+                    onClick={() => {
+                      syncFromCloud()
+                        ?.then?.(() => {
+                          dispatch({
+                            type: "SET_ENTITY_LIST",
+                            // @ts-ignore
+                            payload: collection._entityList,
+                          });
+                        })
+                        .catch((e) => {
+                          toast(e.message);
+                        });
+                    }}
+                    data-nui-tooltip="同步数据到本地"
+                    data-nui-tooltip-position="down"
+                  >
+                    <RefreshCcw className="h-4 w-4" />
+                  </BaseButtonIcon>
+                  <BaseButtonIcon
+                    data-nui-tooltip="同步到云"
+                    data-nui-tooltip-position="down"
+                    loading={uploading}
+                    onClick={() => {
+                      setUploading(true);
+                      const fd = new FormData();
+                      fd.append("id", collection.id + "");
+                      fd.append("content", JSON.stringify(entityList));
 
-                fetchWithAuth("/api/updatePost", {
-                  method: "POST",
-                  headers: { accept: "application/json" },
-                  body: fd,
-                })
-                  .then((res) => res.json())
-                  .then((json) => json.data)
-                  .then((obj) => {
-                    return {
-                      ...obj,
-                      id: obj.id,
-                      name: obj.title,
-                      online: true,
-                      _entityList: JSON.parse(obj.content),
-                    };
-                  })
-                  .then((res) => {
-                    dispatch({
-                      type: "SET_COLLECTION_LIST",
-                      payload: collectionList
-                        .filter((e) => e.id != collection.id)
-                        .concat(res),
-                    });
-                    setUploading(false);
-                  })
-                  .catch((e) => {
-                    toast("上传失败：" + e?.message);
-                  })
-                  .finally(() => {
-                    setUploading(false);
-                  });
-              }}
-            >
-              <CloudUpload className="size-4" />
-            </BaseButtonIcon>
+                      fetchWithAuth("/api/updatePost", {
+                        method: "POST",
+                        headers: { accept: "application/json" },
+                        body: fd,
+                      })
+                        .then((res) => res.json())
+                        .then((json) => json.data)
+                        .then((obj) => {
+                          return {
+                            ...obj,
+                            id: obj.id,
+                            name: obj.title,
+                            online: true,
+                            _entityList: JSON.parse(obj.content),
+                          };
+                        })
+                        .then((res) => {
+                          dispatch({
+                            type: "SET_COLLECTION_LIST",
+                            payload: collectionList
+                              .filter((e) => e.id != collection.id)
+                              .concat(res),
+                          });
+                          setUploading(false);
+                        })
+                        .catch((e) => {
+                          toast("上传失败：" + e?.message);
+                        })
+                        .finally(() => {
+                          setUploading(false);
+                        });
+                    }}
+                  >
+                    <CloudUpload className="size-4" />
+                  </BaseButtonIcon>
+                </>
+              )
+            }
           </div>
           <BaseDropdown variant="context">
             <BaseDropdownItem
