@@ -137,27 +137,9 @@ export default function CollectionLayout({
         return;
       }
       setFetching(true);
-      return fetch("/api/getPost?id=" + collection.id, init)
-        .then(async (e) => {
-          if (e.status == 401) {
-            toast("请先登录");
-            const username = prompt("请输入用户名");
-            const password = prompt("请输入密码");
-            if (!username || !password) {
-              throw new Error("放弃登录");
-            }
-            const credentials = btoa(username + ":" + password);
 
-            return fetch("/api/getPost?id=" + collection.id, {
-              ...(init || {}),
-              headers: {
-                ...(init?.headers || {}),
-                Authorization: "Basic " + credentials,
-              },
-            }).then((e) => e.json());
-          }
-          return e.json();
-        })
+      return fetchWithAuth("/api/getPost?id=" + collection.id, init)
+        .then((e) => e.json())
         .then((obj) => {
           return {
             ...obj,
@@ -180,7 +162,7 @@ export default function CollectionLayout({
         .catch((e) => {
           console.log(e.message);
           console.error(e);
-          toast("同步数据失败：" + e.message, { duration: 800 });
+          toast("同步数据失败：" + e.message);
         })
         .finally(() => {
           setFetching(false);
@@ -262,7 +244,8 @@ export default function CollectionLayout({
                 const fd = new FormData();
                 fd.append("id", collection.id + "");
                 fd.append("content", JSON.stringify(entityList));
-                fetch("/api/updatePost", {
+
+                fetchWithAuth("/api/updatePost", {
                   method: "POST",
                   headers: { accept: "application/json" },
                   body: fd,
@@ -349,3 +332,26 @@ export default function CollectionLayout({
     </>
   );
 }
+
+const fetchWithAuth: typeof fetch = (input, init) => {
+  return fetch(input, init).then(async (e) => {
+    if (e.status == 401) {
+      toast("请先登录");
+      const username = prompt("请输入用户名");
+      const password = prompt("请输入密码");
+      if (!username || !password) {
+        throw new Error("放弃登录");
+      }
+      const credentials = btoa(username + ":" + password);
+
+      return fetch(input, {
+        ...(init || {}),
+        headers: {
+          ...(init?.headers || {}),
+          Authorization: "Basic " + credentials,
+        },
+      });
+    }
+    return e;
+  });
+};
