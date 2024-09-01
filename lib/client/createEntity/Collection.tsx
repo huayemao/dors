@@ -133,11 +133,28 @@ export default function CollectionLayout({
 
   const syncFromCloud = useCallback(
     (init?: RequestInit) => {
+      if (!collection?.id) {
+        return;
+      }
       setFetching(true);
       return fetch("/api/getPost?id=" + collection.id, init)
         .then(async (e) => {
           if (e.status == 401) {
-            throw new Error(e.statusText);
+            toast("请先登录");
+            const username = prompt("请输入用户名");
+            const password = prompt("请输入密码");
+            if (!username || !password) {
+              throw new Error("放弃登录");
+            }
+            const credentials = btoa(username + ":" + password);
+
+            return fetch("/api/getPost?id=" + collection.id, {
+              ...(init || {}),
+              headers: {
+                ...(init?.headers || {}),
+                Authorization: "Basic " + credentials,
+              },
+            }).then((e) => e.json());
           }
           return e.json();
         })
@@ -161,22 +178,9 @@ export default function CollectionLayout({
           return res;
         })
         .catch((e) => {
-          if (e.message == "Unauthorized") {
-            toast("请先登录");
-            const username = prompt("请输入用户名");
-            const password = prompt("请输入密码");
-            const credentials = btoa(username + ":" + password);
-
-            return syncFromCloud({
-              ...(init || {}),
-              headers: {
-                ...(init?.headers || {}),
-                Authorization: "Basic " + credentials,
-              },
-            });
-          }
+          console.log(e.message);
           console.error(e);
-          toast("同步数据失败：" + e.message);
+          toast("同步数据失败：" + e.message, { duration: 800 });
         })
         .finally(() => {
           setFetching(false);
@@ -222,7 +226,7 @@ export default function CollectionLayout({
               loading={fetching}
               onClick={() => {
                 syncFromCloud()
-                  .then(() => {
+                  ?.then?.(() => {
                     dispatch({
                       type: "SET_ENTITY_LIST",
                       // @ts-ignore
