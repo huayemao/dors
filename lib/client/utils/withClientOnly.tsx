@@ -2,9 +2,9 @@ import { ClientOnly } from "@/components/ClientOnly";
 import React, { useEffect, useState } from "react";
 
 function withClientOnly<T extends React.ComponentType<any>>(
-  WrappedComponent: T,
+  WrappedComponent: T
 ): React.ComponentType<React.ComponentProps<T>> {
-  // 定义WrapperComponent组件
+  "use client";
   const WrapperComponent = (props: React.ComponentProps<T>) => {
     return (
       <ClientOnly>

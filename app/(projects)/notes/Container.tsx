@@ -90,9 +90,7 @@ export const Container = () => {
                 ))}
               </div>
             )}
-            <ClientOnly>
-              <Prose preview={preview} content={e.content}></Prose>
-            </ClientOnly>
+            <Prose preview={preview} content={e.content}></Prose>
           </div>
         )}
         state={state}
