@@ -287,6 +287,9 @@ export default function CollectionLayout({
                     });
                     setUploading(false);
                   })
+                  .catch((e) => {
+                    toast("上传失败：" + e?.message);
+                  })
                   .finally(() => {
                     setUploading(false);
                   });
