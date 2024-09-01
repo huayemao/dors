@@ -206,7 +206,7 @@ export default function CollectionLayout({
             </BaseDropdown>
             {
               // @ts-ignore
-              collection.online && (
+              collection?.online && (
                 <>
                   <BaseButtonIcon
                     loading={fetching}
