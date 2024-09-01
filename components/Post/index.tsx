@@ -18,9 +18,6 @@ const ContentModal = dynamic(() => import("./ContentModal"), {
   ssr: false,
 });
 
-const LightBox = dynamic(() => import("../../components/Lightbox"), {
-  ssr: false,
-});
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;

@@ -10,7 +10,7 @@ import {
 } from "@shuriken-ui/react";
 import { CopyIcon, FileIcon, ImageIcon, TrashIcon } from "lucide-react";
 import { SITE_META } from "@/constants";
-import LightBox from "@/components/Lightbox";
+import LightBox from "@/components/Base/LightBox";
 import { Figure } from "@/components/Figure";
 import { Popover } from "@headlessui/react";
 import { CopyToClipboard } from "@/components/copy-to-clipboard";

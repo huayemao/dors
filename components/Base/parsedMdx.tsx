@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { parseMDXClient } from "@/lib/mdx/parseMDXClient";
 import { BasePlaceload } from "@shuriken-ui/react";
 import { MDXContent } from "mdx/types";
@@ -7,6 +7,7 @@ import c from "@/styles/prose.module.css";
 import { cn } from "@/lib/utils";
 import { Ellipsis } from "lucide-react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
+import LightBox from "./LightBox";
 
 const parsedMdx = withClientOnly(Content);
 
@@ -31,10 +32,9 @@ function Content({
       });
   }, [content]);
 
-
-  useLayoutEffect(()=>{
-    update()
-  },[result])
+  useLayoutEffect(() => {
+    update();
+  }, [result]);
 
   function update() {
     if (!preview || !ref.current) {
@@ -67,40 +67,47 @@ function Content({
 
   return (
     <>
-      <article
-        ref={ref}
-        className={cn(
-          c.content,
-          "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden",
-          { hidden: preview && html }
-        )}
-      >
-        {typeof result == "function" ? (
-          result({})
-        ) : !loading ? (
-          result
-        ) : (
-          <div className="space-y-2">
-            <BasePlaceload className="h-4 w-full rounded" />
-            <BasePlaceload className="h-4 w-3/4 rounded" />
-            <BasePlaceload className="h-4 w-full rounded" />
-          </div>
-        )}
-      </article>
-      {html && (
+      {!html && (
         <article
+          ref={ref}
           className={cn(
             c.content,
-            "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
+            "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden",
+            { hidden: preview && html }
           )}
-          dangerouslySetInnerHTML={{ __html: html }}
-        ></article>
+        >
+          {typeof result == "function" ? (
+            result({})
+          ) : !loading ? (
+            result
+          ) : (
+            <div className="space-y-2">
+              <BasePlaceload className="h-4 w-full rounded" />
+              <BasePlaceload className="h-4 w-3/4 rounded" />
+              <BasePlaceload className="h-4 w-full rounded" />
+            </div>
+          )}
+        </article>
       )}
-      {html && (
-        <div className="w-full text-right">
-          <Ellipsis className="size-4 inline" strokeWidth={1.2}></Ellipsis>
-        </div>
+      {preview && (
+        <>
+          {html && (
+            <div
+              className={cn(
+                c.content,
+                "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden"
+              )}
+              dangerouslySetInnerHTML={{ __html: html }}
+            ></div>
+          )}
+          {html && (
+            <div className="w-full text-right">
+              <Ellipsis className="size-4 inline" strokeWidth={1.2}></Ellipsis>
+            </div>
+          )}
+        </>
       )}
+      <LightBox gallery={preview ? "div.prose" : ref.current!}/>
     </>
   );
 }

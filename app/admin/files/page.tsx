@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import mime from "mime";
 import { BaseCard, BasePagination } from "@shuriken-ui/react";
 import { UploadForm } from "@/components/UploadForm";
-import LightBox from "@/components/Lightbox";
+import LightBox from "@/components/Base/LightBox";
 import { ClientOnly } from "@/components/ClientOnly";
 import { withPagination } from "@/lib/server/withPagination";
 import { FileList } from "@/components/FileList";

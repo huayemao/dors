@@ -1,12 +1,19 @@
 "use client";
+import withDeferredMount from "@/lib/client/utils/deferredMount";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
 import { useEffect } from "react";
 
-const LightBox = ({ gallery = "article", childrenSelector = 'a[data-pswp-width]' }: { gallery?: string, childrenSelector?: string }) => {
+const LightBox = ({
+  gallery = "article",
+  childrenSelector = "a[data-pswp-width]",
+}: {
+  gallery?: string | HTMLElement;
+  childrenSelector?: string;
+}) => {
   useEffect(() => {
-    let lightbox;
-    lightbox = new PhotoSwipeLightbox({
+    let lightBox;
+    lightBox = new PhotoSwipeLightbox({
       // may select multiple "galleries"
       gallery: gallery,
 
@@ -16,14 +23,14 @@ const LightBox = ({ gallery = "article", childrenSelector = 'a[data-pswp-width]'
       // setup PhotoSwipe Core dynamic import
       pswpModule: () => import("photoswipe"),
     });
-    lightbox.init();
+    lightBox.init();
     return () => {
-      lightbox.destroy();
-      lightbox = null;
+      lightBox.destroy();
+      lightBox = null;
     };
-  }, []);
+  }, [childrenSelector, gallery]);
 
   return <></>;
 };
 
-export default LightBox;
+export default withDeferredMount(LightBox, 300);
