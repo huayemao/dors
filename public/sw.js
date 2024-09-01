@@ -18,16 +18,25 @@ const ASSETS = [
   "/shiki/languages/yaml.tmLanguage.json",
   "/shiki/onig.wasm",
 ];
-const VERSION = "578006c24bcb68408d7b01f8f28483d1092c0fb2";
+const VERSION = "578006c24bcb68408d7b01f8f28483d1092c0fn3";
 
 self.addEventListener("fetch", (e) => {
   const { request: s } = e,
     t = new URL(s.url);
   if (
-    "GET" === s.method &&
-    self.location.origin === t.origin &&
-    ASSETS.some((l) => t.pathname.includes(l))
+    ("GET" === s.method &&
+      self.location.origin === t.origin &&
+      ASSETS.some((l) => t.pathname.includes(l))) ||
+    t.pathname.includes("/api/files")
   ) {
+    if (t.pathname.includes("/api/files")) {
+      caches.match(t).then((res) => {
+        if (!res) {
+          caches.open(VERSION).then((e) => e.add(t));
+        }
+        return res || fetch(s);
+      });
+    }
     e.respondWith(
       (async () => {
         return caches.match(s).then((e) => {
