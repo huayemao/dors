@@ -261,7 +261,7 @@ export default function CollectionLayout({
                               .filter((e) => e.id != collection.id)
                               .concat(res),
                           });
-                          setUploading(false);
+                          toast("数据上传成功");
                         })
                         .catch((e) => {
                           toast("上传失败：" + e?.message);
