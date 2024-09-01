@@ -32,23 +32,6 @@ import {
   EntityState,
 } from "./createEntityContext";
 import toast from "react-hot-toast";
-import useSWR from "swr";
-
-const fetcher = (url: string, init: RequestInit) => {
-  const access_token = localStorage.getItem("access_token");
-  return fetch(url, {
-    ...init,
-    headers: {
-      ...init.headers,
-      Authorization: `${access_token}`,
-    },
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return res.text();
-  });
-};
 
 export default function CollectionLayout({
   renderEntity,
@@ -178,7 +161,7 @@ export default function CollectionLayout({
           <div className="inline-flex space-x-2 mr-auto">
             <BaseDropdown label={currentCollection?.name} headerLabel="合集">
               {collectionList?.map((e) => (
-                <Link to={"/" + e.id} key={e.id}>
+                <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
                   <BaseDropdownItem
                     end={
                       <Link to={"/" + e.id + "/edit"}>

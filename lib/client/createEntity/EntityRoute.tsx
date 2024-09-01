@@ -12,6 +12,7 @@ import {
   EntityState,
 } from "./createEntityContext";
 import localforage from "localforage";
+import { ClientOnly } from "@/components/ClientOnly";
 
 export default function EntityRoute({
   state,
@@ -107,11 +108,13 @@ export default function EntityRoute({
       {
         path: ":collectionId",
         element: (
-          <CollectionLayout
-            state={state}
-            dispatch={dispatch}
-            renderEntity={renderEntity}
-          ></CollectionLayout>
+          <ClientOnly>
+            <CollectionLayout
+              state={state}
+              dispatch={dispatch}
+              renderEntity={renderEntity}
+            ></CollectionLayout>
+          </ClientOnly>
         ),
         loader: collectionLoader,
         children: [

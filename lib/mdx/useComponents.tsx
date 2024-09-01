@@ -15,6 +15,7 @@ import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import { BaseCard } from "@shuriken-ui/react";
+import React, { ReactElement } from "react";
 
 export const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
@@ -48,7 +49,32 @@ export const components = {
   img: (props) => {
     return <Figure {...props} />;
   },
-  p: (props) => <p {...props} suppressHydrationWarning></p>,
+  p: (props) => {
+    if (props.children) {
+      const arr = React.Children.toArray(props.children);
+      if (
+        arr.every((e) => {
+          const isEmpty = typeof e == "string" && !e.trim();
+          const ps = (e as ReactElement).props;
+          return isEmpty || ps?.href || ps?.src;
+        })
+      ) {
+        const filtered = arr.filter((e) => {
+          const isEmpty = typeof e == "string" && !e.trim();
+          return !isEmpty;
+        });
+
+        return (
+          <>
+            {React.Children.map(filtered, (child) => {
+              return React.cloneElement(child as ReactElement);
+            })}
+          </>
+        );
+      }
+    }
+    return <p {...props} suppressHydrationWarning></p>;
+  },
   div: (props) => {
     const { className, children, rest } = props;
     if (!className.includes("note")) {
