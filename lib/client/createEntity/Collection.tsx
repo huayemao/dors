@@ -17,7 +17,7 @@ import {
   RefreshCcw,
   UploadIcon,
 } from "lucide-react";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   Link,
   Outlet,
@@ -31,6 +31,24 @@ import {
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
+import toast from "react-hot-toast";
+import useSWR from "swr";
+
+const fetcher = (url: string, init: RequestInit) => {
+  const access_token = localStorage.getItem("access_token");
+  return fetch(url, {
+    ...init,
+    headers: {
+      ...init.headers,
+      Authorization: `${access_token}`,
+    },
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return res.text();
+  });
+};
 
 export default function CollectionLayout({
   renderEntity,
@@ -58,7 +76,7 @@ export default function CollectionLayout({
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    console.log(collection);
+    // console.log(collection);
     if (collection) {
       if (
         collection.id &&
@@ -91,15 +109,6 @@ export default function CollectionLayout({
     }
   }, [collection, collectionList, dispatch, entityList]);
 
-  useEffect(() => {
-    // 非初次同步，每次打开的时候拉数据
-    // 问题是 _entityList 也被存到本地了，无法判断是不是刚打开页面的时候拉的
-    // @ts-ignore
-    if (collection && collection.online && !collection._entityList) {
-      syncFromCloud();
-    }
-  }, []);
-
   const navigate = useNavigate();
 
   const importQuestionsFromClipBoard = () => {
@@ -121,6 +130,60 @@ export default function CollectionLayout({
     copyToClipboard(`${JSON.stringify(entityList)}`);
     alert("已复制到剪贴板");
   };
+
+  const syncFromCloud = useCallback(
+    (init?: RequestInit) => {
+      setFetching(true);
+      return fetch("/api/getPost?id=" + collection.id, init)
+        .then(async (e) => {
+          if (e.status == 401) {
+            throw new Error(e.statusText);
+          }
+          return e.json();
+        })
+        .then((obj) => {
+          return {
+            ...obj,
+            id: obj.id,
+            name: obj.title,
+            online: true,
+            _entityList: JSON.parse(obj.content),
+          };
+        })
+        .then((res) => {
+          dispatch({
+            type: "SET_COLLECTION_LIST",
+            payload: collectionList
+              .filter((e) => e.id != collection.id)
+              .concat(res),
+          });
+          toast("同步数据成功");
+          return res;
+        })
+        .catch((e) => {
+          if (e.message == "Unauthorized") {
+            toast("请先登录");
+            const username = prompt("请输入用户名");
+            const password = prompt("请输入密码");
+            const credentials = btoa(username + ":" + password);
+
+            return syncFromCloud({
+              ...(init || {}),
+              headers: {
+                ...(init?.headers || {}),
+                Authorization: "Basic " + credentials,
+              },
+            });
+          }
+          console.error(e);
+          toast("同步数据失败：" + e.message);
+        })
+        .finally(() => {
+          setFetching(false);
+        });
+    },
+    [collection?.id, collectionList, dispatch]
+  );
 
   return (
     <>
@@ -158,7 +221,6 @@ export default function CollectionLayout({
             <BaseButtonIcon
               loading={fetching}
               onClick={() => {
-                setFetching(true);
                 syncFromCloud()
                   .then(() => {
                     dispatch({
@@ -167,8 +229,8 @@ export default function CollectionLayout({
                       payload: collection._entityList,
                     });
                   })
-                  .finally(() => {
-                    setFetching(false);
+                  .catch((e) => {
+                    toast(e.message);
                   });
               }}
               data-nui-tooltip="同步数据到本地"
@@ -279,26 +341,4 @@ export default function CollectionLayout({
       </div>
     </>
   );
-
-  function syncFromCloud() {
-    return fetch("/api/getPost?id=" + collection.id)
-      .then((e) => e.json())
-      .then((obj) => {
-        return {
-          ...obj,
-          id: obj.id,
-          name: obj.title,
-          online: true,
-          _entityList: JSON.parse(obj.content),
-        };
-      })
-      .then((res) => {
-        dispatch({
-          type: "SET_COLLECTION_LIST",
-          payload: collectionList
-            .filter((e) => e.id != collection.id)
-            .concat(res),
-        });
-      });
-  }
 }
