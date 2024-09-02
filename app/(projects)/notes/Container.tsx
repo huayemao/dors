@@ -90,7 +90,7 @@ export const Container = () => {
                 ))}
               </div>
             )}
-            <Prose preview={preview} content={e.content}></Prose>
+            <Prose key={e.id} preview={preview} content={e.content}></Prose>
           </div>
         )}
         state={state}
