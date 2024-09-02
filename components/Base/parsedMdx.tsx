@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { ArrowRight, ChevronRight, Ellipsis } from "lucide-react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
 import LightBox from "./LightBox";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 const parsedMdx = withClientOnly(Content);
 
@@ -23,6 +24,7 @@ function Content({
   const [loading, setLoading] = useState(true);
   const [html, setHTML] = useState("");
   const ref = useRef<HTMLElement>(null);
+  const isMobile = useMediaQuery("only screen and (max-width : 720px)");
 
   useEffect(() => {
     parseMDXClient(content)
@@ -103,9 +105,13 @@ function Content({
           )}
           {html && (
             <div className="w-full text-right">
-              <BaseButton color="dark" variant="pastel">
+              <BaseButton
+                color="dark"
+                size={isMobile ? "sm" : "md"}
+                variant="pastel"
+              >
                 详情
-                <ArrowRight className="size-4 inline ms-2" ></ArrowRight>
+                <ArrowRight className="size-4 inline ms-2"></ArrowRight>
               </BaseButton>
             </div>
           )}

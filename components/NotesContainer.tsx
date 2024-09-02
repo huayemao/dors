@@ -76,7 +76,7 @@ function NoteItem({ preview = false, data }: { preview?, data: Note }) {
   return (
     <div className={cn({ "min-w-64": !preview })}>
       {preview && (
-        <div className="-mb-3 flex-nowrap  items-start overflow-x-auto">
+        <div className="-mb-3 flex gap-2 flex-nowrap  items-start overflow-x-auto">
           {data.tags?.map((e) => (
             <div key={e} className="cursor-pointer flex-shrink-0">
               <BaseTag
