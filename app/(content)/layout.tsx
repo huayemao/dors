@@ -14,7 +14,7 @@ export default async function ContentLayout({
   return (
     <div className="z-0">
       <Nav resourceItems={resourceItems}></Nav>
-      <div className="pt-20 bg-muted-100 min-h-screen">{children}</div>
+      <div className="pt-20 bg-muted-100 dark:bg-muted-900 min-h-screen">{children}</div>
     </div>
   );
 }
