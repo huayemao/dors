@@ -202,6 +202,8 @@ async function loadWasmAndLangs() {
       "js",
       "jsx",
       "tsx",
+      "mdx",
+      "md",
       "json",
       "html",
       "css",
