@@ -63,8 +63,8 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
     <form method="POST" onSubmit={handleSubmit}>
       <div className="ltablet:col-span-6 col-span-12 lg:col-span-7">
         <div className="relative w-full bg-white transition-all duration-300 rounded-md">
-          <div className="lg:grid lg:grid-cols-12">
-            <fieldset className="relative p-4 md:p-8 lg:col-span-7">
+          <div className="lg:grid lg:grid-cols-12 p-4 md:p-8 gap-4">
+            <fieldset className="relative lg:col-span-7 ">
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-12 md:col-span-6 hidden">
                   <div className="relative">
@@ -102,29 +102,30 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                     ></BaseAutocomplete>
                   </div>
                 </div>
-                <div className="col-span-12">
-                  <div className="relative">
-                    <label
-                      htmlFor="content"
-                      className="nui-label pb-1 text-[0.825rem]"
-                    >
-                      内容
-                    </label>
-                    <div className="group/nui-textarea relative flex flex-col">
-                      <TextareaAutosize
-                        key={currentEntity?.id}
-                        id="content"
-                        name="content"
-                        className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
-                        placeholder="请输入内容"
-                        minRows={6}
-                        defaultValue={currentEntity?.content || ""}
-                      />
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </fieldset>
+            <div className="col-span-12">
+              <div className="relative">
+                <label
+                  htmlFor="content"
+                  className="nui-label pb-1 text-[0.825rem]"
+                >
+                  内容
+                </label>
+                <div className="group/nui-textarea relative flex flex-col">
+                  <TextareaAutosize
+                    key={currentEntity?.id}
+                    id="content"
+                    name="content"
+                    className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-[2.5rem] text-sm leading-[1.6] rounded resize-none p-2"
+                    placeholder="请输入内容"
+                    minRows={6}
+                    defaultValue={currentEntity?.content || ""}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
