@@ -41,14 +41,7 @@ function Content({
       return;
     }
 
-    const img =
-      ref.current.querySelector("img") ||
-      ref.current.querySelector("video") ||
-      ref.current.querySelector("audio");
     let _html = "";
-    if (img) {
-      _html += img.outerHTML;
-    }
 
     const div = document.createElement("div");
     div.innerHTML = ref.current.innerHTML;
@@ -62,6 +55,14 @@ function Content({
       .filter((e) => !!e.textContent)
       .slice(0, 3);
     _html += children.map((e) => e.outerHTML).join("");
+
+    const img =
+      div.querySelector("img") ||
+      div.querySelector("video") ||
+      div.querySelector("audio");
+    if (img && !_html.includes(img.outerHTML)) {
+      _html += img.outerHTML;
+    }
     setHTML(_html);
   }
 
@@ -107,7 +108,7 @@ function Content({
           )}
         </>
       )}
-      <LightBox gallery={preview ? "div.prose" : ref.current!}/>
+      <LightBox gallery={preview ? "div.prose" : ref.current!} />
     </>
   );
 }
