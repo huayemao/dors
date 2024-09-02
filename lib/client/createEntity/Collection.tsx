@@ -295,7 +295,7 @@ export default function CollectionLayout({
                 <Link key={i} to={"./" + e.id}>
                   <BaseCard
                     rounded="md"
-                    className=" break-inside-avoid my-3 p-4"
+                    className=" break-inside-avoid my-3 p-4 lg:px-6"
                   >
                     <div className="relative">
                       {renderEntity(e, { preview: true })}

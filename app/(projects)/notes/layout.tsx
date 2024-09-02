@@ -1,9 +1,9 @@
 import {
-  EntityContextProvider,
-} from "./contexts";
+  NotesContextProvider,
+} from "@/contexts/notes";
 import { ClientOnly } from "@/components/ClientOnly";
 import { Metadata } from "next";
-import { Container } from "./Container";
+import { NotesContainer } from "@/components/NotesContainer";
 import { NavigationItem, NavigationItemProps } from "@/components/Nav/NavigationItem";
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ const menuItems: NavigationItemProps[] = [
 
 export default function QAsLayout({ }) {
   return (
-    <EntityContextProvider>
+    <NotesContextProvider>
       <header className="h-12 mb-2 justify-center flex items-center font-semibold">
         <h1>
           UltraNotes
@@ -47,9 +47,9 @@ export default function QAsLayout({ }) {
         </nav>
       </header>
       <ClientOnly>
-        <Container></Container>
+        <NotesContainer></NotesContainer>
       </ClientOnly>
       <footer></footer>
-    </EntityContextProvider>
+    </NotesContextProvider>
   );
 }

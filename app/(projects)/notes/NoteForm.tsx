@@ -5,7 +5,7 @@ import { readFromClipboard } from "@/lib/utils";
 import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
 import { DOMAttributes, FC, PropsWithChildren, useMemo, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { useEntity, useEntityDispatch } from "./contexts";
+import { useEntity, useEntityDispatch } from "../../../contexts/notes";
 import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 import { Note } from "./constants";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";

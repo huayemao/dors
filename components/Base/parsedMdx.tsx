@@ -57,11 +57,11 @@ function Content({
     _html += children.map((e) => e.outerHTML).join("");
 
     const img =
-      div.querySelector("img") ||
-      div.querySelector("video") ||
-      div.querySelector("audio");
+      ref.current.querySelector("img") ||
+      ref.current.querySelector("video") ||
+      ref.current.querySelector("audio");
     if (img && !_html.includes(img.outerHTML)) {
-      _html += img.outerHTML;
+      _html = img.outerHTML + _html;
     }
     setHTML(_html);
   }

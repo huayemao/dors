@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEntity } from "./contexts";
+import { useEntity } from "../../../contexts/notes";
 import { registerServiceWorker } from "@/lib/client/registerSW";
 export default function NotesPage() {
   const { currentCollection } = useEntity();
