@@ -1,11 +1,11 @@
 "use client";
 import { parseMDXClient } from "@/lib/mdx/parseMDXClient";
-import { BasePlaceload } from "@shuriken-ui/react";
+import { BaseButton, BasePlaceload } from "@shuriken-ui/react";
 import { MDXContent } from "mdx/types";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import c from "@/styles/prose.module.css";
 import { cn } from "@/lib/utils";
-import { Ellipsis } from "lucide-react";
+import { ArrowRight, ChevronRight, Ellipsis } from "lucide-react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
 import LightBox from "./LightBox";
 
@@ -103,7 +103,10 @@ function Content({
           )}
           {html && (
             <div className="w-full text-right">
-              <Ellipsis className="size-4 inline" strokeWidth={1.2}></Ellipsis>
+              <BaseButton color="dark" variant="pastel">
+                详情
+                <ArrowRight className="size-4 inline ms-2" ></ArrowRight>
+              </BaseButton>
             </div>
           )}
         </>
