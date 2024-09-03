@@ -108,11 +108,8 @@ a {
 }
 
 .prose :where(blockquote):not(:where([class~="not-prose"] *)) {
-  border-left-color: #6366f1;
-  border-left-width: 0.25rem;
   font-size: 1.1rem;
-  quotes: "\201c""\201d""\2018""\2019";
-  @apply bg-slate-50 p-6 mt-4 leading-[1.4] text-slate-600 dark:bg-slate-800 dark:text-slate-100;
+  @apply bg-primary-50/60 border-l-0 rounded drop-shadow-sm p-6 mt-4 leading-[1.4] text-slate-600 dark:bg-slate-800 dark:text-slate-100;
 }
 
 .not-prose {

@@ -40,13 +40,36 @@ module.exports = withShurikenUI({
               'blockquote code': {
                 color: colors.indigo[500],
               },
+              blockquote: {
+                quotes: `"“" "„"`,
+              },
+              'blockquote p': {
+                position: 'relative',
+                '&:first-of-type::before, &:last-of-type::after': {
+                  color: colors.indigo[500],
+                  fontSize: '3em',
+                },
+                '&:first-of-type::before': {
+                  position: 'absolute',
+                  left: '-1rem',
+                  top: '-2.5rem'
+                },
+                '&:last-of-type::after': {
+                  position: 'absolute',
+                  right: '-1rem',
+                  bottom: '-2.5rem',
+                }
+              },
               'thead th code': {
                 color: colors.indigo[500],
               },
               code: {
                 fontWeight: 500,
                 color: colors.indigo[500],
-                backgroundColor: colors.indigo[100]
+                backgroundColor: colors.indigo[100],
+              },
+              'pre code': {
+                fontFamily: 'monospace',
               },
               'ul, ol, blockquote, figure': {
                 breakInside: 'avoid',
