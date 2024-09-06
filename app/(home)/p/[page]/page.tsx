@@ -7,7 +7,7 @@ import Pagination from "../../Pagination";
 
 type SearchParams = PaginateOptions;
 
-export const revalidate = 600;
+export const revalidate = 3600;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export async function generateStaticParams() {

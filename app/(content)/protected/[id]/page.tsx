@@ -3,7 +3,7 @@ import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
 import nextConfig from "@/next.config.mjs";
 import { notFound } from "next/navigation";
 
-export const revalidate = 120;
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const posts = await getPostIds({ protected: true });
