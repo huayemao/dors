@@ -1,3 +1,4 @@
+"use client"
 import { copyTextToClipboard, humanFileSize } from "@/lib/utils";
 import {
   BaseButton,
@@ -54,23 +55,20 @@ export function FileList({
           >
             <BaseDropdown
               variant="text"
-              //   @ts-ignore
-              label={
-                <BaseIconBox
-                  mask="blob"
-                  color="success"
-                  rounded="none"
-                  variant="pastel"
-                  size="md"
-                >
-                  {e.mimeType.startsWith("image") ? (
-                    // @ts-ignore
-                    <ImageIcon strokeWidth={1} className="h-6 w-6"></ImageIcon>
-                  ) : (
-                    <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
-                  )}
-                </BaseIconBox>
-              }
+              renderButton={() => <BaseIconBox
+                mask="blob"
+                color="success"
+                rounded="none"
+                variant="pastel"
+                size="md"
+              >
+                {e.mimeType.startsWith("image") ? (
+                  // @ts-ignore
+                  <ImageIcon strokeWidth={1} className="h-6 w-6"></ImageIcon>
+                ) : (
+                  <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
+                )}
+              </BaseIconBox>}
             >
               <div>
                 <Figure

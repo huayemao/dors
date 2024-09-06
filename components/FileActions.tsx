@@ -7,7 +7,7 @@ import { FileItem } from "./FileList";
 import toast from "react-hot-toast";
 export function FileActions({ e, admin }: { e: FileItem; admin: boolean }) {
   return (
-    <BaseDropdown variant="text" renderButton={() => null} >
+    <BaseDropdown variant="context" >
       <BaseDropdownItem
         start={<CopyIcon className="w-5 h-5"></CopyIcon>}
         title="复制文件路径"
