@@ -40,6 +40,7 @@ export const createEntityContext = <
     currentEntity: EntityType;
     collectionList: CollectionType[];
     entityList: EntityType[];
+    filters: Partial<Record<keyof EntityType, any>>;
   };
 
   const initialState: State<EntityType, CollectionType> = {
@@ -49,9 +50,14 @@ export const createEntityContext = <
     currentEntity: defaultEntity,
     collectionList: [],
     entityList: [],
+    filters: {},
   };
 
   type Action<EntityType, CollectionType> =
+    | {
+        type: "SET_FILTERS";
+        payload: State<EntityType, CollectionType>["filters"];
+      }
     | {
         type: "SET_QUESTION_MODAL_MODE";
         payload: State<EntityType, CollectionType>["questionModalMode"];
@@ -82,7 +88,7 @@ export const createEntityContext = <
       }
     | { type: "CANCEL" };
 
-  const EnitityContext = createContext(initialState);
+  const EntityContext = createContext(initialState);
   const EntityDispatchContext = createContext<
     Dispatch<Action<EntityType, CollectionType>>
   >(() => {});
@@ -92,6 +98,11 @@ export const createEntityContext = <
     Action<EntityType, CollectionType>
   > = (state = initialState, action) => {
     switch (action.type) {
+      case "SET_FILTERS": {
+        return Object.assign({}, state, {
+          filters: action.payload,
+        });
+      }
       case "SET_MODAL_OPEN": {
         return Object.assign({}, state, {
           modalOpen: action.payload,
@@ -248,16 +259,16 @@ export const createEntityContext = <
     }, [state.entityList, pending]);
 
     return (
-      <EnitityContext.Provider value={state}>
+      <EntityContext.Provider value={state}>
         <EntityDispatchContext.Provider value={dispatch}>
           {children}
         </EntityDispatchContext.Provider>
-      </EnitityContext.Provider>
+      </EntityContext.Provider>
     );
   };
 
   function useEntity() {
-    return useContext(EnitityContext);
+    return useContext(EntityContext);
   }
 
   function useEntityDispatch() {
@@ -265,7 +276,7 @@ export const createEntityContext = <
   }
 
   return {
-    EnitityContext,
+    EnitityContext: EntityContext,
     EntityDispatchContext,
     EntityContextProvider,
     useEntity,
@@ -273,10 +284,16 @@ export const createEntityContext = <
   };
 };
 
-export type EntityState = ReturnType<
-  ReturnType<typeof createEntityContext>["useEntity"]
+export type EntityState<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+> = ReturnType<
+  ReturnType<typeof createEntityContext<EType, CType>>["useEntity"]
 >;
 
-export type EntityDispatch = ReturnType<
-  ReturnType<typeof createEntityContext>["useEntityDispatch"]
+export type EntityDispatch<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+> = ReturnType<
+  ReturnType<typeof createEntityContext<EType, CType>>["useEntityDispatch"]
 >;

@@ -1,17 +1,22 @@
 "use client";
 import Prose from "@/components/Base/Prose";
-import { BaseTag } from "@shuriken-ui/react";
+import { BaseListbox, BaseTag } from "@shuriken-ui/react";
 import EntityRoute from "@/lib/client/createEntity/EntityRoute";
 import { Note } from "../app/(projects)/notes/constants";
 import { useEntity, useEntityDispatch } from "../contexts/notes";
 import { NoteForm } from "../app/(projects)/notes/NoteForm";
 import NotesPage from "../app/(projects)/notes/page";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 import localforage from "localforage";
 import toast from "react-hot-toast";
+import { EntityDispatch } from "@/lib/client/createEntity/createEntityContext";
 
-export const NotesContainer = ({ basename = '/notes' }: { basename?: string }) => {
+export const NotesContainer = ({
+  basename = "/notes",
+}: {
+  basename?: string;
+}) => {
   const state = useEntity();
   const dispatch = useEntityDispatch();
 
@@ -42,12 +47,7 @@ export const NotesContainer = ({ basename = '/notes' }: { basename?: string }) =
             <span className="flex mb-2 gap-2 flex-nowrap  items-start overflow-x-auto py-1 leading-normal">
               {e.tags?.map((e) => (
                 <div key={e} className="cursor-pointer flex-shrink-0">
-                  <BaseTag
-                    key={e}
-                    size="sm"
-                    variant="outline"
-                    color="primary"
-                  >
+                  <BaseTag key={e} size="sm" variant="outline" color="primary">
                     {e}
                   </BaseTag>
                 </div>
@@ -60,7 +60,10 @@ export const NotesContainer = ({ basename = '/notes' }: { basename?: string }) =
             }
           </>
         )}
-        renderEntity={(e: Note, { preview }) => <NoteItem data={e} preview={preview}></NoteItem>}
+        renderEntity={(e: Note, { preview }) => (
+          <NoteItem data={e} preview={preview}></NoteItem>
+        )}
+        slots={{ head: Filters }}
         state={state}
         dispatch={dispatch}
         RootPage={NotesPage}
@@ -72,19 +75,42 @@ export const NotesContainer = ({ basename = '/notes' }: { basename?: string }) =
   );
 };
 
-function NoteItem({ preview = false, data }: { preview?, data: Note }) {
+const Filters: FC<{
+  state: ReturnType<typeof useEntity>;
+  dispatch: ReturnType<typeof useEntityDispatch>;
+}> = ({ state, dispatch }) => {
+  const items = Array.from(new Set(state.entityList.flatMap((e) => e.tags)));
+  return (
+    <div className="mb-4">
+      <BaseListbox
+        label="标签"
+        multiple
+        multipleLabel={(v) => {
+          return v.length == items.length ? "全部" : v.join("、");
+        }}
+        items={items}
+        value={state.filters.tags || items}
+        onChange={(v) => {
+          dispatch({
+            type: "SET_FILTERS",
+            payload: {
+              tags: v,
+            },
+          });
+        }}
+      ></BaseListbox>
+    </div>
+  );
+};
+
+function NoteItem({ preview = false, data }: { preview?; data: Note }) {
   return (
     <div className={cn({ "min-w-64": !preview })}>
       {preview && (
         <div className="-mb-3 flex gap-2 flex-nowrap  items-start overflow-x-auto">
           {data.tags?.map((e) => (
             <div key={e} className="cursor-pointer flex-shrink-0">
-              <BaseTag
-                key={e}
-                size="sm"
-                variant="outline"
-                color="primary"
-              >
+              <BaseTag key={e} size="sm" variant="outline" color="primary">
                 {e}
               </BaseTag>
             </div>

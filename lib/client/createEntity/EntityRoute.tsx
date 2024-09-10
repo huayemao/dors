@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import CollectionLayout from "@/lib/client/createEntity/Collection";
+import CollectionLayout from "@/lib/client/createEntity/CollectionLayout";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
@@ -14,7 +14,10 @@ import {
 import localforage from "localforage";
 import { ClientOnly } from "@/components/ClientOnly";
 
-export default function EntityRoute({
+export default function EntityRoute<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
   state,
   dispatch,
   basename,
@@ -23,7 +26,15 @@ export default function EntityRoute({
   RootPage,
   renderEntity,
   renderEntityModalTitle,
+  slots,
 }: {
+  slots?: Record<
+    "head",
+    FC<{
+      state: EntityState<EType, CType>;
+      dispatch: EntityDispatch;
+    }>
+  >;
   renderEntity: (
     entity: BaseEntity,
     options: { preview: boolean }
@@ -36,7 +47,7 @@ export default function EntityRoute({
   createForm: FC<PropsWithChildren>;
   updateForm: FC<PropsWithChildren>;
   RootPage: FC<PropsWithChildren>;
-  state: EntityState;
+  state: EntityState<EType, CType>;
   dispatch: EntityDispatch;
 }) {
   const entityLoader = useCallback(async ({ params }) => {
@@ -110,6 +121,7 @@ export default function EntityRoute({
         element: (
           <ClientOnly>
             <CollectionLayout
+              slots={slots}
               state={state}
               dispatch={dispatch}
               renderEntity={renderEntity}

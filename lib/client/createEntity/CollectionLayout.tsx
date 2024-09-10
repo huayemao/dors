@@ -17,7 +17,14 @@ import {
   RefreshCcw,
   UploadIcon,
 } from "lucide-react";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   Link,
   Outlet,
@@ -33,13 +40,28 @@ import {
 } from "./createEntityContext";
 import toast from "react-hot-toast";
 
-export default function CollectionLayout({
+const Filters = ({ dispatch, state }) => {
+  return <div></div>;
+};
+
+export default function CollectionLayout<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
+  slots,
   renderEntity,
   state,
   dispatch,
 }: {
-  state: EntityState;
-  dispatch: EntityDispatch;
+  slots?: Record<
+    "head",
+    FC<{
+      state: EntityState<EType, CType>;
+      dispatch: EntityDispatch<EType, CType>;
+    }>
+  >;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
   renderEntity: (
     entity: BaseEntity,
     options: { preview: boolean }
@@ -48,13 +70,13 @@ export default function CollectionLayout({
   const {
     currentCollection,
     collectionList,
-    currentEntity: currentQuestion,
+    currentEntity,
     entityList,
     modalOpen,
     questionModalMode,
   } = state;
 
-  const { collection } = useLoaderData() as { collection: BaseCollection };
+  const { collection } = useLoaderData() as { collection: CType };
   const [fetching, setFetching] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -79,9 +101,8 @@ export default function CollectionLayout({
       });
 
       if ((collection as any)._entityList?.length && !entityList.length) {
-        const list = (
-          collection as BaseCollection & { _entityList: BaseEntity[] }
-        )._entityList;
+        const list = (collection as CType & { _entityList: EType[] })
+          ._entityList;
 
         // 覆盖掉本地版本，但只是最初下载时覆盖。
         dispatch({
@@ -153,6 +174,21 @@ export default function CollectionLayout({
     },
     [collection?.id, collectionList, dispatch]
   );
+
+  const Head = slots?.["head"];
+
+  const filters = state.filters;
+  let list = state.entityList;
+  for (const [key, value] of Object.entries(filters)) {
+    if (Array.isArray(value)) {
+      list = list.filter((e) => {
+        if (Array.isArray(e[key])) {
+          return e[key].some((item) => value.includes(item));
+        }
+        return true;
+      });
+    }
+  }
 
   return (
     <>
@@ -290,8 +326,9 @@ export default function CollectionLayout({
         </div>
         <div className="col-span-12">
           <div className="bg-slate-50 relative w-full border transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
+            {Head && <Head dispatch={dispatch} state={state}></Head>}
             <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
-              {entityList?.map((e, i, arr) => (
+              {list.map((e, i, arr) => (
                 <Link key={i} to={"./" + e.id}>
                   <BaseCard
                     rounded="md"
