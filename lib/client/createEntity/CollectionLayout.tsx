@@ -39,6 +39,7 @@ import {
   EntityState,
 } from "./createEntityContext";
 import toast from "react-hot-toast";
+import { headers } from "next/headers";
 
 const Filters = ({ dispatch, state }) => {
   return <div></div>;
@@ -350,8 +351,18 @@ export default function CollectionLayout<
 }
 
 const fetchWithAuth: typeof fetch = (input, init) => {
-  return fetch(input, init).then(async (e) => {
+  const extendedInit = Object.assign(init, {
+    headers: {
+      ...init.headers,
+      Authorization: localStorage.getItem("AUTH"),
+    },
+  });
+  return fetch(input, extendedInit).then(async (e) => {
+    if (e.status == 200) {
+      localStorage.setItem("AUTH", init.headers.Authorization);
+    }
     if (e.status == 401) {
+      localStorage.removeItem("AUTH");
       toast("请先登录");
       const username = prompt("请输入用户名");
       const password = prompt("请输入密码");
