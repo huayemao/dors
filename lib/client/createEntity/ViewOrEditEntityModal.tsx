@@ -43,11 +43,11 @@ export default function ViewOrEditEntityModal<
   dispatch: EntityDispatch<EType, CType>;
 }) {
   const {
-    questionModalMode,
+    entityModalMode,
     collectionList,
     currentCollection,
     currentEntity: currentQuestion,
-    entityList: questionList,
+    entityList,
     modalOpen,
   } = state;
 
@@ -106,7 +106,7 @@ export default function ViewOrEditEntityModal<
       title={renderEntityModalTitle(currentQuestion, { preview: false })}
       actions={
         <>
-          {questionModalMode == "view" ? (
+          {entityModalMode == "view" ? (
             <BaseDropdown variant="context">
               <BaseDropdownItem
                 rounded="md"
@@ -146,7 +146,7 @@ export default function ViewOrEditEntityModal<
         </>
       }
     >
-      {questionModalMode == "view" ? (
+      {entityModalMode == "view" ? (
         <div className="md:px-12">
           <div className="p-8 flex justify-center w-full ">
             {renderEntity(currentQuestion, { preview: false })}

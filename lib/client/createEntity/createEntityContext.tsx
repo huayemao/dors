@@ -35,7 +35,7 @@ export const createEntityContext = <
 ) => {
   type State<EntityType, CollectionType> = {
     modalOpen: boolean;
-    questionModalMode: "view" | "edit";
+    entityModalMode: "view" | "edit";
     currentCollection: CollectionType | null;
     currentEntity: EntityType;
     collectionList: CollectionType[];
@@ -45,7 +45,7 @@ export const createEntityContext = <
 
   const initialState: State<EntityType, CollectionType> = {
     modalOpen: false,
-    questionModalMode: "view",
+    entityModalMode: "view",
     currentCollection: null,
     currentEntity: defaultEntity,
     collectionList: [],
@@ -60,7 +60,7 @@ export const createEntityContext = <
       }
     | {
         type: "SET_QUESTION_MODAL_MODE";
-        payload: State<EntityType, CollectionType>["questionModalMode"];
+        payload: State<EntityType, CollectionType>["entityModalMode"];
       }
     | {
         type: "SET_CURRENT_COLLECTION";
@@ -110,7 +110,7 @@ export const createEntityContext = <
       }
       case "SET_QUESTION_MODAL_MODE":
         return Object.assign({}, state, {
-          questionModalMode: action.payload,
+          entityModalMode: action.payload,
         });
       case "SET_CURRENT_COLLECTION":
         return Object.assign({}, state, {
@@ -157,7 +157,7 @@ export const createEntityContext = <
         return Object.assign({}, state, {
           modalOpen: false,
           currentEntity: { ...defaultEntity, seq: maxSeq + 1 },
-          questionModalMode: "view",
+          entityModalMode: "view",
         });
       case "REMOVE_ENTITY": {
         const removeItem = (id: number) => {

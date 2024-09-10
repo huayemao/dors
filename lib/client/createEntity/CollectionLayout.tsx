@@ -74,7 +74,7 @@ export default function CollectionLayout<
     currentEntity,
     entityList,
     modalOpen,
-    questionModalMode,
+    entityModalMode,
   } = state;
 
   const { collection } = useLoaderData() as { collection: CType };

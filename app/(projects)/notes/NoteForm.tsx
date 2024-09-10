@@ -12,7 +12,7 @@ import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 
 export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
-  const { questionModalMode, currentEntity, entityList } = useEntity();
+  const { entityModalMode, currentEntity, entityList } = useEntity();
   const dispatch = useEntityDispatch();
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {

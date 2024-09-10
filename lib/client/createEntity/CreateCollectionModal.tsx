@@ -22,7 +22,7 @@ export default function CreateCollectionModal<
   dispatch: EntityDispatch<EType, CType>;
 }) {
   const close = useCloseModal();
-  const { currentCollection, collectionList, modalOpen, questionModalMode } =
+  const { currentCollection, collectionList, modalOpen, entityModalMode } =
     state;
   useEffect(() => {
     dispatch({ type: "SET_MODAL_OPEN", payload: true });
@@ -55,7 +55,7 @@ function CollectionForm<
   const close = useCloseModal();
   const params = useParams();
   const navigate = useNavigate();
-  const { currentCollection, collectionList, modalOpen, questionModalMode } =
+  const { currentCollection, collectionList, modalOpen, entityModalMode } =
     state;
 
   const isEditing = !!params.collectionId;

@@ -27,7 +27,7 @@ export default function CreateEntityModal<
     currentEntity: currentQuestion,
     entityList: questionList,
     modalOpen,
-    questionModalMode,
+    entityModalMode,
   } = state;
 
   const close = useCloseModal();

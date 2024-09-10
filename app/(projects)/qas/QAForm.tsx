@@ -12,7 +12,7 @@ import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 export const QAForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
   const {
-    questionModalMode,
+    entityModalMode,
     currentEntity: currentQuestion,
     entityList: questionList,
   } = useEntity();
