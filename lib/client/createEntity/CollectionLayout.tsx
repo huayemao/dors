@@ -353,7 +353,7 @@ export default function CollectionLayout<
 const fetchWithAuth: typeof fetch = (input, init) => {
   const extendedInit = Object.assign(init, {
     headers: {
-      ...init.headers,
+      ...(init?.headers || {}),
       Authorization: localStorage.getItem("AUTH"),
     },
   });
