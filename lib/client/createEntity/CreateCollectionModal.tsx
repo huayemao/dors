@@ -4,14 +4,22 @@ import { DOMAttributes, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useCloseModal } from "../utils/useCloseModal";
-import { EntityDispatch, EntityState } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity,
+  EntityDispatch,
+  EntityState,
+} from "./createEntityContext";
 
-export default function CreateCollectionModal({
+export default function CreateCollectionModal<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
   state,
   dispatch,
 }: {
-  state: EntityState;
-  dispatch: EntityDispatch;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
 }) {
   const close = useCloseModal();
   const { currentCollection, collectionList, modalOpen, questionModalMode } =
@@ -24,18 +32,25 @@ export default function CreateCollectionModal({
   }, [dispatch]);
 
   return (
-    <Modal open={modalOpen} onClose={close} title={currentCollection?.name || "创建合集"}>
+    <Modal
+      open={modalOpen}
+      onClose={close}
+      title={currentCollection?.name || "创建合集"}
+    >
       <CollectionForm state={state} dispatch={dispatch} />
     </Modal>
   );
 }
 
-function CollectionForm({
+function CollectionForm<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
   state,
   dispatch,
 }: {
-  state: EntityState;
-  dispatch: EntityDispatch;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
 }) {
   const close = useCloseModal();
   const params = useParams();
@@ -58,21 +73,27 @@ function CollectionForm({
         payload: null,
       });
     }
-    return () => { };
+    return () => {};
   }, [collectionList, dispatch, isEditing, params.collectionId]);
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
     e.preventDefault();
     const formEl = e.target as HTMLFormElement;
     const formData = new FormData(formEl);
-    const obj = Object.fromEntries(formData.entries()) as { name: string, id: string };
+    const obj = Object.fromEntries(formData.entries()) as {
+      name: string;
+      id: string;
+    };
 
     const collection = {
       ...obj,
-      id: Number(obj.id)
+      id: Number(obj.id),
     };
 
-    dispatch({ type: "CREATE_OR_UPDATE_COLLECTION", payload: collection });
+    dispatch({
+      type: "CREATE_OR_UPDATE_COLLECTION",
+      payload: collection as CType,
+    });
 
     navigate("/" + collection.id, { state: { __NA: {} } });
   };
@@ -80,7 +101,11 @@ function CollectionForm({
   return (
     <form method="POST" onSubmit={handleSubmit}>
       <div className="p-8">
-        <input className="hidden" name="id" value={currentCollection?.id || new Date().valueOf()}></input>
+        <input
+          className="hidden"
+          name="id"
+          value={currentCollection?.id || new Date().valueOf()}
+        ></input>
         <BaseInput
           key={currentCollection?.name}
           label="名称"

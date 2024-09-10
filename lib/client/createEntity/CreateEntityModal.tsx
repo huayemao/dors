@@ -1,16 +1,24 @@
 import { Modal } from "@/components/Base/Modal";
 import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { FormFoot } from "./FormFoot";
-import { EntityDispatch, EntityState } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity,
+  EntityDispatch,
+  EntityState,
+} from "./createEntityContext";
 import { useCloseModal } from "../utils/useCloseModal";
 
-export default function CreateEntityModal({
+export default function CreateEntityModal<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
   state,
   dispatch,
   form: Form,
 }: {
-  state: EntityState;
-  dispatch: EntityDispatch;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
   form: FC<PropsWithChildren>;
 }) {
   const {
@@ -23,7 +31,7 @@ export default function CreateEntityModal({
   } = state;
 
   const close = useCloseModal();
-  
+
   useEffect(() => {
     dispatch({ type: "SET_MODAL_OPEN", payload: true });
     return () => {

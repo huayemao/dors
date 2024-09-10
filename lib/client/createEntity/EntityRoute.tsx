@@ -32,7 +32,7 @@ export default function EntityRoute<
     "head",
     FC<{
       state: EntityState<EType, CType>;
-      dispatch: EntityDispatch;
+      dispatch: EntityDispatch<EType, CType>;
     }>
   >;
   renderEntity: (
@@ -48,7 +48,7 @@ export default function EntityRoute<
   updateForm: FC<PropsWithChildren>;
   RootPage: FC<PropsWithChildren>;
   state: EntityState<EType, CType>;
-  dispatch: EntityDispatch;
+  dispatch: EntityDispatch<EType, CType>;
 }) {
   const entityLoader = useCallback(async ({ params }) => {
     const { entityId, collectionId } = params;

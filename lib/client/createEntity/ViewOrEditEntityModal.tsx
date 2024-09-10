@@ -12,10 +12,18 @@ import { ArrowLeftIcon, Edit2, Trash } from "lucide-react";
 import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
-import { BaseEntity, EntityDispatch, EntityState } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity,
+  EntityDispatch,
+  EntityState,
+} from "./createEntityContext";
 import Prose from "@/components/Base/Prose";
 
-export default function ViewOrEditEntityModal({
+export default function ViewOrEditEntityModal<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
   state,
   dispatch,
   form: Form,
@@ -31,8 +39,8 @@ export default function ViewOrEditEntityModal({
     options: { preview: boolean }
   ) => ReactNode;
   form: FC<PropsWithChildren>;
-  state: EntityState;
-  dispatch: EntityDispatch;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
 }) {
   const {
     questionModalMode,
@@ -43,7 +51,7 @@ export default function ViewOrEditEntityModal({
     modalOpen,
   } = state;
 
-  const { entity } = useLoaderData() as { entity: BaseEntity };
+  const { entity } = useLoaderData() as { entity: EType };
   const navigate = useNavigate();
 
   const cancel = () => {
