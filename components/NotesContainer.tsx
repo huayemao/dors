@@ -1,16 +1,17 @@
 "use client";
 import Prose from "@/components/Base/Prose";
-import { BaseListbox, BaseTag } from "@shuriken-ui/react";
+import { BaseInput, BaseListbox, BaseTag } from "@shuriken-ui/react";
 import EntityRoute from "@/lib/client/createEntity/EntityRoute";
 import { Note } from "../app/(projects)/notes/constants";
 import { useEntity, useEntityDispatch } from "../contexts/notes";
 import { NoteForm } from "../app/(projects)/notes/NoteForm";
 import NotesPage from "../app/(projects)/notes/page";
 import { cn } from "@/lib/utils";
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import localforage from "localforage";
 import toast from "react-hot-toast";
 import { EntityDispatch } from "@/lib/client/createEntity/createEntityContext";
+import { useDebounce } from "@uidotdev/usehooks";
 
 export const NotesContainer = ({
   basename = "/notes",
@@ -80,8 +81,18 @@ const Filters: FC<{
   dispatch: ReturnType<typeof useEntityDispatch>;
 }> = ({ state, dispatch }) => {
   const items = Array.from(new Set(state.entityList.flatMap((e) => e.tags)));
+
+  const search = useCallback((v) => {
+    dispatch({
+      type: "SET_FILTERS",
+      payload: {
+        ...state.filters,
+        content: v,
+      },
+    });
+  }, [dispatch, state.filters]);
   return (
-    <div className="mb-4">
+    <div className="flex flex-col lg:grid grid-cols-2 gap-4 mb-4">
       <BaseListbox
         label="标签"
         multiple
@@ -94,11 +105,17 @@ const Filters: FC<{
           dispatch({
             type: "SET_FILTERS",
             payload: {
+              ...state.filters,
               tags: v,
             },
           });
         }}
       ></BaseListbox>
+      <BaseInput
+        label="内容"
+        icon="lucide:search"
+        onChange={search}
+      ></BaseInput>
     </div>
   );
 };

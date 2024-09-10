@@ -39,7 +39,6 @@ import {
   EntityState,
 } from "./createEntityContext";
 import toast from "react-hot-toast";
-import { headers } from "next/headers";
 
 const Filters = ({ dispatch, state }) => {
   return <div></div>;
@@ -181,6 +180,11 @@ export default function CollectionLayout<
   const filters = state.filters;
   let list = state.entityList;
   for (const [key, value] of Object.entries(filters)) {
+    if (typeof value === "string") {
+      list = list.filter((e) => {
+        return e[key].includes(value);
+      });
+    }
     if (Array.isArray(value)) {
       list = list.filter((e) => {
         if (Array.isArray(e[key])) {
@@ -351,7 +355,7 @@ export default function CollectionLayout<
 }
 
 const fetchWithAuth: typeof fetch = (input, init) => {
-  const extendedInit = Object.assign(init, {
+  const extendedInit = Object.assign(init || {}, {
     headers: {
       ...(init?.headers || {}),
       Authorization: localStorage.getItem("AUTH"),
