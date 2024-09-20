@@ -55,43 +55,43 @@ export const createEntityContext = <
 
   type Action<EntityType, CollectionType> =
     | {
-        type: "SET_FILTERS";
-        payload: State<EntityType, CollectionType>["filters"];
-      }
+      type: "SET_FILTERS";
+      payload: State<EntityType, CollectionType>["filters"];
+    }
     | {
-        type: "SET_QUESTION_MODAL_MODE";
-        payload: State<EntityType, CollectionType>["entityModalMode"];
-      }
+      type: "SET_QUESTION_MODAL_MODE";
+      payload: State<EntityType, CollectionType>["entityModalMode"];
+    }
     | {
-        type: "SET_CURRENT_COLLECTION";
-        payload: State<EntityType, CollectionType>["currentCollection"];
-      }
+      type: "SET_CURRENT_COLLECTION";
+      payload: State<EntityType, CollectionType>["currentCollection"];
+    }
     | {
-        type: "SET_CURRENT_ENTITY";
-        payload: State<EntityType, CollectionType>["currentEntity"];
-      }
+      type: "SET_CURRENT_ENTITY";
+      payload: State<EntityType, CollectionType>["currentEntity"];
+    }
     | {
-        type: "SET_ENTITY_LIST";
-        payload: State<EntityType, CollectionType>["entityList"];
-      }
+      type: "SET_ENTITY_LIST";
+      payload: State<EntityType, CollectionType>["entityList"];
+    }
     | {
-        type: "SET_COLLECTION_LIST";
-        payload: State<EntityType, CollectionType>["collectionList"];
-      }
+      type: "SET_COLLECTION_LIST";
+      payload: State<EntityType, CollectionType>["collectionList"];
+    }
     | { type: "REMOVE_ENTITY"; payload: Question["id"] }
     | { type: "SET_MODAL_OPEN"; payload: boolean }
     | {
-        type: "CREATE_OR_UPDATE_COLLECTION";
-        payload: NonNullable<
-          State<EntityType, CollectionType>["currentCollection"]
-        >;
-      }
+      type: "CREATE_OR_UPDATE_COLLECTION";
+      payload: NonNullable<
+        State<EntityType, CollectionType>["currentCollection"]
+      >;
+    }
     | { type: "CANCEL" };
 
   const EntityContext = createContext(initialState);
   const EntityDispatchContext = createContext<
     Dispatch<Action<EntityType, CollectionType>>
-  >(() => {});
+  >(() => { });
 
   const reducer: Reducer<
     State<EntityType, CollectionType>,
@@ -233,11 +233,19 @@ export const createEntityContext = <
               type: "SET_ENTITY_LIST",
               payload: [],
             });
+            dispatch({
+              type: "SET_FILTERS",
+              payload: {}
+            })
           } else {
             dispatch({
               type: "SET_ENTITY_LIST",
               payload: res as State<EntityType, CollectionType>["entityList"],
             });
+            dispatch({
+              type: "SET_FILTERS",
+              payload: {}
+            })
           }
         })
         .catch((e) => {
