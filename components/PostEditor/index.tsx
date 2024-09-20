@@ -33,34 +33,16 @@ import CollectionEditor from "../Collection/CollectionEditor";
 import { UploadPanel } from "./UploadPanel";
 import SettingsComponent from "./Settings";
 import { useCloseModal } from "@/lib/client/utils/useCloseModal";
+import { AddAction, addActionRoutes } from "./AddAction";
+import { withModal } from "./withModal";
 
 const DEFAULT_CATEGORY_ID = 3;
 
-function withModal<Props>(
-  Comp: FC<Props>,
-  title: string,
-  modalOpen: boolean,
-  setModalOpen: (v: any) => void
-) {
-  return function ModalWrapped(props: JSX.IntrinsicAttributes & Props) {
-    const close = useCloseModal();
-    useEffect(() => {
-      setModalOpen(true);
-      return () => {
-        setModalOpen(false);
-      };
-    }, []);
 
-    return (
-      <Modal title={title} open={modalOpen} onClose={close}>
-        <Comp {...props} />
-      </Modal>
-    );
-  };
-}
 
 function PostEditor(props: PostEditorProps) {
-  const [modalOpen, setModalOpen] = useState(false);
+
+
 
   const routes = createBrowserRouter(
     [
@@ -73,23 +55,9 @@ function PostEditor(props: PostEditorProps) {
         Component: withModal(
           SettingsComponent,
           "设置",
-          modalOpen,
-          setModalOpen
         ),
       },
-      {
-        path: "upload",
-        Component: withModal(UploadPanel, "文件", modalOpen, setModalOpen),
-      },
-      {
-        path: "emoji",
-        Component: withModal(
-          EmojiPanel,
-          "常用表情符号",
-          modalOpen,
-          setModalOpen
-        ),
-      },
+      ...addActionRoutes,
     ],
     { basename: props.basePath }
   );
@@ -123,9 +91,9 @@ export const detectChange = (form: HTMLFormElement) => {
     // @ts-ignore
     const formDataValue = el.multiple
       ? // @ts-ignore
-        formData.getAll(el.name).sort().join(",")
+      formData.getAll(el.name).sort().join(",")
       : // @ts-ignore
-        formData.get(el.name);
+      formData.get(el.name);
     // @ts-ignore
     const originalValue = el.dataset.originalValue;
 
@@ -159,7 +127,6 @@ export const detectChange = (form: HTMLFormElement) => {
 };
 
 export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
-  const nav = useNavigate();
   const categories = useContext(CategoriesContext);
   const [reserveUpdateTime, setReserveUpdateTime] = useState(false);
   const [isProtected, setProtected] = useState(post?.protected || false);
@@ -374,22 +341,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
   function Action() {
     return (
       <div className="space-x-2 flex items-center">
-        <BaseDropdown
-          renderButton={() => (
-            <BaseButtonIcon rounded="md" size="sm">
-              <Plus className="h-4 w-4" />
-            </BaseButtonIcon>
-          )}
-        >
-          <BaseDropdownItem
-            onClick={() => nav("./upload")}
-            title="上传文件"
-          ></BaseDropdownItem>
-          <BaseDropdownItem
-            onClick={() => nav("./emoji")}
-            title="Unicode 表情"
-          />
-        </BaseDropdown>
+        <AddAction />
         {post && (
           <>
             <Link

@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 import CollectionLayout from "@/lib/client/createEntity/CollectionLayout";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
@@ -13,6 +13,7 @@ import {
 } from "./createEntityContext";
 import localforage from "localforage";
 import { ClientOnly } from "@/components/ClientOnly";
+import { addActionRoutes } from "@/components/PostEditor/AddAction";
 
 export default function EntityRoute<
   EType extends BaseEntity,
@@ -27,6 +28,7 @@ export default function EntityRoute<
   renderEntity,
   renderEntityModalTitle,
   slots,
+  extraRoutes = []
 }: {
   slots?: Record<
     "head",
@@ -49,6 +51,7 @@ export default function EntityRoute<
   RootPage: FC<PropsWithChildren>;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
+  extraRoutes?: RouteObject[]
 }) {
   const entityLoader = useCallback(async ({ params }) => {
     const { entityId, collectionId } = params;
@@ -130,6 +133,7 @@ export default function EntityRoute<
         ),
         loader: collectionLoader,
         children: [
+          ...addActionRoutes,
           {
             path: ":entityId",
             element: (
@@ -163,6 +167,7 @@ export default function EntityRoute<
             ),
           },
         ],
+        ...extraRoutes,
       },
     ],
     { basename }

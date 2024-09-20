@@ -19,6 +19,7 @@ import {
   EntityState,
 } from "./createEntityContext";
 import Prose from "@/components/Base/Prose";
+import { AddAction } from "@/components/PostEditor/AddAction";
 
 export default function ViewOrEditEntityModal<
   EType extends BaseEntity,
@@ -129,19 +130,22 @@ export default function ViewOrEditEntityModal<
               ></BaseDropdownItem>
             </BaseDropdown>
           ) : (
-            <BaseButtonIcon
-              rounded="md"
-              size="sm"
-              data-nui-tooltip="返回"
-              onClick={() => {
-                dispatch({
-                  type: "SET_QUESTION_MODAL_MODE",
-                  payload: "view",
-                });
-              }}
-            >
-              <ArrowLeftIcon className="h-4 w-4"></ArrowLeftIcon>
-            </BaseButtonIcon>
+            <>
+              <BaseButtonIcon
+                rounded="md"
+                size="sm"
+                data-nui-tooltip="返回"
+                onClick={() => {
+                  dispatch({
+                    type: "SET_QUESTION_MODAL_MODE",
+                    payload: "view",
+                  });
+                }}
+              >
+                <ArrowLeftIcon className="h-4 w-4"></ArrowLeftIcon>
+              </BaseButtonIcon>
+              <AddAction base="../"></AddAction>
+            </>
           )}
         </>
       }
