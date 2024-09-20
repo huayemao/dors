@@ -1,4 +1,3 @@
-import { SITE_META } from "@/constants";
 import prisma from "@/lib/prisma";
 import mime from "mime";
 
@@ -41,7 +40,7 @@ export async function POST(request: Request) {
             size: item.size,
           },
         });
-        const url = encodeURI(`${SITE_META.url}/api/files/${file.name}`)
+        const url = encodeURI(`/api/files/${file.name}`)
         const markdownText = `![${file.name}](${url})`;
         markdown.push((markdownText));
       }
