@@ -10,7 +10,7 @@ export const fetchWithAuth: typeof fetch = (input, init) => {
             },
         });
     return fetch(input, init).then(async (e) => {
-        if (e.status == 200) {
+        if (e.status == 200 && init?.headers?.Authorization) {
             localStorage.setItem("AUTH", init.headers.Authorization);
         }
         if (e.status == 401) {
