@@ -77,12 +77,16 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                 </div>
                 {
                   isNotes ?
-                    (<ClientOnly>
-                      <NotesContextProvider>
-                        <NotesContainer basename={post.protected ? "/protected" : "/posts"}>
-                        </NotesContainer>
-                      </NotesContextProvider>
-                    </ClientOnly>) :
+                    (
+                      <div className="xl:max-w-7xl mx-auto">
+                        <ClientOnly>
+                          <NotesContextProvider>
+                            <NotesContainer basename={post.protected ? "/protected" : "/posts"}>
+                            </NotesContainer>
+                          </NotesContextProvider>
+                        </ClientOnly>
+                      </div>
+                    ) :
                     isCollection ? (
                       <ClientOnly>
                         <CollectionContent
