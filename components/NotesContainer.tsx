@@ -1,6 +1,6 @@
 "use client";
 import Prose from "@/components/Base/Prose";
-import { BaseInput, BaseListbox, BaseTag } from "@shuriken-ui/react";
+import { BaseButton, BaseButtonGroup, BaseButtonIcon, BaseInput, BaseListbox, BaseTag } from "@shuriken-ui/react";
 import EntityRoute from "@/lib/client/createEntity/EntityRoute";
 import { Note } from "../app/(projects)/notes/constants";
 import { useEntity, useEntityDispatch } from "../contexts/notes";
@@ -12,6 +12,7 @@ import localforage from "localforage";
 import toast from "react-hot-toast";
 import { EntityDispatch } from "@/lib/client/createEntity/createEntityContext";
 import { useDebounce } from "@uidotdev/usehooks";
+import { XIcon } from "lucide-react";
 
 export const NotesContainer = ({
   basename = "/notes",
@@ -80,7 +81,7 @@ const Filters: FC<{
   state: ReturnType<typeof useEntity>;
   dispatch: ReturnType<typeof useEntityDispatch>;
 }> = ({ state, dispatch }) => {
-  const items = Array.from(new Set(state.entityList.flatMap((e) => e.tags)));
+  const allTags = Array.from(new Set(state.entityList.flatMap((e) => e.tags)));
 
   const search = useCallback((v) => {
     dispatch({
@@ -93,28 +94,57 @@ const Filters: FC<{
   }, [dispatch, state.filters]);
   return (
     <div className="flex flex-col lg:grid grid-cols-2 gap-4 mb-4">
-      <BaseListbox
-        label="标签"
-        multiple
-        multipleLabel={(v) => {
-          return v.length == items.length ? "全部" : v.join("、");
-        }}
-        items={items}
-        value={state.filters.tags || items}
-        onChange={(v) => {
-          dispatch({
-            type: "SET_FILTERS",
-            payload: {
-              ...state.filters,
-              tags: v,
-            },
-          });
-        }}
-      ></BaseListbox>
+      <div className="flex items-center gap-2">
+        <BaseListbox
+          classes={{wrapper:'flex-[2]'}}
+          size="sm"
+          label="标签"
+          labelFloat
+          multiple
+          multipleLabel={(v) => {
+            return v.length == allTags.length ? "全部" : v.join("、");
+          }}
+          items={allTags}
+          value={state.filters.tags || allTags}
+          onChange={(v) => {
+            dispatch({
+              type: "SET_FILTERS",
+              payload: {
+                ...state.filters,
+                tags: v,
+              },
+            });
+          }}
+        />
+        <BaseButtonGroup className="flex-1">
+          <BaseButton size="sm" onClick={() => {
+            dispatch({
+              type: "SET_FILTERS",
+              payload: {
+                ...state.filters,
+                tags: allTags,
+              },
+            });
+          }}>
+            全部
+          </BaseButton>
+          <BaseButtonIcon  size="sm" onClick={() => {
+            dispatch({
+              type: "SET_FILTERS",
+              payload: {
+                ...state.filters,
+                tags: [],
+              },
+            });
+          }}><XIcon className="size-4"></XIcon></BaseButtonIcon>
+        </BaseButtonGroup>
+      </div>
       <BaseInput
+        size="sm"
         label="内容"
         icon="lucide:search"
         onChange={search}
+        labelFloat
       ></BaseInput>
     </div>
   );
