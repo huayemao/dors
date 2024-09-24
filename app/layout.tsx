@@ -1,8 +1,4 @@
 import { SITE_META } from "@/constants";
-import { CategoriesContextProvider } from "@/contexts/categories";
-import { TagsContextProvider } from "@/contexts/tags";
-import { getAllCategories } from "@/lib/server/categories";
-import { getTags } from "@/lib/server/tags";
 import "@/styles/globals.css";
 import { ShurikenUIProvider } from "@shuriken-ui/react";
 import { Metadata } from "next";

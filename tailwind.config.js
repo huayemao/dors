@@ -48,10 +48,11 @@ module.exports = withShurikenUI({
                 '&:first-of-type::before, &:last-of-type::after': {
                   color: colors.indigo[500],
                   fontSize: '3em',
+                  fontFamily:'ui-serif'
                 },
                 '&:first-of-type::before': {
                   position: 'absolute',
-                  left: '-1rem',
+                  left: '-3rem',
                   top: '-2.5rem'
                 },
                 '&:last-of-type::after': {
