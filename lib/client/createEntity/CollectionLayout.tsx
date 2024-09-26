@@ -335,7 +335,7 @@ export default function CollectionLayout<
             {Head && <Head dispatch={dispatch} state={state}></Head>}
             <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
               {list.map((e, i, arr) => (
-                <Link key={i} to={"./" + e.id}>
+                <Link key={e.id} to={"./" + e.id}>
                   <BaseCard
                     rounded="md"
                     className=" break-inside-avoid my-3 p-4 lg:px-6"

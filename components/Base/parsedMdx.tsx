@@ -26,17 +26,20 @@ function Content({
   const ref = useRef<HTMLElement>(null);
   const isMobile = useMediaQuery("only screen and (max-width : 720px)");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (!loading) {
+      setLoading(true);
+    }
     parseMDXClient(content)
       .then(setRes)
       .finally(() => {
+        setTimeout(() => {
+          update();
+        }, 1);
         setLoading(false);
       });
-  }, [content]);
+  }, [content, preview]);
 
-  useLayoutEffect(() => {
-    update();
-  }, [result]);
 
   function update() {
     if (!preview || !ref.current) {
@@ -47,6 +50,9 @@ function Content({
 
     const div = document.createElement("div");
     div.innerHTML = ref.current.innerHTML;
+    if (!div.textContent) {
+      return
+    }
 
     const gallery = div.querySelector('[class^="gallery"]');
 
@@ -76,22 +82,26 @@ function Content({
           className={cn(
             c.content,
             "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden",
-            { hidden: preview && html }
+            { hidden: preview || loading }
           )}
         >
           {typeof result == "function" ? (
             result({})
-          ) : !loading ? (
-            result
-          ) : (
-            <div className="space-y-2">
-              <BasePlaceload className="h-4 w-full rounded" />
-              <BasePlaceload className="h-4 w-3/4 rounded" />
-              <BasePlaceload className="h-4 w-full rounded" />
-            </div>
-          )}
+          )
+
+            : (
+              <>{result}
+              </>
+            )}
         </article>
       )}
+      {loading &&
+        <div className="space-y-2 py-6 ">
+          <BasePlaceload className="h-4 w-full rounded" />
+          <BasePlaceload className="h-4 w-3/4 rounded" />
+          <BasePlaceload className="h-4 w-full rounded" />
+        </div>
+      }
       {preview && (
         <>
           {html && (
