@@ -2,6 +2,7 @@
 import withPlaiceholder from "@plaiceholder/next";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  pageExtensions: process.env.OUTPUT_MODE === 'export' && !process.env.GITHUB_PAGE ? ['page.tsx', "placeholder.tsx"] : undefined,
   images: {
     unoptimized: process.env.OUTPUT_MODE === 'export',
     remotePatterns: ['huayemao.run', 'pexels.com', 'imghost.net', 'svgshare.com', 'fms.news.cn', 'project-management.info', 'runestone.academy'].map(e => ({
@@ -15,7 +16,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ["prisma", "shiki", "vscode-oniguruma"],
   },
   output: process.env.OUTPUT_MODE,
-  basePath: process.env.OUTPUT_MODE === 'export' ? "/dors" : '',
+  basePath: process.env.OUTPUT_MODE === 'export' && process.env.GITHUB_PAGE ? "/dors" : '',
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.

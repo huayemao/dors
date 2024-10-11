@@ -16,9 +16,11 @@ export default parsedMdx;
 function Content({
   content,
   preview = false,
+  className
 }: {
   content: string;
   preview?: boolean;
+  className?: string;
 }) {
   const [result, setRes] = useState<MDXContent>();
   const [loading, setLoading] = useState(true);
@@ -82,6 +84,7 @@ function Content({
           className={cn(
             c.content,
             "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden",
+            className,
             { hidden: preview || loading }
           )}
         >
