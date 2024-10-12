@@ -1,11 +1,12 @@
 "use client"
 
 import { Table } from "@/app/(content)/data-process/Table";
+import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import Prose from "@/components/Base/Prose";
 import { ClientOnly } from "@/components/ClientOnly";
 import { CopyToClipboard } from "@/components/copy-to-clipboard";
-import { BaseButton, BaseCard, BaseDropdown, BaseInput, BaseTextarea } from "@shuriken-ui/react";
-import { useEffect, useState } from "react";
+import { BaseButton, BaseCard, BaseDropdown, BaseInput, BaseListbox, BaseListboxItem, BaseTextarea } from "@shuriken-ui/react";
+import { useEffect, useMemo, useState } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 // 函数：选中页面上所有匹配的元素的文本内容
@@ -39,7 +40,42 @@ const Content = () => {
     const [list, setList] = useState<any>()
     const [activeId, setId] = useState<string | null>(null)
     const token = localStorage.getItem('token')
+    const article = useMemo(() => {
+        if (!list) {
+            return null
+        }
+        return list?.rows && list.rows.find(e => e.articleId == activeId)
+    }, [list, activeId])
 
+
+    function updateContent() {
+        const str = minify(start + content + end);
+        article.cmsArticleContent.content = str;
+        article.content = str;
+        return fetch("https://zycdsj.com/prod-api/cms/article", {
+            "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
+                "authorization": token!,
+                "cache-control": "no-cache",
+                "content-type": "application/json;charset=UTF-8",
+                "pragma": "no-cache",
+                "sec-ch-ua": "\"Microsoft Edge\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "usertype": "sysUser"
+            },
+            "referrer": "https://zycdsj.com/symanage/cms/article",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": JSON.stringify(article),
+            "method": "PUT",
+            "mode": "cors",
+            "credentials": "include"
+        });
+    }
 
     function getData(token: any) {
         fetch("https://zycdsj.com/prod-api/cms/article/list?pageNum=1&pageSize=1000&TimeFrame=", {
@@ -85,7 +121,6 @@ const Content = () => {
         }
     }, [])
 
-    const article = list?.rows && list.rows.find(e => e.articleId == activeId)
 
     useEffect(() => {
         setContent(article?.cmsArticleContent.content)
@@ -115,50 +150,28 @@ const Content = () => {
     console.log(article)
 
     return (
-        <main className="w-full p-4 grid grid-cols-2">
-            <div>
+        <main className="w-full p-4 grid grid-cols-2 gap-4">
+            <BaseCard className="p-4">
                 {activeId}
-
                 <BaseTextarea id="start" value={start} onChange={setStart}></BaseTextarea>
                 {content && <>
                     <BaseTextarea label="html" id="" key={activeId} value={content} onChange={(v) => {
                         setContent(v)
                     }}></BaseTextarea>
                     <BaseTextarea label="markdown" key={activeId + 'md'} value={markdown} onChange={setMarkDown}></BaseTextarea>
-                    <BaseButton onClick={() => {
-                        selectTextInElements('article.prose')
-                  
-                    }}>选中内容</BaseButton>
-                    <Prose content={markdown.replaceAll('<br><', '<br/>')} className="prose prose-h2:text-center prose-h2:text-green-700 prose-h2:border-l-4 prose-h2:border-green-500 prose-h2:pl-3  prose-p:indent-8  prose-a:!text-green-600"></Prose>
+
+                    <div className="relative">
+                        <BaseButton variant="pastel" size="sm" className="top-2 right-2" onClick={() => {
+                            selectTextInElements('article.prose')
+
+                        }}>选中内容</BaseButton>
+                        <Prose content={markdown.replaceAll('<br><', '<br/>')} className="prose prose-h2:text-center prose-h2:text-green-700 prose-h2:border-l-4 prose-h2:border-green-500 prose-h2:pl-3  prose-p:indent-8  prose-a:!text-green-600"></Prose>
+                    </div>
                 </>
                 }
                 <BaseTextarea id="end" value={end} onChange={setEnd}></BaseTextarea>
                 <BaseButton color="primary" onClick={() => {
-                    const str = minify(start + content + end)
-                    article.cmsArticleContent.content = str;
-                    article.content = str;
-                    fetch("https://zycdsj.com/prod-api/cms/article", {
-                        "headers": {
-                            "accept": "application/json, text/plain, */*",
-                            "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-                            "authorization": token!,
-                            "cache-control": "no-cache",
-                            "content-type": "application/json;charset=UTF-8",
-                            "pragma": "no-cache",
-                            "sec-ch-ua": "\"Microsoft Edge\";v=\"129\", \"Not=A?Brand\";v=\"8\", \"Chromium\";v=\"129\"",
-                            "sec-ch-ua-mobile": "?0",
-                            "sec-ch-ua-platform": "\"Windows\"",
-                            "sec-fetch-dest": "empty",
-                            "sec-fetch-mode": "cors",
-                            "sec-fetch-site": "same-origin",
-                            "usertype": "sysUser"
-                        },
-                        "referrer": "https://zycdsj.com/symanage/cms/article",
-                        "referrerPolicy": "strict-origin-when-cross-origin",
-                        "body": JSON.stringify(article),
-                        "method": "PUT",
-                        "mode": "cors",
-                        "credentials": "include"
+                    updateContent().then(() => {
                     });
                 }}>修改</BaseButton>
                 <form action="" onSubmit={(e) => {
@@ -172,20 +185,24 @@ const Content = () => {
                     <BaseInput name="token" label="token" id="token" defaultValue={localStorage.getItem('token')}></BaseInput>
                     <BaseButton type="submit">确定</BaseButton>
                 </form>
-            </div>
-            {list?.rows &&
-                <div className="space-y-2">{
-                    list.rows.map(e => <BaseCard key={e.articleId}>
-                        {e.title}
-                        <BaseDropdown label="内容" size="lg">
-                            <div dangerouslySetInnerHTML={{ __html: e.cmsArticleContent.content }}></div>
-                        </BaseDropdown>
-                        <BaseButton onClick={() => { setId(e.articleId) }}>编辑</BaseButton>
-                    </BaseCard>)
+            </BaseCard>
+            <BaseCard className="p-4">
+                {list?.rows &&
+                    <div className="">
+                        <BaseAutocomplete
+                            onChange={(e) => {
+                                console.log(e)
+                                setId((e as any).articleId)
+                            }}
+                            label="文章"
+                            items={list.rows}
+                            properties={{ value: 'articleId', label: 'title', sublabel: 'description' }}>
+                        </BaseAutocomplete>
+                        {activeId}
+                        <div dangerouslySetInnerHTML={{ __html: article?.cmsArticleContent.content }}></div>
+                    </div>
                 }
-                </div>
-            }
-
+            </BaseCard>
         </main>
     );
 }
