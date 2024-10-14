@@ -5,9 +5,13 @@ import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import Prose from "@/components/Base/Prose";
 import { ClientOnly } from "@/components/ClientOnly";
 import { CopyToClipboard } from "@/components/copy-to-clipboard";
+import { withModal } from "@/components/PostEditor/withModal";
 import { BaseButton, BaseCard, BaseDropdown, BaseInput, BaseListbox, BaseListboxItem, BaseTextarea } from "@shuriken-ui/react";
+import { Settings2Icon } from "lucide-react";
+import { Metadata } from "next";
 import { useEffect, useMemo, useState } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
+
 
 // 函数：选中页面上所有匹配的元素的文本内容
 function selectTextInElements(selector) {
@@ -29,7 +33,34 @@ function selectTextInElements(selector) {
 }
 
 
+function Editor(props) {
+    const routes = createBrowserRouter(
+        [
+            {
+                path: "/",
+                element: <Content {...props} />,
+            },
+            {
+                path: "settings",
+                Component: withModal(
+                    Settings,
+                    "设置",
+                ),
+            },
+        ],
+        { basename: '/herbal' }
+    );
 
+    return <RouterProvider router={routes}></RouterProvider>;
+}
+
+
+function Settings(params) {
+    return <div>
+        {/* <BaseTextarea id="start" value={start} onChange={setStart}></BaseTextarea>
+        <BaseTextarea id="end" value={end} onChange={setEnd}></BaseTextarea> */}
+    </div>
+}
 
 const minify = (str: string) => {
     const regex = /(>)\s+(?=<)/g;
@@ -37,6 +68,8 @@ const minify = (str: string) => {
     return minified
 }
 const Content = () => {
+
+
     const [list, setList] = useState<any>()
     const [activeId, setId] = useState<string | null>(null)
     const token = localStorage.getItem('token')
@@ -148,18 +181,21 @@ const Content = () => {
         `)
     const [end, setEnd] = useState("</div>")
     console.log(article)
-
+    const navigate = useNavigate();
     return (
         <main className="w-full p-4 grid grid-cols-2 gap-4">
             <BaseCard className="p-4">
                 {activeId}
-                <BaseTextarea id="start" value={start} onChange={setStart}></BaseTextarea>
+                <BaseButton onClick={() => {
+                    navigate('./settings')
+                }}><Settings2Icon></Settings2Icon></BaseButton>
+
+
                 {content && <>
                     <BaseTextarea label="html" id="" key={activeId} value={content} onChange={(v) => {
                         setContent(v)
                     }}></BaseTextarea>
                     <BaseTextarea label="markdown" key={activeId + 'md'} value={markdown} onChange={setMarkDown}></BaseTextarea>
-
                     <div className="relative">
                         <BaseButton variant="pastel" size="sm" className="top-2 right-2" onClick={() => {
                             selectTextInElements('article.prose')
@@ -169,7 +205,6 @@ const Content = () => {
                     </div>
                 </>
                 }
-                <BaseTextarea id="end" value={end} onChange={setEnd}></BaseTextarea>
                 <BaseButton color="primary" onClick={() => {
                     updateContent().then(() => {
                     });
@@ -199,7 +234,13 @@ const Content = () => {
                             properties={{ value: 'articleId', label: 'title', sublabel: 'description' }}>
                         </BaseAutocomplete>
                         {activeId}
-                        <div dangerouslySetInnerHTML={{ __html: article?.cmsArticleContent.content }}></div>
+                        <div className="relative">
+                            <BaseButton variant="pastel" size="sm" className="top-2 right-2" onClick={() => {
+                                selectTextInElements('div.preview')
+
+                            }}>选中内容</BaseButton>
+                            <div className="preview" dangerouslySetInnerHTML={{ __html: article?.cmsArticleContent.content }}></div>
+                        </div>
                     </div>
                 }
             </BaseCard>
@@ -208,7 +249,7 @@ const Content = () => {
 }
 
 export default function Page({ params }) {
-    return <ClientOnly><Content></Content></ClientOnly>
+    return <ClientOnly><Editor></Editor></ClientOnly>
 }
 
 
