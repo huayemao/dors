@@ -447,18 +447,18 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
           typeof item === "object" &&
           props.properties?.label &&
           (props.properties.label as unknown as string) in item
-        )
-          return item[props.properties.label as unknown as string]
+        ) {
+          let res = item[props.properties.label as unknown as string]
             .toLowerCase()
-            .includes(lower);
-        if (
-          typeof item === "object" &&
-          props.properties?.sublabel &&
-          (props.properties.sublabel as unknown as string) in item
-        )
-          return item[props.properties.sublabel as unknown as string]
-            .toLowerCase()
-            .includes(lower);
+            .includes(lower)
+          if (!res && props.properties?.sublabel &&
+            (props.properties.sublabel as unknown as string) in item) {
+            res = item[props.properties.sublabel as unknown as string]
+              .toLowerCase()
+              .includes(lower);
+          }
+          return res
+        }
       });
     },
     [props.properties?.label, props.properties?.sublabel]

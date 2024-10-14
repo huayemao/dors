@@ -6,7 +6,7 @@ import Prose from "@/components/Base/Prose";
 import { ClientOnly } from "@/components/ClientOnly";
 import { CopyToClipboard } from "@/components/copy-to-clipboard";
 import { withModal } from "@/components/PostEditor/withModal";
-import { BaseButton, BaseCard, BaseDropdown, BaseInput, BaseListbox, BaseListboxItem, BaseTextarea } from "@shuriken-ui/react";
+import { BaseButton, BaseCard, BaseDropdown, BaseHeading, BaseInput, BaseListbox, BaseListboxItem, BaseParagraph, BaseTextarea } from "@shuriken-ui/react";
 import { Settings2Icon } from "lucide-react";
 import { Metadata } from "next";
 import { useEffect, useMemo, useState } from "react";
@@ -184,31 +184,39 @@ const Content = () => {
     const navigate = useNavigate();
     return (
         <main className="w-full p-4 grid grid-cols-2 gap-4">
-            <BaseCard className="p-4">
-                {activeId}
-                <BaseButton onClick={() => {
+            <BaseCard className="p-4 space-y-4">
+                <div className="py-2 mb-4 border-b">
+                    <BaseHeading>
+                        {article?.title}
+                    </BaseHeading>
+                    <BaseParagraph>{article?.articleId}</BaseParagraph>
+                </div>
+                {/* <BaseButton onClick={() => {
                     navigate('./settings')
-                }}><Settings2Icon></Settings2Icon></BaseButton>
-
-
-                {content && <>
-                    <BaseTextarea label="html" id="" key={activeId} value={content} onChange={(v) => {
+                }}><Settings2Icon></Settings2Icon>
+                </BaseButton> */}
+                {content && <div className="relative  border-primary-500 rounded  border p-6 space-y-4">
+                    <BaseTextarea rows={10} label="html" id="" key={activeId} value={content} onChange={(v) => {
                         setContent(v)
                     }}></BaseTextarea>
-                    <BaseTextarea label="markdown" key={activeId + 'md'} value={markdown} onChange={setMarkDown}></BaseTextarea>
-                    <div className="relative">
-                        <BaseButton variant="pastel" size="sm" className="top-2 right-2" onClick={() => {
+                    <BaseButton size="sm" className="absolute right-2 -top-2" color="primary" onClick={() => {
+                        updateContent().then(() => {
+                        });
+                    }}>修改</BaseButton>
+                </div>
+                }
+
+                <div className="relative min-h-48">
+                    <BaseTextarea rows={10} label="markdown" key={activeId + 'md'} value={markdown} onChange={setMarkDown}></BaseTextarea>
+                    {/* <BaseButton variant="pastel" size="sm" className="top-2 right-2" onClick={() => {
                             selectTextInElements('article.prose')
 
-                        }}>选中内容</BaseButton>
+                        }}>选中内容</BaseButton> */}
+                    {markdown &&
                         <Prose content={markdown.replaceAll('<br><', '<br/>')} className="prose prose-h2:text-center prose-h2:text-green-700 prose-h2:border-l-4 prose-h2:border-green-500 prose-h2:pl-3  prose-p:indent-8  prose-a:!text-green-600"></Prose>
-                    </div>
-                </>
-                }
-                <BaseButton color="primary" onClick={() => {
-                    updateContent().then(() => {
-                    });
-                }}>修改</BaseButton>
+                    }
+                </div>
+
                 <form action="" onSubmit={(e) => {
                     e.preventDefault()
                     {/* @ts-ignore */ }
@@ -231,14 +239,15 @@ const Content = () => {
                             }}
                             label="文章"
                             items={list.rows}
-                            properties={{ value: 'articleId', label: 'title', sublabel: 'description' }}>
+                            properties={{ value: 'articleId', label: 'title', sublabel: 'articleId' }}>
                         </BaseAutocomplete>
-                        {activeId}
-                        <div className="relative">
-                            <BaseButton variant="pastel" size="sm" className="top-2 right-2" onClick={() => {
-                                selectTextInElements('div.preview')
+                        <div className="relative py-4">
+                            <div className="w-full text-right">
+                                <BaseButton variant="pastel" size="sm" className="top-0 right-0" onClick={() => {
+                                    selectTextInElements('div.preview')
 
-                            }}>选中内容</BaseButton>
+                                }}>选中内容</BaseButton>
+                            </div>
                             <div className="preview" dangerouslySetInnerHTML={{ __html: article?.cmsArticleContent.content }}></div>
                         </div>
                     </div>
