@@ -10,7 +10,7 @@ export default async function PostsPage() {
       <div className="rounded shadow shadow-primary-100">
         <Table canEdit data={posts.map(e => {
           const { id, title, excerpt, created_at, updated_at, cover_image } = e;
-          
+
           return {
             id,
             cover_image: (cover_image as any)?.src?.small || (cover_image as any)?.dataURLs?.small,

@@ -5,7 +5,7 @@ export default async function CreatePostPage({ params }) {
 
   return (
     <ClientOnly>
-      <PostEditor post={null} basePath="/posts/create" />
+      <PostEditor post={null} basePath="/admin/posts/create" />
     </ClientOnly>
   );
 }

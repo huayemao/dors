@@ -1,6 +1,6 @@
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import Input from "@/components/Base/Input";
-import { detectChange } from "@/components/PostEditor";
+import { detectChange } from "./detectChange";
 import { CategoriesContext } from "@/contexts/categories";
 import { PostContext } from "@/contexts/post";
 import { TagsContext } from "@/contexts/tags";
