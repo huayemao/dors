@@ -186,10 +186,10 @@ const Content = () => {
   const [activeId, setId] = useState<string | null>(null);
   const token = localStorage.getItem("token");
   const article = useMemo(() => {
-    if (!list) {
+    if (!list?.length) {
       return null;
     }
-    return list && list.find((e) => e.articleId == activeId);
+    return list.find((e) => e.articleId == activeId);
   }, [list, activeId]);
 
   async function updateContent() {
@@ -199,12 +199,8 @@ const Content = () => {
     article.content = str;
     return HerbalApiService.updateArticleContent(token, article).then((e) => {
       const index = list.findIndex((e) => e.articleId == activeId);
-      console.log(index, article.cmsArticleContent.content);
-      console.log(contentTrimed);
-      setList((l) => {
-        l[index] = article;
-        return l;
-      });
+      list[index] = article;
+      setList(list);
     });
   }
 
