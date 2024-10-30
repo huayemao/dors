@@ -1,4 +1,4 @@
-export const DEFAULT_START = `<div style="max-width: 80ch;margin: 0 auto;">
+export const DEFAULT_START = `<div style="margin: 0 auto;">
         <style>
         .ql-editor ul > li::marker{color:rgb(209, 213, 219)}
         .ql-editor ol > li::marker{color:rgb(107, 114, 128)}
@@ -42,10 +42,6 @@ body {
     margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse))); 
     margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 } 
-
-
-
-
 
 .prose { 
     color: var(--tw-prose-body); 
@@ -289,9 +285,6 @@ article.prose-a\\:\\!text-green-600 :is(:where(a):not(:where([class ~ ="not-pros
     margin-bottom: 0;
   } 
 }     
-.\\!max-w-\\[80ch\\] { 
-    max-width: 80ch !important;
-} 
 .ql-editor .prose ol li:not(.ql-direction-rtl), .ql-editor ul li:not(.ql-direction-rtl) {
     padding-left: 0;
     list-style-position:inside;

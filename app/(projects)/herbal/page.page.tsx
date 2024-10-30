@@ -15,7 +15,6 @@ import {
   BaseTextarea,
 } from "@shuriken-ui/react";
 import { Settings2Icon } from "lucide-react";
-import { Metadata } from "next";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -23,14 +22,13 @@ import {
   Outlet,
   RouterProvider,
   useNavigate,
-  useNavigation,
 } from "react-router-dom";
 import {
   HerbalContextProvider,
   useHerbalContext,
   useHerbalDispatch,
 } from "./context";
-import { selectTextInElements } from "../../../lib/client/utils/selectTextInElements";
+import { selectTextInElements } from "@/lib/client/utils/selectTextInElements";
 import { HerbalApiService } from "./api";
 import { DEFAULT_START } from "./constants";
 
@@ -55,33 +53,9 @@ function Editor(props) {
 }
 
 async function getData(token: any) {
-  return fetch(
-    "https://zycdsj.com/prod-api/cms/article/list?pageNum=1&pageSize=1000&TimeFrame=",
-    {
-      headers: {
-        accept: "application/json, text/plain, */*",
-        "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        authorization: token,
-        "cache-control": "no-cache",
-        pragma: "no-cache",
-        "sec-ch-ua":
-          '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        usertype: "sysUser",
-      },
-      referrer: "https://zycdsj.com/symanage/cms/article",
-      referrerPolicy: "strict-origin-when-cross-origin",
-      body: null,
-      method: "GET",
-      mode: "cors",
-      credentials: "include",
-    }
-  )
+  return HerbalApiService.getArticleList(token)
     .then((res) => {
+      // todo:这个抽到 service 里面去
       if (res.status == 200) {
         return res.json().then((data) => {
           if (data.code == 200) {
@@ -206,10 +180,14 @@ const Content = () => {
 
   useEffect(() => {
     if (token) {
-      getData(token).then((data) => {
-        setList(data.rows);
-        console.log(list);
-      });
+      try {
+        getData(token).then((data) => {
+          setList(data.rows);
+          console.log(list);
+        });
+      } catch (error) {
+        navigate("/settings");
+      }
     } else {
       toast("请先登录");
       navigate("/settings");
@@ -219,12 +197,16 @@ const Content = () => {
   const [start, setStart] = useState(DEFAULT_START);
   const [end, setEnd] = useState("</div>");
   const html = article?.cmsArticleContent.content;
-  const contentTrimed = html ? html?.replace(start, "").replace(end, "") : "";
+  let contentTrimed = html ? html?.replace(start, "").replace(end, "") : "";
   const [markdown, setMarkDown] = useState(contentTrimed);
-
   useEffect(() => {
     setContent(contentTrimed);
-    setMarkDown(contentTrimed);
+    const index = contentTrimed.lastIndexOf(end);
+    if (contentTrimed.slice(index) == end) {
+      contentTrimed = contentTrimed.slice(0, index);
+    }
+
+    setMarkDown(contentTrimed.replace(start, ""));
   }, [article, contentTrimed]);
 
   const [content, setContent] = useState(contentTrimed);
