@@ -228,7 +228,22 @@ async function loadWasmAndLangs() {
 const initShiki = cache(loadWasmAndLangs);
 
 export async function parseMDXClient(mdx: string) {
-  const shikiTwoSlash = await initShiki();
+  let shikiTwoSlash: Awaited<ReturnType<typeof initShiki>> | null = null;
+  if (mdx?.includes(`\`\`\``)) {
+    shikiTwoSlash = await initShiki();
+  }
+
+  const remarkPlugins = [
+    remarkGfm,
+    remarkMath,
+    remarkDirective,
+    myRemarkPlugin,
+  ];
+
+  if (shikiTwoSlash) {
+    // @ts-ignore
+    remarkPlugins.unshift([shikiTwoSlash]);
+  }
 
   // @ts-ignore
   const res = await evaluate(mdx, {
@@ -240,13 +255,7 @@ export async function parseMDXClient(mdx: string) {
       allowDangerousHtml: true,
     },
     rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }], [rehypeKatex]],
-    remarkPlugins: [
-      [shikiTwoSlash],
-      remarkGfm,
-      remarkMath,
-      remarkDirective,
-      myRemarkPlugin,
-    ],
+    remarkPlugins,
     format: "mdx",
   });
 
