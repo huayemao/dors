@@ -1,6 +1,7 @@
 "use client";
 
 import { Table } from "@/app/(content)/data-process/Table";
+
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import Prose from "@/components/Base/Prose";
 import { ClientOnly } from "@/components/ClientOnly";
@@ -31,6 +32,9 @@ import {
 import { selectTextInElements } from "@/lib/client/utils/selectTextInElements";
 import { HerbalApiService } from "./api";
 import { DEFAULT_START } from "./constants";
+import { transformHTML2MDX } from "@/lib/client/utils/transformHTML2MDX";
+import { minify } from "@/lib/client/utils/minify";
+import { Settings } from "./Settings";
 
 function Editor(props) {
   const routes = createBrowserRouter(
@@ -52,7 +56,7 @@ function Editor(props) {
   return <RouterProvider router={routes}></RouterProvider>;
 }
 
-async function getData(token: any) {
+export async function getData(token: any) {
   return HerbalApiService.getArticleList(token)
     .then((res) => {
       // todo:这个抽到 service 里面去
@@ -128,29 +132,6 @@ async function login(
     });
 }
 
-function Settings(params) {
-  const { list } = useHerbalContext();
-  const dispatch = useHerbalDispatch();
-  return (
-    <div>
-      {/* <BaseTextarea id="start" value={start} onChange={setStart}></BaseTextarea>
-        <BaseTextarea id="end" value={end} onChange={setEnd}></BaseTextarea> */}
-      <TokenForm
-        onTokenChange={async (token) => {
-          return getData(token).then((data) => {
-            dispatch({ payload: { list: data.rows } });
-          });
-        }}
-      ></TokenForm>
-    </div>
-  );
-}
-
-const minify = (str: string) => {
-  const regex = /(>)\s+(?=<)/g;
-  let minified = str.replace(regex, "$1");
-  return minified;
-};
 const Content = () => {
   const { list } = useHerbalContext();
   const dispatch = useHerbalDispatch();
@@ -197,19 +178,27 @@ const Content = () => {
   const [start, setStart] = useState(DEFAULT_START);
   const [end, setEnd] = useState("</div>");
   const html = article?.cmsArticleContent.content;
-  let contentTrimed = html ? html?.replace(start, "").replace(end, "") : "";
-  const [markdown, setMarkDown] = useState(contentTrimed);
+  let contentTrimmed = html ? html?.replace(start, "").replace(end, "") : "";
+  const [markdown, setMarkDown] = useState(contentTrimmed);
   useEffect(() => {
-    setContent(contentTrimed);
-    const index = contentTrimed.lastIndexOf(end);
-    if (contentTrimed.slice(index) == end) {
-      contentTrimed = contentTrimed.slice(0, index);
+    setContent(contentTrimmed);
+
+    if (!contentTrimmed) {
+      return;
+    }
+    const index = contentTrimmed.lastIndexOf(end);
+    if (contentTrimmed.slice(index) == end) {
+      contentTrimmed = contentTrimmed.slice(0, index);
     }
 
-    setMarkDown(contentTrimed.replace(start, ""));
-  }, [article, contentTrimed]);
+    const origin = contentTrimmed.replace(minify(start), "");
 
-  const [content, setContent] = useState(contentTrimed);
+    const md = transformHTML2MDX(origin);
+
+    setMarkDown(md);
+  }, [article, contentTrimmed]);
+
+  const [content, setContent] = useState(contentTrimmed);
   console.log(article);
   const navigate = useNavigate();
   return (
@@ -311,7 +300,7 @@ const Content = () => {
                 </div>
                 <div
                   className="preview"
-                  dangerouslySetInnerHTML={{ __html: contentTrimed }}
+                  dangerouslySetInnerHTML={{ __html: contentTrimmed }}
                 ></div>
               </div>
             </div>
@@ -323,7 +312,7 @@ const Content = () => {
   );
 };
 
-function TokenForm({
+export function TokenForm({
   onTokenChange,
 }: {
   onTokenChange: (token: any) => Promise<void>;
@@ -431,55 +420,3 @@ export default function Page({ params }) {
     </ClientOnly>
   );
 }
-
-// // 定义一个函数来过滤并更新内联样式
-// function filterAndApplyInlineStyles(element) {
-//     // 获取元素的内联样式
-//     const inlineStyles = element.style;
-//     if (element.getAttribute('style')) {
-//         element.setAttribute('style', element.getAttribute('style').replaceAll('var(--tw-text-opacity)', 1).replaceAll('var(--tw-border-opacity)', 1))
-//         const newStyle = element.getAttribute('style').split(";").filter(e => {
-//             const keyName = e.split(";")[0].trim()
-//             return !keyName.startsWith("--tw") || ['--tw-text-opacity', '--tw-border-opacity'].includes(keyName)
-
-//         }).join(";")
-//         element.setAttribute('style', newStyle)
-
-//         // 获取计算后的样式
-//         const computedStyles = window.getComputedStyle(element);
-
-//         // 遍历内联样式
-//         for (let i = 0; i < inlineStyles.length; i++) {
-//             const styleName = inlineStyles[i];
-//             // 检查计算后的样式中是否存在该属性
-//             if (!styleName.startsWith('--tw') && !computedStyles[styleName]) {
-//                 // 如果不存在，从内联样式中删除该属性
-//                 element.style.removeProperty(styleName);
-//                 console.log(element, styleName)
-//             }
-//         }
-//     }
-// }
-
-// // 定义一个函数来遍历所有元素并过滤样式
-// function filterAllElements() {
-//     // 获取文档中的所有元素
-//     const allElements = document.getElementsByTagName("*");
-
-//     // 遍历所有元素
-//     for (let i = 0; i < allElements.length; i++) {
-//         const element = allElements[i];
-//         // 过滤并更新内联样式
-//         filterAndApplyInlineStyles(element);
-//     }
-// }
-
-// // 调用函数来过滤并更新所有元素的内联样式
-// filterAllElements();
-
-// document.querySelectorAll('*').forEach(e=>{
-//     e.style.removeProperty('margin-top');
-//     e.style.removeProperty('margin-bottom');
-//     e.style.removeProperty('padding-top');
-//     e.style.removeProperty('padding-bottom');
-// })

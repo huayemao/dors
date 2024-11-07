@@ -1,6 +1,5 @@
 "use client";
 
-import { getTags } from "@/lib/server/tags";
 import {
   Dispatch,
   FC,
