@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import "./herbal.css";
 
 export const metadata: Metadata = {
     title: '文章格式处理工具',

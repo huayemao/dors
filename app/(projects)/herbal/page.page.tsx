@@ -158,17 +158,18 @@ const Content = () => {
       setList(list);
     });
   }
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
-      try {
-        getData(token).then((data) => {
+      getData(token)
+        .then((data) => {
           setList(data.rows);
           console.log(list);
+        })
+        .catch((e) => {
+          navigate("/settings");
         });
-      } catch (error) {
-        navigate("/settings");
-      }
     } else {
       toast("请先登录");
       navigate("/settings");
@@ -200,7 +201,7 @@ const Content = () => {
 
   const [content, setContent] = useState(contentTrimmed);
   console.log(article);
-  const navigate = useNavigate();
+
   return (
     <>
       <header className="py-3">
@@ -263,7 +264,7 @@ const Content = () => {
             {markdown && (
               <Prose
                 content={markdown.replaceAll("<br><", "<br/>")}
-                className="prose prose-h2:text-center prose-h2:text-green-700 !max-w-[80ch] prose-h2:border-l-4 prose-h2:border-green-500 prose-h2:pl-3  prose-p:indent-8  prose-a:!text-green-600"
+                className="prose prose-h2:text-center prose-h2:text-primary-700 !max-w-[80ch] prose-h2:border-l-4 prose-h2:border-primary-500 prose-h2:pl-3  prose-p:indent-8  prose-a:!text-primary-600"
               ></Prose>
             )}
           </div>
