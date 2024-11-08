@@ -12,6 +12,7 @@ import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import { components } from "./useComponents";
 import { myRemarkPlugin } from "./myRemarkPlugin";
+import "katex/dist/katex.min.css";
 
 export async function parseMDX(post: { content?: string | null | undefined }) {
   try {

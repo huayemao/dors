@@ -1,7 +1,6 @@
 import { getPost, getRecentPosts } from "@/lib/posts";
 import { cn, markdownExcerpt } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
-import "katex/dist/katex.min.css";
 import dynamic from "next/dynamic";
 import { BackButton } from "../BackButton";
 import { ClientOnly } from "../ClientOnly";

@@ -10,6 +10,7 @@ import { components } from "@/lib/mdx/useComponents";
 import { myRemarkPlugin } from "./myRemarkPlugin";
 import { setWasm } from "shiki";
 import nord from "shiki/themes/nord.json";
+import "katex/dist/katex.min.css";
 
 // declare type Lang =
 //   | "abap"

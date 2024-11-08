@@ -18,7 +18,6 @@ import {
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
-import Prose from "@/components/Base/Prose";
 import { AddAction } from "@/components/PostEditor/AddAction";
 
 export default function ViewOrEditEntityModal<
