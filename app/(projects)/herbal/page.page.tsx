@@ -178,29 +178,23 @@ const Content = () => {
 
   const [start, setStart] = useState(DEFAULT_START);
   const [end, setEnd] = useState("</div>");
-  const html = article?.cmsArticleContent.content;
-  let contentTrimmed = html ? html?.replace(start, "").replace(end, "") : "";
-  const [markdown, setMarkDown] = useState(contentTrimmed);
-  useEffect(() => {
-    setContent(contentTrimmed);
 
-    if (!contentTrimmed) {
+  const html = useMemo(() => {
+    const articleContent = article?.cmsArticleContent.content;
+    return minifyArticleContent(articleContent, end, start);
+  }, [article?.cmsArticleContent.content, end, start]);
+
+  const [markdown, setMarkDown] = useState(html);
+  useEffect(() => {
+    setHTML(html);
+    if (!html) {
       return;
     }
-    const index = contentTrimmed.lastIndexOf(end);
-    if (contentTrimmed.slice(index) == end) {
-      contentTrimmed = contentTrimmed.slice(0, index);
-    }
-
-    const origin = contentTrimmed.replace(minify(start), "");
-
-    const md = transformHTML2MDX(origin);
-
+    const md = transformHTML2MDX(html);
     setMarkDown(md);
-  }, [article, contentTrimmed]);
+  }, [article, end, html, start]);
 
-  const [content, setContent] = useState(contentTrimmed);
-  console.log(article);
+  const [content, setHTML] = useState(html);
 
   return (
     <>
@@ -231,7 +225,7 @@ const Content = () => {
                 key={activeId}
                 value={content}
                 onChange={(v) => {
-                  setContent(v);
+                  setHTML(v);
                 }}
               ></BaseTextarea>
               <BaseButton
@@ -301,7 +295,7 @@ const Content = () => {
                 </div>
                 <div
                   className="preview"
-                  dangerouslySetInnerHTML={{ __html: contentTrimmed }}
+                  dangerouslySetInnerHTML={{ __html: html }}
                 ></div>
               </div>
             </div>
@@ -312,6 +306,18 @@ const Content = () => {
     </>
   );
 };
+
+function minifyArticleContent(content: string, end: string, start: string) {
+  let contentTrimmed = content
+    ? content?.replace(start, "").replace(end, "")
+    : "";
+  const index = contentTrimmed.lastIndexOf(end);
+  if (contentTrimmed.slice(index) == end) {
+    contentTrimmed = contentTrimmed.slice(0, index);
+  }
+  const origin = contentTrimmed.replace(minify(start), "");
+  return origin;
+}
 
 export function TokenForm({
   onTokenChange,
