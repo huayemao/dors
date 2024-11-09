@@ -1,6 +1,13 @@
 "use client";
 import Prose from "@/components/Base/Prose";
-import { BaseButton, BaseButtonGroup, BaseButtonIcon, BaseInput, BaseListbox, BaseTag } from "@shuriken-ui/react";
+import {
+  BaseButton,
+  BaseButtonGroup,
+  BaseButtonIcon,
+  BaseInput,
+  BaseListbox,
+  BaseTag,
+} from "@shuriken-ui/react";
 import EntityRoute from "@/lib/client/createEntity/EntityRoute";
 import { Note } from "../app/(projects)/notes/constants";
 import { useEntity, useEntityDispatch } from "../contexts/notes";
@@ -63,7 +70,11 @@ export const NotesContainer = ({
           </>
         )}
         renderEntity={(e: Note, { preview }) => (
-          <NoteItem data={e} preview={preview}></NoteItem>
+          <NoteItem
+            key={e.content + e.id}
+            data={e}
+            preview={preview}
+          ></NoteItem>
         )}
         slots={{ head: Filters }}
         state={state}
@@ -83,20 +94,23 @@ const Filters: FC<{
 }> = ({ state, dispatch }) => {
   const allTags = Array.from(new Set(state.entityList.flatMap((e) => e.tags)));
 
-  const search = useCallback((v) => {
-    dispatch({
-      type: "SET_FILTERS",
-      payload: {
-        ...state.filters,
-        content: v,
-      },
-    });
-  }, [dispatch, state.filters]);
+  const search = useCallback(
+    (v) => {
+      dispatch({
+        type: "SET_FILTERS",
+        payload: {
+          ...state.filters,
+          content: v,
+        },
+      });
+    },
+    [dispatch, state.filters]
+  );
   return (
     <div className="flex flex-col lg:grid grid-cols-2 gap-4 mb-4">
       <div className="flex items-center gap-2">
         <BaseListbox
-          classes={{wrapper:'flex-[2]'}}
+          classes={{ wrapper: "flex-[2]" }}
           size="sm"
           label="标签"
           labelFloat
@@ -117,26 +131,34 @@ const Filters: FC<{
           }}
         />
         <BaseButtonGroup className="flex-1">
-          <BaseButton size="sm" onClick={() => {
-            dispatch({
-              type: "SET_FILTERS",
-              payload: {
-                ...state.filters,
-                tags: allTags,
-              },
-            });
-          }}>
+          <BaseButton
+            size="sm"
+            onClick={() => {
+              dispatch({
+                type: "SET_FILTERS",
+                payload: {
+                  ...state.filters,
+                  tags: allTags,
+                },
+              });
+            }}
+          >
             全部
           </BaseButton>
-          <BaseButtonIcon  size="sm" onClick={() => {
-            dispatch({
-              type: "SET_FILTERS",
-              payload: {
-                ...state.filters,
-                tags: [],
-              },
-            });
-          }}><XIcon className="size-4"></XIcon></BaseButtonIcon>
+          <BaseButtonIcon
+            size="sm"
+            onClick={() => {
+              dispatch({
+                type: "SET_FILTERS",
+                payload: {
+                  ...state.filters,
+                  tags: [],
+                },
+              });
+            }}
+          >
+            <XIcon className="size-4"></XIcon>
+          </BaseButtonIcon>
         </BaseButtonGroup>
       </div>
       <BaseInput
@@ -164,7 +186,11 @@ function NoteItem({ preview = false, data }: { preview?; data: Note }) {
           ))}
         </div>
       )}
-      <Prose key={data.id} preview={preview} content={data.content}></Prose>
+      <Prose
+        key={data.id + data.content}
+        preview={preview}
+        content={data.content}
+      ></Prose>
     </div>
   );
 }

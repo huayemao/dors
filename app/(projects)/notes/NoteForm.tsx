@@ -9,11 +9,13 @@ import { useEntity, useEntityDispatch } from "../../../contexts/notes";
 import { useCloseModal } from "@/lib/client/utils/useCloseModal";
 import { Note } from "./constants";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
+import { useNavigate } from "react-router-dom";
 
 export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
-  const { entityModalMode, currentEntity, entityList } = useEntity();
+  const { currentEntity, entityList, currentCollection } = useEntity();
   const dispatch = useEntityDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
     e.preventDefault();
@@ -48,7 +50,25 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
         payload: entityList ? entityList.concat(note) : [note],
       });
     }
-    close();
+    dispatch({
+      type: "SET_CURRENT_ENTITY",
+      payload: note,
+    });
+
+    if (!isEditing) {
+      navigate(`/${currentCollection!.id}/` + note.id, {
+        replace: true,
+        state: { __NA: {} },
+      });
+    }
+
+    setTimeout(() => {
+      // 给 localstorage 同步
+      dispatch({
+        type: "SET_ENTITY_MODAL_MODE",
+        payload: "view",
+      });
+    }, 100);
   };
 
   const allTags = useMemo(
@@ -102,7 +122,6 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                     ></BaseAutocomplete>
                   </div>
                 </div>
-
               </div>
             </fieldset>
             <div className="col-span-12">

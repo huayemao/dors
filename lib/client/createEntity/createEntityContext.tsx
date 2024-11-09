@@ -55,43 +55,46 @@ export const createEntityContext = <
 
   type Action<EntityType, CollectionType> =
     | {
-      type: "SET_FILTERS";
-      payload: State<EntityType, CollectionType>["filters"];
-    }
+        type: "SET_FILTERS";
+        payload: State<EntityType, CollectionType>["filters"];
+      }
     | {
-      type: "SET_QUESTION_MODAL_MODE";
-      payload: State<EntityType, CollectionType>["entityModalMode"];
-    }
+        type: "SET_ENTITY_MODAL_MODE";
+        payload: State<EntityType, CollectionType>["entityModalMode"];
+      }
     | {
-      type: "SET_CURRENT_COLLECTION";
-      payload: State<EntityType, CollectionType>["currentCollection"];
-    }
+        type: "INIT";
+      }
     | {
-      type: "SET_CURRENT_ENTITY";
-      payload: State<EntityType, CollectionType>["currentEntity"];
-    }
+        type: "SET_CURRENT_COLLECTION";
+        payload: State<EntityType, CollectionType>["currentCollection"];
+      }
     | {
-      type: "SET_ENTITY_LIST";
-      payload: State<EntityType, CollectionType>["entityList"];
-    }
+        type: "SET_CURRENT_ENTITY";
+        payload: State<EntityType, CollectionType>["currentEntity"];
+      }
     | {
-      type: "SET_COLLECTION_LIST";
-      payload: State<EntityType, CollectionType>["collectionList"];
-    }
+        type: "SET_ENTITY_LIST";
+        payload: State<EntityType, CollectionType>["entityList"];
+      }
+    | {
+        type: "SET_COLLECTION_LIST";
+        payload: State<EntityType, CollectionType>["collectionList"];
+      }
     | { type: "REMOVE_ENTITY"; payload: Question["id"] }
     | { type: "SET_MODAL_OPEN"; payload: boolean }
     | {
-      type: "CREATE_OR_UPDATE_COLLECTION";
-      payload: NonNullable<
-        State<EntityType, CollectionType>["currentCollection"]
-      >;
-    }
+        type: "CREATE_OR_UPDATE_COLLECTION";
+        payload: NonNullable<
+          State<EntityType, CollectionType>["currentCollection"]
+        >;
+      }
     | { type: "CANCEL" };
 
   const EntityContext = createContext(initialState);
   const EntityDispatchContext = createContext<
     Dispatch<Action<EntityType, CollectionType>>
-  >(() => { });
+  >(() => {});
 
   const reducer: Reducer<
     State<EntityType, CollectionType>,
@@ -108,7 +111,7 @@ export const createEntityContext = <
           modalOpen: action.payload,
         });
       }
-      case "SET_QUESTION_MODAL_MODE":
+      case "SET_ENTITY_MODAL_MODE":
         return Object.assign({}, state, {
           entityModalMode: action.payload,
         });
@@ -150,13 +153,16 @@ export const createEntityContext = <
         return Object.assign({}, state, {
           collectionList: action.payload,
         });
-      case "CANCEL":
+      case "INIT":
         const maxSeq = state.entityList?.length
           ? Math.max(...state.entityList?.map((e) => Number(e.seq)))
           : -1;
         return Object.assign({}, state, {
-          modalOpen: false,
           currentEntity: { ...defaultEntity, seq: maxSeq + 1 },
+        });
+      case "CANCEL":
+        return Object.assign({}, state, {
+          modalOpen: false,
           entityModalMode: "view",
         });
       case "REMOVE_ENTITY": {
@@ -235,8 +241,8 @@ export const createEntityContext = <
             });
             dispatch({
               type: "SET_FILTERS",
-              payload: {}
-            })
+              payload: {},
+            });
           } else {
             dispatch({
               type: "SET_ENTITY_LIST",
@@ -244,8 +250,8 @@ export const createEntityContext = <
             });
             dispatch({
               type: "SET_FILTERS",
-              payload: {}
-            })
+              payload: {},
+            });
           }
         })
         .catch((e) => {

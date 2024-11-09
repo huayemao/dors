@@ -46,14 +46,13 @@ export default function ViewOrEditEntityModal<
     entityModalMode,
     collectionList,
     currentCollection,
-    currentEntity: currentQuestion,
+    currentEntity,
     entityList,
     modalOpen,
   } = state;
 
   const { entity } = useLoaderData() as { entity: EType };
   const navigate = useNavigate();
-
   const cancel = () => {
     dispatch({ type: "CANCEL" });
   };
@@ -63,7 +62,7 @@ export default function ViewOrEditEntityModal<
       return;
     }
     dispatch({
-      type: "SET_QUESTION_MODAL_MODE",
+      type: "SET_ENTITY_MODAL_MODE",
       payload: "view",
     });
     dispatch({
@@ -83,7 +82,7 @@ export default function ViewOrEditEntityModal<
     withConfirm(() => {
       dispatch({
         type: "REMOVE_ENTITY",
-        payload: currentQuestion.id,
+        payload: currentEntity.id,
       });
       if (history.length) {
         navigate(-1);
@@ -103,7 +102,7 @@ export default function ViewOrEditEntityModal<
           navigate("..", { replace: true });
         }
       }}
-      title={renderEntityModalTitle(currentQuestion, { preview: false })}
+      title={renderEntityModalTitle(currentEntity, { preview: false })}
       actions={
         <>
           {entityModalMode == "view" ? (
@@ -114,7 +113,7 @@ export default function ViewOrEditEntityModal<
                 title="编辑"
                 onClick={() => {
                   dispatch({
-                    type: "SET_QUESTION_MODAL_MODE",
+                    type: "SET_ENTITY_MODAL_MODE",
                     payload: "edit",
                   });
                 }}
@@ -136,7 +135,7 @@ export default function ViewOrEditEntityModal<
                 data-nui-tooltip="返回"
                 onClick={() => {
                   dispatch({
-                    type: "SET_QUESTION_MODAL_MODE",
+                    type: "SET_ENTITY_MODAL_MODE",
                     payload: "view",
                   });
                 }}
@@ -152,7 +151,7 @@ export default function ViewOrEditEntityModal<
       {entityModalMode == "view" ? (
         <div className="md:px-12">
           <div className="p-8 flex justify-center w-full ">
-            {renderEntity(currentQuestion, { preview: false })}
+            {renderEntity(currentEntity, { preview: false })}
           </div>
         </div>
       ) : (

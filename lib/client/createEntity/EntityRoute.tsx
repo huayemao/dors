@@ -1,4 +1,8 @@
-import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouteObject,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import CollectionLayout from "@/lib/client/createEntity/CollectionLayout";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
@@ -28,7 +32,7 @@ export default function EntityRoute<
   renderEntity,
   renderEntityModalTitle,
   slots,
-  extraRoutes = []
+  extraRoutes = [],
 }: {
   slots?: Record<
     "head",
@@ -51,7 +55,7 @@ export default function EntityRoute<
   RootPage: FC<PropsWithChildren>;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
-  extraRoutes?: RouteObject[]
+  extraRoutes?: RouteObject[];
 }) {
   const entityLoader = useCallback(async ({ params }) => {
     const { entityId, collectionId } = params;

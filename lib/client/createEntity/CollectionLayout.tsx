@@ -321,8 +321,10 @@ export default function CollectionLayout<
             data-nui-tooltip="新建题目"
             data-nui-tooltip-position="down"
             onClick={() => {
+              dispatch({
+                type: "INIT",
+              });
               navigate("./create");
-
               // open();
               // toAddQA();
             }}
@@ -354,4 +356,3 @@ export default function CollectionLayout<
     </>
   );
 }
-
