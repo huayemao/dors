@@ -19,23 +19,39 @@ const ASSETS = [
   // "/shiki/onig.wasm",
 ];
 importScripts('/version.js')
-const DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next']
+const DYNAMIC_PATHS = ['/_next/static/chunks']
+const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/','/_next/image']
 
 
 self.addEventListener("fetch", (e) => {
   const { request: s } = e,
     url = new URL(s.url);
+  const isDynamicCache = DYNAMIC_PATHS.some(s => url.pathname.includes(s))
+  const isStableDynamicCache = STABLE_DYNAMIC_PATHS.some(s => url.pathname.includes(s))
+  const isAssetsCache = ASSETS.some(s => url.pathname.includes(s))
   if (
     ("GET" === s.method &&
-      self.location.origin === url.origin &&
-      ASSETS.some((l) => url.pathname.includes(l))) || DYNAMIC_PATHS.some(s => url.pathname.includes(s))
+      self.location.origin === url.origin && (
+        isAssetsCache || isDynamicCache || isStableDynamicCache
+      )
+    )
   ) {
-    if (DYNAMIC_PATHS.some(s => url.pathname.includes(s))) {
+    if (isStableDynamicCache) {
       caches.match(url).then((res) => {
         if (!res) {
-          caches.open(VERSION).then((e) => e.add(url));
+          caches.open("STABLE_CACHE").then((e) => {
+            e.add(url);
+          });
         }
-        return res || fetch(s);
+      });
+    }
+    if (isDynamicCache) {
+      caches.match(url).then((res) => {
+        if (!res) {
+          caches.open(VERSION).then((e) => {
+            e.add(url);
+          });
+        }
       });
     }
     e.respondWith(
@@ -55,7 +71,7 @@ self.addEventListener("fetch", (e) => {
     self.clients.claim();
     const s = caches.keys().then((e) => {
       const s = e.map((e) => {
-        if (e !== VERSION) return caches.delete(e);
+        if (![VERSION, "STABLE_CACHE"].includes(e)) return caches.delete(e);
       });
       return Promise.all(s);
     });
