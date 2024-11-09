@@ -1,38 +1,39 @@
 /* eslint-disable no-restricted-globals */
 const ASSETS = [
   "/notes",
-  "/shiki/languages/c.tmLanguage.json",
-  "/shiki/languages/cpp.tmLanguage.json",
-  "/shiki/languages/css.tmLanguage.json",
-  "/shiki/languages/html.tmLanguage.json",
-  "/shiki/languages/java.tmLanguage.json",
-  "/shiki/languages/javascript.tmLanguage.json",
-  "/shiki/languages/json.tmLanguage.json",
-  "/shiki/languages/jsx.tmLanguage.json",
-  "/shiki/languages/powershell.tmLanguage.json",
-  "/shiki/languages/shellscript.tmLanguage.json",
-  "/shiki/languages/sql.tmLanguage.json",
-  "/shiki/languages/tsx.tmLanguage.json",
-  "/shiki/languages/typescript.tmLanguage.json",
-  "/shiki/languages/vue.tmLanguage.json",
-  "/shiki/languages/yaml.tmLanguage.json",
-  "/shiki/onig.wasm",
+  // "/shiki/languages/c.tmLanguage.json",
+  // "/shiki/languages/cpp.tmLanguage.json",
+  // "/shiki/languages/css.tmLanguage.json",
+  // "/shiki/languages/html.tmLanguage.json",
+  // "/shiki/languages/java.tmLanguage.json",
+  // "/shiki/languages/javascript.tmLanguage.json",
+  // "/shiki/languages/json.tmLanguage.json",
+  // "/shiki/languages/jsx.tmLanguage.json",
+  // "/shiki/languages/powershell.tmLanguage.json",
+  // "/shiki/languages/shellscript.tmLanguage.json",
+  // "/shiki/languages/sql.tmLanguage.json",
+  // "/shiki/languages/tsx.tmLanguage.json",
+  // "/shiki/languages/typescript.tmLanguage.json",
+  // "/shiki/languages/vue.tmLanguage.json",
+  // "/shiki/languages/yaml.tmLanguage.json",
+  // "/shiki/onig.wasm",
 ];
-const VERSION = "578006c24bcb68408d7b01f8f28483d1092c0fn3";
+importScripts('/version.js')
+const DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next']
+
 
 self.addEventListener("fetch", (e) => {
   const { request: s } = e,
-    t = new URL(s.url);
+    url = new URL(s.url);
   if (
     ("GET" === s.method &&
-      self.location.origin === t.origin &&
-      ASSETS.some((l) => t.pathname.includes(l))) ||
-    t.pathname.includes("/api/files")
+      self.location.origin === url.origin &&
+      ASSETS.some((l) => url.pathname.includes(l))) || DYNAMIC_PATHS.some(s => url.pathname.includes(s))
   ) {
-    if (t.pathname.includes("/api/files")) {
-      caches.match(t).then((res) => {
+    if (DYNAMIC_PATHS.some(s => url.pathname.includes(s))) {
+      caches.match(url).then((res) => {
         if (!res) {
-          caches.open(VERSION).then((e) => e.add(t));
+          caches.open(VERSION).then((e) => e.add(url));
         }
         return res || fetch(s);
       });

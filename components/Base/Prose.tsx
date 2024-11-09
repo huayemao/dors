@@ -3,6 +3,7 @@ import LightBox from "./LightBox";
 import ParsedMdx from "./parsedMdx";
 import { cn } from "@/lib/utils";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import { ClientOnly } from "../ClientOnly";
 
 export default Prose;
 
@@ -19,24 +20,26 @@ function Prose({
 }) {
   return (
     <>
-      <ErrorBoundary errorComponent={ErrorComp}>
-        {typeof content == "string" ? (
-          <ParsedMdx className={className} preview={preview} content={content} />
-        ) : (
-          <>
-            <article
-              className={cn(
-                c.content,
-                "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden",
-                className
-              )}
-            >
-              {content}
-            </article>
-            <LightBox />
-          </>
-        )}
-      </ErrorBoundary>
+      {typeof content == "string" ? (
+        <ClientOnly>
+          <ErrorBoundary errorComponent={ErrorComp}>
+            <ParsedMdx className={className} preview={preview} content={content} />
+          </ErrorBoundary>
+        </ClientOnly>
+      ) : (
+        <>
+          <article
+            className={cn(
+              c.content,
+              "dark:prose-invert prose lg:prose-xl py-6 overflow-hidden",
+              className
+            )}
+          >
+            {content}
+          </article>
+          <LightBox />
+        </>
+      )}
     </>
   );
 }

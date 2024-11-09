@@ -4,6 +4,7 @@ import { ShurikenUIProvider } from "@shuriken-ui/react";
 import { Metadata } from "next";
 import Script from "next/script";
 import { Toaster } from "react-hot-toast";
+import { AppTip } from "./AppTip";
 
 export const metadata: Metadata = {
   title: SITE_META.name + "——" + SITE_META.description,
@@ -60,8 +61,11 @@ export default async function RootLayout({
         <body className="transition-all duration-300 min-h-screen flex flex-col">
           {children}
           <Toaster></Toaster>
+          <AppTip></AppTip>
         </body>
       </html>
     </ShurikenUIProvider>
   );
 }
+
+
