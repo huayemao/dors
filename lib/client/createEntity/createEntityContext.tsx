@@ -41,6 +41,7 @@ export const createEntityContext = <
     collectionList: CollectionType[];
     entityList: EntityType[];
     filters: Partial<Record<keyof EntityType, any>>;
+    fromLocalStorage: boolean;
   };
 
   const initialState: State<EntityType, CollectionType> = {
@@ -51,9 +52,13 @@ export const createEntityContext = <
     collectionList: [],
     entityList: [],
     filters: {},
+    fromLocalStorage: true,
   };
 
-  type Action<EntityType, CollectionType> =
+  type Action<
+    EntityType extends BaseEntity,
+    CollectionType extends BaseCollection
+  > =
     | {
         type: "SET_FILTERS";
         payload: State<EntityType, CollectionType>["filters"];
@@ -72,6 +77,10 @@ export const createEntityContext = <
     | {
         type: "SET_CURRENT_ENTITY";
         payload: State<EntityType, CollectionType>["currentEntity"];
+      }
+    | {
+        type: "INIT_ENTITY_LIST";
+        payload: State<EntityType, CollectionType>["entityList"];
       }
     | {
         type: "SET_ENTITY_LIST";
@@ -99,7 +108,7 @@ export const createEntityContext = <
   const reducer: Reducer<
     State<EntityType, CollectionType>,
     Action<EntityType, CollectionType>
-  > = (state = initialState, action) => {
+  > = (state = initialState, action): State<EntityType, CollectionType> => {
     switch (action.type) {
       case "SET_FILTERS": {
         return Object.assign({}, state, {
@@ -125,6 +134,12 @@ export const createEntityContext = <
         });
       case "SET_ENTITY_LIST":
         return Object.assign({}, state, {
+          entityList: action.payload,
+          fromLocalStorage: false,
+        });
+      case "INIT_ENTITY_LIST":
+        return Object.assign({}, state, {
+          fromLocalStorage: true,
           entityList: action.payload,
         });
 
@@ -234,9 +249,13 @@ export const createEntityContext = <
       localforage
         .getItem(state.currentCollection.id + "")
         .then((res) => {
+          dispatch({
+            type: "SET_FILTERS",
+            payload: {},
+          });
           if (!res) {
             dispatch({
-              type: "SET_ENTITY_LIST",
+              type: "INIT_ENTITY_LIST",
               payload: [],
             });
             dispatch({
@@ -245,12 +264,8 @@ export const createEntityContext = <
             });
           } else {
             dispatch({
-              type: "SET_ENTITY_LIST",
+              type: "INIT_ENTITY_LIST",
               payload: res as State<EntityType, CollectionType>["entityList"],
-            });
-            dispatch({
-              type: "SET_FILTERS",
-              payload: {},
             });
           }
         })
@@ -267,10 +282,11 @@ export const createEntityContext = <
       if (!state.currentCollection?.id) {
         return;
       }
-      if (!pending) {
+      if (!pending && !state.fromLocalStorage) {
+        // todo：起初读取值的时候不要反向同步
         localforage.setItem(state.currentCollection.id + "", state.entityList);
       }
-    }, [state.entityList, pending]);
+    }, [state.entityList]);
 
     return (
       <EntityContext.Provider value={state}>
