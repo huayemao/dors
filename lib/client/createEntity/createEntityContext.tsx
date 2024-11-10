@@ -12,7 +12,6 @@ import {
   useState,
 } from "react";
 
-import { type Question } from "@/lib/types/Question";
 import localforage from "localforage";
 
 export interface BaseEntity {
@@ -90,7 +89,7 @@ export const createEntityContext = <
         type: "SET_COLLECTION_LIST";
         payload: State<EntityType, CollectionType>["collectionList"];
       }
-    | { type: "REMOVE_ENTITY"; payload: Question["id"] }
+    | { type: "REMOVE_ENTITY"; payload: EntityType["id"] }
     | { type: "SET_MODAL_OPEN"; payload: boolean }
     | {
         type: "CREATE_OR_UPDATE_COLLECTION";
@@ -98,6 +97,7 @@ export const createEntityContext = <
           State<EntityType, CollectionType>["currentCollection"]
         >;
       }
+    | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
     | { type: "CANCEL" };
 
   const EntityContext = createContext(initialState);
@@ -196,6 +196,24 @@ export const createEntityContext = <
         };
         return removeItem(action.payload);
       }
+      case "REMOVE_COLLECTION": {
+        const removeItem = (id) => {
+          const targetItemIndex = state.collectionList?.findIndex(
+            (e) => e.id === id
+          );
+          const hasTarget =
+            targetItemIndex != undefined && targetItemIndex != -1;
+          if (hasTarget) {
+            return Object.assign({}, state, {
+              collectionList: state.collectionList?.filter(
+                (e, i) => e.id != id
+              ),
+            });
+          }
+          return state;
+        };
+        return removeItem(action.payload);
+      }
       default:
         return state;
     }
@@ -213,7 +231,7 @@ export const createEntityContext = <
         .getItem(collectionListKey)
         .then((res) => {
           let list: CollectionType[];
-          if (!res) {
+          if (!res || !(res as any).length) {
             list = [defaultCollection];
           } else {
             list = res as CollectionType[];
@@ -236,6 +254,7 @@ export const createEntityContext = <
     }, []);
 
     useEffect(() => {
+      // todo: 把 EntityList 删掉
       localforage.setItem(collectionListKey, state.collectionList);
     }, [state.collectionList]);
 

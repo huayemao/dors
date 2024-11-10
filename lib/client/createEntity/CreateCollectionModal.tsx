@@ -1,5 +1,10 @@
 import { Modal } from "@/components/Base/Modal";
-import { BaseButton, BaseInput } from "@shuriken-ui/react";
+import {
+  BaseButton,
+  BaseDropdown,
+  BaseDropdownItem,
+  BaseInput,
+} from "@shuriken-ui/react";
 import { DOMAttributes, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -10,6 +15,8 @@ import {
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
+import { Trash } from "lucide-react";
+import { withConfirm } from "@/lib/utils";
 
 export default function CreateCollectionModal<
   EType extends BaseEntity,
@@ -30,12 +37,37 @@ export default function CreateCollectionModal<
       dispatch({ type: "CANCEL" });
     };
   }, [dispatch]);
-
+  const params = useParams();
+  const isEditing = !!params.collectionId;
+  const handleRemove = () => {
+    withConfirm(() => {
+      dispatch({
+        type: "REMOVE_COLLECTION",
+        payload: Number(params.collectionId),
+      });
+      close();
+    });
+  };
   return (
     <Modal
       open={modalOpen}
       onClose={close}
       title={currentCollection?.name || "创建合集"}
+      actions={
+        isEditing ? (
+          <>
+            <BaseDropdown variant="context">
+              <BaseDropdownItem
+                rounded="md"
+                data-nui-tooltip="删除"
+                title="删除"
+                onClick={handleRemove}
+                start={<Trash className="h-4 w-4" />}
+              ></BaseDropdownItem>
+            </BaseDropdown>
+          </>
+        ) : undefined
+      }
     >
       <CollectionForm state={state} dispatch={dispatch} />
     </Modal>
