@@ -10,6 +10,9 @@ import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
 import { Filters } from "./Filters";
 import { NoteModalTitle } from "./NoteModalTitle";
+import { BaseDropdownItem } from "@shuriken-ui/react";
+import { Copy } from "lucide-react";
+import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 
 export const NotesContainer = ({
   basename = "/notes",
@@ -57,6 +60,22 @@ export const NotesContainer = ({
         renderEntityModalTitle={(e: Note) => (
           <NoteModalTitle note={e} filterTags={filterTags} />
         )}
+        renderEntityModalActions={(e: Note) => {
+          return (
+            <>
+              <BaseDropdownItem
+                rounded="md"
+                data-nui-tooltip="复制内容"
+                title="复制内容"
+                onClick={() => {
+                  copyToClipboard(e.content);
+                  toast("复制成功");
+                }}
+                start={<Copy className="h-4 w-4" />}
+              ></BaseDropdownItem>
+            </>
+          );
+        }}
         renderEntity={(e: Note, { preview }) => (
           <NoteItem
             key={e.id}

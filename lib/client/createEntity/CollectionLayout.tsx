@@ -322,6 +322,9 @@ export default function CollectionLayout<
               ></BaseDropdownItem>
             </BaseDropdown>
             <BaseButtonIcon
+              color="primary"
+              rounded="md"
+              size="sm"
               data-nui-tooltip="新建"
               data-nui-tooltip-position="down"
               onClick={() => {

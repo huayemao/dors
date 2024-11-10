@@ -1,6 +1,6 @@
 import { Modal } from "@/components/Base/Modal";
 import { type Question } from "@/lib/types/Question";
-import { withConfirm } from "@/lib/utils";
+import { copyTextToClipboard, withConfirm } from "@/lib/utils";
 import {
   BaseButton,
   BaseButtonIcon,
@@ -28,9 +28,14 @@ export default function ViewOrEditEntityModal<
   dispatch,
   form: Form,
   renderEntityModalTitle = (e) => e.seq,
+  renderEntityModalActions = () => <></>,
   renderEntity,
 }: {
   renderEntityModalTitle?: (
+    entity: BaseEntity,
+    options: { preview: boolean }
+  ) => ReactNode;
+  renderEntityModalActions?: (
     entity: BaseEntity,
     options: { preview: boolean }
   ) => ReactNode;
@@ -106,27 +111,31 @@ export default function ViewOrEditEntityModal<
       actions={
         <>
           {entityModalMode == "view" ? (
-            <BaseDropdown variant="context">
-              <BaseDropdownItem
+            <>
+              <BaseButtonIcon
                 rounded="md"
+                size="sm"
                 data-nui-tooltip="编辑"
-                title="编辑"
                 onClick={() => {
                   dispatch({
                     type: "SET_ENTITY_MODAL_MODE",
                     payload: "edit",
                   });
                 }}
-                start={<Edit2 className="h-4 w-4" />}
-              ></BaseDropdownItem>
-              <BaseDropdownItem
-                rounded="md"
-                data-nui-tooltip="删除"
-                title="删除"
-                onClick={handleRemove}
-                start={<Trash className="h-4 w-4" />}
-              ></BaseDropdownItem>
-            </BaseDropdown>
+              >
+                <Edit2 className="h-4 w-4"></Edit2>
+              </BaseButtonIcon>
+              <BaseDropdown variant="context">
+                {renderEntityModalActions(currentEntity, { preview: false })}
+                <BaseDropdownItem
+                  rounded="md"
+                  data-nui-tooltip="删除"
+                  title="删除"
+                  onClick={handleRemove}
+                  start={<Trash className="h-4 w-4" />}
+                ></BaseDropdownItem>
+              </BaseDropdown>
+            </>
           ) : (
             <>
               <BaseButtonIcon

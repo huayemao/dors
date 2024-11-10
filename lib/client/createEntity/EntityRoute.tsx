@@ -7,7 +7,14 @@ import CollectionLayout from "@/lib/client/createEntity/CollectionLayout";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
-import { FC, PropsWithChildren, ReactNode, useCallback, useMemo } from "react";
+import {
+  ComponentProps,
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   BaseCollection,
   BaseEntity,
@@ -18,6 +25,21 @@ import {
 import localforage from "localforage";
 import { ClientOnly } from "@/components/ClientOnly";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
+
+type Props<EType extends BaseEntity, CType extends BaseCollection> = {
+  slots?: Record<
+    "head",
+    FC<{
+      state: EntityState<EType, CType>;
+      dispatch: EntityDispatch<EType, CType>;
+    }>
+  >;
+  basename: string;
+  createForm: FC<PropsWithChildren>;
+  updateForm: FC<PropsWithChildren>;
+  RootPage: FC<PropsWithChildren>;
+  extraRoutes?: RouteObject[];
+} & Omit<ComponentProps<typeof ViewOrEditEntityModal>, "form">;
 
 export default function EntityRoute<
   EType extends BaseEntity,
@@ -31,32 +53,10 @@ export default function EntityRoute<
   RootPage,
   renderEntity,
   renderEntityModalTitle,
+  renderEntityModalActions,
   slots,
   extraRoutes = [],
-}: {
-  slots?: Record<
-    "head",
-    FC<{
-      state: EntityState<EType, CType>;
-      dispatch: EntityDispatch<EType, CType>;
-    }>
-  >;
-  renderEntity: (
-    entity: BaseEntity,
-    options: { preview: boolean }
-  ) => ReactNode;
-  renderEntityModalTitle?: (
-    entity: BaseEntity,
-    options: { preview: boolean }
-  ) => ReactNode;
-  basename: string;
-  createForm: FC<PropsWithChildren>;
-  updateForm: FC<PropsWithChildren>;
-  RootPage: FC<PropsWithChildren>;
-  state: EntityState<EType, CType>;
-  dispatch: EntityDispatch<EType, CType>;
-  extraRoutes?: RouteObject[];
-}) {
+}: Props<EType, CType>) {
   const entityLoader = useCallback(async ({ params }) => {
     const { entityId, collectionId } = params;
     const entityList = await localforage.getItem(collectionId);
@@ -143,6 +143,7 @@ export default function EntityRoute<
             element: (
               <ViewOrEditEntityModal
                 renderEntityModalTitle={renderEntityModalTitle}
+                renderEntityModalActions={renderEntityModalActions}
                 renderEntity={renderEntity}
                 state={state}
                 dispatch={dispatch}

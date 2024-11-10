@@ -1,4 +1,14 @@
 export function copyToClipboard(text) {
+
+  // navigator.clipboard
+  //   .writeText(text)
+  //   .then(() => {
+  //     console.log("文本已成功复制到剪贴板");
+  //   })
+  //   .catch((error) => {
+  //     console.error("复制到剪贴板时出错:", error);
+  //   });
+
   // 创建一个临时的textarea元素
   const textarea = document.createElement("textarea");
   textarea.value = text;
@@ -14,11 +24,4 @@ export function copyToClipboard(text) {
   document.body.removeChild(textarea);
 }
 
-// navigator.clipboard
-//   .writeText(text)
-//   .then(() => {
-//     console.log("文本已成功复制到剪贴板");
-//   })
-//   .catch((error) => {
-//     console.error("复制到剪贴板时出错:", error);
-//   });
+
