@@ -150,7 +150,7 @@ export default function ViewOrEditEntityModal<
     >
       {entityModalMode == "view" ? (
         <div className="md:px-12">
-          <div className="p-8 flex justify-center w-full ">
+          <div className="flex justify-center w-full ">
             {renderEntity(currentEntity, { preview: false })}
           </div>
         </div>

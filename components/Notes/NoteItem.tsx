@@ -29,7 +29,12 @@ export function NoteItem({
 
   return (
     <Container>
-      <div className={cn("p-4 lg:px-6", { "min-w-[80%]": !preview })}>
+      <div
+        className={cn("px-4", {
+          "min-w-[80%]": !preview,
+          "lg:px-6": preview,
+        })}
+      >
         <Prose key={data.id} preview={preview} content={data.content}></Prose>
       </div>
       {preview && (
