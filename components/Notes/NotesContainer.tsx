@@ -13,6 +13,22 @@ import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
 import { Copy } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
+import { copyTextToClipboard } from "@/lib/utils";
+
+const getActions = (e: Note) => {
+  return {
+    copy: {
+      title: "复制内容",
+      onClick: () => {
+        console.log(e.content);
+        copyTextToClipboard(e.content).then(() => {
+          toast("复制成功");
+        });
+      },
+      start: <Copy className="h-4 w-4" />,
+    },
+  };
+};
 
 export const NotesContainer = ({
   basename = "/notes",
@@ -61,23 +77,21 @@ export const NotesContainer = ({
           <NoteModalTitle note={e} filterTags={filterTags} />
         )}
         renderEntityModalActions={(e: Note) => {
+          const { copy } = getActions(e);
+
           return (
             <>
               <BaseDropdownItem
                 rounded="md"
-                data-nui-tooltip="复制内容"
-                title="复制内容"
-                onClick={() => {
-                  copyToClipboard(e.content);
-                  toast("复制成功");
-                }}
-                start={<Copy className="h-4 w-4" />}
+                data-nui-tooltip={copy.title}
+                {...copy}
               ></BaseDropdownItem>
             </>
           );
         }}
         renderEntity={(e: Note, { preview }) => (
           <NoteItem
+            actions={getActions(e)}
             key={e.id}
             data={e}
             preview={preview}
