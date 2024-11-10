@@ -4,7 +4,7 @@ import { BaseButton, BasePlaceload } from "@shuriken-ui/react";
 import { MDXContent } from "mdx/types";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import c from "@/styles/prose.module.css";
-import { cn } from "@/lib/utils";
+import { cn, getDateStr } from "@/lib/utils";
 import { ArrowRight, ChevronRight, Ellipsis } from "lucide-react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
 import LightBox from "./LightBox";
@@ -16,7 +16,7 @@ export default parsedMdx;
 function Content({
   content,
   preview = false,
-  className
+  className,
 }: {
   content: string;
   preview?: boolean;
@@ -42,7 +42,6 @@ function Content({
       });
   }, [content, preview]);
 
-
   function update() {
     if (!preview || !ref.current) {
       return;
@@ -53,7 +52,7 @@ function Content({
     const div = document.createElement("div");
     div.innerHTML = ref.current.innerHTML;
     if (!div.textContent) {
-      return
+      return;
     }
 
     const gallery = div.querySelector('[class^="gallery"]');
@@ -88,23 +87,16 @@ function Content({
             { hidden: preview || loading }
           )}
         >
-          {typeof result == "function" ? (
-            result({})
-          )
-
-            : (
-              <>{result}
-              </>
-            )}
+          {typeof result == "function" ? result({}) : <>{result}</>}
         </article>
       )}
-      {loading &&
+      {loading && (
         <div className="space-y-2 py-6 ">
           <BasePlaceload className="h-4 w-full rounded" />
           <BasePlaceload className="h-4 w-3/4 rounded" />
           <BasePlaceload className="h-4 w-full rounded" />
         </div>
-      }
+      )}
       {preview && (
         <>
           {html && (
@@ -116,16 +108,17 @@ function Content({
               dangerouslySetInnerHTML={{ __html: html }}
             ></div>
           )}
+
           {html && (
             <div className="w-full text-right">
-              <BaseButton
+              {/* <BaseButton
                 color="dark"
                 size={isMobile ? "sm" : "md"}
                 variant="pastel"
               >
                 详情
                 <ArrowRight className="size-4 inline ms-2"></ArrowRight>
-              </BaseButton>
+              </BaseButton> */}
             </div>
           )}
         </>

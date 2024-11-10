@@ -181,6 +181,9 @@ export default function CollectionLayout<
   const filters = state.filters;
   let list = state.entityList;
   for (const [key, value] of Object.entries(filters)) {
+    if (typeof value == "undefined") {
+      break;
+    }
     if (typeof value === "string") {
       list = list.filter((e) => {
         return e[key].includes(value);
@@ -199,153 +202,148 @@ export default function CollectionLayout<
   return (
     <>
       <div className="md:px-12">
-        <div className="flex items-center gap-2 border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border border-b-0 rounded-b-none  bg-white transition-all duration-300 rounded-md p-6">
-          <div className="inline-flex space-x-2 mr-auto">
-            <BaseDropdown label={currentCollection?.name} headerLabel="合集">
-              {collectionList?.map((e) => (
-                <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
-                  <BaseDropdownItem
-                    end={
-                      <Link to={"/" + e.id + "/edit"}>
-                        <EditIcon className="h-4 w-4"></EditIcon>
-                      </Link>
-                    }
-                    title={e.name}
-                    text={"创建于 " + new Date(e.id).toLocaleDateString()}
-                    rounded="sm"
-                  />
-                </Link>
-              ))}
+        <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
+          <div className="flex items-center justify-around gap-2  relative w-full ">
+            <div className="inline-flex space-x-2 mr-auto">
+              <BaseDropdown label={currentCollection?.name} headerLabel="合集">
+                {collectionList?.map((e) => (
+                  <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
+                    <BaseDropdownItem
+                      end={
+                        <Link to={"/" + e.id + "/edit"}>
+                          <EditIcon className="h-4 w-4"></EditIcon>
+                        </Link>
+                      }
+                      title={e.name}
+                      text={"创建于 " + new Date(e.id).toLocaleDateString()}
+                      rounded="sm"
+                    />
+                  </Link>
+                ))}
 
+                <BaseDropdownItem
+                  color="primary"
+                  classes={{ wrapper: "text-right" }}
+                  onClick={() => {
+                    navigate("/create");
+                  }}
+                >
+                  <BaseIconBox color="primary">
+                    <PlusIcon></PlusIcon>
+                  </BaseIconBox>
+                </BaseDropdownItem>
+              </BaseDropdown>
+              {
+                // @ts-ignore
+                collection?.online && (
+                  <>
+                    <BaseButtonIcon
+                      loading={fetching}
+                      onClick={() => {
+                        syncFromCloud()
+                          ?.then?.(() => {
+                            dispatch({
+                              type: "SET_ENTITY_LIST",
+                              // @ts-ignore
+                              payload: collection._entityList,
+                            });
+                          })
+                          .catch((e) => {
+                            toast(e.message);
+                          });
+                      }}
+                      data-nui-tooltip="同步数据到本地"
+                      data-nui-tooltip-position="down"
+                    >
+                      <RefreshCcw className="h-4 w-4" />
+                    </BaseButtonIcon>
+                    <BaseButtonIcon
+                      data-nui-tooltip="同步到云"
+                      data-nui-tooltip-position="down"
+                      loading={uploading}
+                      onClick={() => {
+                        setUploading(true);
+                        const fd = new FormData();
+                        fd.append("id", collection.id + "");
+                        fd.append("content", JSON.stringify(entityList));
+
+                        fetchWithAuth("/api/updatePost", {
+                          method: "POST",
+                          headers: { accept: "application/json" },
+                          body: fd,
+                        })
+                          .then((res) => res.json())
+                          .then((json) => json.data)
+                          .then((obj) => {
+                            return {
+                              ...obj,
+                              id: obj.id,
+                              name: obj.title,
+                              online: true,
+                              _entityList: JSON.parse(obj.content),
+                            };
+                          })
+                          .then((res) => {
+                            dispatch({
+                              type: "SET_COLLECTION_LIST",
+                              payload: collectionList
+                                .filter((e) => e.id != collection.id)
+                                .concat(res),
+                            });
+                            toast("数据上传成功");
+                          })
+                          .catch((e) => {
+                            toast("上传失败：" + e?.message);
+                          })
+                          .finally(() => {
+                            setUploading(false);
+                          });
+                      }}
+                    >
+                      <CloudUpload className="size-4" />
+                    </BaseButtonIcon>
+                  </>
+                )
+              }
+            </div>
+            <BaseDropdown variant="context">
               <BaseDropdownItem
-                color="primary"
-                classes={{ wrapper: "text-right" }}
-                onClick={() => {
-                  navigate("/create");
-                }}
-              >
-                <BaseIconBox color="primary">
-                  <PlusIcon></PlusIcon>
-                </BaseIconBox>
-              </BaseDropdownItem>
+                data-nui-tooltip-position="down"
+                onClick={copy}
+                start={<CopyIcon className="h-4 w-4"></CopyIcon>}
+                title="导出"
+                text="复制 JSON"
+              ></BaseDropdownItem>
+              <BaseDropdownItem
+                start={<UploadIcon className="h-4 w-4"></UploadIcon>}
+                onClick={importQuestionsFromClipBoard}
+                title="导入"
+                text="导入 JSON"
+              ></BaseDropdownItem>
             </BaseDropdown>
-            {
-              // @ts-ignore
-              collection?.online && (
-                <>
-                  <BaseButtonIcon
-                    loading={fetching}
-                    onClick={() => {
-                      syncFromCloud()
-                        ?.then?.(() => {
-                          dispatch({
-                            type: "SET_ENTITY_LIST",
-                            // @ts-ignore
-                            payload: collection._entityList,
-                          });
-                        })
-                        .catch((e) => {
-                          toast(e.message);
-                        });
-                    }}
-                    data-nui-tooltip="同步数据到本地"
-                    data-nui-tooltip-position="down"
-                  >
-                    <RefreshCcw className="h-4 w-4" />
-                  </BaseButtonIcon>
-                  <BaseButtonIcon
-                    data-nui-tooltip="同步到云"
-                    data-nui-tooltip-position="down"
-                    loading={uploading}
-                    onClick={() => {
-                      setUploading(true);
-                      const fd = new FormData();
-                      fd.append("id", collection.id + "");
-                      fd.append("content", JSON.stringify(entityList));
-
-                      fetchWithAuth("/api/updatePost", {
-                        method: "POST",
-                        headers: { accept: "application/json" },
-                        body: fd,
-                      })
-                        .then((res) => res.json())
-                        .then((json) => json.data)
-                        .then((obj) => {
-                          return {
-                            ...obj,
-                            id: obj.id,
-                            name: obj.title,
-                            online: true,
-                            _entityList: JSON.parse(obj.content),
-                          };
-                        })
-                        .then((res) => {
-                          dispatch({
-                            type: "SET_COLLECTION_LIST",
-                            payload: collectionList
-                              .filter((e) => e.id != collection.id)
-                              .concat(res),
-                          });
-                          toast("数据上传成功");
-                        })
-                        .catch((e) => {
-                          toast("上传失败：" + e?.message);
-                        })
-                        .finally(() => {
-                          setUploading(false);
-                        });
-                    }}
-                  >
-                    <CloudUpload className="size-4" />
-                  </BaseButtonIcon>
-                </>
-              )
-            }
-          </div>
-          <BaseDropdown variant="context">
-            <BaseDropdownItem
+            <BaseButtonIcon
+              data-nui-tooltip="新建"
               data-nui-tooltip-position="down"
-              onClick={copy}
-              start={<CopyIcon className="h-4 w-4"></CopyIcon>}
-              title="导出"
-              text="复制 JSON"
-            ></BaseDropdownItem>
-            <BaseDropdownItem
-              start={<UploadIcon className="h-4 w-4"></UploadIcon>}
-              onClick={importQuestionsFromClipBoard}
-              title="导入"
-              text="导入 JSON"
-            ></BaseDropdownItem>
-          </BaseDropdown>
-          <BaseButtonIcon
-            data-nui-tooltip="新建题目"
-            data-nui-tooltip-position="down"
-            onClick={() => {
-              dispatch({
-                type: "INIT",
-              });
-              navigate("./create");
-              // open();
-              // toAddQA();
-            }}
-          >
-            <PlusIcon className="h-4 w-4"></PlusIcon>
-          </BaseButtonIcon>
+              onClick={() => {
+                dispatch({
+                  type: "INIT",
+                });
+                navigate("./create");
+                // open();
+                // toAddQA();
+              }}
+            >
+              <PlusIcon className="h-4 w-4"></PlusIcon>
+            </BaseButtonIcon>
+          </div>
+          {Head && <Head dispatch={dispatch} state={state}></Head>}
         </div>
         <div className="col-span-12">
-          <div className="bg-slate-50 relative w-full border transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8">
-            {Head && <Head dispatch={dispatch} state={state}></Head>}
+          <div className="relative bg-slate-100  w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
               {list.map((e, i, arr) => (
                 <Link key={e.id} to={"./" + e.id}>
-                  <BaseCard
-                    rounded="md"
-                    className=" break-inside-avoid my-3 p-4 lg:px-6"
-                  >
-                    <div className="relative">
-                      {renderEntity(e, { preview: true })}
-                    </div>
-                  </BaseCard>
+                  {renderEntity(e, { preview: true })}
                 </Link>
               ))}
             </div>

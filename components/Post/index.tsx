@@ -10,7 +10,7 @@ import CollectionContent from "../Collection/Content";
 import { markdownToJson } from "../Collection/markdownToJson";
 import { parseMDX } from "@/lib/mdx/parseMDX";
 import Prose from "../Base/Prose";
-import { NotesContainer } from "../NotesContainer";
+import { NotesContainer } from "../Notes/NotesContainer";
 import ContentModal from "./ContentModal";
 import { NotesContextProvider } from "@/contexts/notes";
 

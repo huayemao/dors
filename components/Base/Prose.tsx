@@ -21,11 +21,11 @@ function Prose({
   return (
     <>
       {typeof content == "string" ? (
-        <ClientOnly>
-          <ErrorBoundary errorComponent={ErrorComp}>
+        // <ClientOnly>
+        //   <ErrorBoundary errorComponent={ErrorComp}>
             <ParsedMdx className={className} preview={preview} content={content} />
-          </ErrorBoundary>
-        </ClientOnly>
+        //   </ErrorBoundary>
+        // </ClientOnly>
       ) : (
         <>
           <article

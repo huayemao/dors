@@ -3,7 +3,7 @@ import {
 } from "@/contexts/notes";
 import { ClientOnly } from "@/components/ClientOnly";
 import { Metadata } from "next";
-import { NotesContainer } from "@/components/NotesContainer";
+import { NotesContainer } from "@/components/Notes/NotesContainer";
 import { NavigationItem, NavigationItemProps } from "@/components/Nav/NavigationItem";
 
 export const metadata: Metadata = {

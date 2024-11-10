@@ -105,6 +105,11 @@ export function getDateForDateTimeInput(date: Date): string {
   return dayjs(date).format("YYYY-MM-DDTHH:mm");
 }
 
+export function getDateStr(date: Date): string {
+  dayjs.extend(timezone);
+  return dayjs(date).format("YYYY-MM-DD HH:mm");
+}
+
 export async function copyTextToClipboard(text) {
   if ("clipboard" in navigator) {
     return await navigator.clipboard.writeText(text);
