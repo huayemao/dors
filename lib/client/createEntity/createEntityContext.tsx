@@ -32,11 +32,9 @@ export const createEntityContext = <
   defaultCollection: CollectionType,
   key: string
 ) => {
-  type filtersType = Partial<Record<keyof EntityType, any>> & {
-    excludeIds?: EntityType["id"][];
-  };
+  type filtersType = Partial<Record<keyof EntityType, any>>;
 
-  type State<EntityType, CollectionType> = {
+  type State = {
     modalOpen: boolean;
     entityModalMode: "view" | "edit";
     currentCollection: CollectionType | null;
@@ -45,10 +43,14 @@ export const createEntityContext = <
     entityList: EntityType[];
     showingEntityList: EntityType[];
     filters: filtersType;
+    filterConfig: {
+      excludeIds?: EntityType["id"][];
+      includeNonKeys?: string[];
+    };
     fromLocalStorage: boolean;
   };
 
-  const initialState: State<EntityType, CollectionType> = {
+  const initialState: State = {
     modalOpen: false,
     entityModalMode: "view",
     currentCollection: null,
@@ -57,6 +59,7 @@ export const createEntityContext = <
     entityList: [],
     showingEntityList: [],
     filters: {},
+    filterConfig: {},
     fromLocalStorage: true,
   };
 
@@ -66,42 +69,43 @@ export const createEntityContext = <
   > =
     | {
         type: "SET_FILTERS";
-        payload: State<EntityType, CollectionType>["filters"];
+        payload: {
+          filters: State["filters"];
+          filterConfig?: State["filterConfig"];
+        };
       }
     | {
         type: "SET_ENTITY_MODAL_MODE";
-        payload: State<EntityType, CollectionType>["entityModalMode"];
+        payload: State["entityModalMode"];
       }
     | {
         type: "INIT";
       }
     | {
         type: "SET_CURRENT_COLLECTION";
-        payload: State<EntityType, CollectionType>["currentCollection"];
+        payload: State["currentCollection"];
       }
     | {
         type: "SET_CURRENT_ENTITY";
-        payload: State<EntityType, CollectionType>["currentEntity"];
+        payload: State["currentEntity"];
       }
     | {
         type: "INIT_ENTITY_LIST";
-        payload: State<EntityType, CollectionType>["entityList"];
+        payload: State["entityList"];
       }
     | {
         type: "SET_ENTITY_LIST";
-        payload: State<EntityType, CollectionType>["entityList"];
+        payload: State["entityList"];
       }
     | {
         type: "SET_COLLECTION_LIST";
-        payload: State<EntityType, CollectionType>["collectionList"];
+        payload: State["collectionList"];
       }
     | { type: "REMOVE_ENTITY"; payload: EntityType["id"] }
     | { type: "SET_MODAL_OPEN"; payload: boolean }
     | {
         type: "CREATE_OR_UPDATE_COLLECTION";
-        payload: NonNullable<
-          State<EntityType, CollectionType>["currentCollection"]
-        >;
+        payload: NonNullable<State["currentCollection"]>;
       }
     | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
     | { type: "CANCEL" };
@@ -111,18 +115,20 @@ export const createEntityContext = <
     Dispatch<Action<EntityType, CollectionType>>
   >(() => {});
 
-  const reducer: Reducer<
-    State<EntityType, CollectionType>,
-    Action<EntityType, CollectionType>
-  > = (state = initialState, action): State<EntityType, CollectionType> => {
+  const reducer: Reducer<State, Action<EntityType, CollectionType>> = (
+    state = initialState,
+    action
+  ): State => {
     switch (action.type) {
       case "SET_FILTERS": {
         const list = getShowingList({
           entityList: state.entityList,
-          filters: action.payload,
+          filters: action.payload.filters,
+          filterConfig: action.payload.filterConfig || state.filterConfig,
         });
         return Object.assign({}, state, {
-          filters: action.payload,
+          filters: action.payload.filters,
+          filterConfig: action.payload.filterConfig || state.filterConfig,
           showingEntityList: list,
         });
       }
@@ -147,6 +153,7 @@ export const createEntityContext = <
         const list = getShowingList({
           entityList: action.payload,
           filters: state.filters,
+          filterConfig: state.filterConfig,
         });
         return Object.assign({}, state, {
           entityList: action.payload,
@@ -158,6 +165,7 @@ export const createEntityContext = <
         const list = getShowingList({
           entityList: action.payload,
           filters: state.filters,
+          filterConfig: state.filterConfig,
         });
         return Object.assign({}, state, {
           fromLocalStorage: true,
@@ -292,7 +300,10 @@ export const createEntityContext = <
         .then((res) => {
           dispatch({
             type: "SET_FILTERS",
-            payload: {},
+            payload: {
+              filters: {},
+              filterConfig: {},
+            },
           });
           if (!res) {
             dispatch({
@@ -301,12 +312,12 @@ export const createEntityContext = <
             });
             dispatch({
               type: "SET_FILTERS",
-              payload: {},
+              payload: { filters: {}, filterConfig: {} },
             });
           } else {
             dispatch({
               type: "INIT_ENTITY_LIST",
-              payload: res as State<EntityType, CollectionType>["entityList"],
+              payload: res as State["entityList"],
             });
           }
         })
@@ -353,6 +364,49 @@ export const createEntityContext = <
     useEntity,
     useEntityDispatch,
   };
+
+  function getShowingList<
+    EType extends BaseEntity,
+    CType extends BaseCollection
+  >({
+    entityList,
+    filters,
+    filterConfig,
+  }: {
+    entityList: EntityState<EType, CType>["entityList"];
+    filters: EntityState<EType, CType>["filters"];
+    filterConfig: State["filterConfig"];
+  }) {
+    let list = entityList;
+    for (const [key, value] of Object.entries(filters)) {
+      if (filterConfig.excludeIds) {
+        list = list.filter((e) => {
+          return !filterConfig.excludeIds?.includes(e.id);
+        });
+      }
+      if (typeof value == "undefined") {
+        continue;
+      }
+      if (typeof value === "string") {
+        list = list.filter((e) => {
+          return e[key].includes(value);
+        });
+      }
+      if (Array.isArray(value)) {
+        list = list.filter((item) => {
+          const itemValue = item[key];
+          if (Array.isArray(itemValue)) {
+            const hasValue = itemValue.some((item) => value.includes(item));
+            return filterConfig.includeNonKeys?.includes(key)
+              ? hasValue || !value.length || !itemValue.length
+              : hasValue;
+          }
+          return true;
+        });
+      }
+    }
+    return list;
+  }
 };
 
 export type EntityState<
@@ -368,41 +422,3 @@ export type EntityDispatch<
 > = ReturnType<
   ReturnType<typeof createEntityContext<EType, CType>>["useEntityDispatch"]
 >;
-
-function getShowingList<
-  EType extends BaseEntity,
-  CType extends BaseCollection
->({
-  entityList,
-  filters,
-}: {
-  entityList: EntityState<EType, CType>["entityList"];
-  filters: EntityState<EType, CType>["filters"];
-}) {
-  let list = entityList;
-  for (const [key, value] of Object.entries(filters)) {
-    if (filters.excludeIds) {
-      list = list.filter((e) => {
-        return !filters.excludeIds?.includes(e.id);
-      });
-    }
-    if (typeof value == "undefined") {
-      continue;
-    }
-    if (typeof value === "string") {
-      list = list.filter((e) => {
-        return e[key].includes(value);
-      });
-    }
-    if (Array.isArray(value)) {
-      list = list.filter((item) => {
-        const itemValue = item[key];
-        if (Array.isArray(itemValue)) {
-          return itemValue.some((item) => value.includes(item));
-        }
-        return true;
-      });
-    }
-  }
-  return list;
-}

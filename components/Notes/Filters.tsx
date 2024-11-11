@@ -13,6 +13,7 @@ import { useEntity, useEntityDispatch } from "@/contexts/notes";
 import { FC, Fragment, useCallback, useEffect, useMemo } from "react";
 import { RotateCcwIcon, XIcon } from "lucide-react";
 import { HIDDEN_TAGS } from "./NotesContainer";
+import { useFilter } from "./useFilter";
 
 export const Filters: FC<{
   state: ReturnType<typeof useEntity>;
@@ -35,38 +36,23 @@ export const Filters: FC<{
       dispatch({
         type: "SET_FILTERS",
         payload: {
-          ...state.filters,
-          content: v,
+          filters: {
+            ...state.filters,
+            content: v,
+          },
         },
       });
     },
     [dispatch, state.filters]
   );
 
-  const filterTags = useCallback(
-    (v: string[] | undefined) => {
-      const hasHiddenTags = v?.some((e) => HIDDEN_TAGS.includes(e));
-      const excludeIds = hasHiddenTags
-        ? undefined
-        : state.entityList
-            .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
-            .map((e) => e.id);
-
-      dispatch({
-        type: "SET_FILTERS",
-        payload: {
-          ...state.filters,
-          // 排除了 归档标签还不够，因为它还会有其他标签
-          excludeIds: excludeIds,
-          tags: v,
-        },
-      });
-    },
-    [dispatch, state.filters]
-  );
+  const { filterTags, filterConfig } = useFilter();
 
   useEffect(() => {
-    filterTags(allTags.filter((e) => !HIDDEN_TAGS.includes(e)));
+    filterTags(
+      allTags.filter((e) => !HIDDEN_TAGS.includes(e)),
+      true
+    );
   }, [allTags]);
 
   return (
@@ -80,10 +66,11 @@ export const Filters: FC<{
           labelFloat
           multiple
           multipleLabel={(v) => {
-            return v.length == allTags.length
-              ? "全部"
-              : allUnArchivedTags.sort().toString() == v.sort().toString()
+            return allUnArchivedTags.sort().toString() == v.sort().toString() ||
+            filterConfig.includeNonKeys?.includes("tags")
               ? "全部（未归档）"
+              : v.length == allTags.length
+              ? "全部"
               : v.join("、").slice(0, 36) + "...";
           }}
           items={allTags}
@@ -102,7 +89,10 @@ export const Filters: FC<{
           <BaseButton
             size="sm"
             onClick={(e) => {
-              filterTags(allTags.filter((e) => !HIDDEN_TAGS.includes(e)));
+              filterTags(
+                allTags.filter((e) => !HIDDEN_TAGS.includes(e)),
+                true
+              );
             }}
           >
             未归档

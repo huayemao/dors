@@ -14,6 +14,7 @@ import { BaseDropdownItem } from "@shuriken-ui/react";
 import { Archive, Copy } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
+import { useFilter } from "./useFilter";
 
 export const HIDDEN_TAGS = ["归档", "archive"];
 
@@ -62,35 +63,24 @@ export const NotesContainer = ({
     [dispatch, state.entityList]
   );
 
-  const filterTags = useCallback(
-    (v: string[] | undefined) => {
-      const hasHiddenTags = v?.some((e) => HIDDEN_TAGS.includes(e));
-      const excludeIds = getExcludeIds(hasHiddenTags, state.entityList);
-
-      dispatch({
-        type: "SET_FILTERS",
-        payload: {
-          ...state.filters,
-          // 排除了 归档标签还不够，因为它还会有其他标签
-          excludeIds: excludeIds,
-          tags: v,
-        },
-      });
-    },
-    [dispatch, state.filters]
-  );
+  const { filterTags } = useFilter();
 
   useEffect(() => {
     const hasHiddenTags = state.filters.tags?.some((e) =>
       HIDDEN_TAGS.includes(e)
     );
     const ids = getExcludeIds(hasHiddenTags, state.entityList);
-    if (state.filters.excludeIds?.length != ids?.length)
+
+    // 列表变化时重新应用筛选器
+    if (state.filterConfig.excludeIds?.length != ids?.length)
       dispatch({
         type: "SET_FILTERS",
         payload: {
-          ...state.filters,
-          excludeIds: ids,
+          filters: state.filters,
+          filterConfig: {
+            ...state.filterConfig,
+            excludeIds: ids,
+          },
         },
       });
   }, [state.entityList, state.filters.tags]);
@@ -167,7 +157,7 @@ export function getExcludeIds(
     tags: string[];
   }[]
 ) {
-  return hasHiddenTags
+  return hasHiddenTags || typeof hasHiddenTags == "undefined"
     ? undefined
     : entityList
         .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
