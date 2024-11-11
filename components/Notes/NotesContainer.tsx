@@ -11,26 +11,11 @@ import { NoteItem } from "./NoteItem";
 import { Filters } from "./Filters";
 import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
-import { Copy } from "lucide-react";
+import { Archive, Copy } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
 
 export const HIDDEN_TAGS = ["归档", "archive"];
-
-const getActions = (e: Note) => {
-  return {
-    copy: {
-      title: "复制内容",
-      onClick: () => {
-        console.log(e.content);
-        copyTextToClipboard(e.content).then(() => {
-          toast("复制成功");
-        });
-      },
-      start: <Copy className="h-4 w-4" />,
-    },
-  };
-};
 
 export const NotesContainer = ({
   basename = "/notes",
@@ -39,6 +24,43 @@ export const NotesContainer = ({
 }) => {
   const state = useEntity();
   const dispatch = useEntityDispatch();
+
+  const getActions = useCallback(
+    (e: Note) => {
+      return {
+        copy: {
+          title: "复制内容",
+          onClick: () => {
+            console.log(e.content);
+            copyTextToClipboard(e.content).then(() => {
+              toast("复制成功");
+            });
+          },
+          start: <Copy className="h-4 w-4" />,
+        },
+        archive: {
+          title: "归档",
+          onClick: () => {
+            const targetItemIndex = state.entityList?.findIndex(
+              (e) => e.id === e.id
+            );
+            const newList = [...state.entityList];
+            newList[targetItemIndex] = {
+              ...e,
+              tags: e.tags.concat(HIDDEN_TAGS[0]),
+            };
+            // todo: 改成 editQuestion
+            dispatch({ type: "SET_ENTITY_LIST", payload: newList });
+            copyTextToClipboard(e.content).then(() => {
+              toast("归档成功");
+            });
+          },
+          start: <Archive className="h-4 w-4" />,
+        },
+      };
+    },
+    [dispatch, state.entityList]
+  );
 
   const filterTags = useCallback(
     (v: string[] | undefined) => {
@@ -98,15 +120,20 @@ export const NotesContainer = ({
           <NoteModalTitle note={e} filterTags={filterTags} />
         )}
         renderEntityModalActions={(e: Note) => {
-          const { copy } = getActions(e);
+          const actions = getActions(e);
 
           return (
             <>
-              <BaseDropdownItem
-                rounded="md"
-                data-nui-tooltip={copy.title}
-                {...copy}
-              ></BaseDropdownItem>
+              {Object.values(actions).map((action) => {
+                return (
+                  <BaseDropdownItem
+                    key={action.title}
+                    rounded="md"
+                    data-nui-tooltip={action.title}
+                    {...action}
+                  ></BaseDropdownItem>
+                );
+              })}
             </>
           );
         }}
