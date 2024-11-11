@@ -30,6 +30,8 @@ export function transformHTML2MDX(content: string) {
 
   const tmp = document.createElement("div");
   tmp.innerHTML = content;
-  const md = turndownService.turndown(tmp.querySelector("article")?.innerHTML);
+  const md = turndownService.turndown(
+    tmp.querySelector("article")?.innerHTML || tmp.innerHTML
+  );
   return md;
 }
