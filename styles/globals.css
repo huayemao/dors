@@ -150,8 +150,12 @@ a {
   grid-area: 1 / 1 / 2 / 2;
 }
 
-#headlessui-portal-root{
+#headlessui-portal-root {
   z-index: 10;
+}
+
+.nui-listbox .nui-listbox-options {
+  @apply max-h-96;
 }
 
 @layer base {
