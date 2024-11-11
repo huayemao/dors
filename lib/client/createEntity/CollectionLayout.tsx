@@ -183,7 +183,7 @@ export default function CollectionLayout<
   let list = state.entityList;
   for (const [key, value] of Object.entries(filters)) {
     if (typeof value == "undefined") {
-      break;
+      continue;
     }
     if (typeof value === "string") {
       list = list.filter((e) => {
