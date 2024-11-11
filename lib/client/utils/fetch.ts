@@ -12,6 +12,7 @@ export const fetchWithAuth: typeof fetch = (input, init) => {
     return fetch(input, init).then(async (e) => {
         if (e.status == 200 && init?.headers?.Authorization) {
             localStorage.setItem("AUTH", init.headers.Authorization);
+            return e
         }
         if (e.status == 401) {
             localStorage.removeItem("AUTH");
@@ -23,7 +24,7 @@ export const fetchWithAuth: typeof fetch = (input, init) => {
             }
             const credentials = btoa(username + ":" + password);
 
-            return fetch(input, {
+            return fetchWithAuth(input, {
                 ...(init || {}),
                 headers: {
                     ...(init?.headers || {}),
