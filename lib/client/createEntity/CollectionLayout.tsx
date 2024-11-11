@@ -10,6 +10,7 @@ import {
   BaseIconBox,
 } from "@shuriken-ui/react";
 import {
+  ArrowDownToLineIcon,
   CloudUpload,
   CopyIcon,
   EditIcon,
@@ -204,8 +205,11 @@ export default function CollectionLayout<
       <div className="md:px-12">
         <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
           <div className="flex items-center justify-around gap-2  relative w-full ">
-            <div className="inline-flex space-x-2 mr-auto">
-              <BaseDropdown label={currentCollection?.name} headerLabel="合集">
+            <div className="inline-flex items-end gap-x-2 mr-auto">
+              <BaseDropdown
+                label={currentCollection?.name}
+                headerLabel="合集"
+              >
                 {collectionList?.map((e) => (
                   <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
                     <BaseDropdownItem
@@ -238,6 +242,7 @@ export default function CollectionLayout<
                 collection?.online && (
                   <>
                     <BaseButtonIcon
+                      size="sm"
                       loading={fetching}
                       onClick={() => {
                         syncFromCloud()
@@ -255,9 +260,10 @@ export default function CollectionLayout<
                       data-nui-tooltip="同步数据到本地"
                       data-nui-tooltip-position="down"
                     >
-                      <RefreshCcw className="h-4 w-4" />
+                      <ArrowDownToLineIcon className="h-4 w-4" />
                     </BaseButtonIcon>
                     <BaseButtonIcon
+                      size="sm"
                       data-nui-tooltip="同步到云"
                       data-nui-tooltip-position="down"
                       loading={uploading}
