@@ -27,13 +27,27 @@ export const NotesContainer = ({
   const dispatch = useEntityDispatch();
 
   const getActions = useCallback(
-    (e: Note) => {
+    (note: Note) => {
+      const targetItemIndex = state.entityList?.findIndex((e) => e.id === note.id);
+      const newList = [...state.entityList];
+      const handleArchive = () => {
+        console.log(state.entityList)
+        newList[targetItemIndex] = {
+          ...note,
+          tags: note.tags.concat(HIDDEN_TAGS[0]),
+        };
+        // todo: 改成 editQuestion
+        dispatch({ type: "SET_ENTITY_LIST", payload: newList });
+        copyTextToClipboard(note.content).then(() => {
+          toast("归档成功");
+        });
+      };
       return {
         copy: {
           title: "复制内容",
           onClick: () => {
-            console.log(e.content);
-            copyTextToClipboard(e.content).then(() => {
+            console.log(note.content);
+            copyTextToClipboard(note.content).then(() => {
               toast("复制成功");
             });
           },
@@ -41,21 +55,7 @@ export const NotesContainer = ({
         },
         archive: {
           title: "归档",
-          onClick: () => {
-            const targetItemIndex = state.entityList?.findIndex(
-              (e) => e.id === e.id
-            );
-            const newList = [...state.entityList];
-            newList[targetItemIndex] = {
-              ...e,
-              tags: e.tags.concat(HIDDEN_TAGS[0]),
-            };
-            // todo: 改成 editQuestion
-            dispatch({ type: "SET_ENTITY_LIST", payload: newList });
-            copyTextToClipboard(e.content).then(() => {
-              toast("归档成功");
-            });
-          },
+          onClick: handleArchive,
           start: <Archive className="h-4 w-4" />,
         },
       };
