@@ -42,10 +42,6 @@ import {
 import toast from "react-hot-toast";
 import { fetchWithAuth } from "../utils/fetch";
 
-const Filters = ({ dispatch, state }) => {
-  return <div></div>;
-};
-
 export default function CollectionLayout<
   EType extends BaseEntity,
   CType extends BaseCollection
@@ -179,26 +175,7 @@ export default function CollectionLayout<
 
   const Head = slots?.["head"];
 
-  const filters = state.filters;
-  let list = state.entityList;
-  for (const [key, value] of Object.entries(filters)) {
-    if (typeof value == "undefined") {
-      continue;
-    }
-    if (typeof value === "string") {
-      list = list.filter((e) => {
-        return e[key].includes(value);
-      });
-    }
-    if (Array.isArray(value)) {
-      list = list.filter((e) => {
-        if (Array.isArray(e[key])) {
-          return e[key].some((item) => value.includes(item));
-        }
-        return true;
-      });
-    }
-  }
+  let list = state.showingEntityList;
 
   return (
     <>
@@ -206,10 +183,7 @@ export default function CollectionLayout<
         <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
           <div className="flex items-center justify-around gap-2  relative w-full ">
             <div className="inline-flex items-end gap-x-2 mr-auto">
-              <BaseDropdown
-                label={currentCollection?.name}
-                headerLabel="合集"
-              >
+              <BaseDropdown label={currentCollection?.name} headerLabel="合集">
                 {collectionList?.map((e) => (
                   <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
                     <BaseDropdownItem
@@ -351,7 +325,7 @@ export default function CollectionLayout<
           <div className="relative bg-slate-100  w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
               {list.map((e, i, arr) => (
-                <Link key={e.id} to={"./" + e.id}>
+                <Link key={JSON.stringify(e)} to={"./" + e.id}>
                   {renderEntity(e, { preview: true })}
                 </Link>
               ))}

@@ -15,6 +15,8 @@ import { Copy } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
 
+export const HIDDEN_TAGS = ["归档", "archive"];
+
 const getActions = (e: Note) => {
   return {
     copy: {
@@ -38,6 +40,39 @@ export const NotesContainer = ({
   const state = useEntity();
   const dispatch = useEntityDispatch();
 
+  const filterTags = useCallback(
+    (v: string[] | undefined) => {
+      const hasHiddenTags = v?.some((e) => HIDDEN_TAGS.includes(e));
+      const excludeIds = getExcludeIds(hasHiddenTags, state.entityList);
+
+      dispatch({
+        type: "SET_FILTERS",
+        payload: {
+          ...state.filters,
+          // 排除了 归档标签还不够，因为它还会有其他标签
+          excludeIds: excludeIds,
+          tags: v,
+        },
+      });
+    },
+    [dispatch, state.filters]
+  );
+
+  useEffect(() => {
+    const hasHiddenTags = state.filters.tags?.some((e) =>
+      HIDDEN_TAGS.includes(e)
+    );
+    const ids = getExcludeIds(hasHiddenTags, state.entityList);
+    if (state.filters.excludeIds?.length != ids?.length)
+      dispatch({
+        type: "SET_FILTERS",
+        payload: {
+          ...state.filters,
+          excludeIds: ids,
+        },
+      });
+  }, [state.entityList, state.filters.tags]);
+
   useEffect(() => {
     if (navigator.storage && navigator.storage.persist) {
       navigator.storage.persist().then((persistent) => {
@@ -46,28 +81,14 @@ export const NotesContainer = ({
             return;
           }
           if (persistent) {
-            toast("Storage will not be cleared except by explicit user action");
           } else {
-            toast("Storage may be cleared by the UA under storage pressure.");
+            toast("注意：本地存储可能被 UA 清除");
           }
           localforage.setItem("alerted", true);
         });
       });
     }
   }, []);
-
-  const filterTags = useCallback(
-    (v: string[]) => {
-      dispatch({
-        type: "SET_FILTERS",
-        payload: {
-          ...state.filters,
-          tags: v,
-        },
-      });
-    },
-    [dispatch, state.filters]
-  );
 
   return (
     <main>
@@ -92,7 +113,7 @@ export const NotesContainer = ({
         renderEntity={(e: Note, { preview }) => (
           <NoteItem
             actions={getActions(e)}
-            key={e.id}
+            key={e.id + e.content}
             data={e}
             preview={preview}
             filterTags={filterTags}
@@ -109,3 +130,19 @@ export const NotesContainer = ({
     </main>
   );
 };
+
+export function getExcludeIds(
+  hasHiddenTags: boolean | undefined,
+  entityList: {
+    seq: string;
+    id: number;
+    content: string;
+    tags: string[];
+  }[]
+) {
+  return hasHiddenTags
+    ? undefined
+    : entityList
+        .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
+        .map((e) => e.id);
+}

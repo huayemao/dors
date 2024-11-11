@@ -32,6 +32,10 @@ export const createEntityContext = <
   defaultCollection: CollectionType,
   key: string
 ) => {
+  type filtersType = Partial<Record<keyof EntityType, any>> & {
+    excludeIds?: EntityType["id"][];
+  };
+
   type State<EntityType, CollectionType> = {
     modalOpen: boolean;
     entityModalMode: "view" | "edit";
@@ -39,7 +43,8 @@ export const createEntityContext = <
     currentEntity: EntityType;
     collectionList: CollectionType[];
     entityList: EntityType[];
-    filters: Partial<Record<keyof EntityType, any>>;
+    showingEntityList: EntityType[];
+    filters: filtersType;
     fromLocalStorage: boolean;
   };
 
@@ -50,6 +55,7 @@ export const createEntityContext = <
     currentEntity: defaultEntity,
     collectionList: [],
     entityList: [],
+    showingEntityList: [],
     filters: {},
     fromLocalStorage: true,
   };
@@ -111,8 +117,13 @@ export const createEntityContext = <
   > = (state = initialState, action): State<EntityType, CollectionType> => {
     switch (action.type) {
       case "SET_FILTERS": {
+        const list = getShowingList({
+          entityList: state.entityList,
+          filters: action.payload,
+        });
         return Object.assign({}, state, {
           filters: action.payload,
+          showingEntityList: list,
         });
       }
       case "SET_MODAL_OPEN": {
@@ -132,17 +143,28 @@ export const createEntityContext = <
         return Object.assign({}, state, {
           currentEntity: action.payload,
         });
-      case "SET_ENTITY_LIST":
+      case "SET_ENTITY_LIST": {
+        const list = getShowingList({
+          entityList: action.payload,
+          filters: state.filters,
+        });
         return Object.assign({}, state, {
           entityList: action.payload,
           fromLocalStorage: false,
+          showingEntityList: list,
         });
-      case "INIT_ENTITY_LIST":
+      }
+      case "INIT_ENTITY_LIST": {
+        const list = getShowingList({
+          entityList: action.payload,
+          filters: state.filters,
+        });
         return Object.assign({}, state, {
           fromLocalStorage: true,
           entityList: action.payload,
+          showingEntityList: list,
         });
-
+      }
       case "CREATE_OR_UPDATE_COLLECTION":
         const { payload } = action;
         const { collectionList, currentCollection } = state;
@@ -346,3 +368,41 @@ export type EntityDispatch<
 > = ReturnType<
   ReturnType<typeof createEntityContext<EType, CType>>["useEntityDispatch"]
 >;
+
+function getShowingList<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
+  entityList,
+  filters,
+}: {
+  entityList: EntityState<EType, CType>["entityList"];
+  filters: EntityState<EType, CType>["filters"];
+}) {
+  let list = entityList;
+  for (const [key, value] of Object.entries(filters)) {
+    if (filters.excludeIds) {
+      list = list.filter((e) => {
+        return !filters.excludeIds?.includes(e.id);
+      });
+    }
+    if (typeof value == "undefined") {
+      continue;
+    }
+    if (typeof value === "string") {
+      list = list.filter((e) => {
+        return e[key].includes(value);
+      });
+    }
+    if (Array.isArray(value)) {
+      list = list.filter((item) => {
+        const itemValue = item[key];
+        if (Array.isArray(itemValue)) {
+          return itemValue.some((item) => value.includes(item));
+        }
+        return true;
+      });
+    }
+  }
+  return list;
+}
