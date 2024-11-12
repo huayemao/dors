@@ -64,7 +64,7 @@ export function NoteItem({
             <>
               {/* <hr className="text-primary-200 w-[90%] mx-auto"></hr> */}
               <div className="m-2 p-2 rounded-b">
-                <div className="mb-1 flex gap-2 flex-wrap  items-end overflow-x-auto">
+                <div className="mb-1 flex gap-2 flex-wrap items-end">
                   {data.tags?.map((e) => (
                     <span key={e} className="cursor-pointer flex-shrink-0">
                       <BaseTag
