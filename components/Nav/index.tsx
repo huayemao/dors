@@ -153,7 +153,7 @@ export const Nav = ({
             onClick={closeMobileNav}
           >
             <svg
-              className="h-16 relative md:-top-2"
+              className="h-12 relative -top-1"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="1200 860 1200 400"
               style={{
