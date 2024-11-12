@@ -9,62 +9,34 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     display: "standalone",
     background_color: "#fff",
-    theme_color: "#8a63d2",
-    icons: [
+    theme_color: "#312e81",
+    "icons": [
       {
-        src: "/favicon.ico",
-        sizes: "any",
-        type: "image/x-icon",
+        "src": "/pwa-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
       },
       {
-        src: "img/icons/icon-48x48.png",
-        sizes: "32x32",
-        type: "image/png",
-        purpose: "any",
+        "src": "/pwa-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
       },
       {
-        src: "img/icons/icon-48x48.png",
-        sizes: "48x48",
-        type: "image/png",
-        purpose: "any",
+        "src": "/pwa-maskable-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "maskable"
       },
       {
-        src: "img/icons/icon-72x72.png",
-        sizes: "72x72",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "img/icons/icon-96x96.png",
-        sizes: "96x96",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "img/icons/icon-128x128.png",
-        sizes: "128x128",
-        type: "image/png",
-        purpose: "maskable",
-      },
-      {
-        src: "img/icons/icon-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-        purpose: "maskable",
-      },
-      {
-        src: "img/icons/icon-384x384.png",
-        sizes: "384x384",
-        type: "image/png",
-        purpose: "maskable",
-      },
-      {
-        src: "img/icons/icon-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "maskable",
-      },
+        "src": "/pwa-maskable-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
     ],
+
     // todo: 动态化，存到 settings 表
     shortcuts: [
       {

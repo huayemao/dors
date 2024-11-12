@@ -1,5 +1,5 @@
 import { BaseButton } from "@shuriken-ui/react";
-import { ComponentProps } from "react";
+import { ComponentProps, Fragment } from "react";
 
 interface CategoryProps extends ComponentProps<typeof BaseButton> {
   as?: string | React.ComponentType<any>;
@@ -12,7 +12,7 @@ export const Category: React.FC<CategoryProps> = ({
   name,
   active = false,
   href,
-  as: Comp = "div",
+  as: Comp = Fragment,
   ...props
 }) => (
   <Comp>
