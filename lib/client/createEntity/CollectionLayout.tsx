@@ -191,7 +191,7 @@ export default function CollectionLayout<
                         syncFromCloud()
                           ?.then?.((res) => {
                             const targetIndex = collectionList.findIndex(
-                              (e) => (e.id = res.id)
+                              (e) => (e.id == res.id)
                             );
                             const newList = [...collectionList];
                             if (targetIndex == -1) {
