@@ -165,7 +165,6 @@ const Content = () => {
       getData(token)
         .then((data) => {
           setList(data.rows);
-          console.log(list);
         })
         .catch((e) => {
           navigate("/settings");

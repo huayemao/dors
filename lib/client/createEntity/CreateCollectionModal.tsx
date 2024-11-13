@@ -5,8 +5,11 @@ import {
   BaseDropdownItem,
   BaseInput,
 } from "@shuriken-ui/react";
-import { DOMAttributes, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { DOMAttributes, useCallback, useEffect, useReducer } from "react";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import { useCloseModal } from "../utils/useCloseModal";
 import {
@@ -31,14 +34,35 @@ export default function CreateCollectionModal<
   const close = useCloseModal();
   const { currentCollection, collectionList, modalOpen, entityModalMode } =
     state;
+  const params = useParams();
+  const isEditing = !!params.collectionId;
+
   useEffect(() => {
-    dispatch({ type: "SET_MODAL_OPEN", payload: true });
+    setTimeout(() => {
+      dispatch({ type: "SET_MODAL_OPEN", payload: true });
+    }, 100);
+
     return () => {
       dispatch({ type: "CANCEL" });
     };
   }, [dispatch]);
-  const params = useParams();
-  const isEditing = !!params.collectionId;
+
+  useEffect(() => {
+    if (isEditing) {
+      const targetItemIndex = collectionList?.findIndex(
+        (e) => e.id === Number(params.collectionId)
+      );
+      const targetCollection = collectionList[targetItemIndex];
+      dispatch({ type: "SET_CURRENT_COLLECTION", payload: targetCollection });
+    } else {
+      dispatch({
+        type: "SET_CURRENT_COLLECTION",
+        payload: null,
+      });
+    }
+    return () => {};
+  }, [collectionList, dispatch, isEditing, params.collectionId]);
+
   const handleRemove = () => {
     withConfirm(() => {
       dispatch({
@@ -91,6 +115,7 @@ function CollectionForm<
     state;
 
   const isEditing = !!params.collectionId;
+  const [, forceUpdate] = useReducer((bool) => !bool, false);
 
   useEffect(() => {
     if (isEditing) {
@@ -108,27 +133,33 @@ function CollectionForm<
     return () => {};
   }, [collectionList, dispatch, isEditing, params.collectionId]);
 
-  const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
-    e.preventDefault();
-    const formEl = e.target as HTMLFormElement;
-    const formData = new FormData(formEl);
-    const obj = Object.fromEntries(formData.entries()) as {
-      name: string;
-      id: string;
-    };
+  const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = useCallback(
+    (e) => {
+      e.preventDefault();
+      const formEl = e.target as HTMLFormElement;
+      const formData = new FormData(formEl);
+      const obj = Object.fromEntries(formData.entries()) as {
+        name: string;
+        id: string;
+      };
 
-    const collection = {
-      ...obj,
-      id: Number(obj.id),
-    };
+      const collection = {
+        ...obj,
+        id: Number(obj.id),
+      };
 
-    dispatch({
-      type: "CREATE_OR_UPDATE_COLLECTION",
-      payload: collection as CType,
-    });
+      dispatch({
+        type: "CREATE_OR_UPDATE_COLLECTION",
+        payload: collection as CType,
+      });
 
-    navigate("/" + collection.id, { state: { __NA: {} } });
-  };
+      navigate("/" + collection.id, {
+        replace: true,
+        state: { __NA: {} },
+      });
+    },
+    [dispatch, navigate]
+  );
 
   return (
     <form method="POST" onSubmit={handleSubmit}>
@@ -136,7 +167,7 @@ function CollectionForm<
         <input
           className="hidden"
           name="id"
-          value={currentCollection?.id || new Date().valueOf()}
+          defaultValue={currentCollection?.id || new Date().valueOf()}
         ></input>
         <BaseInput
           key={currentCollection?.name}

@@ -1,4 +1,3 @@
-import { type Question } from "@/lib/types/Question";
 import { readFromClipboard, withConfirm } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import {
@@ -27,13 +26,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import {
-  Link,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import {
   BaseCollection,
   BaseEntity,
@@ -67,24 +60,56 @@ export default function CollectionLayout<
   ) => ReactNode;
 }) {
   const { currentCollection, collectionList, entityList } = state;
-
-  const { collection } = useLoaderData() as { collection: CType };
+  const { collectionId } = useParams();
   const [fetching, setFetching] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    // console.log(collection);
-    if (!collection?.id) {
+    if (!collectionId) {
       return;
     }
 
-    if (collection.id != state.currentCollection?.id) {
+    if (collectionId != state.currentCollection?.id) {
+      let collection =
+        state.collectionList.find((e) => e.id == collectionId) || null;
+      if (!collection) {
+        fetchWithAuth("/api/getPost?id=" + collectionId)
+          .then((e) => e.json())
+          .then((obj) => {
+            return {
+              ...obj,
+              id: obj.id,
+              name: obj.title,
+              online: true,
+              _entityList: JSON.parse(obj.content),
+            };
+          })
+          .then((res: CType & { content: string }) => {
+            collection = res;
+          })
+          .catch((error) => {
+            console.error("从网络获取数据失败：" + error);
+            collection = null;
+          })
+          .then(() => {
+            dispatch({
+              type: "SET_CURRENT_COLLECTION",
+              payload: collection,
+            });
+          });
+      }
+
       dispatch({
         type: "SET_CURRENT_COLLECTION",
         payload: collection,
       });
     }
-  }, [collection, dispatch, state.currentCollection?.id]);
+  }, [
+    collectionId,
+    dispatch,
+    state.collectionList,
+    state.currentCollection?.id,
+  ]);
 
   const navigate = useNavigate();
 
@@ -113,12 +138,12 @@ export default function CollectionLayout<
 
   const syncFromCloud = useCallback(
     (init?: RequestInit) => {
-      if (!collection?.id) {
+      if (!currentCollection?.id) {
         return;
       }
       setFetching(true);
 
-      return fetchWithAuth("/api/getPost?id=" + collection.id, init)
+      return fetchWithAuth("/api/getPost?id=" + currentCollection.id, init)
         .then((e) => e.json())
         .then((obj) => {
           return {
@@ -138,13 +163,13 @@ export default function CollectionLayout<
           setFetching(false);
         });
     },
-    [collection?.id]
+    [currentCollection?.id]
   );
 
   const Head = slots?.["head"];
 
-
   let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
+
 
   return (
     <>
@@ -156,10 +181,17 @@ export default function CollectionLayout<
                 {collectionList?.map((e) => (
                   <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
                     <BaseDropdownItem
+                      suppressHydrationWarning
                       end={
-                        <Link to={"/" + e.id + "/edit"}>
-                          <EditIcon className="h-4 w-4"></EditIcon>
-                        </Link>
+                        <EditIcon
+                          onClick={(ev) => {
+                            ev.preventDefault();
+                            navigate("/" + e.id + "/edit", {
+                              state: { __NA: {} },
+                            });
+                          }}
+                          className="h-4 w-4"
+                        ></EditIcon>
                       }
                       title={e.name}
                       text={"创建于 " + new Date(e.id).toLocaleDateString()}
@@ -182,7 +214,7 @@ export default function CollectionLayout<
               </BaseDropdown>
               {
                 // @ts-ignore
-                collection?.online && (
+                currentCollection?.online && (
                   <>
                     <BaseButtonIcon
                       size="sm"
@@ -191,7 +223,7 @@ export default function CollectionLayout<
                         syncFromCloud()
                           ?.then?.((res) => {
                             const targetIndex = collectionList.findIndex(
-                              (e) => (e.id == res.id)
+                              (e) => e.id == res.id
                             );
                             const newList = [...collectionList];
                             if (targetIndex == -1) {
@@ -232,7 +264,7 @@ export default function CollectionLayout<
                       onClick={() => {
                         setUploading(true);
                         const fd = new FormData();
-                        fd.append("id", collection.id + "");
+                        fd.append("id", currentCollection!.id + "");
                         fd.append("content", JSON.stringify(entityList));
 
                         fetchWithAuth("/api/updatePost", {
@@ -255,7 +287,7 @@ export default function CollectionLayout<
                             dispatch({
                               type: "SET_COLLECTION_LIST",
                               payload: collectionList
-                                .filter((e) => e.id != collection.id)
+                                .filter((e) => e.id != currentCollection!.id)
                                 .concat(res),
                             });
                             toast("数据上传成功");

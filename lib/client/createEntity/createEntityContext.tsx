@@ -69,6 +69,10 @@ export const createEntityContext = <
     CollectionType extends BaseCollection
   > =
     | {
+        type: "ANY";
+        payload: Partial<State>;
+      }
+    | {
         type: "SET_FILTERS";
         payload: {
           filters: State["filters"];
@@ -121,6 +125,9 @@ export const createEntityContext = <
     action
   ): State => {
     switch (action.type) {
+      case "ANY": {
+        return Object.assign({}, state, action.payload);
+      }
       case "SET_FILTERS": {
         const list = getShowingList({
           entityList: state.entityList,
@@ -195,7 +202,7 @@ export const createEntityContext = <
           showingEntityList: list,
         });
       }
-      case "CREATE_OR_UPDATE_COLLECTION":
+      case "CREATE_OR_UPDATE_COLLECTION": {
         const { payload } = action;
         const { collectionList, currentCollection } = state;
         // isEditing
@@ -207,14 +214,18 @@ export const createEntityContext = <
           newList[targetItemIndex] = payload;
           return Object.assign({}, state, {
             collectionList: newList,
+            currentCollection: payload,
           });
         } else {
+          const newList = collectionList
+            ? collectionList.concat(payload)
+            : [payload];
           return Object.assign({}, state, {
-            collectionList: collectionList
-              ? collectionList.concat(payload)
-              : [payload],
+            collectionList: newList,
+            currentCollection: payload,
           });
         }
+      }
       // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
       case "SET_COLLECTION_LIST":
         return Object.assign({}, state, {
@@ -331,7 +342,6 @@ export const createEntityContext = <
       }
 
       setPending(true);
-
       localforage
         .getItem(state.currentCollection.id + "")
         .then((res) => {

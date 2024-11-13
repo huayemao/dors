@@ -7,10 +7,15 @@ import {
   BaseDropdown,
   BaseDropdownItem,
 } from "@shuriken-ui/react";
-import localforage from "localforage";
 import { ArrowLeftIcon, Edit2, Trash } from "lucide-react";
-import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import {
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useEffect,
+} from "react";
+import { useParams } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
 import {
   BaseCollection,
@@ -19,6 +24,7 @@ import {
   EntityState,
 } from "./createEntityContext";
 import { AddAction } from "@/components/PostEditor/AddAction";
+import { useCloseModal } from "../utils/useCloseModal";
 
 export default function ViewOrEditEntityModal<
   EType extends BaseEntity,
@@ -56,8 +62,11 @@ export default function ViewOrEditEntityModal<
     modalOpen,
   } = state;
 
-  const { entity } = useLoaderData() as { entity: EType };
-  const navigate = useNavigate();
+  const close = useCloseModal();
+
+  const { entityId, collectionId } = useParams();
+  const entity = entityList.find((e) => String(e.id) == entityId);
+
   const cancel = () => {
     dispatch({ type: "CANCEL" });
   };
@@ -67,46 +76,41 @@ export default function ViewOrEditEntityModal<
       return;
     }
     dispatch({
-      type: "SET_ENTITY_MODAL_MODE",
-      payload: "view",
+      type: "ANY",
+      payload: {
+        entityModalMode: "view",
+        currentEntity: entity,
+      },
     });
-    dispatch({
-      type: "SET_CURRENT_ENTITY",
-      payload: entity,
-    });
-    dispatch({
-      type: "SET_MODAL_OPEN",
-      payload: true,
-    });
+
+    setTimeout(() => {
+      dispatch({
+        type: "ANY",
+        payload: {
+          modalOpen: true,
+        },
+      });
+    }, 100);
+
     return () => {
       cancel();
     };
   }, []);
 
-  const handleRemove = () => {
+  const handleRemove = useCallback(() => {
     withConfirm(() => {
       dispatch({
         type: "REMOVE_ENTITY",
         payload: currentEntity.id,
       });
-      if (history.length) {
-        navigate(-1);
-      } else {
-        navigate("..", { replace: true });
-      }
+      close();
     });
-  };
+  }, [close, currentEntity.id, dispatch]);
 
   return (
     <Modal
       open={modalOpen}
-      onClose={() => {
-        if (history.length) {
-          navigate(-1);
-        } else {
-          navigate("..", { replace: true });
-        }
-      }}
+      onClose={close}
       title={renderEntityModalTitle(currentEntity, { preview: false })}
       actions={
         <>

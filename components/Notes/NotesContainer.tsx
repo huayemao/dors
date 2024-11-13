@@ -28,10 +28,11 @@ export const NotesContainer = ({
 
   const getActions = useCallback(
     (note: Note) => {
-      const targetItemIndex = state.entityList?.findIndex((e) => e.id === note.id);
+      const targetItemIndex = state.entityList?.findIndex(
+        (e) => e.id === note.id
+      );
       const newList = [...state.entityList];
       const handleArchive = () => {
-        console.log(state.entityList)
         newList[targetItemIndex] = {
           ...note,
           tags: note.tags.concat(HIDDEN_TAGS[0]),
@@ -130,7 +131,7 @@ export const NotesContainer = ({
         renderEntity={(e: Note, { preview }) => (
           <NoteItem
             actions={getActions(e)}
-            key={e.id + e.content}
+            key={e.id}
             data={e}
             preview={preview}
             filterTags={filterTags}

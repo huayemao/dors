@@ -7,14 +7,7 @@ import CollectionLayout from "@/lib/client/createEntity/CollectionLayout";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
-import {
-  ComponentProps,
-  FC,
-  PropsWithChildren,
-  ReactNode,
-  useCallback,
-  useMemo,
-} from "react";
+import { ComponentProps, FC, PropsWithChildren, useCallback } from "react";
 import {
   BaseCollection,
   BaseEntity,
@@ -23,7 +16,6 @@ import {
   EntityState,
 } from "./createEntityContext";
 import localforage from "localforage";
-import { ClientOnly } from "@/components/ClientOnly";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
 import { fetchWithAuth } from "../utils/fetch";
 
@@ -58,56 +50,6 @@ export default function EntityRoute<
   slots,
   extraRoutes = [],
 }: Props<EType, CType>) {
-  const entityLoader = useCallback(async ({ params }) => {
-    const { entityId, collectionId } = params;
-    const entityList = await localforage.getItem(collectionId);
-    const entity = (entityList as BaseEntity[]).find(
-      (e) => String(e.id) == entityId
-    );
-    return {
-      entity,
-    };
-  }, []);
-
-  const collectionLoader = useCallback(
-    async ({ params }) => {
-      const collectionList: BaseCollection[] = state.collectionList;
-
-      if (!state.collectionList.length) {
-        return { collection: null };
-      }
-
-      if (!params.collectionId) {
-        return { collection: null };
-      }
-      let collection =
-        collectionList.find((e) => e.id == params.collectionId) || null;
-      if (!collection) {
-        try {
-          const res: BaseCollection & { content: string } = await fetchWithAuth(
-            "/api/getPost?id=" + params.collectionId
-          )
-            .then((e) => e.json())
-            .then((obj) => {
-              return {
-                ...obj,
-                id: obj.id,
-                name: obj.title,
-                online: true,
-                _entityList: JSON.parse(obj.content),
-              };
-            });
-          collection = res;
-        } catch (error) {
-          console.error("从网络获取数据失败：" + error);
-          collection = null;
-        }
-      }
-      return { collection };
-    },
-    [state.collectionList, state.currentCollection]
-  );
-
   const router = createBrowserRouter(
     [
       {
@@ -115,7 +57,7 @@ export default function EntityRoute<
         element: <RootPage />,
       },
       {
-        path: "create",
+        path: "/create",
         element: (
           <CreateCollectionModal
             state={state}
@@ -126,16 +68,13 @@ export default function EntityRoute<
       {
         path: ":collectionId",
         element: (
-          <ClientOnly>
-            <CollectionLayout
-              slots={slots}
-              state={state}
-              dispatch={dispatch}
-              renderEntity={renderEntity}
-            ></CollectionLayout>
-          </ClientOnly>
+          <CollectionLayout
+            slots={slots}
+            state={state}
+            dispatch={dispatch}
+            renderEntity={renderEntity}
+          ></CollectionLayout>
         ),
-        loader: collectionLoader,
         children: [
           ...addActionRoutes,
           {
@@ -150,7 +89,6 @@ export default function EntityRoute<
                 form={createForm}
               ></ViewOrEditEntityModal>
             ),
-            loader: entityLoader,
           },
           {
             path: "create",
