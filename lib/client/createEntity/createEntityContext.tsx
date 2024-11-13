@@ -22,11 +22,12 @@ export interface BaseEntity {
 export interface BaseCollection {
   id: number | string;
   name: string;
+  online: boolean;
 }
 
 export const createEntityContext = <
   EntityType extends BaseEntity,
-  CollectionType extends BaseCollection
+  CollectionType extends BaseCollection & { _entityList?: EntityType[] }
 >(
   defaultEntity: EntityType,
   defaultCollection: CollectionType,
@@ -141,14 +142,35 @@ export const createEntityContext = <
         return Object.assign({}, state, {
           entityModalMode: action.payload,
         });
-      case "SET_CURRENT_COLLECTION":
+      case "SET_CURRENT_COLLECTION": {
+        const collection = action.payload;
+        if (collection) {
+          const isImporting =
+            collection.id &&
+            collection.id != defaultCollection.id &&
+            state.collectionList.every((item) => item.id != collection.id);
+
+          if (isImporting) {
+            const patch = {
+              currentCollection: collection,
+              collectionList: state.collectionList.concat(collection),
+              entityList: collection._entityList,
+              fromLocalStorage: false,
+            };
+            return Object.assign({}, state, patch);
+          }
+        }
         return Object.assign({}, state, {
           currentCollection: action.payload,
         });
-      case "SET_CURRENT_ENTITY":
+      }
+
+      case "SET_CURRENT_ENTITY": {
         return Object.assign({}, state, {
           currentEntity: action.payload,
         });
+      }
+
       case "SET_ENTITY_LIST": {
         const list = getShowingList({
           entityList: action.payload,
@@ -293,6 +315,21 @@ export const createEntityContext = <
         return;
       }
 
+      // 有 _entityList 表示才获取的最新的
+      if (state.currentCollection?._entityList) {
+        const c = state.currentCollection;
+        delete c["_entityList"];
+        localforage.getItem(collectionListKey).then((res) => {
+          const newList = (res as CollectionType[] | undefined)?.length
+            ? (res as CollectionType[]).filter(
+                (e) => e.id != state.currentCollection?.id
+              )
+            : [];
+          localforage.setItem(collectionListKey, newList.concat(c));
+        });
+        return;
+      }
+
       setPending(true);
 
       localforage
@@ -327,7 +364,7 @@ export const createEntityContext = <
         .finally(() => {
           setPending(false);
         });
-    }, [state.currentCollection?.id]);
+    }, [state.collectionList, state.currentCollection]);
 
     // entityList 变化时同步到 storage
     useEffect(() => {

@@ -25,6 +25,7 @@ import {
 import localforage from "localforage";
 import { ClientOnly } from "@/components/ClientOnly";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
+import { fetchWithAuth } from "../utils/fetch";
 
 type Props<EType extends BaseEntity, CType extends BaseCollection> = {
   slots?: Record<
@@ -83,7 +84,7 @@ export default function EntityRoute<
         collectionList.find((e) => e.id == params.collectionId) || null;
       if (!collection) {
         try {
-          const res: BaseCollection & { content: string } = await fetch(
+          const res: BaseCollection & { content: string } = await fetchWithAuth(
             "/api/getPost?id=" + params.collectionId
           )
             .then((e) => e.json())
@@ -96,7 +97,6 @@ export default function EntityRoute<
                 _entityList: JSON.parse(obj.content),
               };
             });
-
           collection = res;
         } catch (error) {
           console.error("从网络获取数据失败：" + error);

@@ -24,6 +24,7 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -65,14 +66,7 @@ export default function CollectionLayout<
     options: { preview: boolean }
   ) => ReactNode;
 }) {
-  const {
-    currentCollection,
-    collectionList,
-    currentEntity,
-    entityList,
-    modalOpen,
-    entityModalMode,
-  } = state;
+  const { currentCollection, collectionList, entityList } = state;
 
   const { collection } = useLoaderData() as { collection: CType };
   const [fetching, setFetching] = useState(false);
@@ -80,40 +74,21 @@ export default function CollectionLayout<
 
   useEffect(() => {
     // console.log(collection);
-    if (collection) {
-      if (
-        collection.id &&
-        collectionList.length &&
-        collectionList.every((item) => item.id != collection.id)
-      ) {
-        dispatch({
-          type: "SET_COLLECTION_LIST",
-          payload: collectionList.concat(collection),
-        });
-      }
+    if (!collection?.id) {
+      return;
+    }
 
+    if (collection.id != state.currentCollection?.id) {
       dispatch({
         type: "SET_CURRENT_COLLECTION",
         payload: collection,
-        // payload: Object.assign({}, { ...collection, entityList: undefined }),
       });
-
-      if ((collection as any)._entityList?.length && !entityList.length) {
-        const list = (collection as CType & { _entityList: EType[] })
-          ._entityList;
-
-        // 覆盖掉本地版本，但只是最初下载时覆盖。
-        dispatch({
-          type: "SET_ENTITY_LIST",
-          payload: list,
-        });
-      }
     }
-  }, [collection, collectionList, dispatch, entityList]);
+  }, [collection, dispatch, state.currentCollection?.id]);
 
   const navigate = useNavigate();
 
-  const importQuestionsFromClipBoard = () => {
+  const importQuestionsFromClipBoard = useCallback(() => {
     readFromClipboard().then((text) => {
       try {
         const obj = JSON.parse(text);
@@ -125,13 +100,16 @@ export default function CollectionLayout<
         alert("数据导入错误：" + error.message);
       }
     });
-  };
+  }, [dispatch]);
 
-  const copy = (e) => {
-    e.preventDefault();
-    copyToClipboard(`${JSON.stringify(entityList)}`);
-    alert("已复制到剪贴板");
-  };
+  const copy = useCallback(
+    (e) => {
+      e.preventDefault();
+      copyToClipboard(`${JSON.stringify(entityList)}`);
+      alert("已复制到剪贴板");
+    },
+    [entityList]
+  );
 
   const syncFromCloud = useCallback(
     (init?: RequestInit) => {
@@ -151,16 +129,6 @@ export default function CollectionLayout<
             _entityList: JSON.parse(obj.content),
           };
         })
-        .then((res) => {
-          dispatch({
-            type: "SET_COLLECTION_LIST",
-            payload: collectionList
-              .filter((e) => e.id != collection.id)
-              .concat(res),
-          });
-          toast("同步数据成功");
-          return res;
-        })
         .catch((e) => {
           console.log(e.message);
           console.error(e);
@@ -170,12 +138,13 @@ export default function CollectionLayout<
           setFetching(false);
         });
     },
-    [collection?.id, collectionList, dispatch]
+    [collection?.id]
   );
 
   const Head = slots?.["head"];
 
-  let list = state.showingEntityList;
+
+  let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
 
   return (
     <>
@@ -220,12 +189,31 @@ export default function CollectionLayout<
                       loading={fetching}
                       onClick={() => {
                         syncFromCloud()
-                          ?.then?.(() => {
+                          ?.then?.((res) => {
+                            const targetIndex = collectionList.findIndex(
+                              (e) => (e.id = res.id)
+                            );
+                            const newList = [...collectionList];
+                            if (targetIndex == -1) {
+                              newList.push(res);
+                            } else {
+                              newList[targetIndex] = res;
+                            }
+                            dispatch({
+                              type: "SET_COLLECTION_LIST",
+                              payload: newList,
+                            });
+                            dispatch({
+                              type: "SET_CURRENT_COLLECTION",
+                              payload: res,
+                            });
                             dispatch({
                               type: "SET_ENTITY_LIST",
                               // @ts-ignore
-                              payload: collection._entityList,
+                              payload: res._entityList,
                             });
+
+                            toast("同步数据成功");
                           })
                           .catch((e) => {
                             toast(e.message);

@@ -33,4 +33,5 @@ export const DEFAULT_QUESTION = {
 export const DEFAULT_COLLECTION = {
   id: Date.now(),
   name: new Date().toLocaleDateString(),
+  online: false
 };
