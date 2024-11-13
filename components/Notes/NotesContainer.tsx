@@ -4,19 +4,90 @@ import { Note } from "@/app/(projects)/notes/constants";
 import { useEntity, useEntityDispatch } from "@/contexts/notes";
 import { NoteForm } from "@/app/(projects)/notes/NoteForm";
 import NotesPage from "@/app/(projects)/notes/page";
-import { FC, Fragment, useCallback, useEffect, useMemo } from "react";
+import {
+  ComponentProps,
+  FC,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import localforage from "localforage";
 import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
 import { Filters } from "./Filters";
 import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
-import { Archive, Copy } from "lucide-react";
+import { Archive, Copy, Edit2 } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
+import { useClickAway } from "@uidotdev/usehooks";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const HIDDEN_TAGS = ["归档", "archive"];
+
+export const useActions = (note: Note) => {
+  const state = useEntity();
+  const dispatch = useEntityDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const res = useMemo(() => {
+    const targetItemIndex = state.entityList?.findIndex(
+      (e) => e.id === note.id
+    );
+    const newList = [...state.entityList];
+    return {
+      edit: {
+        title: "编辑",
+        onClick: () => {
+          if (!location.pathname.includes(String(note.id))) {
+            navigate(`/${state.currentCollection?.id}/` + note.id, {
+              state: { __NA: {} },
+            });
+          }
+          setTimeout(() => {
+            dispatch({
+              type: "SET_ENTITY_MODAL_MODE",
+              payload: "edit",
+            });
+          });
+        },
+        start: <Edit2 className="h-4 w-4" />,
+        stopPropagation: true,
+      },
+      copy: {
+        title: "复制内容",
+        onClick: () => {
+          console.log(note.content);
+          copyTextToClipboard(note.content).then(() => {
+            toast("复制成功");
+          });
+        },
+        start: <Copy className="h-4 w-4" />,
+        stopPropagation: true,
+      },
+      archive: {
+        title: "归档",
+        onClick: () => {
+          newList[targetItemIndex] = {
+            ...note,
+            tags: note.tags.concat(HIDDEN_TAGS[0]),
+          };
+          // todo: 改成 editQuestion
+          dispatch({ type: "SET_ENTITY_LIST", payload: newList });
+          copyTextToClipboard(note.content).then(() => {
+            toast("归档成功");
+          });
+        },
+        start: <Archive className="h-4 w-4" />,
+        stopPropagation: true,
+      },
+    };
+  }, [dispatch, navigate, note, state.entityList]);
+
+  return res;
+};
 
 export const NotesContainer = ({
   basename = "/notes",
@@ -25,7 +96,6 @@ export const NotesContainer = ({
 }) => {
   const state = useEntity();
   const dispatch = useEntityDispatch();
-
   const getActions = useCallback(
     (note: Note) => {
       const targetItemIndex = state.entityList?.findIndex(
@@ -44,6 +114,20 @@ export const NotesContainer = ({
         });
       };
       return {
+        edit: {
+          title: "编辑",
+          onClick: () => {
+            dispatch({
+              type: "ANY",
+              payload: {
+                modalOpen: true,
+                entityModalMode: "edit",
+              },
+            });
+          },
+          start: <Edit2 className="h-4 w-4" />,
+          stopPropagation: false,
+        },
         copy: {
           title: "复制内容",
           onClick: () => {
@@ -53,11 +137,13 @@ export const NotesContainer = ({
             });
           },
           start: <Copy className="h-4 w-4" />,
+          stopPropagation: true,
         },
         archive: {
           title: "归档",
           onClick: handleArchive,
           start: <Archive className="h-4 w-4" />,
+          stopPropagation: true,
         },
       };
     },
@@ -110,32 +196,14 @@ export const NotesContainer = ({
         renderEntityModalTitle={(e: Note) => (
           <NoteModalTitle note={e} filterTags={filterTags} />
         )}
-        renderEntityModalActions={(e: Note) => {
-          const actions = getActions(e);
-
-          return (
-            <>
-              {Object.values(actions).map((action) => {
-                return (
-                  <BaseDropdownItem
-                    key={action.title}
-                    rounded="md"
-                    data-nui-tooltip={action.title}
-                    {...action}
-                  ></BaseDropdownItem>
-                );
-              })}
-            </>
-          );
-        }}
+        renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
         renderEntity={(e: Note, { preview }) => (
-          <NoteItem
-            actions={getActions(e)}
+          <ActionsProvider
             key={e.id}
             data={e}
             preview={preview}
             filterTags={filterTags}
-          ></NoteItem>
+          ></ActionsProvider>
         )}
         slots={{ head: Filters }}
         state={state}
@@ -148,6 +216,32 @@ export const NotesContainer = ({
     </main>
   );
 };
+
+function ActionsProvider({
+  data,
+  ...props
+}: Omit<ComponentProps<typeof NoteItem>, "actions">) {
+  const actions = useActions(data);
+  return <NoteItem data={data} {...props} actions={actions}></NoteItem>;
+}
+
+function Actions({ e }: { e: Note }) {
+  const actions = useActions(e);
+  return (
+    <>
+      {Object.values(actions).map((action) => {
+        return (
+          <BaseDropdownItem
+            key={action.title}
+            rounded="md"
+            data-nui-tooltip={action.title}
+            {...action}
+          ></BaseDropdownItem>
+        );
+      })}
+    </>
+  );
+}
 
 export function getExcludeIds(
   hasHiddenTags: boolean | undefined,

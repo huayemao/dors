@@ -67,9 +67,9 @@ export default function ViewOrEditEntityModal<
   const { entityId, collectionId } = useParams();
   const entity = entityList.find((e) => String(e.id) == entityId);
 
-  const cancel = () => {
+  const cancel = useCallback(() => {
     dispatch({ type: "CANCEL" });
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     if (!entity) {
@@ -82,7 +82,9 @@ export default function ViewOrEditEntityModal<
         currentEntity: entity,
       },
     });
+  }, [cancel, dispatch, entity]);
 
+  useEffect(() => {
     setTimeout(() => {
       dispatch({
         type: "ANY",
@@ -95,7 +97,7 @@ export default function ViewOrEditEntityModal<
     return () => {
       cancel();
     };
-  }, []);
+  }, [cancel, dispatch]);
 
   const handleRemove = useCallback(() => {
     withConfirm(() => {

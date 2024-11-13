@@ -170,7 +170,6 @@ export default function CollectionLayout<
 
   let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
 
-
   return (
     <>
       <div className="md:px-12">
@@ -179,7 +178,12 @@ export default function CollectionLayout<
             <div className="inline-flex items-end gap-x-2 mr-auto">
               <BaseDropdown label={currentCollection?.name} headerLabel="合集">
                 {collectionList?.map((e) => (
-                  <Link to={"/" + e.id} key={e.id} suppressHydrationWarning>
+                  <Link
+                    state={{ __NA: {} }}
+                    to={"/" + e.id}
+                    key={e.id}
+                    suppressHydrationWarning
+                  >
                     <BaseDropdownItem
                       suppressHydrationWarning
                       end={

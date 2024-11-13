@@ -12,6 +12,7 @@ import {
   ContextMenuSub,
   ContextMenuTrigger,
 } from "../ui/context-menu";
+import { useForceUpdate } from "@/lib/client/utils/useForceupdate";
 
 export function NoteItem({
   preview = false,
@@ -28,9 +29,11 @@ export function NoteItem({
       title: string;
       onClick: () => void;
       start: JSX.Element;
+      stopPropagation: boolean;
     }
   >;
 }) {
+  const forceUpdate = useForceUpdate();
   const Container = useMemo(() => {
     return preview
       ? (props) => (
@@ -97,7 +100,10 @@ export function NoteItem({
             <ContextMenuItem
               key={action.title}
               onClick={(ev) => {
-                ev.stopPropagation();
+                if (action.stopPropagation) {
+                  ev.stopPropagation();
+                  forceUpdate();
+                }
                 action.onClick();
               }}
             >
