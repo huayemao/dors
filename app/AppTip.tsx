@@ -6,7 +6,7 @@ export function AppTip() {
   useEffect(() => {
     registerServiceWorker({
       onNeedRefresh(updateSW) {
-        const res = confirm("An app update is available");
+        const res = confirm("有新的版本");
         if (res) {
           updateSW();
         }

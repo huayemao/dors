@@ -1,5 +1,7 @@
 // https://whatwebcando.today/articles/handling-service-worker-updates/
 
+import { once } from "../isomorphic/once"
+
 const swURL = '/sw.js'
 
 const waitForPageToLoad = async () => {
@@ -14,9 +16,8 @@ const waitForPageToLoad = async () => {
 export interface Options {
   onNeedRefresh: (updateSw: () => void) => void
 }
-
-export const registerServiceWorker = async (options: Options) => {
-
+export const registerServiceWorker = once(async (options: Options) => {
+  console.log('updating...')
   await waitForPageToLoad()
 
   const { serviceWorker } = navigator
@@ -75,4 +76,6 @@ export const registerServiceWorker = async (options: Options) => {
       refreshing = true
     }
   })
-}
+})
+
+
