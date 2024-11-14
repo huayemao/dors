@@ -4,7 +4,7 @@ import { DEFAULT_COLLECTION, DEFAULT_QUESTION } from "./constants";
 import { createEntityContext } from "@/lib/client/createEntity/createEntityContext";
 
 export const {
-  EnitityContext,
+  EntityContext,
   EntityDispatchContext,
   EntityContextProvider,
   useEntity,

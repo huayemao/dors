@@ -4,7 +4,7 @@ import { DEFAULT_COLLECTION, DEFAULT_NOTE } from "../app/(projects)/notes/consta
 import { createEntityContext } from "@/lib/client/createEntity/createEntityContext";
 
 export const {
-  EnitityContext: NotesContext,
+  EntityContext: NotesContext,
   EntityDispatchContext: NotesDispatchContext,
   EntityContextProvider: NotesContextProvider,
   useEntity,

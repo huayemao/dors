@@ -405,7 +405,7 @@ export const createEntityContext = <
   }
 
   return {
-    EnitityContext: EntityContext,
+    EntityContext: EntityContext,
     EntityDispatchContext,
     EntityContextProvider,
     useEntity,
