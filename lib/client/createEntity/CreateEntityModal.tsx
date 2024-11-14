@@ -2,11 +2,13 @@ import { Modal } from "@/components/Base/Modal";
 import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { FormFoot } from "./FormFoot";
 import {
-  BaseCollection,
-  BaseEntity,
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity
+} from "./types";
 import { useCloseModal } from "../utils/useCloseModal";
 import { AddAction } from "@/components/PostEditor/AddAction";
 

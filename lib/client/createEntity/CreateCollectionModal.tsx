@@ -13,11 +13,13 @@ import {
 
 import { useCloseModal } from "../utils/useCloseModal";
 import {
-  BaseCollection,
-  BaseEntity,
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity
+} from "./types";
 import { Trash } from "lucide-react";
 import { withConfirm } from "@/lib/utils";
 

@@ -1,0 +1,229 @@
+import { Reducer } from "react";
+import { BaseEntity, BaseCollection, State, Action } from "./types";
+import { EntityState } from "./createEntityContext";
+
+export const getReducerSlices = <
+  EntityType extends BaseEntity,
+  CollectionType extends BaseCollection & { _entityList?: EntityType[] }
+>(
+  state: State<EntityType, CollectionType>
+) => {
+  const removeEntity = (id: number) => {
+    const targetItemIndex = state.entityList?.findIndex((e) => e.id === id);
+    const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
+    if (hasTarget) {
+      return Object.assign({}, state, {
+        entityList: state.entityList?.filter((e, i) => e.id != id),
+      });
+    }
+    return state;
+  };
+
+  return {
+    removeEntity,
+  };
+};
+
+export const getReducer = <
+  EntityType extends BaseEntity,
+  CollectionType extends BaseCollection & { _entityList?: EntityType[] }
+>(
+  defaultCollection: CollectionType,
+  defaultEntity: EntityType
+) => {
+  type AppState = State<EntityType, CollectionType>;
+
+  const reducer: Reducer<AppState, Action<EntityType, CollectionType>> = (
+    state,
+    action
+  ): AppState => {
+    const { removeEntity } = getReducerSlices(state);
+    switch (action.type) {
+      case "ANY": {
+        return Object.assign({}, state, action.payload);
+      }
+      case "SET_FILTERS": {
+        const list = getShowingList({
+          entityList: state.entityList,
+          filters: action.payload.filters,
+          filterConfig: action.payload.filterConfig || state.filterConfig,
+        });
+        return Object.assign({}, state, {
+          filters: action.payload.filters,
+          filterConfig: action.payload.filterConfig || state.filterConfig,
+          showingEntityList: list,
+        });
+      }
+      case "SET_MODAL_OPEN": {
+        return Object.assign({}, state, {
+          modalOpen: action.payload,
+        });
+      }
+      case "SET_ENTITY_MODAL_MODE":
+        return Object.assign({}, state, {
+          entityModalMode: action.payload,
+        });
+      case "SET_CURRENT_COLLECTION": {
+        const collection = action.payload;
+        if (collection) {
+          const isImporting =
+            collection.id &&
+            collection.id != defaultCollection.id &&
+            state.collectionList.every((item) => item.id != collection.id);
+
+          if (isImporting) {
+            const patch = {
+              currentCollection: collection,
+              collectionList: state.collectionList.concat(collection),
+              entityList: collection._entityList,
+              fromLocalStorage: false,
+            };
+            return Object.assign({}, state, patch);
+          }
+        }
+        return Object.assign({}, state, {
+          currentCollection: action.payload,
+        });
+      }
+
+      case "SET_CURRENT_ENTITY": {
+        return Object.assign({}, state, {
+          currentEntity: action.payload,
+        });
+      }
+
+      case "SET_ENTITY_LIST": {
+        const list = getShowingList({
+          entityList: action.payload,
+          filters: state.filters,
+          filterConfig: state.filterConfig,
+        });
+        return Object.assign({}, state, {
+          entityList: action.payload,
+          fromLocalStorage: false,
+          showingEntityList: list,
+        });
+      }
+      case "INIT_ENTITY_LIST": {
+        const list = getShowingList({
+          entityList: action.payload,
+          filters: state.filters,
+          filterConfig: state.filterConfig,
+        });
+        return Object.assign({}, state, {
+          fromLocalStorage: true,
+          entityList: action.payload,
+          showingEntityList: list,
+        });
+      }
+      case "CREATE_OR_UPDATE_COLLECTION": {
+        const { payload } = action;
+        const { collectionList, currentCollection } = state;
+        // isEditing
+        if (!!currentCollection) {
+          const newList = [...collectionList];
+          const targetItemIndex = collectionList?.findIndex(
+            (e) => e.id === currentCollection.id
+          );
+          newList[targetItemIndex] = payload;
+          return Object.assign({}, state, {
+            collectionList: newList,
+            currentCollection: payload,
+          });
+        } else {
+          const newList = collectionList
+            ? collectionList.concat(payload)
+            : [payload];
+          return Object.assign({}, state, {
+            collectionList: newList,
+            currentCollection: payload,
+          });
+        }
+      }
+      // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
+      case "SET_COLLECTION_LIST":
+        return Object.assign({}, state, {
+          collectionList: action.payload,
+        });
+      case "INIT":
+        const maxSeq = state.entityList?.length
+          ? Math.max(...state.entityList?.map((e) => Number(e.seq)))
+          : -1;
+        return Object.assign({}, state, {
+          currentEntity: { ...defaultEntity, seq: maxSeq + 1 },
+        });
+      case "CANCEL":
+        return Object.assign({}, state, {
+          modalOpen: false,
+          entityModalMode: "view",
+        });
+      case "REMOVE_ENTITY": {
+        return removeEntity(action.payload);
+      }
+      case "REMOVE_COLLECTION": {
+        const removeItem = (id) => {
+          const targetItemIndex = state.collectionList?.findIndex(
+            (e) => e.id === id
+          );
+          const hasTarget =
+            targetItemIndex != undefined && targetItemIndex != -1;
+          if (hasTarget) {
+            return Object.assign({}, state, {
+              collectionList: state.collectionList?.filter(
+                (e, i) => e.id != id
+              ),
+            });
+          }
+          return state;
+        };
+        return removeItem(action.payload);
+      }
+      default:
+        return state;
+    }
+  };
+
+  function getShowingList<
+    EType extends BaseEntity,
+    CType extends BaseCollection
+  >({
+    entityList,
+    filters,
+    filterConfig,
+  }: {
+    entityList: EntityState<EType, CType>["entityList"];
+    filters: EntityState<EType, CType>["filters"];
+    filterConfig: AppState["filterConfig"];
+  }) {
+    let list = entityList;
+    for (const [key, value] of Object.entries(filters)) {
+      if (filterConfig.excludeIds) {
+        list = list.filter((e) => {
+          return !filterConfig.excludeIds?.includes(e.id);
+        });
+      }
+      if (typeof value == "undefined") {
+        continue;
+      }
+      if (typeof value === "string") {
+        list = list.filter((e) => {
+          return e[key].includes(value);
+        });
+      }
+      if (Array.isArray(value)) {
+        list = list.filter((item) => {
+          const itemValue = item[key];
+          if (Array.isArray(itemValue)) {
+            const hasValue = itemValue.some((item) => value.includes(item));
+            return filterConfig.includeNonKeys?.includes(key)
+              ? hasValue || !value.length || !itemValue.length
+              : hasValue;
+          }
+          return true;
+        });
+      }
+    }
+    return list;
+  }
+  return reducer;
+};

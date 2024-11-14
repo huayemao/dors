@@ -28,11 +28,13 @@ import {
 } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import {
-  BaseCollection,
-  BaseEntity,
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity
+} from "./types";
 import toast from "react-hot-toast";
 import { fetchWithAuth } from "../utils/fetch";
 

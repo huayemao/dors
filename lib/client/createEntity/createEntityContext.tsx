@@ -13,17 +13,8 @@ import {
 } from "react";
 
 import localforage from "localforage";
-
-export interface BaseEntity {
-  id: number;
-  seq: string;
-}
-
-export interface BaseCollection {
-  id: number | string;
-  name: string;
-  online: boolean;
-}
+import { BaseEntity, BaseCollection, State, Action } from "./types";
+import { getReducer } from "./reduders";
 
 export const createEntityContext = <
   EntityType extends BaseEntity,
@@ -33,25 +24,10 @@ export const createEntityContext = <
   defaultCollection: CollectionType,
   key: string
 ) => {
-  type filtersType = Partial<Record<keyof EntityType, any>>;
+  type AppState = State<EntityType, CollectionType>;
+  // type AppAction = Action<EntityType, CollectionType>;
 
-  type State = {
-    modalOpen: boolean;
-    entityModalMode: "view" | "edit";
-    currentCollection: CollectionType | null;
-    currentEntity: EntityType;
-    collectionList: CollectionType[];
-    entityList: EntityType[];
-    showingEntityList: EntityType[];
-    filters: filtersType;
-    filterConfig: {
-      excludeIds?: EntityType["id"][];
-      includeNonKeys?: string[];
-    };
-    fromLocalStorage: boolean;
-  };
-
-  const initialState: State = {
+  const initialState: State<EntityType, CollectionType> = {
     modalOpen: false,
     entityModalMode: "view",
     currentCollection: null,
@@ -63,224 +39,11 @@ export const createEntityContext = <
     filterConfig: {},
     fromLocalStorage: true,
   };
-
-  type Action<
-    EntityType extends BaseEntity,
-    CollectionType extends BaseCollection
-  > =
-    | {
-        type: "ANY";
-        payload: Partial<State>;
-      }
-    | {
-        type: "SET_FILTERS";
-        payload: {
-          filters: State["filters"];
-          filterConfig?: State["filterConfig"];
-        };
-      }
-    | {
-        type: "SET_ENTITY_MODAL_MODE";
-        payload: State["entityModalMode"];
-      }
-    | {
-        type: "INIT";
-      }
-    | {
-        type: "SET_CURRENT_COLLECTION";
-        payload: State["currentCollection"];
-      }
-    | {
-        type: "SET_CURRENT_ENTITY";
-        payload: State["currentEntity"];
-      }
-    | {
-        type: "INIT_ENTITY_LIST";
-        payload: State["entityList"];
-      }
-    | {
-        type: "SET_ENTITY_LIST";
-        payload: State["entityList"];
-      }
-    | {
-        type: "SET_COLLECTION_LIST";
-        payload: State["collectionList"];
-      }
-    | { type: "REMOVE_ENTITY"; payload: EntityType["id"] }
-    | { type: "SET_MODAL_OPEN"; payload: boolean }
-    | {
-        type: "CREATE_OR_UPDATE_COLLECTION";
-        payload: NonNullable<State["currentCollection"]>;
-      }
-    | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
-    | { type: "CANCEL" };
-
+  const reducer = getReducer(defaultCollection, defaultEntity);
   const EntityContext = createContext(initialState);
   const EntityDispatchContext = createContext<
     Dispatch<Action<EntityType, CollectionType>>
   >(() => {});
-
-  const reducer: Reducer<State, Action<EntityType, CollectionType>> = (
-    state = initialState,
-    action
-  ): State => {
-    switch (action.type) {
-      case "ANY": {
-        return Object.assign({}, state, action.payload);
-      }
-      case "SET_FILTERS": {
-        const list = getShowingList({
-          entityList: state.entityList,
-          filters: action.payload.filters,
-          filterConfig: action.payload.filterConfig || state.filterConfig,
-        });
-        return Object.assign({}, state, {
-          filters: action.payload.filters,
-          filterConfig: action.payload.filterConfig || state.filterConfig,
-          showingEntityList: list,
-        });
-      }
-      case "SET_MODAL_OPEN": {
-        return Object.assign({}, state, {
-          modalOpen: action.payload,
-        });
-      }
-      case "SET_ENTITY_MODAL_MODE":
-        return Object.assign({}, state, {
-          entityModalMode: action.payload,
-        });
-      case "SET_CURRENT_COLLECTION": {
-        const collection = action.payload;
-        if (collection) {
-          const isImporting =
-            collection.id &&
-            collection.id != defaultCollection.id &&
-            state.collectionList.every((item) => item.id != collection.id);
-
-          if (isImporting) {
-            const patch = {
-              currentCollection: collection,
-              collectionList: state.collectionList.concat(collection),
-              entityList: collection._entityList,
-              fromLocalStorage: false,
-            };
-            return Object.assign({}, state, patch);
-          }
-        }
-        return Object.assign({}, state, {
-          currentCollection: action.payload,
-        });
-      }
-
-      case "SET_CURRENT_ENTITY": {
-        return Object.assign({}, state, {
-          currentEntity: action.payload,
-        });
-      }
-
-      case "SET_ENTITY_LIST": {
-        const list = getShowingList({
-          entityList: action.payload,
-          filters: state.filters,
-          filterConfig: state.filterConfig,
-        });
-        return Object.assign({}, state, {
-          entityList: action.payload,
-          fromLocalStorage: false,
-          showingEntityList: list,
-        });
-      }
-      case "INIT_ENTITY_LIST": {
-        const list = getShowingList({
-          entityList: action.payload,
-          filters: state.filters,
-          filterConfig: state.filterConfig,
-        });
-        return Object.assign({}, state, {
-          fromLocalStorage: true,
-          entityList: action.payload,
-          showingEntityList: list,
-        });
-      }
-      case "CREATE_OR_UPDATE_COLLECTION": {
-        const { payload } = action;
-        const { collectionList, currentCollection } = state;
-        // isEditing
-        if (!!currentCollection) {
-          const newList = [...collectionList];
-          const targetItemIndex = collectionList?.findIndex(
-            (e) => e.id === currentCollection.id
-          );
-          newList[targetItemIndex] = payload;
-          return Object.assign({}, state, {
-            collectionList: newList,
-            currentCollection: payload,
-          });
-        } else {
-          const newList = collectionList
-            ? collectionList.concat(payload)
-            : [payload];
-          return Object.assign({}, state, {
-            collectionList: newList,
-            currentCollection: payload,
-          });
-        }
-      }
-      // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
-      case "SET_COLLECTION_LIST":
-        return Object.assign({}, state, {
-          collectionList: action.payload,
-        });
-      case "INIT":
-        const maxSeq = state.entityList?.length
-          ? Math.max(...state.entityList?.map((e) => Number(e.seq)))
-          : -1;
-        return Object.assign({}, state, {
-          currentEntity: { ...defaultEntity, seq: maxSeq + 1 },
-        });
-      case "CANCEL":
-        return Object.assign({}, state, {
-          modalOpen: false,
-          entityModalMode: "view",
-        });
-      case "REMOVE_ENTITY": {
-        const removeItem = (id: number) => {
-          const targetItemIndex = state.entityList?.findIndex(
-            (e) => e.id === id
-          );
-          const hasTarget =
-            targetItemIndex != undefined && targetItemIndex != -1;
-          if (hasTarget) {
-            return Object.assign({}, state, {
-              entityList: state.entityList?.filter((e, i) => e.id != id),
-            });
-          }
-          return state;
-        };
-        return removeItem(action.payload);
-      }
-      case "REMOVE_COLLECTION": {
-        const removeItem = (id) => {
-          const targetItemIndex = state.collectionList?.findIndex(
-            (e) => e.id === id
-          );
-          const hasTarget =
-            targetItemIndex != undefined && targetItemIndex != -1;
-          if (hasTarget) {
-            return Object.assign({}, state, {
-              collectionList: state.collectionList?.filter(
-                (e, i) => e.id != id
-              ),
-            });
-          }
-          return state;
-        };
-        return removeItem(action.payload);
-      }
-      default:
-        return state;
-    }
-  };
 
   const collectionListKey = key + "_collectionList";
 
@@ -300,12 +63,11 @@ export const createEntityContext = <
             list = res as CollectionType[];
           }
           dispatch({
-            type: "SET_COLLECTION_LIST",
-            payload: list,
-          });
-          dispatch({
-            type: "SET_CURRENT_COLLECTION",
-            payload: list[0],
+            type: "ANY",
+            payload: {
+              collectionList: list,
+              currentCollection: list[0],
+            },
           });
         })
         .catch((e) => {
@@ -353,7 +115,7 @@ export const createEntityContext = <
               filterConfig: {},
             },
           });
-          const entityList = res ? (res as State["entityList"]) : [];
+          const entityList = res ? (res as AppState["entityList"]) : [];
           dispatch({
             type: "INIT_ENTITY_LIST",
             payload: entityList,
@@ -366,18 +128,25 @@ export const createEntityContext = <
           setPending(false);
         });
 
-      // todo: 写一下 return 函数，忽略过时的 currentCollection fetch 的数据
+      // todo: 写一下 return 的 cleanup 函数，忽略过时的 currentCollection fetch 的数据
       // https://react.dev/learn/synchronizing-with-effects#fetching-data
     }, [state.collectionList, state.currentCollection]);
 
+    // todo: 把这些 effects 拆下
     // entityList 变化时同步到 storage
     useEffect(() => {
-      if (!state.currentCollection?.id) {
-        return;
-      }
-      if (!pending && !state.fromLocalStorage) {
-        // todo：起初读取值的时候不要反向同步
-        localforage.setItem(state.currentCollection.id + "", state.entityList);
+      saveEntities();
+      function saveEntities() {
+        if (!state.currentCollection?.id) {
+          return;
+        }
+        if (!pending && !state.fromLocalStorage) {
+          // todo：起初读取值的时候不要反向同步
+          localforage.setItem(
+            state.currentCollection.id + "",
+            state.entityList
+          );
+        }
       }
     }, [state.entityList]);
 
@@ -405,49 +174,6 @@ export const createEntityContext = <
     useEntity,
     useEntityDispatch,
   };
-
-  function getShowingList<
-    EType extends BaseEntity,
-    CType extends BaseCollection
-  >({
-    entityList,
-    filters,
-    filterConfig,
-  }: {
-    entityList: EntityState<EType, CType>["entityList"];
-    filters: EntityState<EType, CType>["filters"];
-    filterConfig: State["filterConfig"];
-  }) {
-    let list = entityList;
-    for (const [key, value] of Object.entries(filters)) {
-      if (filterConfig.excludeIds) {
-        list = list.filter((e) => {
-          return !filterConfig.excludeIds?.includes(e.id);
-        });
-      }
-      if (typeof value == "undefined") {
-        continue;
-      }
-      if (typeof value === "string") {
-        list = list.filter((e) => {
-          return e[key].includes(value);
-        });
-      }
-      if (Array.isArray(value)) {
-        list = list.filter((item) => {
-          const itemValue = item[key];
-          if (Array.isArray(itemValue)) {
-            const hasValue = itemValue.some((item) => value.includes(item));
-            return filterConfig.includeNonKeys?.includes(key)
-              ? hasValue || !value.length || !itemValue.length
-              : hasValue;
-          }
-          return true;
-        });
-      }
-    }
-    return list;
-  }
 };
 
 export type EntityState<

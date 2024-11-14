@@ -9,12 +9,14 @@ import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
 import { ComponentProps, FC, PropsWithChildren, useCallback } from "react";
 import {
-  BaseCollection,
-  BaseEntity,
   createEntityContext,
   EntityDispatch,
   EntityState,
 } from "./createEntityContext";
+import {
+  BaseCollection,
+  BaseEntity
+} from "./types";
 import localforage from "localforage";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
 import { fetchWithAuth } from "../utils/fetch";
