@@ -345,6 +345,7 @@ export const createEntityContext = <
       localforage
         .getItem(state.currentCollection.id + "")
         .then((res) => {
+          // 切换时重置状态
           dispatch({
             type: "SET_FILTERS",
             payload: {
@@ -352,21 +353,11 @@ export const createEntityContext = <
               filterConfig: {},
             },
           });
-          if (!res) {
-            dispatch({
-              type: "INIT_ENTITY_LIST",
-              payload: [],
-            });
-            dispatch({
-              type: "SET_FILTERS",
-              payload: { filters: {}, filterConfig: {} },
-            });
-          } else {
-            dispatch({
-              type: "INIT_ENTITY_LIST",
-              payload: res as State["entityList"],
-            });
-          }
+          const entityList = res ? (res as State["entityList"]) : [];
+          dispatch({
+            type: "INIT_ENTITY_LIST",
+            payload: entityList,
+          });
         })
         .catch((e) => {
           alert(e.message);
@@ -374,6 +365,9 @@ export const createEntityContext = <
         .finally(() => {
           setPending(false);
         });
+
+      // todo: 写一下 return 函数，忽略过时的 currentCollection fetch 的数据
+      // https://react.dev/learn/synchronizing-with-effects#fetching-data
     }, [state.collectionList, state.currentCollection]);
 
     // entityList 变化时同步到 storage
