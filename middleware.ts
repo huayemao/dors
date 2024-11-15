@@ -6,7 +6,7 @@ const [AUTH_USER, AUTH_PASS] = (process.env.HTTP_BASIC_AUTH || ":").split(":");
 // Step 1. HTTP Basic Auth Middleware for Challenge
 export function middleware(req: NextRequest) {
   const basicAuthPathSuffixes = ["/api", "/admin", "/protected"];
-  const whiteList = ["/api/files"];
+  const whiteList = ["/api/files", "/api/getPost"];
 
   if (
     basicAuthPathSuffixes.some((suffix) =>
