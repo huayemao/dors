@@ -17,14 +17,8 @@ import {
 } from "react";
 import { useParams } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
-import {
-  EntityDispatch,
-  EntityState,
-} from "./createEntityContext";
-import {
-  BaseCollection,
-  BaseEntity
-} from "./types";
+import { EntityDispatch, EntityState } from "./createEntityContext";
+import { BaseCollection, BaseEntity } from "./types";
 import { AddAction } from "@/components/PostEditor/AddAction";
 import { useCloseModal } from "../utils/useCloseModal";
 
@@ -70,8 +64,10 @@ export default function ViewOrEditEntityModal<
   const entity = entityList.find((e) => String(e.id) == entityId);
 
   const cancel = useCallback(() => {
-    dispatch({ type: "CANCEL" });
-  }, [dispatch]);
+    if (state.modalOpen) {
+      dispatch({ type: "CANCEL" });
+    }
+  }, [dispatch, state.modalOpen]);
 
   useEffect(() => {
     if (!entity) {
@@ -87,14 +83,14 @@ export default function ViewOrEditEntityModal<
   }, [cancel, dispatch, entity]);
 
   useEffect(() => {
-    setTimeout(() => {
+    if (!state.modalOpen) {
       dispatch({
         type: "ANY",
         payload: {
           modalOpen: true,
         },
       });
-    }, 100);
+    }
 
     return () => {
       cancel();

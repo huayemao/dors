@@ -1,5 +1,6 @@
 import { readFromClipboard, withConfirm } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   BaseButton,
   BaseButtonIcon,
@@ -26,15 +27,17 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import {
-  EntityDispatch,
-  EntityState,
-} from "./createEntityContext";
-import {
-  BaseCollection,
-  BaseEntity
-} from "./types";
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useOutlet,
+  useParams,
+} from "react-router-dom";
+import { EntityDispatch, EntityState } from "./createEntityContext";
+import { BaseCollection, BaseEntity } from "./types";
+
 import toast from "react-hot-toast";
 import { fetchWithAuth } from "../utils/fetch";
 
@@ -65,6 +68,16 @@ export default function CollectionLayout<
   const { collectionId } = useParams();
   const [fetching, setFetching] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const location = useLocation();
+  const outlet = useOutlet();
+
+  useEffect(() => {
+    console.log(123);
+  }, []);
+
+  const p = useMemo(() => {
+    return location.pathname.split("/").length == 4 ? 0 : 1;
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!collectionId) {
@@ -174,6 +187,9 @@ export default function CollectionLayout<
 
   return (
     <>
+      <div className="fixed inset-0">
+        <AnimatePresence>{outlet}</AnimatePresence>
+      </div>
       <div className="md:px-12">
         <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
           <div className="flex items-center justify-around gap-2  relative w-full ">
@@ -358,7 +374,6 @@ export default function CollectionLayout<
             </div>
           </div>
         </div>
-        <Outlet />
       </div>
     </>
   );
