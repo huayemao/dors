@@ -52,7 +52,7 @@ export const Modal = ({
               </div>
               <div
                 className={cn(
-                  "p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden",
+                  "p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden break-all",
                   className
                 )}
               >
