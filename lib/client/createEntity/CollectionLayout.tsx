@@ -187,14 +187,14 @@ export default function CollectionLayout<
 
   return (
     <>
-      <div className="fixed inset-0">
-        <AnimatePresence>{outlet}</AnimatePresence>
-      </div>
       <div className="md:px-12">
         <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
           <div className="flex items-center justify-around gap-2  relative w-full ">
             <div className="inline-flex items-end gap-x-2 mr-auto">
-              <BaseDropdown label={currentCollection?.name} headerLabel="合集">
+              <BaseDropdown
+                label={currentCollection?.name}
+                headerLabel="合集"
+              >
                 {collectionList?.map((e) => (
                   <Link
                     state={{ __NA: {} }}
@@ -375,6 +375,7 @@ export default function CollectionLayout<
           </div>
         </div>
       </div>
+      <AnimatePresence>{outlet}</AnimatePresence>
     </>
   );
 }
