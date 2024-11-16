@@ -4,7 +4,7 @@ import Link from "next/link";
 export default async function TagsPage() {
   const tags = await getTags();
   return (
-    <div className="flex flex-wrap gap-4  justify-center max-w-3xl mx-auto">
+    <div className="flex flex-wrap gap-4 max-w-3xl mx-auto">
       {tags.map(({ name, id }) => {
         return (
           <Link
