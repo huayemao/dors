@@ -61,7 +61,7 @@ export const useActions = (note: Note) => {
         onClick: () => {
           console.log(note.content);
           copyTextToClipboard(note.content).then(() => {
-            toast("复制成功");
+            toast.success("复制成功");
           });
         },
         start: <Copy className="h-4 w-4" />,
@@ -77,7 +77,7 @@ export const useActions = (note: Note) => {
           // todo: 改成 editQuestion
           dispatch({ type: "SET_ENTITY_LIST", payload: newList });
           copyTextToClipboard(note.content).then(() => {
-            toast("归档成功");
+            toast.success("归档成功");
           });
         },
         start: <Archive className="h-4 w-4" />,
@@ -110,7 +110,7 @@ export const NotesContainer = ({
         // todo: 改成 editQuestion
         dispatch({ type: "SET_ENTITY_LIST", payload: newList });
         copyTextToClipboard(note.content).then(() => {
-          toast("归档成功");
+          toast.success("归档成功");
         });
       };
       return {
@@ -133,7 +133,7 @@ export const NotesContainer = ({
           onClick: () => {
             console.log(note.content);
             copyTextToClipboard(note.content).then(() => {
-              toast("复制成功");
+              toast.success("复制成功");
             });
           },
           start: <Copy className="h-4 w-4" />,

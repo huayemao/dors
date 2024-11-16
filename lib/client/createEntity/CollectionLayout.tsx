@@ -169,11 +169,6 @@ export default function CollectionLayout<
             _entityList: JSON.parse(obj.content),
           };
         })
-        .catch((e) => {
-          console.log(e.message);
-          console.error(e);
-          toast("同步数据失败：" + e.message);
-        })
         .finally(() => {
           setFetching(false);
         });
@@ -191,10 +186,7 @@ export default function CollectionLayout<
         <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
           <div className="flex items-center justify-around gap-2  relative w-full ">
             <div className="inline-flex items-end gap-x-2 mr-auto">
-              <BaseDropdown
-                label={currentCollection?.name}
-                headerLabel="合集"
-              >
+              <BaseDropdown label={currentCollection?.name} headerLabel="合集">
                 {collectionList?.map((e) => (
                   <Link
                     state={{ __NA: {} }}
@@ -267,10 +259,10 @@ export default function CollectionLayout<
                               payload: res._entityList,
                             });
 
-                            toast("同步数据成功");
+                            toast.success("同步数据成功");
                           })
                           .catch((e) => {
-                            toast(e.message);
+                            toast("同步数据失败：" + e.message);
                           });
                       }}
                       data-nui-tooltip="同步数据到本地"
@@ -312,10 +304,10 @@ export default function CollectionLayout<
                                 .filter((e) => e.id != currentCollection!.id)
                                 .concat(res),
                             });
-                            toast("数据上传成功");
+                            toast.success("数据上传成功");
                           })
                           .catch((e) => {
-                            toast("上传失败：" + e?.message);
+                            toast.error("上传失败：" + e?.message);
                           })
                           .finally(() => {
                             setUploading(false);

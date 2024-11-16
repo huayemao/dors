@@ -16,7 +16,7 @@ export const fetchWithAuth: typeof fetch = (input, init) => {
         }
         if (e.status == 401) {
             localStorage.removeItem("AUTH");
-            toast("请先登录");
+            toast("请先登录", { icon: '🪪' });
             const username = prompt("请输入用户名");
             const password = prompt("请输入密码");
             if (!username || !password) {

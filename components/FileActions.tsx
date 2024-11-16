@@ -13,7 +13,7 @@ export function FileActions({ e, admin }: { e: FileItem; admin: boolean }) {
         title="复制文件路径"
         onClick={() => {
           copyTextToClipboard(getFilePath(e.name)).then(() => {
-            toast("已复制到剪贴板")
+            toast.success("已复制到剪贴板")
           });
         }}
       ></BaseDropdownItem>
@@ -24,10 +24,10 @@ export function FileActions({ e, admin }: { e: FileItem; admin: boolean }) {
           onClick={() => {
             fetch("/api/files/" + e.id, { method: "DELETE" }).then((res) => {
               if (res.status == 200) {
-                toast("删除成功");
+                toast.success("删除成功");
               }
             }).catch((e) => {
-              toast("操作失败")
+              toast.error("操作失败")
             });
           }}
         ></BaseDropdownItem>
