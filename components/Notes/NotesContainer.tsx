@@ -109,9 +109,7 @@ export const NotesContainer = ({
         };
         // todo: 改成 editQuestion
         dispatch({ type: "SET_ENTITY_LIST", payload: newList });
-        copyTextToClipboard(note.content).then(() => {
-          toast.success("归档成功");
-        });
+        toast.success("归档成功");
       };
       return {
         edit: {
