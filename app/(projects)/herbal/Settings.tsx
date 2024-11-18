@@ -1,6 +1,6 @@
 "use client";
 import { useHerbalContext, useHerbalDispatch } from "./context";
-import { TokenForm, getData } from "./page.page";
+import { TokenForm, getData } from "./page";
 
 export function Settings(params) {
   const { list } = useHerbalContext();
@@ -19,3 +19,4 @@ export function Settings(params) {
     </div>
   );
 }
+  

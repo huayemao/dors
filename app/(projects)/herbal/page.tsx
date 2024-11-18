@@ -74,7 +74,7 @@ export async function getData(token: any) {
       }
     })
     .catch((e) => {
-      toast(e.message);
+      toast.error(e.message);
       if (localStorage.getItem("token")) {
         localStorage.removeItem("token");
       }
@@ -116,7 +116,7 @@ async function login(
             console.log(data);
             if (data.code == 200) {
               localStorage.setItem("token", data.token);
-              toast("登录成功");
+              toast.success("登录成功");
               resolve(data.token);
             } else {
               reject(data.msg);
@@ -128,7 +128,7 @@ async function login(
       }
     })
     .catch((e) => {
-      toast(e.message);
+      toast.error(e.message);
     });
 }
 
