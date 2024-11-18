@@ -47,51 +47,49 @@ export function NoteItem({
       : Fragment;
   }, [preview]);
 
-  return (
+  const Main = useMemo(
+    () => (
+      <div
+        className={cn("px-4", {
+          "min-w-[80%]": !preview,
+          "lg:px-6": preview,
+        })}
+      >
+        <Prose key={data.id} preview={preview} content={data.content}></Prose>
+      </div>
+    ),
+    [data.content, data.id, preview]
+  );
+
+  return preview ? (
     <ContextMenu>
       <ContextMenuTrigger>
         <Container>
-          <div
-            className={cn("px-4", {
-              "min-w-[80%]": !preview,
-              "lg:px-6": preview,
-            })}
-          >
-            <Prose
-              key={data.id}
-              preview={preview}
-              content={data.content}
-            ></Prose>
-          </div>
-          {preview && (
-            <>
-              {/* <hr className="text-primary-200 w-[90%] mx-auto"></hr> */}
-              <div className="m-2 p-2 rounded-b">
-                <div className="mb-1 flex gap-2 flex-wrap items-end">
-                  {data.tags?.map((e) => (
-                    <span key={e} className="cursor-pointer flex-shrink-0">
-                      <BaseTag
-                        key={e}
-                        size="sm"
-                        variant="pastel"
-                        color="muted"
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                          ev.stopPropagation();
-                          filterTags([e]);
-                        }}
-                      >
-                        {e}
-                      </BaseTag>
-                    </span>
-                  ))}
-                  <div className="ml-auto not-prose text-right text-sm text-slate-500">
-                    {getDateStr(new Date(data.id)).slice(0, -5)}
-                  </div>
-                </div>
+          {Main}
+          <div className="m-2 p-2 rounded-b">
+            <div className="mb-1 flex gap-2 flex-wrap items-end">
+              {data.tags?.map((e) => (
+                <span key={e} className="cursor-pointer flex-shrink-0">
+                  <BaseTag
+                    key={e}
+                    size="sm"
+                    variant="pastel"
+                    color="muted"
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      ev.stopPropagation();
+                      filterTags([e]);
+                    }}
+                  >
+                    {e}
+                  </BaseTag>
+                </span>
+              ))}
+              <div className="ml-auto not-prose text-right text-sm text-slate-500">
+                {getDateStr(new Date(data.id)).slice(0, -5)}
               </div>
-            </>
-          )}
+            </div>
+          </div>
         </Container>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">
@@ -113,5 +111,7 @@ export function NoteItem({
         })}
       </ContextMenuContent>
     </ContextMenu>
+  ) : (
+    <Container>{Main}</Container>
   );
 }
