@@ -255,7 +255,7 @@ export const getPageCount = unstable_cache(
       return Object.assign(item, acc);
     }, {});
 
-    const itemCount = await prisma.posts.count({ where: where });
+    const itemCount: number = await prisma.posts.count({ where: where });
     return Math.ceil(
       itemCount / (Number(options.perPage) || POSTS_COUNT_PER_PAGE)
     );

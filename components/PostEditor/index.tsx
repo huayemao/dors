@@ -37,7 +37,6 @@ import { detectChange } from "./detectChange";
 const DEFAULT_CATEGORY_ID = 3;
 
 function PostEditor(props: PostEditorProps) {
-
   const routes = createBrowserRouter(
     [
       {
@@ -46,13 +45,10 @@ function PostEditor(props: PostEditorProps) {
         children: [
           {
             path: "settings",
-            Component: withModal(
-              SettingsComponent,
-              "设置",
-            ),
+            Component: withModal(SettingsComponent, "设置"),
           },
           ...addActionRoutes,
-        ]
+        ],
       },
     ],
     { basename: props.basePath }
@@ -88,11 +84,13 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
 
   const handleOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     setSaving(true);
-    const changed = detectChange(e.target as HTMLFormElement);
-    if (!changed) {
-      e.preventDefault();
-      alert("尚未修改内容");
-      setSaving(false);
+    if (post) {
+      const changed = detectChange(e.target as HTMLFormElement);
+      if (!changed) {
+        e.preventDefault();
+        alert("尚未修改内容");
+        setSaving(false);
+      }
     }
     window.removeEventListener("beforeunload", handleOnBeforeUnload);
   };
