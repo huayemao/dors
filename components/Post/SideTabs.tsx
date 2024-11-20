@@ -97,24 +97,19 @@ export default function SideTabs({ post, posts }) {
         }}
         title={post.title}
       >
-        <div
-          ref={ref}
-        >
-          {post.content}
-        </div>
+        <div ref={ref}>{post.content}</div>
       </Modal>
     </>
   );
 
   function renderTabs() {
+    const tabs = [{ label: "选项", value: "actions" }];
+
+    if (post.content?.includes("##")) {
+      tabs.unshift({ label: "文章大纲", value: "toc" });
+    }
     return (
-      <BaseTabs
-        defaultValue="toc"
-        tabs={[
-          { label: "文章大纲", value: "toc" },
-          { label: "选项", value: "actions" },
-        ]}
-      >
+      <BaseTabs defaultValue={tabs[0].value} tabs={tabs}>
         {(activeValue) => (
           <>
             {activeValue === "actions" && (
