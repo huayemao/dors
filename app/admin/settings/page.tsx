@@ -4,7 +4,7 @@ import { HiddenCatsForm } from "./HiddenCatsForm";
 import { ResourceForm } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
 import { Panel } from "@/components/Base/Panel";
-import { BaseButton, BaseInput } from "@shuriken-ui/react";
+import { BaseButton, BaseInput, BaseTextarea } from "@shuriken-ui/react";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +46,7 @@ export default async function AdminSettingsPage({ params }) {
             <BaseButton type="submit">提交</BaseButton>
           </form>
         </Panel>
-        {JSON.stringify(settings)}
+        <BaseTextarea value={JSON.stringify(settings)}></BaseTextarea>
       </section>
     </main>
   );
