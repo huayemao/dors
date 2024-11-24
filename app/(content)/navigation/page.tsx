@@ -56,7 +56,7 @@ export default async function Navigation() {
                   "mt-0": i === 0,
                 })}
               >
-                <BaseHeading as="h3">{e.tags}</BaseHeading>
+                <BaseHeading as="h3" size="2xl">{e.tags}</BaseHeading>
                 <Prose content={e.content}></Prose>
               </BaseCard>
             );
