@@ -16,12 +16,17 @@ function deleteCache() {
   });
 }
 
-function Revalidate() {
+function ToolBar({ postId }) {
   return (
-    <BaseButton size="sm" variant="pastel" onClick={deleteCache}>
-      清除缓存
-    </BaseButton>
+    <div className="flex gap-2 justify-end items-center">
+      <BaseButton size="sm" variant="pastel" onClick={deleteCache}>
+        清除缓存
+      </BaseButton>
+      <BaseButton size="sm" variant="pastel" href={"/notes/" + postId}>
+        编辑
+      </BaseButton>
+    </div>
   );
 }
 
-export default Revalidate;
+export default ToolBar;

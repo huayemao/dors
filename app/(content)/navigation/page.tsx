@@ -4,7 +4,7 @@ import { BaseCard, BaseHeading } from "@shuriken-ui/react";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Revalidate from "./Revalidate";
+import ToolBar from "./ToolBar";
 import { cn } from "@/lib/utils";
 
 const getNavContent = unstable_cache(
@@ -18,7 +18,6 @@ const getNavContent = unstable_cache(
     }
 
     const postId = Number(res as string[][0]);
-    console.log(postId);
 
     const post = await prisma.posts.findFirst({
       where: {
@@ -46,7 +45,7 @@ export default async function Navigation() {
           花野猫的导航页
         </BaseHeading>
         <div className="text-right">
-          <Revalidate></Revalidate>
+          <ToolBar postId={res.postId}></ToolBar>
         </div>
         <div className="masonry sm:masonry-sm md:masonry-md mb-auto">
           {cats.map((e, i) => {
