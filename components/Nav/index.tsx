@@ -82,34 +82,35 @@ export const Nav = ({
     {
       title: "资源",
       icon: LinkIcon,
-      children: categories
-        .filter((e) => !!e.hidden)
-        .map((e) => ({
-          title: e.name!,
-          href: "/categories/" + e.id,
-          text: e.description || "",
-        }))
-        .concat([
-          {
-            title: "小记",
-            href: "/notes",
-            text: "本地记录功能",
-          },
-          {
-            title: "随手记",
-            href: "https://www.yuque.com/huayemao/yuque/dc_213",
-            text: "语雀链接",
-          },
-        ])
-        .concat(
-          ...resourceItems.map((e) => {
-            return {
-              title: e.title,
-              text: e.subtitle,
-              href: e.url,
-            };
-          })
-        ),
+      href: "/navigation",
+      // children: categories
+      //   .filter((e) => !!e.hidden)
+      //   .map((e) => ({
+      //     title: e.name!,
+      //     href: "/categories/" + e.id,
+      //     text: e.description || "",
+      //   }))
+      //   .concat([
+      //     {
+      //       title: "小记",
+      //       href: "/notes",
+      //       text: "本地记录功能",
+      //     },
+      //     {
+      //       title: "随手记",
+      //       href: "https://www.yuque.com/huayemao/yuque/dc_213",
+      //       text: "语雀链接",
+      //     },
+      //   ])
+      //   .concat(
+      //     ...resourceItems.map((e) => {
+      //       return {
+      //         title: e.title,
+      //         text: e.subtitle,
+      //         href: e.url,
+      //       };
+      //     })
+      //   ),
     },
     {
       title: "管理",

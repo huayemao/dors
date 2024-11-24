@@ -4,6 +4,7 @@ import { HiddenCatsForm } from "./HiddenCatsForm";
 import { ResourceForm } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
 import { Panel } from "@/components/Base/Panel";
+import { BaseButton, BaseInput } from "@shuriken-ui/react";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,28 @@ export default async function AdminSettingsPage({ params }) {
         </Panel>
         <Panel title="导航栏">
           <ResourceForm settings={settings}></ResourceForm>
+        </Panel>
+        <Panel title="导航内容对应 post id">
+          <form action="/api/settings" method="POST">
+            <input
+              className="hidden"
+              type="text"
+              // @ts-ignore
+              name="key"
+              value={"nav_content_post_id"}
+            />
+            <BaseInput
+              // @ts-ignore
+              name="value"
+              defaultValue={
+                (
+                  settings.find((e) => e.key === "nav_content_post_id")
+                    ?.value as number[]
+                )[0] || ""
+              }
+            />
+            <BaseButton type="submit">提交</BaseButton>
+          </form>
         </Panel>
         {JSON.stringify(settings)}
       </section>

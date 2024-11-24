@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-globals */
 const ASSETS = [
   "/notes",
+  "/navigation",
   // "/shiki/languages/c.tmLanguage.json",
   // "/shiki/languages/cpp.tmLanguage.json",
   // "/shiki/languages/css.tmLanguage.json",
