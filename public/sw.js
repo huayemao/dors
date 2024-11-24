@@ -20,8 +20,8 @@ const ASSETS = [
   // "/shiki/onig.wasm",
 ];
 importScripts('/version.js')
-const DYNAMIC_PATHS = ['/_next/static/chunks','favicon.ico']
-const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/','/_next/image']
+const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico']
+const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image']
 
 
 self.addEventListener("fetch", (e) => {
@@ -80,4 +80,9 @@ self.addEventListener("fetch", (e) => {
   }),
   self.addEventListener("message", (e) => {
     "skip-waiting" === e.data && self.skipWaiting();
+    if ("revalidate-navigation-page" === e.data) {
+      caches.open(VERSION).then((e) => e.delete('/navigation')).then((res) => {
+        console.log("已清除缓存")
+      });
+    }
   });

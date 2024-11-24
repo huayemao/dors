@@ -3,17 +3,17 @@ import { BaseButton } from "@shuriken-ui/react";
 import React from "react";
 
 function deleteCache() {
-  caches
-    .keys()
-    .then((e) => {
-      const s = e.map((e) => {
-        if (["/navigation"].includes(e)) return caches.delete(e);
-      });
-      return Promise.all(s);
-    })
-    .then(() => {
-      window.location.reload();
-    });
+  navigator.serviceWorker.getRegistration().then((r) => {
+    if (!r) {
+      return;
+    }
+    const { waiting, active } = r;
+    if (waiting) {
+      waiting.postMessage("skip-waiting");
+      return;
+    }
+    active?.postMessage("revalidate-navigation-page");
+  });
 }
 
 function Revalidate() {
