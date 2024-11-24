@@ -16,6 +16,7 @@ import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import { BaseCard } from "@shuriken-ui/react";
 import React, { ReactElement } from "react";
+import { cn } from "../utils";
 
 export const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
@@ -49,6 +50,37 @@ export const components = {
   img: (props) => {
     return <Figure {...props} />;
   },
+  NavList: (props) => {
+    const arr = React.Children.toArray(props.children);
+    const ul = arr[0] as ReactElement;
+    const lis = filterEmptyLines(React.Children.toArray(ul.props.children));
+    console.log(lis);
+    return (
+      <ul className={cn("not-prose", props.className)}>
+        {lis.map((li: ReactElement, i) => {
+          const a = React.Children.toArray(
+            li.props.children
+          )[0] as ReactElement;
+          const title = React.Children.toArray(a.props.children)[0] as string;
+          return (
+            <li
+              key={i}
+              className="nui-list-item hover:bg-muted-100 transition rounded-lg px-4 py-2"
+            >
+              <a href={a.props.href}>
+                <h6 className="nui-heading nui-heading-md nui-weight-medium nui-lead-tight">
+                  {title}
+                </h6>
+                <p className="nui-paragraph nui-paragraph-xs nui-weight-normal nui-lead-normal text-muted-500 dark:text-muted-400">
+                  {a.props.title || title}
+                </p>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  },
   p: (props) => {
     if (props.children) {
       const arr = React.Children.toArray(props.children);
@@ -59,10 +91,7 @@ export const components = {
           return isEmpty || ps?.href || ps?.src;
         })
       ) {
-        const filtered = arr.filter((e) => {
-          const isEmpty = typeof e == "string" && !e.trim();
-          return !isEmpty;
-        });
+        const filtered = filterEmptyLines(arr);
 
         return (
           <>
@@ -96,3 +125,17 @@ export const components = {
     // );
   },
 };
+function filterEmptyLines(
+  arr: (
+    | string
+    | number
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | React.ReactFragment
+    | React.ReactPortal
+  )[]
+) {
+  return arr.filter((e) => {
+    const isEmpty = typeof e == "string" && !e.trim();
+    return !isEmpty;
+  });
+}

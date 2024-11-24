@@ -68,16 +68,7 @@ export default function CollectionLayout<
   const { collectionId } = useParams();
   const [fetching, setFetching] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const location = useLocation();
   const outlet = useOutlet();
-
-  useEffect(() => {
-    console.log(123);
-  }, []);
-
-  const p = useMemo(() => {
-    return location.pathname.split("/").length == 4 ? 0 : 1;
-  }, [location.pathname]);
 
   useEffect(() => {
     if (!collectionId) {

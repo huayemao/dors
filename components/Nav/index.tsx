@@ -118,7 +118,7 @@ export const Nav = ({
       children: [
         {
           title: "后台",
-          href: "admin",
+          href: "/admin",
           text: "后台管理页面",
         },
         {
