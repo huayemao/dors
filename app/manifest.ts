@@ -40,6 +40,16 @@ export default function manifest(): MetadataRoute.Manifest {
     // todo: 动态化，存到 settings 表
     shortcuts: [
       {
+        name: "导航",
+        url: "/navigation",
+        icons: [
+          {
+            src: "img/icons/navigation.svg",
+            sizes: "any",
+          },
+        ],
+      },
+      {
         name: "小记",
         url: "/notes",
         icons: [
