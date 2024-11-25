@@ -13,8 +13,11 @@ import remarkMath from "remark-math";
 import { components } from "./useComponents";
 import { myRemarkPlugin } from "./myRemarkPlugin";
 import "katex/dist/katex.min.css";
+import { cache } from "react";
 
-export async function parseMDX(post: { content?: string | null | undefined }) {
+export default cache(parseMDX);
+
+async function parseMDX(post: { content?: string | null | undefined }) {
   try {
     return await compileMDX({
       source: post?.content || "",

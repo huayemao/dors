@@ -6,7 +6,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { cn } from "@/lib/utils";
-import { parseMDX } from "@/lib/mdx/parseMDX";
+import parseMDX  from "@/lib/mdx/parseMDX";
 
 export const maxDuration = 25;
 

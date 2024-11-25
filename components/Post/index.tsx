@@ -8,7 +8,7 @@ import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
 import CollectionContent from "../Collection/Content";
 import { markdownToJson } from "../Collection/markdownToJson";
-import { parseMDX } from "@/lib/mdx/parseMDX";
+import parseMDX  from "@/lib/mdx/parseMDX";
 import Prose from "../Base/Prose";
 import { NotesContainer } from "../Notes/NotesContainer";
 import ContentModal from "./ContentModal";
