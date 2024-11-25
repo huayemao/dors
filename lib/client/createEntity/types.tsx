@@ -13,7 +13,11 @@ export type filtersType<EntityType> = Partial<Record<keyof EntityType, any>>;
 
 export type State<
   EntityType extends BaseEntity,
-  CollectionType extends BaseCollection & { _entityList?: EntityType[] }
+  CollectionType extends BaseCollection & {
+    _entityList?: EntityType[];
+    entityList?: EntityType[];
+    updated_at?: string;
+  }
 > = {
   modalOpen: boolean;
   entityModalMode: "view" | "edit";

@@ -84,6 +84,8 @@ export const createEntityContext = <
     }, [state.collectionList]);
 
     useEffect(() => {
+      let ignore = false;
+
       if (!state.currentCollection?.id) {
         return;
       }
@@ -107,6 +109,9 @@ export const createEntityContext = <
       localforage
         .getItem(state.currentCollection.id + "")
         .then((res) => {
+          if (ignore) {
+            return;
+          }
           // 切换时重置状态
           dispatch({
             type: "SET_FILTERS",
@@ -128,8 +133,11 @@ export const createEntityContext = <
           setPending(false);
         });
 
-      // todo: 写一下 return 的 cleanup 函数，忽略过时的 currentCollection fetch 的数据
+      // cleanup 函数，忽略过时的 currentCollection fetch 的数据
       // https://react.dev/learn/synchronizing-with-effects#fetching-data
+      return () => {
+        ignore = true;
+      };
     }, [state.collectionList, state.currentCollection]);
 
     // todo: 把这些 effects 拆下

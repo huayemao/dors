@@ -44,7 +44,11 @@ import { fetchWithAuth } from "../utils/fetch";
 
 export default function CollectionLayout<
   EType extends BaseEntity,
-  CType extends BaseCollection
+  CType extends BaseCollection & {
+    _entityList?: EType[];
+    entityList?: EType[];
+    updated_at?: string;
+  }
 >({
   slots,
   renderEntity,
@@ -173,33 +177,42 @@ export default function CollectionLayout<
         payload: collection,
       });
     }
+  }, [
+    collectionId,
+    dispatch,
+    state.collectionList,
+    state.currentCollection?.id,
+  ]);
+
+  useEffect(() => {
+    let ignore = false;
+
     if (currentCollection?.online) {
       const id = toast.loading("正在从云端获取数据");
       syncFromCloud()?.then((e) => {
-        if (
-          e.content == JSON.stringify(entityList) &&
-          e.name == currentCollection?.name
-        ) {
+        if (ignore) {
+          toast.dismiss(id);
+          return;
+        }
+        console.log(e, currentCollection);
+        // @ts-ignore
+        if (e.updated_at == currentCollection?.updated_at) {
           toast.dismiss(id);
           toast.success("数据已为最新");
           return;
         }
         const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+        toast.dismiss(id);
         if (answer) {
           applyChange(e);
-          toast.dismiss(id);
           toast.success("同步数据成功");
         }
       });
     }
-  }, [
-    collectionId,
-    dispatch,
-    state.collectionList,
-    currentCollection?.id,
-    syncFromCloud,
-    applyChange,
-  ]);
+    return () => {
+      ignore = true;
+    };
+  }, [applyChange, currentCollection, syncFromCloud]);
 
   const navigate = useNavigate();
 
