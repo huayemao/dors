@@ -66,6 +66,28 @@ export const getReducer = <
       case "SET_CURRENT_COLLECTION": {
         const collection = action.payload;
         if (collection) {
+          const isUpdating =
+            collection.id &&
+            collection.updated_at &&
+            collection.id == state.currentCollection?.id &&
+            state.currentCollection?.updated_at &&
+            collection.updated_at != state.currentCollection?.updated_at;
+
+          if (isUpdating) {
+            const index = state.collectionList.findIndex(
+              (e) => e.id == collection.id
+            );
+            const newList = [...state.collectionList];
+            newList[index] = collection;
+            const patch = {
+              currentCollection: collection,
+              collectionList: newList,
+              entityList: collection._entityList,
+              fromLocalStorage: false,
+            };
+            return Object.assign({}, state, patch);
+          }
+
           const isImporting =
             collection.id &&
             collection.id != defaultCollection.id &&

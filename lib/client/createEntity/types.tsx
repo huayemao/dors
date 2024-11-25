@@ -7,6 +7,7 @@ export interface BaseCollection {
   id: number | string;
   name: string;
   online: boolean;
+  updated_at?: string;
 }
 
 export type filtersType<EntityType> = Partial<Record<keyof EntityType, any>>;
@@ -16,7 +17,6 @@ export type State<
   CollectionType extends BaseCollection & {
     _entityList?: EntityType[];
     entityList?: EntityType[];
-    updated_at?: string;
   }
 > = {
   modalOpen: boolean;

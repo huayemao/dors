@@ -77,31 +77,12 @@ export default function CollectionLayout<
 
   const applyChange = useCallback(
     (res: any) => {
-      const targetIndex = collectionList.findIndex((e) => e.id == res.id);
-      const newList = [...collectionList];
-      if (targetIndex == -1) {
-        newList.push(res);
-      } else {
-        newList[targetIndex] = res;
-      }
-
-      flushSync(() => {
-        dispatch({
-          type: "SET_COLLECTION_LIST",
-          payload: newList,
-        });
-        dispatch({
-          type: "SET_CURRENT_COLLECTION",
-          payload: res,
-        });
-        dispatch({
-          type: "SET_ENTITY_LIST",
-          // @ts-ignore
-          payload: res._entityList,
-        });
+      dispatch({
+        type: "SET_CURRENT_COLLECTION",
+        payload: res,
       });
     },
-    [collectionList, dispatch]
+    [dispatch]
   );
 
   const copy = useCallback(
@@ -194,7 +175,6 @@ export default function CollectionLayout<
           toast.dismiss(id);
           return;
         }
-        console.log(e, currentCollection);
         // @ts-ignore
         if (e.updated_at == currentCollection?.updated_at) {
           toast.dismiss(id);
@@ -212,7 +192,12 @@ export default function CollectionLayout<
     return () => {
       ignore = true;
     };
-  }, [applyChange, currentCollection, syncFromCloud]);
+  }, [
+    applyChange,
+    currentCollection?.id,
+    syncFromCloud,
+    currentCollection?.online,
+  ]);
 
   const navigate = useNavigate();
 
@@ -331,10 +316,9 @@ export default function CollectionLayout<
                           })
                           .then((res) => {
                             dispatch({
-                              type: "SET_COLLECTION_LIST",
-                              payload: collectionList
-                                .filter((e) => e.id != currentCollection!.id)
-                                .concat(res),
+                              type: "SET_CURRENT_COLLECTION",
+                              // 把最新的 collection 数据存下来，更新 updated_at 等
+                              payload: res,
                             });
                             toast.success("数据上传成功");
                           })
