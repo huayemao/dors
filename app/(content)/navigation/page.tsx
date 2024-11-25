@@ -40,12 +40,12 @@ export default async function Navigation() {
   }
 
   const cats: any[] = JSON.parse(res.post!.content!);
-  const details = await Promise.all(
-    cats.map(async (e) => ({
-      ...e,
-      content: (await parseMDX({ content: e.content })).content,
-    }))
-  );
+  // const details = await Promise.all(
+  //   cats.map(async (e) => ({
+  //     ...e,
+  //     content: (await parseMDX({ content: e.content })).content,
+  //   }))
+  // );
 
   return (
     <>
@@ -57,7 +57,7 @@ export default async function Navigation() {
           <ToolBar postId={res.postId}></ToolBar>
         </div>
         <div className="masonry sm:masonry-sm md:masonry-md mb-auto">
-          {details.map((e, i) => {
+          {cats.map((e, i) => {
             return (
               <BaseCard
                 key={e.id}
