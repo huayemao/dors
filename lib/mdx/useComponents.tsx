@@ -17,6 +17,7 @@ import Word from "@/components/Word";
 import { BaseCard } from "@shuriken-ui/react";
 import React, { ReactElement } from "react";
 import { cn } from "../utils";
+import Link from "next/link";
 
 export const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
@@ -66,14 +67,14 @@ export const components = {
               key={i}
               className="nui-list-item hover:bg-muted-100 transition rounded-lg px-4 py-2"
             >
-              <a href={a.props.href}>
+              <Link href={a.props.href}>
                 <h6 className="nui-heading nui-heading-md nui-weight-medium nui-lead-tight">
                   {title}
                 </h6>
                 <p className="nui-paragraph nui-paragraph-xs nui-weight-normal nui-lead-normal text-muted-500 dark:text-muted-400">
                   {a.props.title || title}
                 </p>
-              </a>
+              </Link>
             </li>
           );
         })}

@@ -2,7 +2,6 @@ import Prose from "@/components/Base/Prose";
 import prisma from "@/lib/prisma";
 import { BaseCard, BaseHeading } from "@shuriken-ui/react";
 import { unstable_cache } from "next/cache";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { cn } from "@/lib/utils";
