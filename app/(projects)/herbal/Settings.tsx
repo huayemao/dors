@@ -56,6 +56,7 @@ export function TokenForm({
         }
         const { token, username, password, captcha } = getInputValues(e);
         if (token) {
+          // todo: 这里也可能是残存的 token
           await onTokenChange(token);
         } else {
           const token = await HerbalApiService.login(

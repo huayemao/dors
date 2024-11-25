@@ -27,6 +27,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { flushSync } from "react-dom";
 import {
   Link,
   Outlet,
@@ -70,68 +71,34 @@ export default function CollectionLayout<
   const [uploading, setUploading] = useState(false);
   const outlet = useOutlet();
 
-  useEffect(() => {
-    if (!collectionId) {
-      return;
-    }
-
-    if (collectionId != state.currentCollection?.id) {
-      let collection =
-        state.collectionList.find((e) => e.id == collectionId) || null;
-      if (!collection) {
-        fetchWithAuth("/api/getPost?id=" + collectionId)
-          .then((e) => e.json())
-          .then((obj) => {
-            return {
-              ...obj,
-              id: obj.id,
-              name: obj.title,
-              online: true,
-              _entityList: JSON.parse(obj.content),
-            };
-          })
-          .then((res: CType & { content: string }) => {
-            collection = res;
-          })
-          .catch((error) => {
-            console.error("从网络获取数据失败：" + error);
-            collection = null;
-          })
-          .then(() => {
-            dispatch({
-              type: "SET_CURRENT_COLLECTION",
-              payload: collection,
-            });
-          });
+  const applyChange = useCallback(
+    (res: any) => {
+      const targetIndex = collectionList.findIndex((e) => e.id == res.id);
+      const newList = [...collectionList];
+      if (targetIndex == -1) {
+        newList.push(res);
+      } else {
+        newList[targetIndex] = res;
       }
 
-      dispatch({
-        type: "SET_CURRENT_COLLECTION",
-        payload: collection,
+      flushSync(() => {
+        dispatch({
+          type: "SET_COLLECTION_LIST",
+          payload: newList,
+        });
+        dispatch({
+          type: "SET_CURRENT_COLLECTION",
+          payload: res,
+        });
+        dispatch({
+          type: "SET_ENTITY_LIST",
+          // @ts-ignore
+          payload: res._entityList,
+        });
       });
-    }
-  }, [
-    collectionId,
-    dispatch,
-    state.collectionList,
-    state.currentCollection?.id,
-  ]);
-
-  const navigate = useNavigate();
-
-  const importQuestionsFromClipBoard = useCallback(() => {
-    readFromClipboard().then((text) => {
-      try {
-        const obj = JSON.parse(text);
-        if (obj[0].id) {
-          dispatch({ type: "SET_ENTITY_LIST", payload: obj });
-          alert("导入成功");
-        }
-      } catch (error) {
-        alert("数据导入错误：" + error.message);
-      }
-    });
-  }, [dispatch]);
+    },
+    [collectionList, dispatch]
+  );
 
   const copy = useCallback(
     (e) => {
@@ -166,6 +133,89 @@ export default function CollectionLayout<
     },
     [currentCollection?.id]
   );
+
+  useEffect(() => {
+    if (!collectionId) {
+      return;
+    }
+
+    let collection =
+      state.collectionList.find((e) => e.id == collectionId) || null;
+    if (collectionId != state.currentCollection?.id) {
+      if (!collection) {
+        fetchWithAuth("/api/getPost?id=" + collectionId)
+          .then((e) => e.json())
+          .then((obj) => {
+            return {
+              ...obj,
+              id: obj.id,
+              name: obj.title,
+              online: true,
+              _entityList: JSON.parse(obj.content),
+            };
+          })
+          .then((res: CType & { content: string }) => {
+            collection = res;
+          })
+          .catch((error) => {
+            console.error("从网络获取数据失败：" + error);
+            collection = null;
+          })
+          .then(() => {
+            dispatch({
+              type: "SET_CURRENT_COLLECTION",
+              payload: collection,
+            });
+          });
+      }
+      dispatch({
+        type: "SET_CURRENT_COLLECTION",
+        payload: collection,
+      });
+    }
+    if (currentCollection?.online) {
+      const id = toast.loading("正在从云端获取数据");
+      syncFromCloud()?.then((e) => {
+        if (
+          e.content == JSON.stringify(entityList) &&
+          e.name == currentCollection?.name
+        ) {
+          toast.dismiss(id);
+          toast.success("数据已为最新");
+          return;
+        }
+        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+        if (answer) {
+          applyChange(e);
+          toast.dismiss(id);
+          toast.success("同步数据成功");
+        }
+      });
+    }
+  }, [
+    collectionId,
+    dispatch,
+    state.collectionList,
+    currentCollection?.id,
+    syncFromCloud,
+    applyChange,
+  ]);
+
+  const navigate = useNavigate();
+
+  const importQuestionsFromClipBoard = useCallback(() => {
+    readFromClipboard().then((text) => {
+      try {
+        const obj = JSON.parse(text);
+        if (obj[0].id) {
+          dispatch({ type: "SET_ENTITY_LIST", payload: obj });
+          alert("导入成功");
+        }
+      } catch (error) {
+        alert("数据导入错误：" + error.message);
+      }
+    });
+  }, [dispatch]);
 
   const Head = slots?.["head"];
 
@@ -227,29 +277,7 @@ export default function CollectionLayout<
                       onClick={() => {
                         syncFromCloud()
                           ?.then?.((res) => {
-                            const targetIndex = collectionList.findIndex(
-                              (e) => e.id == res.id
-                            );
-                            const newList = [...collectionList];
-                            if (targetIndex == -1) {
-                              newList.push(res);
-                            } else {
-                              newList[targetIndex] = res;
-                            }
-                            dispatch({
-                              type: "SET_COLLECTION_LIST",
-                              payload: newList,
-                            });
-                            dispatch({
-                              type: "SET_CURRENT_COLLECTION",
-                              payload: res,
-                            });
-                            dispatch({
-                              type: "SET_ENTITY_LIST",
-                              // @ts-ignore
-                              payload: res._entityList,
-                            });
-
+                            applyChange(res);
                             toast.success("同步数据成功");
                           })
                           .catch((e) => {
