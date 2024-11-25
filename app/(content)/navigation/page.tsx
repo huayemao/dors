@@ -6,6 +6,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { cn } from "@/lib/utils";
+import { parseMDX } from "@/lib/mdx/parseMDX";
+
+export const maxDuration = 25;
 
 const getNavContent = unstable_cache(
   async function () {
@@ -36,7 +39,13 @@ export default async function Navigation() {
     return notFound();
   }
 
-  const cats = JSON.parse(res.post!.content!);
+  const cats: any[] = JSON.parse(res.post!.content!);
+  const details = await Promise.all(
+    cats.map(async (e) => ({
+      ...e,
+      content: (await parseMDX({ content: e.content })).content,
+    }))
+  );
 
   return (
     <>
@@ -48,7 +57,7 @@ export default async function Navigation() {
           <ToolBar postId={res.postId}></ToolBar>
         </div>
         <div className="masonry sm:masonry-sm md:masonry-md mb-auto">
-          {cats.map((e, i) => {
+          {details.map((e, i) => {
             return (
               <BaseCard
                 key={e.id}
@@ -56,7 +65,9 @@ export default async function Navigation() {
                   "mt-0": i === 0,
                 })}
               >
-                <BaseHeading as="h3" size="2xl">{e.tags}</BaseHeading>
+                <BaseHeading as="h3" size="2xl">
+                  {e.tags}
+                </BaseHeading>
                 <Prose content={e.content}></Prose>
               </BaseCard>
             );

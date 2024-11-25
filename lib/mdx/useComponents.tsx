@@ -54,7 +54,6 @@ export const components = {
     const arr = React.Children.toArray(props.children);
     const ul = arr[0] as ReactElement;
     const lis = filterEmptyLines(React.Children.toArray(ul.props.children));
-    console.log(lis);
     return (
       <ul className={cn("not-prose", props.className)}>
         {lis.map((li: ReactElement, i) => {
