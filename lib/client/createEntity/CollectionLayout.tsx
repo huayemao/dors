@@ -169,7 +169,9 @@ export default function CollectionLayout<
     let ignore = false;
 
     if (currentCollection?.online) {
-      const id = toast.loading("正在从云端获取数据");
+      const id = toast.loading("正在从云端获取数据", {
+        position: "bottom-left",
+      });
       syncFromCloud()?.then((e) => {
         if (ignore) {
           toast.dismiss(id);
@@ -178,7 +180,7 @@ export default function CollectionLayout<
         // @ts-ignore
         if (e.updated_at == currentCollection?.updated_at) {
           toast.dismiss(id);
-          toast.success("数据已为最新");
+          toast.success("数据已为最新", { position: "bottom-left" });
           return;
         }
         const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
