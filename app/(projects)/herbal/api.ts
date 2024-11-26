@@ -13,6 +13,7 @@ const withReAuth =
                             }
                             return data;
                         } else {
+                            localStorage.removeItem("token");
                             throw new Error(data.msg);
                         }
                     });

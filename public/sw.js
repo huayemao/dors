@@ -20,7 +20,7 @@ const ASSETS = [
   // "/shiki/onig.wasm",
 ];
 importScripts('/version.js')
-const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico']
+const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal"]
 const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image']
 
 
