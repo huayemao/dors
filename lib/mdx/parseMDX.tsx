@@ -17,12 +17,14 @@ import { cache } from "react";
 
 export default cache(parseMDX);
 
-async function parseMDX(post: { content?: string | null | undefined }) {
+async function parseMDX(
+  post: { content?: string | null | undefined },
+  options?: { components: {} }
+) {
   try {
     return await compileMDX({
       source: post?.content || "",
-      //@ts-ignore
-      components: components,
+      components: { ...components, ...(options?.components || {}) },
       options: {
         mdxOptions: {
           remarkRehypeOptions: {
@@ -57,6 +59,7 @@ async function parseMDX(post: { content?: string | null | undefined }) {
       },
     });
   } catch (error) {
+    console.error(error)
     return { content: post.content };
   }
 }

@@ -5,7 +5,7 @@ import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { cn } from "@/lib/utils";
-import parseMDX  from "@/lib/mdx/parseMDX";
+import parseMDX from "@/lib/mdx/parseMDX";
 
 export const maxDuration = 25;
 
@@ -34,17 +34,41 @@ const getNavContent = unstable_cache(
 
 export default async function Navigation() {
   const res = await getNavContent();
+
   if (!res) {
     return notFound();
   }
 
   const cats: any[] = JSON.parse(res.post!.content!);
-  // const details = await Promise.all(
-  //   cats.map(async (e) => ({
-  //     ...e,
-  //     content: (await parseMDX({ content: e.content })).content,
-  //   }))
-  // );
+
+  const allContent = cats
+    .map(
+      (e, i) =>
+        `\n<Container tags={"${e.tags}"} id={${e.id}} i={${i}}>\n${e.content}\n</Container>\n`
+    )
+    .join("\n");
+  const mdxRes = (
+    await parseMDX(
+      { content: allContent },
+      {
+        components: {
+          Container: (props) => (
+            <BaseCard
+              key={props.id}
+              className={cn("my-4 p-4 break-inside-avoid", {
+                "mt-0": props.i === 0,
+              })}
+            >
+              <BaseHeading as="h3" size="2xl">
+                {props.tags}
+              </BaseHeading>
+              {props.children}
+            </BaseCard>
+          ),
+        },
+      }
+    )
+  ).content;
 
   return (
     <>
@@ -56,7 +80,8 @@ export default async function Navigation() {
           <ToolBar postId={res.postId}></ToolBar>
         </div>
         <div className="masonry sm:masonry-sm md:masonry-md mb-auto">
-          {cats.map((e, i) => {
+          <Prose content={mdxRes}></Prose>
+          {/* {cats.map((e, i) => {
             return (
               <BaseCard
                 key={e.id}
@@ -70,7 +95,7 @@ export default async function Navigation() {
                 <Prose content={e.content}></Prose>
               </BaseCard>
             );
-          })}
+          })} */}
         </div>
       </main>
     </>
