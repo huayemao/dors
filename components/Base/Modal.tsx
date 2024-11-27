@@ -20,6 +20,8 @@ export const Modal = ({
 }) => {
   return (
     <Dialog
+      key={String(open)}
+      unmount={false}
       onClose={onClose}
       className="z-50 fixed inset-0 bg-muted-800/70 dark:bg-muted-900/80"
       open={open}

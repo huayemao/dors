@@ -430,15 +430,18 @@ const ActionModal = ({ children }) => {
       >
         <FilterIcon className="size-4"></FilterIcon>
       </BaseButtonIcon>
-      <Modal
-        title="筛选"
-        open={active}
-        onClose={() => {
-          setActive(false);
-        }}
-      >
-        {children}
-      </Modal>
+      <AnimatePresence>
+        <Modal
+          key={String(active)}
+          title="筛选"
+          open={active}
+          onClose={() => {
+            setActive(false);
+          }}
+        >
+          {children}
+        </Modal>
+      </AnimatePresence>
     </>
   );
 };

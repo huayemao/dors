@@ -75,7 +75,6 @@ export const Filters: FC<{
             return;
           }
           lastTab = v;
-          console.log(v);
           if (v == "active") {
             filterTags(
               allTags.filter((e) => !HIDDEN_TAGS.includes(e)),
