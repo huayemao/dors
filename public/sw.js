@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-globals */
 const ASSETS = [
   "/notes",
-  "/navigation",
   // "/shiki/languages/c.tmLanguage.json",
   // "/shiki/languages/cpp.tmLanguage.json",
   // "/shiki/languages/css.tmLanguage.json",
@@ -20,7 +19,7 @@ const ASSETS = [
   // "/shiki/onig.wasm",
 ];
 importScripts('/version.js')
-const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal"]
+const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation"]
 const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image']
 
 

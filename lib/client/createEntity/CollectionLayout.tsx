@@ -1,8 +1,9 @@
-import { readFromClipboard, withConfirm } from "@/lib/utils";
+import { cn, readFromClipboard, withConfirm } from "@/lib/utils";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BaseButton,
+  BaseButtonGroup,
   BaseButtonIcon,
   BaseCard,
   BaseDropdown,
@@ -14,6 +15,8 @@ import {
   CloudUpload,
   CopyIcon,
   EditIcon,
+  EllipsisIcon,
+  FilterIcon,
   PlusIcon,
   RefreshCcw,
   UploadIcon,
@@ -25,6 +28,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { flushSync } from "react-dom";
@@ -41,6 +45,8 @@ import { BaseCollection, BaseEntity } from "./types";
 
 import toast from "react-hot-toast";
 import { fetchWithAuth } from "../utils/fetch";
+import { usePinned } from "@/lib/hooks/usePinned";
+import { Modal } from "@/components/Base/Modal";
 
 export default function CollectionLayout<
   EType extends BaseEntity,
@@ -221,10 +227,19 @@ export default function CollectionLayout<
 
   let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
 
+  const headerRef = useRef(null);
+  const pinned = usePinned(headerRef);
+
   return (
     <>
-      <div className="md:px-12">
-        <div className=" space-y-4 border-muted-200 dark:border-muted-700 dark:bg-muted-800 border border-b-0 rounded-b-none  bg-white  transition-all duration-300 rounded-md p-6">
+      <BaseCard shadow="flat" className="">
+        <div
+          ref={headerRef}
+          className={cn(
+            "sticky top-[-1px] z-10 rounded-t space-y-4 dark:bg-muted-800  bg-white  transition-all duration-300 p-6",
+            { "shadow-lg": pinned }
+          )}
+        >
           <div className="flex items-center justify-around gap-2  relative w-full ">
             <div className="inline-flex items-end gap-x-2 mr-auto">
               <BaseDropdown label={currentCollection?.name} headerLabel="合集">
@@ -267,6 +282,8 @@ export default function CollectionLayout<
                   </BaseIconBox>
                 </BaseDropdownItem>
               </BaseDropdown>
+            </div>
+            <BaseButtonGroup>
               {
                 // @ts-ignore
                 currentCollection?.online && (
@@ -337,26 +354,38 @@ export default function CollectionLayout<
                   </>
                 )
               }
-            </div>
-            <BaseDropdown variant="context">
-              <BaseDropdownItem
-                data-nui-tooltip-position="down"
-                onClick={copy}
-                start={<CopyIcon className="h-4 w-4"></CopyIcon>}
-                title="导出"
-                text="复制 JSON"
-              ></BaseDropdownItem>
-              <BaseDropdownItem
-                start={<UploadIcon className="h-4 w-4"></UploadIcon>}
-                onClick={importQuestionsFromClipBoard}
-                title="导入"
-                text="导入 JSON"
-              ></BaseDropdownItem>
-            </BaseDropdown>
-            <BaseButtonIcon
-              color="primary"
-              rounded="md"
+
+              <ActionModal>
+                {Head && <Head dispatch={dispatch} state={state}></Head>}
+              </ActionModal>
+              <BaseDropdown
+                size="lg"
+                rounded="md"
+                variant="text"
+                renderButton={() => (
+                  <BaseButtonIcon size="sm">
+                    <EllipsisIcon className="h-4 w-4"></EllipsisIcon>
+                  </BaseButtonIcon>
+                )}
+              >
+                <BaseDropdownItem
+                  data-nui-tooltip-position="down"
+                  onClick={copy}
+                  start={<CopyIcon className="h-4 w-4"></CopyIcon>}
+                  title="导出"
+                  text="复制 JSON"
+                ></BaseDropdownItem>
+                <BaseDropdownItem
+                  start={<UploadIcon className="h-4 w-4"></UploadIcon>}
+                  onClick={importQuestionsFromClipBoard}
+                  title="导入"
+                  text="导入 JSON"
+                ></BaseDropdownItem>
+              </BaseDropdown>
+            </BaseButtonGroup>
+            <BaseButton
               size="sm"
+              color="primary"
               data-nui-tooltip="新建"
               data-nui-tooltip-position="down"
               onClick={() => {
@@ -368,10 +397,9 @@ export default function CollectionLayout<
                 // toAddQA();
               }}
             >
-              <PlusIcon className="h-4 w-4"></PlusIcon>
-            </BaseButtonIcon>
+              <PlusIcon className="h-4 w-4 mr-2"></PlusIcon>新建
+            </BaseButton>
           </div>
-          {Head && <Head dispatch={dispatch} state={state}></Head>}
         </div>
         <div className="col-span-12">
           <div className="relative bg-slate-100  w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
@@ -384,8 +412,33 @@ export default function CollectionLayout<
             </div>
           </div>
         </div>
-      </div>
+      </BaseCard>
       <AnimatePresence>{outlet}</AnimatePresence>
     </>
   );
 }
+
+const ActionModal = ({ children }) => {
+  const [active, setActive] = useState(false);
+  return (
+    <>
+      <BaseButtonIcon
+        size="sm"
+        onClick={() => {
+          setActive(true);
+        }}
+      >
+        <FilterIcon className="size-4"></FilterIcon>
+      </BaseButtonIcon>
+      <Modal
+        title="筛选"
+        open={active}
+        onClose={() => {
+          setActive(false);
+        }}
+      >
+        {children}
+      </Modal>
+    </>
+  );
+};

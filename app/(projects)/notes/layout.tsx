@@ -31,7 +31,7 @@ const menuItems: NavigationItemProps[] = [
 export default function QAsLayout({ }) {
   return (
     <NotesContextProvider>
-      <header className="h-12 mb-2 justify-center flex items-center font-semibold">
+      {/* <header className="h-12 mb-2 justify-center flex items-center font-semibold">
         <h1>
           UltraNotes
         </h1>
@@ -45,7 +45,7 @@ export default function QAsLayout({ }) {
             ))}
           </ul>
         </nav>
-      </header>
+      </header> */}
       <ClientOnly>
         <NotesContainer></NotesContainer>
       </ClientOnly>
