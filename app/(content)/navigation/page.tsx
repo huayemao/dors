@@ -79,24 +79,10 @@ export default async function Navigation() {
         <div className="text-right">
           <ToolBar postId={res.postId}></ToolBar>
         </div>
-        <div className="masonry sm:masonry-sm md:masonry-md mb-auto">
-          <Prose content={mdxRes}></Prose>
-          {/* {cats.map((e, i) => {
-            return (
-              <BaseCard
-                key={e.id}
-                className={cn("my-4 p-4 break-inside-avoid", {
-                  "mt-0": i === 0,
-                })}
-              >
-                <BaseHeading as="h3" size="2xl">
-                  {e.tags}
-                </BaseHeading>
-                <Prose content={e.content}></Prose>
-              </BaseCard>
-            );
-          })} */}
-        </div>
+        <Prose
+          className="masonry sm:masonry-sm md:masonry-md mb-auto !max-w-full prose-h3:mt-0"
+          content={mdxRes}
+        ></Prose>
       </main>
     </>
   );
