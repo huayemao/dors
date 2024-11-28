@@ -85,7 +85,7 @@ export function NoteItem({
                   </BaseTag>
                 </span>
               ))}
-              <div className="ml-auto not-prose text-right text-sm text-slate-500">
+              <div className="ml-auto not-prose text-right text-xs md:text-sm text-slate-500">
                 {getDateStr(new Date(data.id)).slice(0, -5)}
               </div>
             </div>
