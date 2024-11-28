@@ -10,7 +10,7 @@ import { getResourceItems } from "@/lib/server/resource";
 import { unstable_cache } from "next/cache";
 import { BaseHeading } from "@shuriken-ui/react";
 
-export const revalidate = 3600;
+export const revalidate = 36000;
 
 export default async function MainLayout({
   children,

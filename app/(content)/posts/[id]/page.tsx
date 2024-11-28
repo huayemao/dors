@@ -6,7 +6,7 @@ import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 36000;
 
 export async function generateStaticParams() {
   const posts = await getPostIds({ protected: false });
