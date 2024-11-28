@@ -183,7 +183,7 @@ export const Nav = ({
           <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
             {menuItems.map((e) => (
               <NavigationItem
-                key={e.href}
+                key={e.href || e.title}
                 {...e}
                 onClick={closeMobileNav}
               ></NavigationItem>
