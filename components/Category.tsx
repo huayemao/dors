@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { BaseButton, BaseLink } from "@shuriken-ui/react";
 import { useRouter } from "next/navigation";
 import { ComponentProps, Fragment } from "react";
@@ -26,7 +26,7 @@ export const Category: React.FC<CategoryProps> = ({
           router.push(href);
         }}
         // href={href}
-        style={{ whiteSpace: "nowrap", lineHeight: "unset" }}
+        style={{ whiteSpace: "nowrap", lineHeight: "unset", border: "none" }}
         color={active ? "primary" : "muted"}
         {...props}
       >
