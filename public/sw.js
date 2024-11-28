@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 const ASSETS = [
   "/notes",
   // "/shiki/languages/c.tmLanguage.json",
@@ -20,6 +19,8 @@ const ASSETS = [
 ];
 importScripts('/version.js')
 const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation"]
+const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
+const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
 const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image']
 
 
@@ -46,18 +47,51 @@ self.addEventListener("fetch", (e) => {
       });
     }
     if (isDynamicCache) {
+
+
       caches.match(url).then((res) => {
         if (!res) {
-          caches.open(VERSION).then((e) => {
-            e.add(url);
-          });
+          const isSSRPath = SSR_PATHS.find(path => url.href.includes(path));
+          if (isSSRPath) {
+            caches.open(VERSION)
+              .then(c => {
+                return c.keys()
+              }).then(requests => {
+                const matched = requests.find(request => request.url.includes(url.pathname + '?'))
+                console.log(matched)
+                if (matched) {
+                  return
+                }
+                caches.open(VERSION).then((e) => {
+                  e.add(url);
+                });
+              })
+          }
+          else {
+            caches.open(VERSION).then((e) => {
+              e.add(url);
+            });
+          }
         }
       });
     }
     e.respondWith(
       (async () => {
         return caches.match(s).then((e) => {
-          return e || fetch(s);
+          const isSSRPath = SSR_PATHS.find(path => url.href.includes(path));
+          if (isSSRPath) {
+            return caches.open(VERSION)
+              .then(c => {
+                return c.keys()
+              }).then(requests => {
+                return requests.find(request => request.url.includes(url.pathname + '?'))
+              })
+              .then(r => {
+                return caches.match(r)
+              }).then(e => e || fetch(s))
+          } else {
+            return e || fetch(s);
+          }
         });
       })()
     );
