@@ -1,9 +1,9 @@
+import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
 import { Suspense } from "react";
-import Pagination from "../../Pagination";
 
 type SearchParams = PaginateOptions;
 

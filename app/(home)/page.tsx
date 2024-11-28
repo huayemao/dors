@@ -1,8 +1,8 @@
+import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
-import { Suspense } from "react";
-import Pagination from "./Pagination";
+import { cache, Suspense } from "react";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -15,7 +15,7 @@ export default async function Home({
 }: {
   searchParams: SearchParams;
 }) {
-  const posts = await getProcessedPosts(
+  const posts = await cache(getProcessedPosts)(
     await getPosts({
       ...searchParams,
       protected: false,

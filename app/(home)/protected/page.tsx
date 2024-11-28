@@ -1,8 +1,8 @@
+import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
 import { Suspense } from "react";
-import Pagination from "./Pagination";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
