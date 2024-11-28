@@ -1,14 +1,14 @@
 import Container from "../Container";
 import {
   getNavContent,
-  getParsedNavigationPage,
+  parsedNavigationPage,
 } from "@/lib/server/navigation";
 import Prose from "@/components/Base/Prose";
 
 export default async function Page({ params }) {
   const res = await getNavContent();
 
-  const content = res ? getParsedNavigationPage(res) : "";
+  const content = res ? parsedNavigationPage(JSON.parse(res.post!.content!)) : "";
   return (
     <Container title={'导航'}>
       <Prose

@@ -2,7 +2,7 @@ import Prose from "@/components/Base/Prose";
 import { BaseCard, BaseHeading } from "@shuriken-ui/react";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
-import { getNavContent, getParsedNavigationPage } from "@/lib/server/navigation";
+import { getNavContent, parsedNavigationPage } from "@/lib/server/navigation";
 
 export const maxDuration = 25;
 
@@ -13,7 +13,7 @@ export default async function Navigation() {
     return notFound();
   }
 
-  const content = await getParsedNavigationPage(res);
+  const content = await parsedNavigationPage(JSON.parse(res.post!.content!));
 
   if (!res) {
     return notFound();

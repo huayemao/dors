@@ -29,13 +29,9 @@ export const getNavContent = unstable_cache(
   { tags: ["settings_nav_content_post_id", "posts"] }
 );
 
-export async function getParsedNavigationPage(res: {
-  postId: number;
-  post: any;
-}) {
-  const cats: any[] = JSON.parse(res.post!.content!);
+export async function parsedNavigationPage(items: any[]) {
 
-  const allContent = cats
+  const allContent = items
     .map(
       (e, i) =>
         `\n<Container tags={"${e.tags}"} id={${e.id}} i={${i}}>\n${e.content}\n</Container>\n`
