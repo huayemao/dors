@@ -26,7 +26,9 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
 }) => {
   if (children) {
     return (
-      <li key={href || title} className="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility">
+      <li
+        className="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility"
+      >
         <BaseDropdown
           oonClick={onClick}
           // @ts-ignore
@@ -41,7 +43,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
         >
           {children.map((e) => (
             <BaseDropdownItem
-              key={e.href}
+              key={e.href + e.title}
               href={e.href}
               title={e.title}
               text={e.text}
@@ -53,7 +55,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
     );
   }
   return (
-    <li key={href}>
+    <li>
       <Link
         prefetch={prefetch}
         onClick={onClick}

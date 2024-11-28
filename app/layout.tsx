@@ -20,9 +20,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
   params,
+  modal,
 }: {
   children: JSX.Element;
   params: any;
+  modal: React.ReactNode;
 }) {
   return (
     <ShurikenUIProvider>
@@ -62,11 +64,9 @@ export default async function RootLayout({
           {children}
           <AppToaster />
           <AppTip></AppTip>
+          {modal}
         </body>
       </html>
     </ShurikenUIProvider>
   );
 }
-
-
-

@@ -14,7 +14,7 @@ export const Modal = ({
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title: React.ReactNode;
+  title?: React.ReactNode;
   actions?: React.ReactNode;
   className?: string;
 }) => {
@@ -40,18 +40,20 @@ export const Modal = ({
         >
           <div className="flex min-h-full items-center justify-center p-4 text-center">
             <div className="dark:bg-muted-800 w-full bg-white text-left align-middle shadow-xl transition-all rounded-md max-w-5xl">
-              <div className="flex w-full items-center justify-between p-4 md:p-6 border-b">
-                <Dialog.Title
-                  as="h3"
-                  className="font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"
-                >
-                  {title}
-                </Dialog.Title>
-                <div className="flex gap-4 items-center">
-                  {actions}
-                  <BaseButtonClose onClick={onClose}></BaseButtonClose>
+              {title && (
+                <div className="flex w-full items-center justify-between p-4 md:p-6 border-b">
+                  <Dialog.Title
+                    as="h3"
+                    className="font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"
+                  >
+                    {title}
+                  </Dialog.Title>
+                  <div className="flex gap-4 items-center">
+                    {actions}
+                    <BaseButtonClose onClick={onClose}></BaseButtonClose>
+                  </div>
                 </div>
-              </div>
+              )}
               <div
                 className={cn(
                   "p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden break-all",
