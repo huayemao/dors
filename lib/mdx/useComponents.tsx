@@ -62,17 +62,22 @@ export const components = {
             li.props.children
           )[0] as ReactElement;
           const title = React.Children.toArray(a.props.children)[0] as string;
+          const href = a.props.href;
+          const description = a.props.title;
           return (
             <li
               key={i}
               className="nui-list-item hover:bg-muted-100 transition rounded-lg px-4 py-2"
             >
-              <Link href={a.props.href}>
+              <Link
+                prefetch={href.startsWith("/protected") ? false : undefined}
+                href={href}
+              >
                 <h6 className="nui-heading nui-heading-md nui-weight-medium nui-lead-tight">
                   {title}
                 </h6>
                 <p className="nui-paragraph nui-paragraph-xs nui-weight-normal nui-lead-normal text-muted-500 dark:text-muted-400">
-                  {a.props.title || title}
+                  {description || title}
                 </p>
               </Link>
             </li>
