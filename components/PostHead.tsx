@@ -70,6 +70,7 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                       href={`/categories/${cat.id}`}
                       name={cat.name as string}
                       key={cat.id}
+                      iconName={(cat.meta as { icon: string }).icon}
                     />
                     {/* <p className="font-sans text-sm text-muted-400"></p> */}
                   </div>

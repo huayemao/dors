@@ -111,9 +111,7 @@ function PostTile({
                 height="208"
               />
             </div>
-            <h3
-              className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6"
-            >
+            <h3 className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6">
               {title}
             </h3>
           </div>
@@ -126,7 +124,8 @@ function PostTile({
               href={`/categories/${cat.id}`}
               name={cat.name as string}
               key={cat.id}
-              as={'span'}
+              as={"span"}
+              iconName={(cat.meta as { icon: string }).icon}
             />
             <div className="block ml-auto font-sans text-sm text-muted-400 text-right">
               <div>

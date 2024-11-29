@@ -21,6 +21,7 @@ export function Categories() {
               href={`/categories/${cat.id}`}
               name={cat.name as string}
               key={cat.id}
+              iconName={(cat.meta as { icon: string }).icon}
               active={Number(id) === cat.id && segments.includes("categories")}
             />
           ))}
