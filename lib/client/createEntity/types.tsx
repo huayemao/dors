@@ -29,6 +29,7 @@ export type State<
   filters: filtersType<EntityType>;
   filterConfig: {
     excludeIds?: EntityType["id"][];
+    // 比如一个小记，没有标签，也留存，不被筛选掉
     includeNonKeys?: string[];
   };
   fromLocalStorage: boolean;
