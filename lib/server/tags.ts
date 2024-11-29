@@ -38,11 +38,24 @@ export const getTags = unstable_cache(async ({ protected: isProtected }: { prote
         }]
       },
       orderBy: {
-        updated_at: "desc",
+        tags_posts_links: {
+          _count: 'desc'
+        },
       },
       select: {
         id: true,
         name: true,
+        
+        tags_posts_links: {
+          select: {
+            posts: {
+              select: {
+                id: true,
+                title: true
+              }
+            }
+          }
+        }
       },
     })
   );
