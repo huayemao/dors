@@ -22,7 +22,8 @@ export const createEntityContext = <
 >(
   defaultEntity: EntityType,
   defaultCollection: CollectionType,
-  key: string
+  key: string,
+  inMemory = false
 ) => {
   type AppState = State<EntityType, CollectionType>;
   // type AppAction = Action<EntityType, CollectionType>;
@@ -52,6 +53,9 @@ export const createEntityContext = <
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
+      if (inMemory) {
+        return;
+      }
       setPending(true);
       localforage
         .getItem(collectionListKey)
@@ -79,11 +83,17 @@ export const createEntityContext = <
     }, []);
 
     useEffect(() => {
+      if (inMemory) {
+        return;
+      }
       // todo: 把 EntityList 删掉
       localforage.setItem(collectionListKey, state.collectionList);
     }, [state.collectionList]);
 
     useEffect(() => {
+      if (inMemory) {
+        return;
+      }
       let ignore = false;
 
       if (!state.currentCollection?.id) {
@@ -143,6 +153,9 @@ export const createEntityContext = <
     // todo: 把这些 effects 拆下
     // entityList 变化时同步到 storage
     useEffect(() => {
+      if (inMemory) {
+        return;
+      }
       saveEntities();
       function saveEntities() {
         if (!state.currentCollection?.id) {

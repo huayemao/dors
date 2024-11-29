@@ -18,6 +18,11 @@ export function AdminMenu() {
       iconName: "Tag",
     },
     {
+      title: "分类管理",
+      href: "/admin/categories",
+      iconName: "Tag",
+    },
+    {
       title: "文件管理",
       href: "/admin/files",
       iconName: "File",

@@ -134,7 +134,7 @@ model admin_users_roles_links {
 model categories {
   id                                                Int                    @id @default(autoincrement()) @db.UnsignedInt
   name                                              String?                @db.VarChar(255)
-  description                                       String?                @db.VarChar(255)
+  meta                                              Json?
   created_at                                        DateTime?              @db.DateTime(6)
   updated_at                                        DateTime?              @db.DateTime(6)
   published_at                                      DateTime?              @db.DateTime(6)

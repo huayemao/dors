@@ -1,6 +1,6 @@
 export interface BaseEntity {
   id: number;
-  seq: string;
+  seq?: string;
 }
 
 export interface BaseCollection {
