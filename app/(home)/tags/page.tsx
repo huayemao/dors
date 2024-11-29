@@ -1,4 +1,5 @@
 import { getTags } from "@/lib/server/tags";
+import { BaseTag } from "@shuriken-ui/react";
 import Link from "next/link";
 
 export default async function TagsPage() {
@@ -10,9 +11,11 @@ export default async function TagsPage() {
           <Link
             href={`/tags/${id}`}
             key={id}
-            className="font-sans py-1.5 px-3 rounded-xl text-sm text-muted-500 dark:text-muted-300 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 shadow-lg shadow-muted-400/20 dark:shadow-muted-700/20"
+            className=""
           >
+            <BaseTag variant="outline" color="primary">
             {name}
+            </BaseTag>
           </Link>
         );
       })}

@@ -1,7 +1,9 @@
 import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
+import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
+import { BaseHeading } from "@shuriken-ui/react";
 import { cache, Suspense } from "react";
 
 type SearchParams = PaginateOptions;
@@ -26,10 +28,18 @@ export default async function Home({
 
   return (
     <>
-      <Posts data={posts} />
-      <Suspense>
-        <Pagination pageCount={pageCount}></Pagination>
-      </Suspense>
+      <div className="space-y-4">
+        <BaseHeading size="3xl" className="text-center" as="h2">
+          文章
+        </BaseHeading>
+        <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
+          {SITE_META.introduction}
+        </p>
+        <Posts data={posts} />
+        <Suspense>
+          <Pagination pageCount={pageCount}></Pagination>
+        </Suspense>
+      </div>
     </>
   );
 }

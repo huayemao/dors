@@ -43,16 +43,7 @@ export default async function MainLayout({
                         </p>
                         <Categories />
                       </div>
-
-                      <div className="space-y-4">
-                        <BaseHeading size="3xl" className="text-center" as="h2">
-                          文章
-                        </BaseHeading>
-                        <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
-                          {SITE_META.introduction}
-                        </p>
                         {children}
-                      </div>
                     </div>
                   </div>
                 </div>
