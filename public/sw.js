@@ -20,7 +20,6 @@ const ASSETS = [
 importScripts('/version.js')
 const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation"]
 const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
-const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
 const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image']
 
 
