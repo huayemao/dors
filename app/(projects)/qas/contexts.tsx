@@ -9,8 +9,8 @@ export const {
   EntityContextProvider,
   useEntity,
   useEntityDispatch,
-} = createEntityContext<typeof DEFAULT_QUESTION, typeof DEFAULT_COLLECTION>(
-  DEFAULT_QUESTION,
-  DEFAULT_COLLECTION,
-  'qas'
-);
+} = createEntityContext<typeof DEFAULT_QUESTION, typeof DEFAULT_COLLECTION>({
+  defaultEntity: DEFAULT_QUESTION,
+  defaultCollection: DEFAULT_COLLECTION,
+  key: "qas",
+});

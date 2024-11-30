@@ -19,12 +19,21 @@ import { getReducer } from "./reduders";
 export const createEntityContext = <
   EntityType extends BaseEntity,
   CollectionType extends BaseCollection & { _entityList?: EntityType[] }
->(
-  defaultEntity: EntityType,
-  defaultCollection: CollectionType,
-  key: string,
-  inMemory = false
-) => {
+>({
+  defaultEntity,
+  defaultCollection,
+  defaultFilters,
+  defaultFilterConfig,
+  key,
+  inMemory = false,
+}: {
+  defaultEntity: EntityType;
+  defaultCollection: CollectionType;
+  key: string;
+  defaultFilters?: State<EntityType, CollectionType>["filters"];
+  defaultFilterConfig?: State<EntityType, CollectionType>["filterConfig"];
+  inMemory?: boolean;
+}) => {
   type AppState = State<EntityType, CollectionType>;
   // type AppAction = Action<EntityType, CollectionType>;
 
@@ -36,8 +45,8 @@ export const createEntityContext = <
     collectionList: [],
     entityList: [],
     showingEntityList: [],
-    filters: {},
-    filterConfig: {},
+    filters: defaultFilters || {},
+    filterConfig: defaultFilterConfig || {},
     fromLocalStorage: true,
   };
   const reducer = getReducer(defaultCollection, defaultEntity);

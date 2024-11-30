@@ -13,7 +13,15 @@ import {
 } from "@shuriken-ui/react";
 
 import { useEntity, useEntityDispatch } from "@/contexts/notes";
-import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  FC,
+  Fragment,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   RefreshCcwDotIcon,
   RotateCcwIcon,
@@ -23,13 +31,13 @@ import {
 import { HIDDEN_TAGS } from "./NotesContainer";
 import { useFilter } from "./useFilter";
 
-let lastTab: string;
+let lastTab = "active";
 
-export const Filters: FC<{
+const Filters: FC<{
   state: ReturnType<typeof useEntity>;
   dispatch: ReturnType<typeof useEntityDispatch>;
 }> = ({ state, dispatch }) => {
-  const { allTags, allUnArchivedTags } = useMemo(() => {
+  const { allTags } = useMemo(() => {
     const allTags = Array.from(
       new Set(
         state.entityList.flatMap((e) => e.tags).filter((e) => !!e?.trim())
@@ -37,7 +45,6 @@ export const Filters: FC<{
     );
     return {
       allTags,
-      allUnArchivedTags: allTags.filter((e) => !HIDDEN_TAGS.includes(e)),
     };
   }, [state.entityList]);
 
@@ -58,38 +65,21 @@ export const Filters: FC<{
 
   const { filterTags, filterConfig } = useFilter();
 
-  const filterUnArchived = useCallback(() => {
-    if (!("tags" in state.filters)) {
-      filterTags(allUnArchivedTags, true);
-    }
-  }, [allUnArchivedTags, filterTags, state.filters]);
-
-  useEffect(() => {
-    filterUnArchived();
-  }, [filterUnArchived]);
-
   let text: string = "未选中";
-  const ts = state.filters.tags;
+  let ts = state.filters.tags;
   if (!ts) {
     text = "未筛选（默认全选）";
   } else {
-    const hasSelected = ts?.length;
-    if (hasSelected) {
-      const selectedAllUnArchived =
-        allUnArchivedTags.sort().toString() == ts.sort().toString() ||
-        filterConfig.includeNonKeys?.includes("tags");
-      if (selectedAllUnArchived) {
-        text = "已选中全部（未归档）";
-      } else if (ts.length == allTags.length) {
-        text = "已选中全部";
-      } else {
-        text =
-          "已选中" +
-          ts.slice(0, 4).join("、").slice(0, 36) +
-          "等" +
-          ts.length +
-          "个标签";
-      }
+    const tags = typeof ts == "object" ? ("omit" in ts ? ts.pick : ts) : [];
+    if (!tags) {
+      text = "未筛选（默认全选）";
+    } else {
+      text =
+        "已选中" +
+        tags.slice(0, 4).join("、").slice(0, 36) +
+        "等" +
+        tags.length +
+        "个标签";
     }
   }
 
@@ -98,16 +88,17 @@ export const Filters: FC<{
       {/* TODO: list 长度显示 */}
       <BaseTabSlider
         classes={{ wrapper: "w-32 flex-shrink-0", inner: "!mb-0" }}
-        defaultValue={"active"}
+        defaultValue={lastTab}
         onChange={(v) => {
+          // 这个组件有个 bug，会在没有 change 的时候触发 change
           if (v === lastTab) {
             return;
           }
           lastTab = v;
           if (v == "active") {
-            filterTags(allUnArchivedTags, true);
+            filterTags(undefined, true, false);
           } else if (v == "all") {
-            filterTags(undefined);
+            filterTags(undefined, true, true);
           } else if (v == "null") {
             filterTags([]);
           }
@@ -142,24 +133,39 @@ export const Filters: FC<{
             </BaseButtonIcon>
           </BaseButtonGroup>
           <div className="flex gap-2 flex-wrap">
-            {allTags.map((e) => {
-              const isActive = state.filters.tags?.includes(e);
-              return (
-                <a key={e} href="javascript:void">
-                  <BaseTag
-                    color={isActive ? "primary" : "default"}
-                    onClick={() => {
-                      const newList = isActive
-                        ? state.filters.tags.filter((t) => t != e)
-                        : state.filters.tags?.concat(e) || [e];
-                      filterTags(newList);
-                    }}
-                  >
-                    {e}
-                  </BaseTag>
-                </a>
-              );
-            })}
+            {allTags
+              .filter((e) => {
+                const hidden =
+                  typeof ts == "object" && "omit" in ts ? ts.omit : [];
+                return !hidden.includes(e);
+              })
+              .map((e) => {
+                const ts = state.filters.tags;
+                const tags = ts
+                  ? typeof ts == "object"
+                    ? "omit" in ts
+                      ? ts.pick || []
+                      : ts
+                    : []
+                  : [];
+
+                const isActive = tags.includes(e);
+                return (
+                  <a key={e} href="javascript:void">
+                    <BaseTag
+                      color={isActive ? "primary" : "default"}
+                      onClick={() => {
+                        const newList = isActive
+                          ? tags.filter((t) => t != e)
+                          : tags.concat(e) || [e];
+                        filterTags(newList);
+                      }}
+                    >
+                      {e}
+                    </BaseTag>
+                  </a>
+                );
+              })}
           </div>
         </BaseCard>
       </div>
@@ -172,3 +178,5 @@ export const Filters: FC<{
     </div>
   );
 };
+
+export default memo(Filters);

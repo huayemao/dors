@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { createEntityContext } from "@/lib/client/createEntity/createEntityContext";
 import { useContext, useEffect } from "react";
 import { CategoriesContext } from "@/contexts/categories";
 import { ClientOnly } from "@/components/ClientOnly";

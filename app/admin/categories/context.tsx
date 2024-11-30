@@ -24,9 +24,9 @@ export const {
   EntityContextProvider,
   useEntity,
   useEntityDispatch,
-} = createEntityContext<typeof DEFAULT_CATEGORY, typeof DEFAULT_COLLECTION>(
-  DEFAULT_CATEGORY,
-  DEFAULT_COLLECTION,
-  "categories",
-  true
-);
+} = createEntityContext<typeof DEFAULT_CATEGORY, typeof DEFAULT_COLLECTION>({
+  defaultEntity: DEFAULT_CATEGORY,
+  defaultCollection: DEFAULT_COLLECTION,
+  key: "categories",
+  inMemory: true,
+});

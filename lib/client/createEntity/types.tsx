@@ -10,7 +10,14 @@ export interface BaseCollection {
   updated_at?: string;
 }
 
-export type filtersType<EntityType> = Partial<Record<keyof EntityType, any>>;
+interface DetailedFilter {
+  omit: string[];
+  pick?: string[];
+}
+
+export type FiltersType<EntityType> = Partial<
+  Record<keyof EntityType, string | string[] | undefined | DetailedFilter>
+>;
 
 export type State<
   EntityType extends BaseEntity,
@@ -26,7 +33,7 @@ export type State<
   collectionList: CollectionType[];
   entityList: EntityType[];
   showingEntityList: EntityType[];
-  filters: filtersType<EntityType>;
+  filters: FiltersType<EntityType>;
   filterConfig: {
     excludeIds?: EntityType["id"][];
     // 比如一个小记，没有标签，也留存，不被筛选掉

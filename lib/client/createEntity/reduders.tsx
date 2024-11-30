@@ -43,7 +43,7 @@ export const getReducer = <
         return Object.assign({}, state, action.payload);
       }
       case "SET_FILTERS": {
-        const list = getShowingList({
+        const list = filterEntityList({
           entityList: state.entityList,
           filters: action.payload.filters,
           filterConfig: action.payload.filterConfig || state.filterConfig,
@@ -115,7 +115,7 @@ export const getReducer = <
       }
 
       case "SET_ENTITY_LIST": {
-        const list = getShowingList({
+        const list = filterEntityList({
           entityList: action.payload,
           filters: state.filters,
           filterConfig: state.filterConfig,
@@ -127,7 +127,7 @@ export const getReducer = <
         });
       }
       case "INIT_ENTITY_LIST": {
-        const list = getShowingList({
+        const list = filterEntityList({
           entityList: action.payload,
           filters: state.filters,
           filterConfig: state.filterConfig,
@@ -205,7 +205,7 @@ export const getReducer = <
     }
   };
 
-  function getShowingList<
+  function filterEntityList<
     EType extends BaseEntity,
     CType extends BaseCollection
   >({
@@ -218,30 +218,49 @@ export const getReducer = <
     filterConfig: AppState["filterConfig"];
   }) {
     let list = entityList;
-    for (const [key, value] of Object.entries(filters)) {
+    for (const [key, filter] of Object.entries(filters)) {
       if (filterConfig.excludeIds) {
         list = list.filter((e) => {
           return !filterConfig.excludeIds?.includes(e.id);
         });
       }
-      if (typeof value == "undefined") {
+      if (typeof filter == "undefined") {
         continue;
       }
-      if (typeof value === "string") {
+      if (typeof filter === "string") {
         list = list.filter((e) => {
-          return e[key].includes(value);
+          return e[key].includes(filter);
         });
       }
-      if (Array.isArray(value)) {
+      if (Array.isArray(filter)) {
         list = list.filter((item) => {
           const itemValue = item[key];
           if (Array.isArray(itemValue)) {
-            const hasValue = itemValue.some((item) => value.includes(item));
-            return filterConfig.includeNonKeys?.includes(key)
-              ? hasValue || !value.length || !itemValue.length
+            const hasValue = itemValue.some((item) => filter.includes(item));
+            const pass = filterConfig.includeNonKeys?.includes(key);
+            return pass
+              ? hasValue || !filter.length || !itemValue.length
               : hasValue;
           }
           return true;
+        });
+      }
+      if (typeof filter == "object" && "omit" in filter) {
+        list = list.filter((item) => {
+          const itemValue = item[key];
+          if (Array.isArray(itemValue)) {
+            const shouldNotOmit = !itemValue.some((v) =>
+              filter.omit.includes(v)
+            );
+            const shouldPick = !filter.pick
+              ? true
+              : itemValue.some((v) => filter.pick!.includes(v));
+
+            const pass = filterConfig.includeNonKeys?.includes(key);
+            return pass
+              ? (shouldNotOmit && shouldPick) || !itemValue.length
+              : shouldNotOmit && shouldPick;
+          }
         });
       }
     }

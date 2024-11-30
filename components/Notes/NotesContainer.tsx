@@ -15,7 +15,7 @@ import {
 import localforage from "localforage";
 import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
-import { Filters } from "./Filters";
+import Filters from "./Filters";
 import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
 import { Archive, Copy, Edit2 } from "lucide-react";
@@ -151,24 +151,9 @@ export const NotesContainer = ({
   const { filterTags } = useFilter();
 
   useEffect(() => {
-    const hasHiddenTags = state.filters.tags?.some((e) =>
-      HIDDEN_TAGS.includes(e)
-    );
-    const ids = getExcludeIds(hasHiddenTags, state.entityList);
-
     // 列表变化时重新应用筛选器
-    if (state.filterConfig.excludeIds?.length != ids?.length)
-      dispatch({
-        type: "SET_FILTERS",
-        payload: {
-          filters: state.filters,
-          filterConfig: {
-            ...state.filterConfig,
-            excludeIds: ids,
-          },
-        },
-      });
-  }, [state.entityList, state.filters.tags]);
+    filterTags(undefined, true, false);
+  }, [state.entityList]);
 
   useEffect(() => {
     if (navigator.storage && navigator.storage.persist) {
