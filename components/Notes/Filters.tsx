@@ -50,15 +50,16 @@ const Filters: FC<{
 
   const search = useCallback(
     (v) => {
-      dispatch({
-        type: "SET_FILTERS",
-        payload: {
-          filters: {
-            ...state.filters,
-            content: v,
+      if (!!v)
+        dispatch({
+          type: "SET_FILTERS",
+          payload: {
+            filters: {
+              ...state.filters,
+              content: v,
+            },
           },
-        },
-      });
+        });
     },
     [dispatch, state.filters]
   );
@@ -174,6 +175,7 @@ const Filters: FC<{
         label="根据关键字搜索"
         icon="lucide:search"
         onChange={search}
+        defaultValue={(state.filters.content as string) || ""}
       ></BaseInput>
     </div>
   );
