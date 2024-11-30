@@ -50,6 +50,16 @@ export default function manifest(): MetadataRoute.Manifest {
         ],
       },
       {
+        name: "生活章程",
+        url: "/posts/228",
+        icons: [
+          {
+            src: "img/icons/scale.svg",
+            sizes: "any",
+          },
+        ],
+      },
+      {
         name: "小记",
         url: "/notes",
         icons: [
