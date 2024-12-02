@@ -1,3 +1,4 @@
+import { CatsAndTags } from "@/components/CatsAndTags";
 import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
 import { SITE_META } from "@/constants";
@@ -28,6 +29,7 @@ export default async function Home({
 
   return (
     <>
+      <CatsAndTags  simple></CatsAndTags>
       <div className="space-y-4">
         <BaseHeading size="3xl" className="text-center" as="h2">
           文章
