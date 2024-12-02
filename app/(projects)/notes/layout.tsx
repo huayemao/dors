@@ -7,8 +7,8 @@ import { NotesContainer } from "@/components/Notes/NotesContainer";
 import { NavigationItem, NavigationItemProps } from "@/components/Nav/NavigationItem";
 
 export const metadata: Metadata = {
-  title: 'UltraNotes',
-  description: 'local note app surpporting mdx with great style'
+  title: '小记',
+  description: '本地化、支持 mdx 的简单笔记应用'
 };
 
 const menuItems: NavigationItemProps[] = [
