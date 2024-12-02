@@ -1,7 +1,8 @@
 import { createPost, getPost } from "@/lib/posts";
-import { NextResponse } from "next/server";
+import { isAuthenticated } from "@/lib/server/isAuthenticated";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { url } = request;
   const searchParamsId = new URL(url).searchParams.get('id')
   if (!searchParamsId) {
@@ -29,6 +30,13 @@ export async function GET(request: Request) {
   }
 
   const post = await getPost(id);
+
+  if (post?.protected && !isAuthenticated(request)) {
+    return new NextResponse("Authentication required", {
+      status: 401,
+      headers: { "WWW-Authenticate": "Basic" },
+    });
+  }
 
   return NextResponse.json(post);
 }

@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { isAuthenticated } from "./lib/server/isAuthenticated";
 
-const [AUTH_USER, AUTH_PASS] = (process.env.HTTP_BASIC_AUTH || ":").split(":");
 
 // Step 1. HTTP Basic Auth Middleware for Challenge
 export function middleware(req: NextRequest) {
@@ -27,23 +27,3 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-function isAuthenticated(req: NextRequest) {
-  const authheader =
-    req.headers.get("authorization") || req.headers.get("Authorization");
-
-  if (!authheader) {
-    return false;
-  }
-
-  const auth = Buffer.from(authheader.split(" ")[1], "base64")
-    .toString()
-    .split(":");
-  const user = auth[0];
-  const pass = auth[1];
-
-  if (user == AUTH_USER && pass == AUTH_PASS) {
-    return true;
-  } else {
-    return false;
-  }
-}
