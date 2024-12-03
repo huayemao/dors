@@ -159,7 +159,12 @@ const Filters: FC<{
                         const newList = isActive
                           ? tags.filter((t) => t != e)
                           : tags.concat(e) || [e];
-                        filterTags(newList);
+                        filterTags(
+                          newList,
+                          undefined,
+                          // @ts-ignore
+                          !state.filters.tags?.omit?.length
+                        );
                       }}
                     >
                       {e}
