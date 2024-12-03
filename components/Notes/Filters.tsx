@@ -31,7 +31,7 @@ import {
 import { HIDDEN_TAGS } from "./NotesContainer";
 import { useFilter } from "./useFilter";
 
-let lastTab = "active";
+let lastTab = "all";
 
 const Filters: FC<{
   state: ReturnType<typeof useEntity>;
@@ -83,22 +83,25 @@ const Filters: FC<{
         "个标签";
     }
   }
+  // @ts-ignore
+  const includeArchived = !state.filters.tags?.omit?.length;
 
   return (
     <div className="space-y-4">
       {/* TODO: list 长度显示 */}
       <BaseTabSlider
         classes={{ wrapper: "w-32 flex-shrink-0", inner: "!mb-0" }}
-        defaultValue={lastTab}
+        key={includeArchived ? "all" : "active"}
+        defaultValue={includeArchived ? "all" : "active"}
         onChange={(v) => {
           // 这个组件有个 bug，会在没有 change 的时候触发 change
           if (v === lastTab) {
             return;
           }
           lastTab = v;
-          if (v == "active") {
+          if (v == "active" && includeArchived) {
             filterTags(undefined, true, false);
-          } else if (v == "all") {
+          } else if (v == "all" && !includeArchived) {
             filterTags(undefined, true, true);
           } else if (v == "null") {
             filterTags([]);
