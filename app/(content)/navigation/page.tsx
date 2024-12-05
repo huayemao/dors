@@ -3,7 +3,7 @@ import { BaseCard, BaseHeading } from "@shuriken-ui/react";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { getNavContent, parsedNavigationPage } from "@/lib/server/navigation";
-
+import M from "./MagicGrid";
 export const maxDuration = 25;
 
 export default async function Navigation() {
@@ -20,7 +20,7 @@ export default async function Navigation() {
   }
   return (
     <>
-      <main className="w-full min-h-full dark:bg-muted-900 max-w-6xl mx-auto flex-1 p-6  space-y-4">
+      <main className="w-full min-h-full dark:bg-muted-900 max-w-6xl xl:max-w-[88%] mx-auto flex-1 p-6  space-y-4">
         <BaseHeading size="3xl" as="h2">
           花野猫的导航页
         </BaseHeading>
@@ -28,12 +28,11 @@ export default async function Navigation() {
           <ToolBar postId={res.postId}></ToolBar>
         </div>
         <Prose
-          className="masonry sm:masonry-sm md:masonry-md mb-auto !max-w-full prose-h3:mt-0"
+          className="navigation-content mb-auto !max-w-full prose-h3:mt-0"
           content={content}
         ></Prose>
+        <M></M>
       </main>
     </>
   );
 }
-
-

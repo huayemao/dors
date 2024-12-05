@@ -3432,6 +3432,11 @@ lz-string@^1.4.4:
   resolved "https://registry.npmmirror.com/lz-string/-/lz-string-1.5.0.tgz#c1ab50f77887b712621201ba9fd4e3a6ed099941"
   integrity sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==
 
+magic-grid@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.npmmirror.com/magic-grid/-/magic-grid-3.4.7.tgz#0b24b48fbfb364500358182f1a2a6612cb04e89f"
+  integrity sha512-SPy2dmzAzBr8AysPXH6gT9bE9PYIFX/ZQCf/XRojXFnuyFeHkITV2gp6j/7msrcqSDt6Tu+XUtLfQF79Ugc6/g==
+
 markdown-extensions@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmmirror.com/markdown-extensions/-/markdown-extensions-2.0.0.tgz#34bebc83e9938cae16e0e017e4a9814a8330d3c4"

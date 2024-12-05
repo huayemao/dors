@@ -143,7 +143,7 @@ export const Nav = ({
       )}
     >
       <div
-        className="w-full max-w-6xl mx-auto flex flex-wrap py-3 flex-row items-center sm:justify-between
+        className="w-full max-w-6xl mx-auto xl:max-w-[88%] flex flex-wrap py-3 flex-row items-center sm:justify-between
     "
       >
         <div className="flex justify-between items-center w-full lg:w-1/5">

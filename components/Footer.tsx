@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <div className="relative z-20 bg-muted-100 dark:bg-muted-900 mt-auto">
-      <div className="w-full max-w-6xl mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
+      <div className="w-full max-w-6xl mx-auto xl:max-w-[85%] py-4 px-5 flex flex-wrap flex-col sm:flex-row">
         <p className="text-muted-500 text-sm text-center sm:text-left">
           © 2022 - present. All Rights Reserved.
         </p>

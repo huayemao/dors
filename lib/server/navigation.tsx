@@ -46,7 +46,7 @@ export async function parsedNavigationPage(items: any[]) {
           Container: (props) => (
             <BaseCard
               key={props.id}
-              className={cn("my-4 p-4 break-inside-avoid", {
+              className={cn("my-4 p-4 max-w-lg md:max-w-sm  break-inside-avoid", {
                 "mt-0": props.i === 0,
               })}
             >
