@@ -22,12 +22,17 @@ export async function GET(
 
     const mimeType = mime.getType(file?.name || "");
 
-    return new Response(file?.data, {
+    const blob = new Blob([file!.data]);
+    const stream = blob.stream();
+
+    return new Response(stream, {
       headers: {
+        "accept-ranges": "bytes",
         "Access-Control-Allow-Origin": "*",
+        "content-length": String(blob.size),
         "Content-Type": mimeType as string,
       },
-      status: 200,
+      // status: 200,
     });
   } catch (error) {
     return new Response(`error: ${error.message}`, {

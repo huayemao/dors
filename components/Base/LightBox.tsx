@@ -45,7 +45,7 @@ const LightBox = ({
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen();
         }
-        // video.setAttribute("controls", "controls");
+        video.setAttribute("controls", "controls");
         video.play().catch((e) => {
           video.oncanplay = (event) => {
             event.target.play();
@@ -62,7 +62,7 @@ const LightBox = ({
       const video = e.content.element.querySelector("video");
       if (video) {
         video.pause();
-        // video.removeAttribute("controls");
+        video.removeAttribute("controls");
       }
     });
 
