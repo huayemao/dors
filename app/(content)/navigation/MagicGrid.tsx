@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import MagicGrid from "magic-grid";
 
 export default function M() {
-  useEffect(() => {
+  useLayoutEffect(() => {
     let magicGrid = new MagicGrid({
       static: true,
       maxColumns: 3,

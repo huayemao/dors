@@ -51,6 +51,29 @@ export const components = {
   img: (props) => {
     return <Figure {...props} />;
   },
+  PlayList: (props) => {
+    const arr = React.Children.toArray(props.children);
+    const ul = arr[0] as ReactElement;
+    const lis = filterEmptyLines(React.Children.toArray(ul.props.children));
+    const data = lis.map((li: ReactElement) => {
+      const a = React.Children.toArray(li.props.children)[0] as ReactElement;
+      const title = React.Children.toArray(a.props.children)[0] as string;
+      const href = a.props.href;
+      const description = a.props.title;
+      return {
+        title,
+        href,
+        description,
+      };
+    });
+
+    return (
+      <video id="videoPlayer" controls className="w-full">
+        <source id="videoSource" src={data[0].href} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    );
+  },
   NavList: (props) => {
     const arr = React.Children.toArray(props.children);
     const ul = arr[0] as ReactElement;

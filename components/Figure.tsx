@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 export function Figure(props) {
   const { src, width, height, ignoreCaption } = props;
-  const mimetype = mime.getType(src)
-  mime.getType(src)
+  const mimetype = mime.getType(src);
+  mime.getType(src);
   const ref = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
     if (!ref.current) {
@@ -13,26 +13,46 @@ export function Figure(props) {
     }
     const current = ref.current;
     const img = current.querySelector("img");
-    if (!img) {
-      return
+    const video = current.querySelector("video");
+    if (img) {
+      img.onload = (e) => {
+        current.href = img.src || "";
+        current.dataset["pswpWidth"] = "" + img.naturalWidth;
+        current.dataset["pswpHeight"] = "" + img.naturalHeight;
+      };
     }
-    img.onload = (e) => {
-      current.href = img.src || "";
-      current.dataset["pswpWidth"] = "" + img.naturalWidth;
-      current.dataset["pswpHeight"] = "" + img.naturalHeight;
-    };
+
+    if (video) {
+      video.onloadedmetadata = (e) => {
+        console.log(video.videoWidth)
+        current.href = video.src || "";
+        current.dataset["pswpWidth"] = "" + video.videoWidth;
+        current.dataset["pswpHeight"] = "" + video.videoHeight;
+      };
+    }
   }, []);
-  if (mimetype?.startsWith('video')) {
-    return <video controls preload="metadata">
-      <source src={src} type={mimetype} />
-      Your browser does not support the video tag.
-    </video>
-  }
-  else if (mimetype?.startsWith('audio')) {
-    return <audio controls preload="metadata">
-      <source src={src} type={mimetype} />
-      Your browser does not support the aduio tag.
-    </audio>
+  if (mimetype?.startsWith("video")) {
+    return (
+      <a
+        suppressHydrationWarning
+        ref={ref}
+        className="!no-underline"
+        data-pswp-width={width || 800}
+        data-pswp-height={height || 600}
+      >
+        <video preload="metadata">
+          <source src={src} type={mimetype} />
+          Your browser does not support the video tag.
+        </video>
+      </a>
+    );
+  } else if (mimetype?.startsWith("audio")) {
+    return (
+      <audio controls preload="metadata">
+        <source src={src} type={mimetype} />
+        Your browser does not support the aduio tag.
+      </audio>
+    );
   }
   return (
     <a
@@ -51,7 +71,9 @@ export function Figure(props) {
           referrerPolicy="origin"
           {...props}
         />
-        {!ignoreCaption && <figcaption suppressHydrationWarning>{props.alt}</figcaption>}
+        {!ignoreCaption && (
+          <figcaption suppressHydrationWarning>{props.alt}</figcaption>
+        )}
       </figure>
     </a>
   );
