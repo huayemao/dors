@@ -1,11 +1,12 @@
 import prisma from "@/lib/prisma";
 import mime from "mime";
-import { BaseCard, BasePagination } from "@shuriken-ui/react";
+import { BaseCard, BasePagination, BasePlaceload } from "@shuriken-ui/react";
 import { UploadForm } from "@/components/UploadForm";
 import LightBox from "@/components/Base/LightBox";
 import { ClientOnly } from "@/components/ClientOnly";
 import { withPagination } from "@/lib/server/withPagination";
 import { FileList } from "@/components/FileList";
+import { Suspense } from "react";
 
 const PER_PAGE = 20;
 
@@ -36,7 +37,7 @@ export default async function UploadTest({ searchParams }) {
       <div className="grid lg:grid-cols-2 py-4 gap-4">
         <BaseCard shadow="flat" className="p-4">
           <ClientOnly>
-            <FileList list={list} admin></FileList>
+            <FileList admin></FileList>
           </ClientOnly>
         </BaseCard>
         <BaseCard shadow="flat" className="p-4">

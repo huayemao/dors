@@ -1,17 +1,11 @@
 "use client";
 import { copyTextToClipboard } from "@/lib/utils";
 import { UploadForm } from "../UploadForm";
-import { FileItem, FileList } from "../FileList";
-import { useEffect, useState } from "react";
+import { FileList } from "../FileList";
+import { Suspense } from "react";
+import { ClientOnly } from "../ClientOnly";
 
 export function UploadPanel() {
-  const [files, setFiles] = useState<FileItem[]>([]);
-  useEffect(() => {
-    fetch("/api/files/getLatestFile")
-      .then((res) => res.json()).then((list: FileItem[]) => {
-        setFiles(list)
-      })
-  }, [])
   return (
     <>
       <UploadForm
@@ -29,8 +23,11 @@ export function UploadPanel() {
               alert("已复制到剪贴板");
               close();
             });
-        }} />
-      <FileList list={files} />
+        }}
+      />
+      <ClientOnly>
+        <FileList />
+      </ClientOnly>
     </>
   );
 }
