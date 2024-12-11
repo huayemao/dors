@@ -29,7 +29,7 @@ const LightBox = ({
       const isVideo = element.firstChild instanceof HTMLVideoElement;
       if (isVideo) {
         element.firstChild.style.width = "100%";
-        element.firstChild.style.height = "100%";
+        element.firstChild.style.height = "100vh";
         element.firstChild.style.objectFit = "contain";
         e.itemData = {
           html: element.innerHTML,
