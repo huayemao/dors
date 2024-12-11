@@ -1,4 +1,3 @@
-"use client";
 import { copyTextToClipboard, humanFileSize } from "@/lib/utils";
 import {
   BaseButton,
@@ -25,11 +24,6 @@ export type FileItem = {
 };
 
 export function FileList({ admin = false }: { admin?: boolean }) {
-  const filesPromise = fetch("/api/files/getLatestFile").then((res) =>
-    res.json()
-  );
-  const fileItems: FileItem[] = use(filesPromise);
-
   return (
     <Suspense
       fallback={
@@ -39,56 +33,65 @@ export function FileList({ admin = false }: { admin?: boolean }) {
         </div>
       }
     >
-      <BaseList className="w-full">
-        {fileItems.map((e, i) => {
-          const sizeStr = e.size ? humanFileSize(e.size) : "unknown size";
-          return (
-            <BaseListItem
-              key={e.id}
-              //  @ts-ignore
-              title={
-                <span className="truncate inline-block max-w-[12em] md:max-w-xs">
-                  {e.name}
-                </span>
-              }
-              subtitle={["#" + e.id, sizeStr, e.mimeType].join("  ")}
-              end={
-                <ClientOnly>
-                  <FileActions e={e} admin={admin} />
-                </ClientOnly>
-              }
+      <Content />
+    </Suspense>
+  );
+}
+
+function Content({ admin = false }: { admin?: boolean }) {
+  const filesPromise = fetch("/api/files/getLatestFile").then((res) =>
+    res.json()
+  );
+  const fileItems: FileItem[] = use(filesPromise);
+
+  return (
+    <BaseList className="w-full">
+      {fileItems.map((e, i) => {
+        const sizeStr = e.size ? humanFileSize(e.size) : "unknown size";
+        return (
+          <BaseListItem
+            key={e.id}
+            //  @ts-ignore
+            title={
+              <span className="truncate inline-block max-w-[12em] md:max-w-xs">
+                {e.name}
+              </span>
+            }
+            subtitle={["#" + e.id, sizeStr, e.mimeType].join("  ")}
+            end={
+              <ClientOnly>
+                <FileActions e={e} admin={admin} />
+              </ClientOnly>
+            }
+          >
+            <BaseDropdown
+              variant="text"
+              renderButton={() => (
+                <BaseIconBox
+                  mask="blob"
+                  color="success"
+                  rounded="none"
+                  variant="pastel"
+                  size="md"
+                >
+                  {e.mimeType.startsWith("image") ? (
+                    // @ts-ignore
+                    <ImageIcon strokeWidth={1} className="h-6 w-6"></ImageIcon>
+                  ) : (
+                    <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
+                  )}
+                </BaseIconBox>
+              )}
             >
-              <BaseDropdown
-                variant="text"
-                renderButton={() => (
-                  <BaseIconBox
-                    mask="blob"
-                    color="success"
-                    rounded="none"
-                    variant="pastel"
-                    size="md"
-                  >
-                    {e.mimeType.startsWith("image") ? (
-                      // @ts-ignore
-                      <ImageIcon
-                        strokeWidth={1}
-                        className="h-6 w-6"
-                      ></ImageIcon>
-                    ) : (
-                      <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
-                    )}
-                  </BaseIconBox>
-                )}
-              >
-                <div>
-                  <Figure
-                    ignoreCaption
-                    alt={e.name}
-                    src={encodeURI(`${SITE_META.url}/api/files/${e.name}`)}
-                  />
-                </div>
-              </BaseDropdown>
-              {/* <Popover  className="relative">
+              <div>
+                <Figure
+                  ignoreCaption
+                  alt={e.name}
+                  src={encodeURI(`${SITE_META.url}/api/files/${e.name}`)}
+                />
+              </div>
+            </BaseDropdown>
+            {/* <Popover  className="relative">
                     <Popover.Button>
                         <div className="flex items-center w-10 h-10">
                             {e.mimeType.startsWith("image") ? (
@@ -105,10 +108,9 @@ export function FileList({ admin = false }: { admin?: boolean }) {
                         </BaseCard>
                     </Popover.Panel>
                 </Popover> */}
-            </BaseListItem>
-          );
-        })}
-      </BaseList>
-    </Suspense>
+          </BaseListItem>
+        );
+      })}
+    </BaseList>
   );
 }
