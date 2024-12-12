@@ -25,17 +25,18 @@ const LightBox = ({
     });
 
     lightBox.on("itemData", (e) => {
-      const element = e.itemData.element;
+      const element = e.itemData.element.cloneNode(true) as HTMLElement;
+      console.log(element)
       const isVideo = element.firstChild instanceof HTMLVideoElement;
       if (isVideo) {
-        element.firstChild.style.width = "100%";
-        element.firstChild.style.height = "100vh";
-        element.firstChild.style.objectFit = "contain";
+        const video = element.firstChild;
+        video.style.width = "100%";
+        video.style.height = "100vh";
+        video.style.objectFit = "contain";
         e.itemData = {
           html: element.innerHTML,
           photodata: element.dataset.photodata,
         };
-        // console.log(slide_index + ' pano:' + element.href);
       }
     });
 
