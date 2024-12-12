@@ -34,6 +34,7 @@ export const FilePreview = ({ file, ...props }) => {
 
 export function UploadForm(props: Props) {
   const [progress, setProgress] = useState(0);
+  const [finished, setFinished] = useState(false);
   const upload = useCallback((files: FileList) => {
     const xhr = new XMLHttpRequest();
     xhr.timeout = 10000; // 10 seconds
@@ -59,9 +60,7 @@ export function UploadForm(props: Props) {
     });
 
     // When the upload is finished, we hide the progress bar.
-    xhr.upload.addEventListener("loadend", (event) => {
-      
-    });
+    xhr.upload.addEventListener("loadend", (event) => {});
 
     // In case of an error, an abort, or a timeout, we hide the progress bar
     // Note that these events can be listened to on the xhr object too
@@ -99,8 +98,10 @@ export function UploadForm(props: Props) {
       {...props}
     >
       <div className="max-w-xl">
-        <BaseInputFileHeadless id="files" multiple>
-          {({ open, remove, drop, files, el }) => (
+        <BaseInputFileHeadless
+          id="files"
+          multiple
+          renderContent={({ open, remove, drop, files, el }) => (
             <Fragment>
               <div className="mb-4 flex items-center gap-2">
                 <button
@@ -120,7 +121,9 @@ export function UploadForm(props: Props) {
                   className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
                   data-nui-tooltip="开始上传"
                   onClick={() => {
-                    upload(files);
+                    if (files) {
+                      upload(files);
+                    }
                   }}
                 >
                   <Iconify icon="lucide:arrow-up" className="h-4 w-4" />
@@ -244,15 +247,10 @@ export function UploadForm(props: Props) {
               </div>
             </Fragment>
           )}
-        </BaseInputFileHeadless>
+        ></BaseInputFileHeadless>
       </div>
       {/* @ts-ignore */}
       {/* <BaseInput label="名称" name="filename" id="filename"></BaseInput> */}
-      <div className="w-full text-right">
-        <BaseButton type="submit" color="primary">
-          确定
-        </BaseButton>
-      </div>
     </form>
   );
 }

@@ -41,7 +41,7 @@ type BaseInputFileHeadlessProps = HTMLAttributes<HTMLInputElement> & {
    */
   filterFileDropped?: (file: File) => boolean;
 
-  children?: (context: BaseInputFileHeadlessProvider) => ReactNode;
+  renderContent?: (context: BaseInputFileHeadlessProvider) => ReactNode;
 };
 
 type BaseInputFileHeadlessProvider = {
@@ -58,10 +58,8 @@ export type BaseInputFileHeadlessRef = BaseInputFileHeadlessProvider;
 export const BaseInputFileHeadless = forwardRef<
   BaseInputFileHeadlessRef,
   BaseInputFileHeadlessProps
->(function BaseInputFileHeadless(
-  { filterFileDropped = () => true, onChange = () => {}, ...props },
-  ref
-) {
+>(function BaseInputFileHeadless(ps: BaseInputFileHeadlessProps, ref) {
+  const { filterFileDropped = () => true, onChange = () => {}, ...props } = ps;
   const [files, setFiles] = useState<FileList | null>(props.value || null);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -185,7 +183,7 @@ export const BaseInputFileHeadless = forwardRef<
 
   return (
     <div className="group/nui-file-headless relative">
-      {props.children?.({
+      {props.renderContent?.({
         el: inputRef.current,
         id,
         files,
