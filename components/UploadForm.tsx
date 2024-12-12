@@ -35,9 +35,10 @@ export const FilePreview = ({ file, ...props }) => {
 export function UploadForm(props: Props) {
   const [progress, setProgress] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [started, setStarted] = useState(false);
   const upload = useCallback((files: FileList) => {
     const xhr = new XMLHttpRequest();
-    xhr.timeout = 10000; // 10 seconds
+    xhr.timeout = 400000; // 40 seconds
 
     // Link abort button
     // abortButton.addEventListener(
@@ -50,6 +51,7 @@ export function UploadForm(props: Props) {
 
     // When the upload starts, we display the progress bar
     xhr.upload.addEventListener("loadstart", (event) => {
+      setStarted(true);
       toast("上传中");
     });
 
@@ -79,6 +81,8 @@ export function UploadForm(props: Props) {
     }
     xhr.addEventListener("load", (ev) => {
       toast("上传完成");
+      setStarted(false);
+      setFinished(true);
       copyTextToClipboard(xhr.responseText);
     });
 
@@ -118,6 +122,7 @@ export function UploadForm(props: Props) {
 
                 <button
                   type="button"
+                  disabled={started && !finished}
                   className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
                   data-nui-tooltip="开始上传"
                   onClick={() => {
