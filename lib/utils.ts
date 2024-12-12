@@ -123,11 +123,13 @@ export async function readFromClipboard() {
 }
 
 export function withConfirm<T extends Function>(fn: T) {
-  const res = confirm("确定吗？");
-  if (!res) {
-    return;
+  return () => {
+    const res = confirm("确定吗？");
+    if (!res) {
+      return;
+    }
+    fn();
   }
-  fn();
 }
 
 export function getCurrentSegmentContent(el: HTMLElement) {

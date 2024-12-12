@@ -72,7 +72,7 @@ export default function CreateCollectionModal<
         payload: Number(params.collectionId),
       });
       close();
-    });
+    })();
   };
   return (
     <Modal

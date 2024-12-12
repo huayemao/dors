@@ -104,7 +104,7 @@ export default function ViewOrEditEntityModal<
         payload: currentEntity.id,
       });
       close();
-    });
+    })();
   }, [close, currentEntity.id, dispatch]);
 
   return (
