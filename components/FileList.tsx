@@ -1,3 +1,4 @@
+"use client";
 import { copyTextToClipboard, humanFileSize } from "@/lib/utils";
 import {
   BaseButton,
@@ -33,7 +34,7 @@ export function FileList({ admin = false }: { admin?: boolean }) {
         </div>
       }
     >
-      <Content />
+      <Content admin={admin} />
     </Suspense>
   );
 }
