@@ -37,7 +37,7 @@ export default async function UploadTest({ searchParams }) {
       <div className="grid lg:grid-cols-2 py-4 gap-4">
         <BaseCard shadow="flat" className="p-4">
           <ClientOnly>
-            <FileList admin></FileList>
+            <FileList admin list={list}></FileList>
           </ClientOnly>
         </BaseCard>
         <BaseCard shadow="flat" className="p-4">

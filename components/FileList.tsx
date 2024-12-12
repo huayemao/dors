@@ -24,7 +24,13 @@ export type FileItem = {
   mimeType: string;
 };
 
-export function FileList({ admin = false }: { admin?: boolean }) {
+export function FileList({
+  list,
+  admin = false,
+}: {
+  list?: FileItem[];
+  admin?: boolean;
+}) {
   return (
     <Suspense
       fallback={
@@ -34,15 +40,23 @@ export function FileList({ admin = false }: { admin?: boolean }) {
         </div>
       }
     >
-      <Content admin={admin} />
+      <Content list={list} admin={admin} />
     </Suspense>
   );
 }
 
-function Content({ admin = false }: { admin?: boolean }) {
-  const filesPromise = fetch("/api/files/getLatestFile").then((res) =>
-    res.json()
-  );
+function Content({
+  list,
+  admin = false,
+}: {
+  list?: FileItem[];
+  admin?: boolean;
+}) {
+  const filesPromise = list
+    ? new Promise((resolve) => {
+        resolve(list);
+      })
+    : fetch("/api/files/getLatestFile").then((res) => res.json());
   const fileItems: FileItem[] = use(filesPromise);
 
   return (
