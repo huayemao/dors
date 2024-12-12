@@ -5,26 +5,91 @@ import {
   BaseProgress,
   useNinjaFilePreview,
 } from "@shuriken-ui/react";
-import { ComponentProps, DOMAttributes, FC, Fragment, useState } from "react";
+import {
+  Attributes,
+  ComponentProps,
+  DOMAttributes,
+  FC,
+  Fragment,
+  useCallback,
+  useState,
+} from "react";
 import { BaseInputFileHeadless } from "./Base/InputFileHeadless";
 import { CloudIcon, SlashIcon, UploadIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 import { Icon, IconProps } from "@iconify/react/dist/iconify.js";
+import toast from "react-hot-toast";
+import { copyTextToClipboard } from "@/lib/utils";
 
 type Props = DOMAttributes<HTMLFormElement>;
 const Iconify: FC<IconProps> = (props) => {
   return <Icon {...props} />;
 };
 
-export const FilePreview: FC<
-  Omit<ComponentProps<typeof Image>, "src"> & { file: File | null | undefined }
-> = ({ file, ...props }) => {
+export const FilePreview = ({ file, ...props }) => {
   const preview = useNinjaFilePreview(file);
 
-  return <Image {...props} src={preview} />;
+  return <img {...props} src={preview} />;
 };
 
 export function UploadForm(props: Props) {
+  const [progress, setProgress] = useState(0);
+  const upload = useCallback((files: FileList) => {
+    const xhr = new XMLHttpRequest();
+    xhr.timeout = 10000; // 10 seconds
+
+    // Link abort button
+    // abortButton.addEventListener(
+    //   "click",
+    //   () => {
+    //     xhr.abort();
+    //   },
+    //   { once: true }
+    // );
+
+    // When the upload starts, we display the progress bar
+    xhr.upload.addEventListener("loadstart", (event) => {
+      toast("上传中");
+    });
+
+    // Each time a progress event is received, we update the bar
+    xhr.upload.addEventListener("progress", (event) => {
+      const value = (event.loaded / event.total) * 100;
+      setProgress(value);
+    });
+
+    // When the upload is finished, we hide the progress bar.
+    xhr.upload.addEventListener("loadend", (event) => {
+      
+    });
+
+    // In case of an error, an abort, or a timeout, we hide the progress bar
+    // Note that these events can be listened to on the xhr object too
+    // function errorAction(event) {
+    //   progressBar.classList.remove("visible");
+    //   log.textContent = `Upload failed: ${event.type}`;
+    // }
+    // xhr.upload.addEventListener("error", errorAction);
+    // xhr.upload.addEventListener("abort", errorAction);
+    // xhr.upload.addEventListener("timeout", errorAction);
+
+    // Build the payload
+    const fileData = new FormData();
+    for (const file of Array.from(files)) {
+      fileData.append("files", file);
+    }
+    xhr.addEventListener("load", (ev) => {
+      toast("上传完成");
+      copyTextToClipboard(xhr.responseText);
+    });
+
+    // Theoretically, event listeners could be set after the open() call
+    // but browsers are buggy here
+    xhr.open("POST", "/api/files", true);
+
+    // Note that the event listener must be set before sending (as it is a preflighted request)
+    xhr.send(fileData);
+  }, []);
   return (
     <form
       action="/api/files"
@@ -34,8 +99,8 @@ export function UploadForm(props: Props) {
       {...props}
     >
       <div className="max-w-xl">
-        <BaseInputFileHeadless multiple>
-          {({ open, remove, drop, files }) => (
+        <BaseInputFileHeadless id="files" multiple>
+          {({ open, remove, drop, files, el }) => (
             <Fragment>
               <div className="mb-4 flex items-center gap-2">
                 <button
@@ -53,12 +118,14 @@ export function UploadForm(props: Props) {
                 <button
                   type="button"
                   className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                  // @ts-ignore
-                  tooltip="Start Upload"
+                  data-nui-tooltip="开始上传"
+                  onClick={() => {
+                    upload(files);
+                  }}
                 >
                   <Iconify icon="lucide:arrow-up" className="h-4 w-4" />
 
-                  <span className="sr-only">Start Upload</span>
+                  <span className="sr-only">开始上传</span>
                 </button>
               </div>
               <div
@@ -87,7 +154,7 @@ export function UploadForm(props: Props) {
                       />
 
                       <h4 className="text-muted-400 font-sans text-sm">
-                        Drop files to upload
+                        拖拽文件到此以上传
                       </h4>
 
                       <div>
@@ -100,100 +167,79 @@ export function UploadForm(props: Props) {
                         htmlFor="file"
                         className="text-muted-400 group-hover:text-primary-500 group-focus:text-primary-500 cursor-pointer font-sans text-sm underline underline-offset-4 transition-colors duration-300"
                       >
-                        Select files
+                        选择文件
                       </label>
                     </div>
                   </div>
                 ) : (
-                  <ul className="mt-6 space-y-2">
-                    {Array.from(files).map((file) => (
-                      <li key={file.name}>
-                        <div className="border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative flex items-center justify-end gap-2 rounded-xl border bg-white p-3">
-                          <div className="flex items-center gap-2">
-                            <div className="shrink-0">
-                              {file.type.startsWith("image") ? (
-                                <FilePreview
-                                  height={56}
-                                  width={56}
-                                  className="h-14 w-14 rounded-xl object-cover object-center"
-                                  file={file}
-                                  alt="Image preview"
-                                />
-                              ) : (
-                                <Image
-                                  height={56}
-                                  width={56}
-                                  className="h-14 w-14 rounded-xl object-cover object-center"
-                                  src="https://tairo.cssninja.io/img/avatars/placeholder-file.png"
-                                  alt="Image preview"
-                                />
-                              )}
+                  <div className="space-y-4">
+                    <ul className="mt-6 space-y-2">
+                      {Array.from(files).map((file) => (
+                        <li key={file.name}>
+                          <div className="border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative flex items-center justify-between gap-2 rounded-xl border bg-white p-3">
+                            <div className="flex items-center gap-2">
+                              <div className="shrink-0">
+                                {file.type.startsWith("image") ? (
+                                  <FilePreview
+                                    height={56}
+                                    width={56}
+                                    className="h-14 w-14 rounded-xl object-cover object-center"
+                                    file={file}
+                                    alt="Image preview"
+                                  />
+                                ) : (
+                                  <Image
+                                    height={56}
+                                    width={56}
+                                    className="h-14 w-14 rounded-xl object-cover object-center"
+                                    src="https://tairo.cssninja.io/img/avatars/placeholder-file.png"
+                                    alt="Image preview"
+                                  />
+                                )}
+                              </div>
+
+                              <div className="font-sans">
+                                <span className="text-muted-800 dark:text-muted-100 line-clamp-1 block text-sm">
+                                  {file.name}
+                                </span>
+
+                                <span className="text-muted-400 block text-xs">
+                                  {file.size}
+                                </span>
+                              </div>
                             </div>
 
-                            <div className="font-sans">
-                              <span className="text-muted-800 dark:text-muted-100 line-clamp-1 block text-sm">
-                                {file.name}
-                              </span>
-
-                              <span className="text-muted-400 block text-xs">
-                                {file.size}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="ms-auto w-32 px-4 transition-opacity duration-300 opacity-100">
+                            {/* <div className="ms-auto w-32 px-4 transition-opacity duration-300 opacity-100">
                             <BaseProgress value={0} size="xs" color="success" />
+                          </div> */}
+
+                            <div className="flex gap-2">
+                              <button
+                                className="border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-900 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
+                                type="button"
+                                // @ts-ignore
+                                tooltip="Remove"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  remove(file);
+                                }}
+                              >
+                                <Iconify icon="lucide:x" className="h-4 w-4" />
+                                <span className="sr-only">Remove</span>
+                              </button>
+                            </div>
                           </div>
-
-                          <div className="flex gap-2">
-                            <button
-                              className="border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-900 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-60"
-                              disabled
-                              type="button"
-                              // @ts-ignore
-                              tooltip="Cancel"
-                            >
-                              <Iconify
-                                icon="lucide:slash"
-                                className="h-4 w-4"
-                              />
-
-                              <span className="sr-only">Cancel</span>
-                            </button>
-
-                            <button
-                              className="border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-900 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                              type="button"
-                              // @ts-ignore
-                              tooltip="Upload"
-                            >
-                              <Iconify
-                                icon="lucide:arrow-up"
-                                className="h-4 w-4"
-                              />
-
-                              <span className="sr-only">Upload</span>
-                            </button>
-
-                            <button
-                              className="border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-900 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                              type="button"
-                              // @ts-ignore
-                              tooltip="Remove"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                remove(file);
-                              }}
-                            >
-                              <Iconify icon="lucide:x" className="h-4 w-4" />
-
-                              <span className="sr-only">Remove</span>
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="ms-auto w-full px-4 transition-opacity duration-300 opacity-100">
+                      <BaseProgress
+                        value={progress}
+                        size="xs"
+                        color="success"
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </Fragment>
