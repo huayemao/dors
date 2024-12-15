@@ -26,7 +26,6 @@ const LightBox = ({
 
     lightBox.on("itemData", (e) => {
       const element = e.itemData.element.cloneNode(true) as HTMLElement;
-      console.log(element)
       const isVideo = element.firstChild instanceof HTMLVideoElement;
       if (isVideo) {
         const video = element.firstChild;

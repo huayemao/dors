@@ -9,7 +9,7 @@ export function AdminMenu() {
   const menuItems = [
     {
       title: "文章管理",
-      href: "/admin/posts/create",
+      href: "/admin/posts",
       iconName: "StickyNote",
     },
     {

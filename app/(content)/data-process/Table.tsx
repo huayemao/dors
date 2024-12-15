@@ -1,7 +1,7 @@
 "use client";
 import { ActionDropdown } from "@/components/ActionDropdown";
 import { cn, isDataURL, isValidURL } from "@/lib/utils";
-import { BaseTag } from "@shuriken-ui/react";
+import { BaseDropdown, BaseDropdownItem, BaseTag } from "@shuriken-ui/react";
 import mime from "mime";
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -11,9 +11,11 @@ export function Table({
   canEdit = false,
   tagCols = [],
   boldCols = [],
+  actions = [],
 }: {
   data: any[];
   canEdit?: boolean;
+  actions?: { title: string; href?: string; onClick?: (e:any) => void }[];
   onRowClick?: (any) => void;
   tagCols?: number[];
   boldCols?: number[];
@@ -83,17 +85,21 @@ export function Table({
         </tr>
       </thead>
       <tbody className="text-muted-500 bg-muted-50/5 dark:bg-muted-800 dark:text-muted-50  font-medium">
-        {tableData.rows.map((e, i) => {
+        {tableData.rows.map((row, i) => {
           return (
             <tr
               className="text-sm  border-b border-muted-200 transition-colors duration-300 last:border-none hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-900/60"
               key={i}
-              onClick={() => onRowClick?.(e)}
+              onClick={() => onRowClick?.(row)}
             >
-              {Object.entries(e).map(([key, value], i) => {
+              {Object.entries(row).map(([key, value], i) => {
                 if (
                   isValidURL(value) &&
-                  ((value as string).startsWith('https://images.pexels.com/photos/') || isDataURL(value) || mime.getType(value as string)?.startsWith("image"))
+                  ((value as string).startsWith(
+                    "https://images.pexels.com/photos/"
+                  ) ||
+                    isDataURL(value) ||
+                    mime.getType(value as string)?.startsWith("image"))
                 ) {
                   return (
                     <td
@@ -126,12 +132,13 @@ export function Table({
                         {value as string}
                       </BaseTag>
                     ) : (
-                      <div data-nui-tooltip={value} className={cn(
-                        "max-w-[8em] min-w-[4em] ",
-                        {
-                          "min-w-fit text-center": typeof value == 'number' || value instanceof Date,
-                        }
-                      )}>
+                      <div
+                        data-nui-tooltip={value}
+                        className={cn("max-w-[8em] min-w-[4em] ", {
+                          "min-w-fit text-center":
+                            typeof value == "number" || value instanceof Date,
+                        })}
+                      >
                         <span
                           className={cn(
                             "inline-block overflow-hidden overflow-ellipsis",
@@ -140,7 +147,14 @@ export function Table({
                             }
                           )}
                         >
-                          {value instanceof Date ? (<time>{value.toLocaleDateString()} <br /> {value.toLocaleTimeString()}</time>) : value as string}
+                          {value instanceof Date ? (
+                            <time>
+                              {value.toLocaleDateString()} <br />{" "}
+                              {value.toLocaleTimeString()}
+                            </time>
+                          ) : (
+                            (value as string)
+                          )}
                         </span>
                       </div>
                     )}
@@ -152,9 +166,15 @@ export function Table({
                   valign="middle"
                   className="border-t border-muted-200 py-4 px-3 font-sans font-normal dark:border-muted-800 text-sm text-muted-400"
                 >
-                  <ActionDropdown>
-                    <></>
-                  </ActionDropdown>
+                  <BaseDropdown variant="context">
+                    {actions.map((e) => (
+                      <BaseDropdownItem
+                        onClick={()=>e.onClick?.(row)}
+                        key={e.title}
+                        title={e.title}
+                      ></BaseDropdownItem>
+                    ))}
+                  </BaseDropdown>
                 </td>
               )}
             </tr>
