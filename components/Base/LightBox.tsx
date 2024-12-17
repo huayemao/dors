@@ -12,8 +12,7 @@ const LightBox = ({
   childrenSelector?: string;
 }) => {
   useEffect(() => {
-    let lightBox;
-    lightBox = new PhotoSwipeLightbox({
+    let lightBox = new PhotoSwipeLightbox({
       // may select multiple "galleries"
       gallery: gallery,
 
@@ -25,7 +24,7 @@ const LightBox = ({
     });
 
     lightBox.on("itemData", (e) => {
-      const element = e.itemData.element.cloneNode(true) as HTMLElement;
+      const element = e.itemData?.element!.cloneNode(true) as HTMLElement;
       const isVideo = element.firstChild instanceof HTMLVideoElement;
       if (isVideo) {
         const video = element.firstChild;
@@ -40,26 +39,32 @@ const LightBox = ({
     });
 
     lightBox.on("contentActivate", (e) => {
-      const video = e.content.element.querySelector("video");
+      const video = e.content.element!.querySelector("video");
       if (video) {
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen();
         }
+        const container = document.querySelector(".pswp")!;
+        setTimeout(() => {
+          if (container.classList.contains("pswp--ui-visible"))
+            container.classList.remove("pswp--ui-visible");
+        }, 100);
+
         video.setAttribute("controls", "controls");
         video.play().catch((e) => {
           video.oncanplay = (event) => {
-            event.target.play();
+            (event.target as HTMLVideoElement).play();
           };
         });
 
         video.onended = () => {
-          const pswp = lightBox.pswp;
+          const pswp = lightBox.pswp!;
           pswp.next();
         };
       }
     });
     lightBox.on("contentDeactivate", (e) => {
-      const video = e.content.element.querySelector("video");
+      const video = e.content.element!.querySelector("video");
       if (video) {
         video.pause();
         video.removeAttribute("controls");
@@ -75,7 +80,6 @@ const LightBox = ({
     lightBox.init();
     return () => {
       lightBox.destroy();
-      lightBox = null;
     };
   }, [childrenSelector, gallery]);
 

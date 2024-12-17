@@ -24,7 +24,6 @@ export function Figure(props) {
 
     if (video) {
       video.onloadedmetadata = (e) => {
-        console.log(video.videoWidth)
         current.href = video.src || "";
         current.dataset["pswpWidth"] = "" + video.videoWidth;
         current.dataset["pswpHeight"] = "" + video.videoHeight;
