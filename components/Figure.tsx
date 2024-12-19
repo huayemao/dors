@@ -15,16 +15,16 @@ export function Figure(props) {
     const img = current.querySelector("img");
     const video = current.querySelector("video");
     if (img) {
-      img.onload = (e) => {
-        current.href = img.src || "";
+      current.href = img.src || "";
+      img.onloadedmetadata = (e) => {
         current.dataset["pswpWidth"] = "" + img.naturalWidth;
         current.dataset["pswpHeight"] = "" + img.naturalHeight;
       };
     }
 
     if (video) {
+      current.href = video.src || "";
       video.onloadedmetadata = (e) => {
-        current.href = video.src || "";
         current.dataset["pswpWidth"] = "" + video.videoWidth;
         current.dataset["pswpHeight"] = "" + video.videoHeight;
       };
