@@ -111,7 +111,7 @@ const nextConfig = {
             "https://mvw-pro-ynhr.oss-cn-beijing.aliyuncs.com/:path*",
         },
       ],
-      afterFiles: [
+      fallback: [
         // {
         //   source: '/v1/:path*',
         //   destination: 'http://house.huayemao.run:8099/v1/:path*',

@@ -8,7 +8,8 @@ import { NavigationItem, NavigationItemProps } from "@/components/Nav/Navigation
 
 export const metadata: Metadata = {
   title: '小记',
-  description: '本地化、支持 mdx 的简单笔记应用'
+  description: '本地化、支持 mdx 的简单笔记应用',
+  manifest:'/notes/manifest.webmanifest'
 };
 
 const menuItems: NavigationItemProps[] = [

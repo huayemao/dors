@@ -1,0 +1,18 @@
+{
+    "name": "Dors 小记",
+    "short_name": "小记",
+    "description": "MDX 记事本应用",
+    "start_url": "/notes",
+    "scope": "/notes",
+    "display": "standalone",
+    "background_color": "#fff",
+    "theme_color": "#312e81",
+    "icons": [
+        {
+            "src": "/notes/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
