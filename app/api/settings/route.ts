@@ -21,7 +21,7 @@ export async function POST(request: Request, response: Response) {
         value: value,
       },
     });
-
+    revalidateTag('settings_' + key)
     return NextResponse.json(res);
   } catch (error) {
     if (error.code === "P2025") {
@@ -36,6 +36,4 @@ export async function POST(request: Request, response: Response) {
     }
     console.error(error)
   }
-
-  revalidateTag('settings_' + key)
 }
