@@ -57,6 +57,31 @@ export const Nav = ({
     setMobileOpen(false);
   }, []);
 
+  const extraPrivateMenuItems = categories
+    .filter((e) => !!e.hidden)
+    .map((e) => ({
+      title: e.name!,
+      href: "/categories/" + e.id,
+      // @ts-ignore
+      text: e.meta?.description || "",
+    }))
+    .concat([
+      {
+        title: "小记",
+        href: "/notes",
+        text: "本地记录功能",
+      },
+    ])
+    .concat(
+      ...resourceItems.map((e) => {
+        return {
+          title: e.title,
+          text: e.subtitle,
+          href: e.url,
+        };
+      })
+    );
+
   const menuItems: NavigationItemProps[] = [
     {
       title: "主页",
@@ -64,53 +89,42 @@ export const Nav = ({
       icon: HomeIcon,
     },
     {
-      title: "关于",
-      href: "/about",
-      icon: HandshakeIcon,
-    },
-    {
-      title: "标签",
-      href: "/tags",
-      icon: TagIcon,
+      title: "阅读导航",
+      icon: LinkIcon,
+      children: [
+        {
+          title: "关于",
+          href: "/about",
+          text: "花野猫何许人也",
+          icon: HandshakeIcon,
+        },
+        {
+          title: "分类&标签",
+          href: "/tags",
+          text: "按分类或标签快速检索",
+          icon: TagIcon,
+        },
+      ],
     },
     {
       title: "自留地",
-      href: "/protected",
       icon: GlobeLockIcon,
-      prefetch: false,
-    },
-    {
-      title: "资源",
-      icon: LinkIcon,
-      href: "/navigation",
-      // children: categories
-      //   .filter((e) => !!e.hidden)
-      //   .map((e) => ({
-      //     title: e.name!,
-      //     href: "/categories/" + e.id,
-      //     text: e.description || "",
-      //   }))
-      //   .concat([
-      //     {
-      //       title: "小记",
-      //       href: "/notes",
-      //       text: "本地记录功能",
-      //     },
-      //     {
-      //       title: "随手记",
-      //       href: "https://www.yuque.com/huayemao/yuque/dc_213",
-      //       text: "语雀链接",
-      //     },
-      //   ])
-      //   .concat(
-      //     ...resourceItems.map((e) => {
-      //       return {
-      //         title: e.title,
-      //         text: e.subtitle,
-      //         href: e.url,
-      //       };
-      //     })
-      //   ),
+      children: [
+        {
+          title: "自留地",
+          text: "私有文章",
+          href: "/protected",
+          icon: GlobeLockIcon,
+          prefetch: false,
+        },
+        {
+          title: "资源",
+          icon: LinkIcon,
+          href: "/navigation",
+          text: "我的导航页",
+        },
+        ...extraPrivateMenuItems,
+      ],
     },
     {
       title: "管理",
