@@ -3,7 +3,6 @@ import { type Posts } from "@/lib/posts";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString, isDataURL } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";
-import { url } from "inspector";
 import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,7 +41,7 @@ const Hero = ({
     >
       <div className="h-full p-5">
         <Image
-          unoptimized={config.output === "export" || isDataURL(url)}
+          unoptimized={config.output === "export" || isDataURL(imageSrc)}
           className="block h-full w-full object-cover rounded-xl "
           /* @ts-ignore */
           src={imageSrc}

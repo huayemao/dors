@@ -1,10 +1,12 @@
 "use client";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { BasePagination } from "@shuriken-ui/react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import { memo, useCallback } from "react";
 
+export default memo(Pagination);
 // eslint-disable-next-line react/display-name
-export default function Pagination({ pageCount }) {
+function Pagination({ pageCount }) {
   const params = useParams();
   const searchParams = useSearchParams();
   const pageNumRaw = params?.["page"] || searchParams?.get("page") || "1";

@@ -5,12 +5,13 @@ import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
 import { BaseHeading } from "@shuriken-ui/react";
-import { cache, Suspense } from "react";
+import { cache, Fragment, Suspense } from "react";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-export const revalidate = 36000;
+export const revalidate = 1200;
+
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export default async function Home({
@@ -18,18 +19,18 @@ export default async function Home({
 }: {
   searchParams: SearchParams;
 }) {
-  const posts = await cache(getProcessedPosts)(
+  const posts = await getProcessedPosts(
     await getPosts({
       ...searchParams,
       protected: false,
     })
   );
 
+  const key = posts.map((e) => e.id).join();
   const pageCount = await getPageCount();
-
   return (
-    <>
-      <CatsAndTags  simple></CatsAndTags>
+    <Fragment key={key}>
+      <CatsAndTags simple></CatsAndTags>
       <div className="space-y-4">
         <BaseHeading size="3xl" className="text-center" as="h2">
           文章
@@ -40,8 +41,8 @@ export default async function Home({
         <Posts data={posts} />
         <Suspense>
           <Pagination pageCount={pageCount}></Pagination>
-        </Suspense>
+        </Suspense>{" "}
       </div>
-    </>
+    </Fragment>
   );
 }
