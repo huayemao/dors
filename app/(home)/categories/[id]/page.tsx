@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   // read route params
 
-  const cats = await getAllCategories();
+  const cats = await getAllCategories({ includeHidden: true });
   const cat = cats.find((e) => e.id == parseInt(params.id))!;
 
   const keywords = [cat.name!];
@@ -41,7 +41,7 @@ export default async function PostsByCategory({
     id: string;
   };
 }) {
-  const cats = await getAllCategories();
+  const cats = await getAllCategories({ includeHidden: true });
   const cat = cats.find((e) => e.id == parseInt(params.id))!;
   const posts = await getProcessedPosts(
     await getPosts({
