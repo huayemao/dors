@@ -1,15 +1,19 @@
 "use client";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useRoutes } from "react-router-dom";
 
 export function useCloseModal() {
   const navigate = useNavigate();
   return useCallback(
     function () {
-      if (history.length) {
+      if (
+        history.length > 1 &&
+        !!document.referrer &&
+        document.referrer.includes(location.hostname)
+      ) {
         navigate(-1);
       } else {
-        navigate("..", { replace: true });
+        navigate("../", { replace: true });
       }
     },
     [navigate]
