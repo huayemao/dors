@@ -1,7 +1,7 @@
 "use client";
 import { useEntity, useEntityDispatch } from "@/contexts/notes";
 import { useCallback } from "react";
-import { HIDDEN_TAGS, getExcludeIds } from "./NotesContainer";
+import { HIDDEN_TAGS } from "./constants";
 
 export function useFilter() {
   const state = useEntity();

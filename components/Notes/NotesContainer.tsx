@@ -24,8 +24,8 @@ import { copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
 import { useClickAway } from "@uidotdev/usehooks";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_NAME, HIDDEN_TAGS } from "./constants";
 
-export const HIDDEN_TAGS = ["归档", "archive"];
 
 export const useActions = (note: Note) => {
   const state = useEntity();
@@ -90,7 +90,7 @@ export const useActions = (note: Note) => {
 };
 
 export const NotesContainer = ({
-  basename = "/notes",
+  basename = BASE_NAME,
 }: {
   basename?: string;
 }) => {
@@ -241,3 +241,4 @@ export function getExcludeIds(
         .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
         .map((e) => e.id);
 }
+

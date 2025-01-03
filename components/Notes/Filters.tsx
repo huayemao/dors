@@ -28,7 +28,6 @@ import {
   TagsIcon,
   XIcon,
 } from "lucide-react";
-import { HIDDEN_TAGS } from "./NotesContainer";
 import { useFilter } from "./useFilter";
 
 let lastTab = "all";

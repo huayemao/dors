@@ -1,6 +1,6 @@
 "use client";
 
-import { HIDDEN_TAGS } from "@/components/Notes/NotesContainer";
+import { HIDDEN_TAGS } from "@/components/Notes/constants";
 import {
   DEFAULT_COLLECTION,
   DEFAULT_NOTE,

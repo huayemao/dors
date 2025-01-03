@@ -11,7 +11,7 @@ export async function generateStaticParams() {
     id: String(post.id),
 }));
   const params =
-    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 15);
+    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 5);
   return params;
 }
 

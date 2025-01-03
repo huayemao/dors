@@ -18,6 +18,8 @@ import { BaseCard } from "@shuriken-ui/react";
 import React, { ReactElement } from "react";
 import { cn } from "../utils";
 import Link from "next/link";
+import { filterEmptyLines } from "./filterEmptyLines";
+import NavList from "./NavList";
 
 export const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
@@ -74,41 +76,7 @@ export const components = {
       </video>
     );
   },
-  NavList: (props) => {
-    const arr = React.Children.toArray(props.children);
-    const ul = arr[0] as ReactElement;
-    const lis = filterEmptyLines(React.Children.toArray(ul.props.children));
-    return (
-      <ul className={cn("not-prose", props.className)}>
-        {lis.map((li: ReactElement, i) => {
-          const a = React.Children.toArray(
-            li.props.children
-          )[0] as ReactElement;
-          const title = React.Children.toArray(a.props.children)[0] as string;
-          const href = a.props.href;
-          const description = a.props.title;
-          return (
-            <li
-              key={i}
-              className="nui-list-item hover:bg-muted-100 transition rounded-lg px-4 py-2"
-            >
-              <Link
-                prefetch={href.startsWith("/protected") ? false : undefined}
-                href={href}
-              >
-                <h6 className="nui-heading nui-heading-md nui-weight-medium nui-lead-tight">
-                  {title}
-                </h6>
-                <p className="nui-paragraph nui-paragraph-xs nui-weight-normal nui-lead-normal text-muted-500 dark:text-muted-400">
-                  {description || title}
-                </p>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    );
-  },
+  NavList: NavList,
   p: (props) => {
     if (props.children) {
       const arr = React.Children.toArray(props.children);
@@ -153,17 +121,3 @@ export const components = {
     // );
   },
 };
-function filterEmptyLines(
-  arr: (
-    | string
-    | number
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | React.ReactFragment
-    | React.ReactPortal
-  )[]
-) {
-  return arr.filter((e) => {
-    const isEmpty = typeof e == "string" && !e.trim();
-    return !isEmpty;
-  });
-}
