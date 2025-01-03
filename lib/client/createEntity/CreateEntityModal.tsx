@@ -43,7 +43,7 @@ export default function CreateEntityModal<
   }, [dispatch]);
 
   return (
-    <Modal open={modalOpen} onClose={close} title={currentQuestion.seq} actions={<AddAction base="../"></AddAction>}>
+    <Modal className="max-w-7xl" open={modalOpen} onClose={close} title={currentQuestion.seq} actions={<AddAction base="../"></AddAction>}>
       <Form>
         <FormFoot />
       </Form>

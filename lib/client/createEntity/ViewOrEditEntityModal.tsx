@@ -1,5 +1,5 @@
 import { Modal } from "@/components/Base/Modal";
-import { type Question } from "@/lib/types/Question";
+import { cn } from "@/lib/utils";
 import { copyTextToClipboard, withConfirm } from "@/lib/utils";
 import {
   BaseButton,
@@ -112,6 +112,7 @@ export default function ViewOrEditEntityModal<
       open={modalOpen}
       onClose={close}
       title={renderEntityModalTitle(currentEntity, { preview: false })}
+      className={cn({ "max-w-7xl": entityModalMode == "edit" })}
       actions={
         <>
           {entityModalMode == "view" ? (

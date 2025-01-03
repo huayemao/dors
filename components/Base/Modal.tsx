@@ -10,6 +10,7 @@ export const Modal = ({
   title,
   actions,
   className,
+  size,
 }: {
   open: boolean;
   onClose: () => void;
@@ -17,7 +18,35 @@ export const Modal = ({
   title?: React.ReactNode;
   actions?: React.ReactNode;
   className?: string;
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 }) => {
+  const dialogClasses = (() => {
+    const classes: string[] = [];
+
+    switch (size) {
+      case "sm":
+        classes.push("max-w-sm");
+        break;
+      case "md":
+        classes.push("max-w-md");
+        break;
+      case "lg":
+        classes.push("max-w-xl");
+        break;
+      case "xl":
+        classes.push("max-w-2xl");
+        break;
+      case "2xl":
+        classes.push("max-w-3xl");
+        break;
+      case "3xl":
+        classes.push("max-w-5xl");
+        break;
+    }
+
+    return classes;
+  })();
+
   return (
     <Dialog
       key={String(open)}
@@ -26,20 +55,24 @@ export const Modal = ({
       className="z-50 fixed inset-0 bg-muted-800/70 dark:bg-muted-900/80"
       open={open}
       as={motion.div}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
+      // exit={{ opacity: 0 }}
     >
-      <div className=" fixed inset-0">
+      <div className="flex min-h-full items-center justify-center p-4 text-center">
         <Dialog.Panel
-          className="fixed inset-0"
+          className={cn(
+            "dark:bg-muted-800 w-full bg-white text-left align-middle shadow-xl rounded-md max-w-5xl",
+            dialogClasses,
+            className
+          )}
           as={motion.div}
           initial={{ scale: 0.75, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.6, opacity: 0 }}
         >
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <div className="dark:bg-muted-800 w-full bg-white text-left align-middle shadow-xl transition-all rounded-md max-w-5xl">
+          <div className="">
+            <div className="">
               {title && (
                 <div className="flex w-full items-center justify-between p-4 md:p-6 border-b">
                   <Dialog.Title
@@ -56,8 +89,7 @@ export const Modal = ({
               )}
               <div
                 className={cn(
-                  "p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden break-all",
-                  className
+                  "p-4 max-h-[82vh] overflow-y-auto overflow-x-hidden break-all"
                 )}
               >
                 {children}
