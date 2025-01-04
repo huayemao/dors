@@ -63,7 +63,7 @@ export default function CollectionLayout<
   dispatch,
 }: {
   slots?: Record<
-    "filterModal" | "search",
+    "search",
     FC<{
       state: EntityState<EType, CType>;
       dispatch: EntityDispatch<EType, CType>;
@@ -224,7 +224,6 @@ export default function CollectionLayout<
     });
   }, [dispatch]);
 
-  const FilterModal = slots?.["filterModal"];
   const Search = slots?.["search"];
 
   let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
@@ -359,11 +358,6 @@ export default function CollectionLayout<
                   </>
                 )
               }
-              <ActionModal>
-                {FilterModal && (
-                  <FilterModal dispatch={dispatch} state={state}></FilterModal>
-                )}
-              </ActionModal>
               <BaseDropdown
                 size="lg"
                 rounded="md"
@@ -426,31 +420,3 @@ export default function CollectionLayout<
     </>
   );
 }
-
-const ActionModal = ({ children }) => {
-  const [active, setActive] = useState(false);
-  return (
-    <>
-      <BaseButtonIcon
-        size="sm"
-        onClick={() => {
-          setActive(true);
-        }}
-      >
-        <FilterIcon className="size-4"></FilterIcon>
-      </BaseButtonIcon>
-      <AnimatePresence>
-        <Modal
-          key={String(active)}
-          title="筛选"
-          open={active}
-          onClose={() => {
-            setActive(false);
-          }}
-        >
-          {children}
-        </Modal>
-      </AnimatePresence>
-    </>
-  );
-};

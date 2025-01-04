@@ -15,7 +15,6 @@ import {
 import localforage from "localforage";
 import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
-import FilterModal from "./FilterModal";
 import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
 import { Archive, Copy, Edit2 } from "lucide-react";
@@ -188,7 +187,7 @@ export const NotesContainer = ({
             filterTags={filterTags}
           ></ActionsProvider>
         )}
-        slots={{ filterModal: FilterModal, search: Search }}
+        slots={{ search: Search }}
         state={state}
         dispatch={dispatch}
         RootPage={NotesPage}

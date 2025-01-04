@@ -1,6 +1,38 @@
-import { BaseInput } from "@shuriken-ui/react";
+import { BaseButtonIcon, BaseIconBox, BaseInput } from "@shuriken-ui/react";
 import { useEntity, useEntityDispatch } from "@/contexts/notes";
-import { FC, memo, useCallback, useMemo } from "react";
+import { FC, memo, useCallback, useMemo, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { FilterIcon } from "lucide-react";
+import { Modal } from "../Base/Modal";
+import FilterModal from "./FilterModal";
+
+const ActionModal = ({ children }) => {
+  const [active, setActive] = useState(false);
+  return (
+    <>
+      <button className="absolute right-0  end-0 top-0 z-[1] flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 hover:text-primary-500">
+        <FilterIcon
+          className="size-4"
+          onClick={() => {
+            setActive(true);
+          }}
+        ></FilterIcon>
+      </button>
+      <AnimatePresence>
+        <Modal
+          key={String(active)}
+          title="筛选"
+          open={active}
+          onClose={() => {
+            setActive(false);
+          }}
+        >
+          {children}
+        </Modal>
+      </AnimatePresence>
+    </>
+  );
+};
 
 const Search: FC<{
   state: ReturnType<typeof useEntity>;
@@ -40,6 +72,11 @@ const Search: FC<{
         icon="lucide:search"
         onChange={search}
         defaultValue={(state.filters.content as string) || ""}
+        action={
+          <ActionModal>
+            <FilterModal dispatch={dispatch} state={state}></FilterModal>
+          </ActionModal>
+        }
       ></BaseInput>
     </div>
   );
