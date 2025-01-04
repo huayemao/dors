@@ -15,13 +15,7 @@ import { addActionRoutes } from "@/components/PostEditor/AddAction";
 import { fetchWithAuth } from "../utils/fetch";
 
 type Props<EType extends BaseEntity, CType extends BaseCollection> = {
-  slots?: Record<
-    "head",
-    FC<{
-      state: EntityState<EType, CType>;
-      dispatch: EntityDispatch<EType, CType>;
-    }>
-  >;
+  slots?: ComponentProps<typeof CollectionLayout>["slots"];
   basename: string;
   createForm: FC<PropsWithChildren>;
   updateForm: FC<PropsWithChildren>;

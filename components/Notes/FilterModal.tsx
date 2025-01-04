@@ -32,7 +32,7 @@ import { useFilter } from "./useFilter";
 
 let lastTab = "all";
 
-const Filters: FC<{
+const FilterModal: FC<{
   state: ReturnType<typeof useEntity>;
   dispatch: ReturnType<typeof useEntityDispatch>;
 }> = ({ state, dispatch }) => {
@@ -177,15 +177,8 @@ const Filters: FC<{
           </div>
         </BaseCard>
       </div>
-      <BaseInput
-        classes={{ wrapper: "flex-1" }}
-        label="根据关键字搜索"
-        icon="lucide:search"
-        onChange={search}
-        defaultValue={(state.filters.content as string) || ""}
-      ></BaseInput>
     </div>
   );
 };
 
-export default memo(Filters);
+export default memo(FilterModal);

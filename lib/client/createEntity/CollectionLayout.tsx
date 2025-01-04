@@ -9,6 +9,7 @@ import {
   BaseDropdown,
   BaseDropdownItem,
   BaseIconBox,
+  BaseInput,
 } from "@shuriken-ui/react";
 import {
   ArrowDownToLineIcon,
@@ -62,7 +63,7 @@ export default function CollectionLayout<
   dispatch,
 }: {
   slots?: Record<
-    "head",
+    "filterModal" | "search",
     FC<{
       state: EntityState<EType, CType>;
       dispatch: EntityDispatch<EType, CType>;
@@ -223,7 +224,8 @@ export default function CollectionLayout<
     });
   }, [dispatch]);
 
-  const Head = slots?.["head"];
+  const FilterModal = slots?.["filterModal"];
+  const Search = slots?.["search"];
 
   let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
 
@@ -282,6 +284,9 @@ export default function CollectionLayout<
                   </BaseIconBox>
                 </BaseDropdownItem>
               </BaseDropdown>
+            </div>
+            <div className="hidden md:flex flex-1">
+              {Search && <Search dispatch={dispatch} state={state}></Search>}
             </div>
             <BaseButtonGroup>
               {
@@ -354,9 +359,10 @@ export default function CollectionLayout<
                   </>
                 )
               }
-
               <ActionModal>
-                {Head && <Head dispatch={dispatch} state={state}></Head>}
+                {FilterModal && (
+                  <FilterModal dispatch={dispatch} state={state}></FilterModal>
+                )}
               </ActionModal>
               <BaseDropdown
                 size="lg"
@@ -399,6 +405,9 @@ export default function CollectionLayout<
             >
               <PlusIcon className="h-4 w-4 mr-2"></PlusIcon>新建
             </BaseButton>
+          </div>
+          <div className="w-full md:hidden ">
+            {Search && <Search dispatch={dispatch} state={state}></Search>}
           </div>
         </div>
         <div className="col-span-12">

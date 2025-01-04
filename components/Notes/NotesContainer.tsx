@@ -15,7 +15,7 @@ import {
 import localforage from "localforage";
 import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
-import Filters from "./Filters";
+import FilterModal from "./FilterModal";
 import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
 import { Archive, Copy, Edit2 } from "lucide-react";
@@ -25,7 +25,7 @@ import { useFilter } from "./useFilter";
 import { useClickAway } from "@uidotdev/usehooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_NAME, HIDDEN_TAGS } from "./constants";
-
+import Search from "./Search";
 
 export const useActions = (note: Note) => {
   const state = useEntity();
@@ -188,7 +188,7 @@ export const NotesContainer = ({
             filterTags={filterTags}
           ></ActionsProvider>
         )}
-        slots={{ head: Filters }}
+        slots={{ filterModal: FilterModal, search: Search }}
         state={state}
         dispatch={dispatch}
         RootPage={NotesPage}
@@ -241,4 +241,3 @@ export function getExcludeIds(
         .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
         .map((e) => e.id);
 }
-
