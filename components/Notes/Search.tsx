@@ -51,7 +51,7 @@ const Search: FC<{
 
   const search = useCallback(
     (v) => {
-      if (!!v)
+      if (v != state.filters.content)
         dispatch({
           type: "SET_FILTERS",
           payload: {
