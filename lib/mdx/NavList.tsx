@@ -36,7 +36,11 @@ export default function NavList(props) {
               </ClientLink>
             ) : (
               <Link
-                prefetch={href.startsWith("/protected") ? false : undefined}
+                prefetch={
+                  ["/protected", "/notes"].some((e) => href.startsWith(e))
+                    ? false
+                    : undefined
+                }
                 href={href}
               >
                 <h6 className="nui-heading nui-heading-md nui-weight-medium nui-lead-tight">
