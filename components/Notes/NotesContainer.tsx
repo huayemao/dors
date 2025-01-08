@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
 import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
-import { Archive, Copy, Edit2 } from "lucide-react";
+import { Archive, Copy, Edit2, LinkIcon } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
@@ -58,7 +58,6 @@ export const useActions = (note: Note) => {
       copy: {
         title: "复制内容",
         onClick: () => {
-          console.log(note.content);
           copyTextToClipboard(note.content).then(() => {
             toast.success("复制成功");
           });
@@ -80,6 +79,16 @@ export const useActions = (note: Note) => {
           });
         },
         start: <Archive className="h-4 w-4" />,
+        stopPropagation: true,
+      },
+      copyLink: {
+        title: "复制链接",
+        onClick: () => {
+          copyTextToClipboard(`/notes/${state.currentCollection?.id}/` + note.id).then(() => {
+            toast.success("已复制链接到剪贴板");
+          });
+        },
+        start: <LinkIcon className="h-4 w-4" />,
         stopPropagation: true,
       },
     };
