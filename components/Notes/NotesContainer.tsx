@@ -74,9 +74,7 @@ export const useActions = (note: Note) => {
           };
           // todo: 改成 editQuestion
           dispatch({ type: "SET_ENTITY_LIST", payload: newList });
-          copyTextToClipboard(note.content).then(() => {
             toast.success("归档成功");
-          });
         },
         start: <Archive className="h-4 w-4" />,
         stopPropagation: true,
