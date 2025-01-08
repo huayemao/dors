@@ -74,7 +74,7 @@ export const useActions = (note: Note) => {
           };
           // todo: 改成 editQuestion
           dispatch({ type: "SET_ENTITY_LIST", payload: newList });
-            toast.success("归档成功");
+          toast.success("归档成功");
         },
         start: <Archive className="h-4 w-4" />,
         stopPropagation: true,
@@ -82,7 +82,9 @@ export const useActions = (note: Note) => {
       copyLink: {
         title: "复制链接",
         onClick: () => {
-          copyTextToClipboard(`/notes/${state.currentCollection?.id}/` + note.id).then(() => {
+          copyTextToClipboard(
+            `/notes/${state.currentCollection?.id}/` + note.id
+          ).then(() => {
             toast.success("已复制链接到剪贴板");
           });
         },

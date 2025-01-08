@@ -3,7 +3,7 @@ import { BaseCard, BaseHeading } from "@shuriken-ui/react";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { getNavContent, parsedNavigationPage } from "@/lib/server/navigation";
-import M from "./MagicGrid";
+import GridItems from "./GridItems";
 export const maxDuration = 25;
 
 export default async function Navigation() {
@@ -18,6 +18,7 @@ export default async function Navigation() {
   if (!res) {
     return notFound();
   }
+
   return (
     <>
       <main className="w-full min-h-full dark:bg-muted-900 max-w-6xl xl:max-w-[88%] mx-auto flex-1 p-6  space-y-4">
@@ -27,12 +28,9 @@ export default async function Navigation() {
         <div className="text-right">
           <ToolBar postId={res.postId}></ToolBar>
         </div>
-        <Prose
-          className="navigation-content mb-auto !max-w-full prose-h3:mt-0"
-          content={content}
-        ></Prose>
-        <M></M>
+        <GridItems content={content}></GridItems>
       </main>
     </>
   );
 }
+
