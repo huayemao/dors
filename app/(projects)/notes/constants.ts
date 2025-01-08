@@ -3,8 +3,12 @@ export const DEFAULT_NOTE = {
   id: Date.now(),
   content: "",
   tags: [] as string[],
-  updatedAt: Date.now()
+  updatedAt: Date.now(),
 };
+
+export type Note = typeof DEFAULT_NOTE & {
+  sortIndex?: number
+}
 
 export const DEFAULT_COLLECTION = {
   id: Date.now(),
@@ -12,5 +16,3 @@ export const DEFAULT_COLLECTION = {
   online: false
 };
 
-
-export type Note = typeof DEFAULT_NOTE

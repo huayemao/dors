@@ -4,6 +4,7 @@ import { HIDDEN_TAGS } from "@/components/Notes/constants";
 import {
   DEFAULT_COLLECTION,
   DEFAULT_NOTE,
+  Note,
 } from "../app/(projects)/notes/constants";
 import { createEntityContext } from "@/lib/client/createEntity/createEntityContext";
 
@@ -13,7 +14,7 @@ export const {
   EntityContextProvider: NotesContextProvider,
   useEntity,
   useEntityDispatch,
-} = createEntityContext<typeof DEFAULT_NOTE, typeof DEFAULT_COLLECTION>({
+} = createEntityContext<Note, typeof DEFAULT_COLLECTION>({
   defaultEntity: DEFAULT_NOTE,
   defaultCollection: DEFAULT_COLLECTION,
   defaultFilterConfig: {},

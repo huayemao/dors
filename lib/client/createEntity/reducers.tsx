@@ -48,7 +48,7 @@ export const getReducer = <
           filters: action.payload.filters,
           filterConfig: action.payload.filterConfig || state.filterConfig,
         }).sort((a, b) => {
-          return ((a.seq || 0) as number) - ((b.seq || 0) as number);
+          return (b.sortIndex || 0) - (a.sortIndex || 0);
         });
         return Object.assign({}, state, {
           filters: action.payload.filters,

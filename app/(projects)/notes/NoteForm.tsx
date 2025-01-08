@@ -32,12 +32,15 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
       (e) => e.id === currentEntity.id
     );
     const isEditing = targetItemIndex != undefined && targetItemIndex != -1;
+    const sortIndex = parseInt(obj.sortIndex as string);
 
     const note = {
       ...currentEntity,
       id: isEditing ? currentEntity.id : Date.now(),
+
       // @ts-ignore
       ...(obj as Omit<Note, "id">),
+      sortIndex,
     };
 
     if (isEditing) {
@@ -86,25 +89,36 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <form method="POST" onSubmit={handleSubmit}>
-      <div className="ltablet:col-span-6 col-span-12 lg:col-span-7">
+      <div className="ltablet:col-span-6 col-span-12 md:col-span-12">
         <div className="relative w-full bg-white transition-all duration-300 rounded-md">
           <div className="lg:grid lg:grid-cols-12 p-4 md:p-8 gap-4">
-            <fieldset className="relative lg:col-span-7 ">
+            <fieldset className="relative lg:col-span-6">
               <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-12 md:col-span-6 hidden">
-                  <div className="relative">
-                    <BaseInput
-                      key={currentEntity?.id}
-                      label="序号"
-                      type="number"
-                      id="seq"
-                      // @ts-ignore
-                      name="seq"
-                      defaultValue={currentEntity?.seq}
-                    />
-                  </div>
+                <div className="col-span-6 md:col-span-3 hidden">
+                  <BaseInput
+                    key={currentEntity?.id}
+                    label="序号"
+                    type="number"
+                    id="seq"
+                    // @ts-ignore
+                    name="seq"
+                    defaultValue={currentEntity?.seq}
+                  />
                 </div>
-                <div className="col-span-12 md:col-span-6">
+                <div className="col-span-4">
+                  <BaseInput
+                    key={currentEntity?.id}
+                    label="排序优先级"
+                    labelFloat
+                    size="sm"
+                    type="number"
+                    id="sortIndex"
+                    // @ts-ignore
+                    name="sortIndex"
+                    defaultValue={currentEntity?.sortIndex || 0}
+                  />
+                </div>
+                <div className="col-span-8">
                   <div className="relative">
                     <BaseAutocomplete
                       labelFloat
@@ -151,9 +165,9 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                     }}
                   />
                   {/* <div className="bg-muted-50 p-4"> */}
-                    <BaseCard shadow="flat" className="px-4 bg-white">
-                      <Prose content={content}></Prose>
-                    </BaseCard>
+                  <BaseCard shadow="flat" className="px-4 bg-white">
+                    <Prose content={content}></Prose>
+                  </BaseCard>
                   {/* </div> */}
                 </div>
               </div>

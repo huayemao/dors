@@ -14,7 +14,7 @@ import {
 
 import localforage from "localforage";
 import { BaseEntity, BaseCollection, State, Action } from "./types";
-import { getReducer } from "./reduders";
+import { getReducer } from "./reducers";
 
 export const createEntityContext = <
   EntityType extends BaseEntity,
