@@ -13,29 +13,32 @@ export const NoteModalTitle = ({
   const close = useCloseModal();
 
   return (
-    <>
-      <span className="flex mb-2 gap-2 flex-nowrap  items-start overflow-x-auto py-1 leading-normal">
-        {note.tags?.map((e) => (
-          <div key={e} className="cursor-pointer flex-shrink-0">
-            <BaseTag
-              key={e}
-              size="sm"
-              color="primary"
-              onClick={() => {
-                filterTags([e]);
-                close();
-              }}
-            >
-              {e}
-            </BaseTag>
-          </div>
-        ))}
-      </span>
-      {
-        <time className="text-xs text-slate-600">
+    <div className="flex flex-col justify-center gap-2">
+      <span className="align-middle">
+        <i className="text-primary-500 font-bold mr-2">{note.seq} </i>
+        <time className="text-slate-600 text-xs">
           {new Date(note.id).toLocaleDateString()}
         </time>
-      }
-    </>
+      </span>
+      {!!note.tags.length && (
+        <span className="flex mb-2 gap-2 flex-nowrap  items-start overflow-x-auto leading-normal py-1">
+          {note.tags.map((e) => (
+            <div key={e} className="cursor-pointer flex-shrink-0">
+              <BaseTag
+                key={e}
+                size="sm"
+                color="primary"
+                onClick={() => {
+                  filterTags([e]);
+                  close();
+                }}
+              >
+                {e}
+              </BaseTag>
+            </div>
+          ))}
+        </span>
+      )}
+    </div>
   );
 };

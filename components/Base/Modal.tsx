@@ -74,14 +74,14 @@ export const Modal = ({
           <div className="">
             <div className="">
               {title && (
-                <div className="flex w-full items-center justify-between p-4 md:p-6 border-b">
+                <div className="flex w-full items-center justify-between p-4 md:p-6 border-b gap-4">
                   <Dialog.Title
                     as="h3"
-                    className="font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"
+                    className="w-1/2 flex-1 font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"
                   >
                     {title}
                   </Dialog.Title>
-                  <div className="flex gap-4 items-center">
+                  <div className="flex flex-shrink-0 gap-4 items-center">
                     {actions}
                     <BaseButtonClose onClick={onClose}></BaseButtonClose>
                   </div>
