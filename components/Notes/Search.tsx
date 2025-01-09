@@ -57,7 +57,7 @@ const Search: FC<{
           payload: {
             filters: {
               ...state.filters,
-              content: v,
+              all: v,
             },
           },
         });

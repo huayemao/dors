@@ -17,7 +17,10 @@ interface DetailedFilter {
 }
 
 export type FiltersType<EntityType> = Partial<
-  Record<keyof EntityType, string | string[] | undefined | DetailedFilter>
+  Record<
+    keyof EntityType | "all",
+    string | string[] | undefined | DetailedFilter
+  >
 >;
 
 export type State<

@@ -1,6 +1,7 @@
 import { Reducer } from "react";
 import { BaseEntity, BaseCollection, State, Action } from "./types";
 import { EntityState } from "./createEntityContext";
+import { pick } from "lodash";
 
 export const getReducerSlices = <
   EntityType extends BaseEntity,
@@ -230,9 +231,16 @@ export const getReducer = <
         continue;
       }
       if (typeof filter === "string") {
-        list = list.filter((e) => {
-          return e[key].includes(filter);
-        });
+        if (key == "all") {
+          list = list.filter((e) => {
+            const obj = pick(e, ["tags", "content",]);
+            return JSON.stringify(obj).includes(filter);
+          });
+        } else {
+          list = list.filter((e) => {
+            return e[key].includes(filter);
+          });
+        }
       }
       if (Array.isArray(filter)) {
         list = list.filter((item) => {
