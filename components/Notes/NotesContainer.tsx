@@ -55,6 +55,18 @@ export const useActions = (note: Note) => {
         start: <Edit2 className="h-4 w-4" />,
         stopPropagation: true,
       },
+      copyLink: {
+        title: "复制链接",
+        onClick: () => {
+          copyTextToClipboard(
+            `/notes/${state.currentCollection?.id}/` + note.id
+          ).then(() => {
+            toast.success("已复制链接到剪贴板");
+          });
+        },
+        start: <LinkIcon className="h-4 w-4" />,
+        stopPropagation: true,
+      },
       copy: {
         title: "复制内容",
         onClick: () => {
@@ -79,18 +91,6 @@ export const useActions = (note: Note) => {
         start: <Archive className="h-4 w-4" />,
         stopPropagation: true,
       },
-      copyLink: {
-        title: "复制链接",
-        onClick: () => {
-          copyTextToClipboard(
-            `/notes/${state.currentCollection?.id}/` + note.id
-          ).then(() => {
-            toast.success("已复制链接到剪贴板");
-          });
-        },
-        start: <LinkIcon className="h-4 w-4" />,
-        stopPropagation: true,
-      },
     };
   }, [dispatch, navigate, note, state.entityList]);
 
@@ -104,57 +104,6 @@ export const NotesContainer = ({
 }) => {
   const state = useEntity();
   const dispatch = useEntityDispatch();
-  const getActions = useCallback(
-    (note: Note) => {
-      const targetItemIndex = state.entityList?.findIndex(
-        (e) => e.id === note.id
-      );
-      const newList = [...state.entityList];
-      const handleArchive = () => {
-        newList[targetItemIndex] = {
-          ...note,
-          tags: note.tags.concat(HIDDEN_TAGS[0]),
-        };
-        // todo: 改成 editQuestion
-        dispatch({ type: "SET_ENTITY_LIST", payload: newList });
-        toast.success("归档成功");
-      };
-      return {
-        edit: {
-          title: "编辑",
-          onClick: () => {
-            dispatch({
-              type: "ANY",
-              payload: {
-                modalOpen: true,
-                entityModalMode: "edit",
-              },
-            });
-          },
-          start: <Edit2 className="h-4 w-4" />,
-          stopPropagation: false,
-        },
-        copy: {
-          title: "复制内容",
-          onClick: () => {
-            console.log(note.content);
-            copyTextToClipboard(note.content).then(() => {
-              toast.success("复制成功");
-            });
-          },
-          start: <Copy className="h-4 w-4" />,
-          stopPropagation: true,
-        },
-        archive: {
-          title: "归档",
-          onClick: handleArchive,
-          start: <Archive className="h-4 w-4" />,
-          stopPropagation: true,
-        },
-      };
-    },
-    [dispatch, state.entityList]
-  );
 
   const { filterTags } = useFilter();
 

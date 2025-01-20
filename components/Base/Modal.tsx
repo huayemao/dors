@@ -74,7 +74,7 @@ export const Modal = ({
           <div className="">
             <div className="">
               {title && (
-                <div className="flex w-full items-center justify-between p-4 md:p-6 border-b gap-4">
+                <div className="flex w-full items-center justify-between p-4 md:px-6 border-b gap-4">
                   <Dialog.Title
                     as="h3"
                     className="w-1/2 flex-1 font-heading text-muted-900 text-lg font-medium leading-6 dark:text-white"
