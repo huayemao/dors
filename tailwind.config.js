@@ -15,6 +15,9 @@ module.exports = withShurikenUI({
 	darkMode: ["class"],
 	theme: {
 		extend: {
+			boxShadow: {
+				'right-inner': 'inset -28px 0 24px -20px  rgba(0,0,0,0.3)',
+			},
 			nui: {},
 			typography: ({ theme }) => ({
 				DEFAULT: {
