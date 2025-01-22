@@ -1,6 +1,6 @@
 "use client";
 
-import { useFirstVisibleElement } from "@/lib/hooks/firstVisibleElement";
+import { useFirstVisibleElement } from "@/lib/client/hooks/firstVisibleElement";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 

@@ -3,7 +3,7 @@ import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { FormFoot } from "./FormFoot";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
-import { useCloseModal } from "../utils/useCloseModal";
+import { useCloseModal } from "../hooks/useCloseModal";
 import { AddAction } from "@/components/PostEditor/AddAction";
 
 export default function CreateEntityModal<

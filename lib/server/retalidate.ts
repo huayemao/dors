@@ -1,6 +1,6 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import { revalidatePath, revalidateTag } from "next/cache";
-import prisma from "../../prisma";
+import prisma from "../prisma";
 import { getHiddenCategoryIds } from "@/lib/server/categories";
 
 export async function revalidateHomePage(id: number) {

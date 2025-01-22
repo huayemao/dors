@@ -46,7 +46,7 @@ import { BaseCollection, BaseEntity } from "./types";
 
 import toast from "react-hot-toast";
 import { fetchWithAuth } from "../utils/fetch";
-import { usePinned } from "@/lib/hooks/usePinned";
+import { usePinned } from "@/lib/client/hooks/usePinned";
 import { Modal } from "@/components/Base/Modal";
 
 export default function CollectionLayout<

@@ -12,7 +12,7 @@ import {
   ContextMenuSub,
   ContextMenuTrigger,
 } from "../ui/context-menu";
-import { useForceUpdate } from "@/lib/client/utils/useForceupdate";
+import { useForceUpdate } from "@/lib/client/hooks/useForceupdate";
 
 export function NoteItem({
   preview = false,

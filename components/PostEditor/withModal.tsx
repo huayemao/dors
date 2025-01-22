@@ -1,4 +1,4 @@
-import { useCloseModal } from "@/lib/client/utils/useCloseModal";
+import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 import { FC, useState, useEffect } from "react";
 import { Modal } from "../Base/Modal";
 

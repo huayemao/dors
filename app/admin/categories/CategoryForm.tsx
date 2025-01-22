@@ -3,7 +3,7 @@ import { readFromClipboard } from "@/lib/utils";
 import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
 import { DOMAttributes, FC, PropsWithChildren, useMemo, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { useCloseModal } from "@/lib/client/utils/useCloseModal";
+import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { useNavigate } from "react-router-dom";
 import { useEntity, useEntityDispatch } from "./context";

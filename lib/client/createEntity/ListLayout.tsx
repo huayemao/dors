@@ -43,7 +43,7 @@ import {
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 
-import { usePinned } from "@/lib/hooks/usePinned";
+import { usePinned } from "@/lib/client/hooks/usePinned";
 import { Modal } from "@/components/Base/Modal";
 
 export default function ListLayout<

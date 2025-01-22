@@ -9,7 +9,7 @@ import {
 import { DOMAttributes, FC, PropsWithChildren, useMemo, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useEntity, useEntityDispatch } from "../../../contexts/notes";
-import { useCloseModal } from "@/lib/client/utils/useCloseModal";
+import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 import { Note } from "./constants";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
 import { BaseTag } from "@shuriken-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
-import { useCloseModal } from "@/lib/client/utils/useCloseModal";
-import { useOverflowShadow } from "@/lib/client/utils/useClientShadow";
+import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
+import { useOverflowShadow } from "@/lib/client/hooks/useOverflowShadow";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 

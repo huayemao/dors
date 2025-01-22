@@ -20,7 +20,7 @@ import { FormFoot } from "@/lib/client/createEntity/FormFoot";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { AddAction } from "@/components/PostEditor/AddAction";
-import { useCloseModal } from "../utils/useCloseModal";
+import { useCloseModal } from "../hooks/useCloseModal";
 
 export default function ViewOrEditEntityModal<
   EType extends BaseEntity,

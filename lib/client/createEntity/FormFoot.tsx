@@ -1,5 +1,5 @@
 import { BaseButton } from "@shuriken-ui/react";
-import { useCloseModal } from "../utils/useCloseModal";
+import { useCloseModal } from "../hooks/useCloseModal";
 
 export function FormFoot() {
   const close = useCloseModal();

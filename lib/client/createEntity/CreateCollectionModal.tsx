@@ -11,7 +11,7 @@ import {
   useParams,
 } from "react-router-dom";
 
-import { useCloseModal } from "../utils/useCloseModal";
+import { useCloseModal } from "../hooks/useCloseModal";
 import {
   EntityDispatch,
   EntityState,
