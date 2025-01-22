@@ -1,4 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  HTMLAttributes,
+} from "react";
 
 export const useOverflowShadow = (ref) => {
   const [hasShadow, setHasShadow] = useState(false);
@@ -28,3 +32,7 @@ export const useOverflowShadow = (ref) => {
 
   return hasShadow;
 };
+
+export interface Props extends HTMLAttributes<HTMLDivElement> {}
+
+
