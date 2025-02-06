@@ -4,63 +4,111 @@ import { useState } from "react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import { BaseButton } from "@shuriken-ui/react";
-import { FileSpreadsheet, FolderPlus, Folder, Play, Loader } from "lucide-react";
+import {
+  FileSpreadsheet,
+  FolderPlus,
+  Folder,
+  Play,
+  Loader,
+  ArrowRight,
+} from "lucide-react";
 
-export default function ExcelRenamer() {
+interface FileInfo {
+  originalName: string;
+  newName: string | null;
+  path: string;
+  error?: string;
+}
+
+const ExcelRenamer = () => {
+  const [selectedDir, setSelectedDir] =
+    useState<FileSystemDirectoryHandle | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [selectedDir, setSelectedDir] = useState<FileSystemDirectoryHandle | null>(null);
+  const [files, setFiles] = useState<FileInfo[]>([]);
+  const [calculating, setCalculating] = useState(false);
+
+  const extractFileName = (rows: string[][]): string => {
+    let newFileName = "";
+    for (const row of rows) {
+      const firstCell = String(row[0] || "").trim();
+      if (!firstCell) continue;
+
+      if (newFileName === "" && !firstCell.startsWith("附件")) {
+        newFileName = firstCell;
+        break;
+      }
+
+      if (firstCell.startsWith("附件")) {
+        continue;
+      }
+    }
+    return newFileName;
+  };
 
   const handleFolderSelect = async () => {
     try {
       const dirHandle = await window.showDirectoryPicker();
       setSelectedDir(dirHandle);
-      toast.success("已选择文件夹：" + dirHandle.name);
+      setCalculating(true);
+
+      const fileInfos: FileInfo[] = [];
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
+          try {
+            const fileHandle = await dirHandle.getFileHandle(entry.name);
+            const fileData = await fileHandle.getFile();
+            const wb = await XLSX.read(await fileData.arrayBuffer());
+            const firstSheet = wb.Sheets[wb.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(firstSheet, {
+              header: 1,
+              defval: "",
+            }) as string[][];
+            
+            const newFileName = extractFileName(rows);
+            const extension = entry.name.split(".").pop();
+            
+            fileInfos.push({
+              originalName: entry.name,
+              newName: newFileName ? `${newFileName}.${extension}` : null,
+              path: entry.name,
+            });
+          } catch (error) {
+            fileInfos.push({
+              originalName: entry.name,
+              newName: null,
+              path: entry.name,
+              error: "读取失败",
+            });
+          }
+        }
+      }
+      setFiles(fileInfos);
     } catch (error) {
       console.error(error);
       toast.error("选择文件夹失败");
+    } finally {
+      setCalculating(false);
     }
   };
 
   const handleProcess = async () => {
     if (!selectedDir) return;
-    
-    try {
-      setProcessing(true);
+    setProcessing(true);
 
-      // 遍历文件夹中的文件
+    try {
       for await (const entry of selectedDir.values()) {
         if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
           const file = await entry.getFile();
-
-          // 读取Excel文件
           const buffer = await file.arrayBuffer();
           const workbook = XLSX.read(buffer);
-
-          // 获取第一个工作表的所有行
           const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
           const rows = XLSX.utils.sheet_to_json(firstSheet, {
             header: 1,
-            defval: "", // 空单元格返回空字符串
+            defval: "",
           }) as string[][];
 
-          // 查找合适的文件名
-          let newFileName = "";
-          for (const row of rows) {
-            const firstCell = String(row[0] || "").trim();
-            if (!firstCell) continue;
+          const newFileName = extractFileName(rows);
 
-            if (newFileName === "" && !firstCell.startsWith("附件")) {
-              newFileName = firstCell;
-              break;
-            }
-
-            if (firstCell.startsWith("附件")) {
-              // 找到"附件"行，继续查找下一个非空行
-              continue;
-            }
-          }
-
-          // 使用找到的文本作为新文件名
           if (newFileName) {
             const newName = `${newFileName}.xlsx`;
 
@@ -84,10 +132,13 @@ export default function ExcelRenamer() {
       }
 
       toast.success("处理完成！");
+
+      // 重新读取文件夹更新列表
     } catch (error) {
       console.error(error);
-      toast.error("处理过程中出现错误");
+      toast.error("处理文件失败");
     } finally {
+      await handleFolderSelect();
       setProcessing(false);
     }
   };
@@ -116,10 +167,10 @@ export default function ExcelRenamer() {
                 variant="solid"
                 color="primary"
                 onClick={handleFolderSelect}
-                disabled={processing}
+                disabled={processing || calculating}
               >
                 <FolderPlus className="w-5 h-5 me-2" />
-                选择文件夹
+                {calculating ? "计算中..." : "选择文件夹"}
               </BaseButton>
               {selectedDir && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-muted-100 dark:bg-muted-700 rounded-lg">
@@ -131,30 +182,68 @@ export default function ExcelRenamer() {
               )}
             </div>
 
-            {selectedDir && (
-              <BaseButton 
+            {selectedDir && files.length > 0 && (
+              <BaseButton
                 variant="solid"
                 color="primary"
                 className="w-full sm:w-auto"
-                onClick={handleProcess} 
-                disabled={processing || !selectedDir}
+                onClick={handleProcess}
+                disabled={processing || calculating || !selectedDir}
               >
                 {processing ? (
                   <>
                     <Loader className="w-5 h-5 me-2 animate-spin" />
-                    处理中...
+                    重命名中...
                   </>
                 ) : (
                   <>
                     <Play className="w-5 h-5 me-2" />
-                    开始处理
+                    开始重命名
                   </>
                 )}
               </BaseButton>
             )}
           </div>
+
+          {/* 文件列表 */}
+          {files.length > 0 && (
+            <div className="mt-6 space-y-4">
+              <h2 className="text-lg font-semibold text-muted-800 dark:text-white">
+                文件列表 ({files.length})
+              </h2>
+              <div className="divide-y divide-muted-200 dark:divide-muted-700">
+                {files.map((file, index) => (
+                  <div key={index} className="py-3 flex items-center gap-3">
+                    <FileSpreadsheet className="w-5 h-5 text-primary-500 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-muted-800 dark:text-muted-200 truncate">
+                        {file.originalName}
+                      </p>
+                    </div>
+                    {file.newName && (
+                      <>
+                        <ArrowRight className="w-5 h-5 text-muted-400" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-primary-500 dark:text-primary-400 truncate">
+                            {file.newName}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                    {file.error && (
+                      <span className="text-sm text-danger-500">
+                        {file.error}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default ExcelRenamer;
