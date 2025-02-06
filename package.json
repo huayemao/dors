@@ -49,13 +49,16 @@
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "turndown": "^7.2.0"
+    "turndown": "^7.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@shuriken-ui/tailwind": "3.0.1",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "^18.15.10",
     "@types/react": "18.0.31",
+    "@types/wicg-file-system-access": "^2023.10.5",
+    "@types/xlsx": "^0.0.36",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.43.0",
     "eslint-config-next": "^13.4.6",
