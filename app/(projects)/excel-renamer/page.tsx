@@ -28,21 +28,28 @@ const ExcelRenamer = () => {
   const [calculating, setCalculating] = useState(false);
 
   const extractFileName = (rows: string[][]): string => {
-    let newFileName = "";
     for (const row of rows) {
-      const firstCell = String(row[0] || "").trim();
-      if (!firstCell) continue;
+      // 将每行的所有单元格文本拼接起来
+      const rowText = row
+        .map((cell) => String(cell || "").trim())
+        .join(" ")
+        .trim()
+        .replaceAll("\n", " ");
 
-      if (newFileName === "" && !firstCell.startsWith("附件")) {
-        newFileName = firstCell;
-        break;
-      }
+      if (!rowText.trim()) continue;
 
-      if (firstCell.startsWith("附件")) {
+      // 检查是否仅为"附件+数字"的格式
+      if (/^附件\d*：?:?$/.test(rowText)) {
         continue;
       }
+
+      // 找到第一个有效的文本就直接返回
+      if (rowText) {
+        console.log(rowText + "oo");
+        return rowText;
+      }
     }
-    return newFileName;
+    return "";
   };
 
   const handleFolderSelect = async () => {
@@ -63,10 +70,10 @@ const ExcelRenamer = () => {
               header: 1,
               defval: "",
             }) as string[][];
-            
+
             const newFileName = extractFileName(rows);
             const extension = entry.name.split(".").pop();
-            
+
             fileInfos.push({
               originalName: entry.name,
               newName: newFileName ? `${newFileName}.${extension}` : null,
@@ -124,6 +131,7 @@ const ExcelRenamer = () => {
                 await selectedDir.removeEntry(entry.name);
                 toast.success(`已重命名: ${entry.name} → ${newName}`);
               } catch (e) {
+                console.error(e.message);
                 toast.error(`重命名失败: ${entry.name}`);
               }
             }
@@ -138,7 +146,7 @@ const ExcelRenamer = () => {
       console.error(error);
       toast.error("处理文件失败");
     } finally {
-      await handleFolderSelect();
+      // await handleFolderSelect();
       setProcessing(false);
     }
   };
