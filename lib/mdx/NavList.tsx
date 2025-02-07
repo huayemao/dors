@@ -26,7 +26,10 @@ export default function NavList(props) {
             className="nui-list-item hover:bg-muted-100 transition rounded-lg px-4 py-2"
           >
             {pathname.includes("/notes") && href.startsWith("/notes") ? (
-              <ClientLink to={href.replace("/notes", "")}>
+              <ClientLink
+                to={href.replace("/notes", "")}
+                reloadDocument={false}
+              >
                 <h6 className="nui-heading nui-heading-md nui-weight-medium nui-lead-tight">
                   {title}
                 </h6>

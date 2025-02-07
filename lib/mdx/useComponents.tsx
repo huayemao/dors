@@ -16,8 +16,6 @@ import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import { BaseCard } from "@shuriken-ui/react";
 import React, { ReactElement } from "react";
-import { cn } from "../utils";
-import Link from "next/link";
 import { filterEmptyLines } from "./filterEmptyLines";
 import NavList from "./NavList";
 
