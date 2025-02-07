@@ -23,6 +23,41 @@ const LightBox = ({
       pswpModule: () => import("photoswipe"),
     });
 
+    // 添加播放状态变量
+    let isPlaying = false;
+    let playInterval: NodeJS.Timeout;
+
+    // 创建播放按钮
+    lightBox.on('uiRegister', () => {
+      lightBox.pswp!.ui!.registerElement({
+        name: 'play-button',
+        order: 7,
+        isButton: true,
+        html: '<span class="pswp__icn">▶</span>',
+        onClick: () => {
+          isPlaying = !isPlaying;
+          const button = document.querySelector('.pswp__button--play');
+          if (button) {
+            button.innerHTML = isPlaying ? '⏸' : '▶';
+          }
+          
+          if (isPlaying) {
+            playInterval = setInterval(() => {
+              const pswp = lightBox.pswp!;
+              if (pswp.currIndex === pswp.getNumItems() - 1) {
+                pswp.goTo(0);
+              } else {
+                pswp.next();
+              }
+            }, 3000); // 每3秒切换一张
+          } else {
+            clearInterval(playInterval);
+          }
+        },
+        appendTo: 'bar'
+      });
+    });
+
     lightBox.on("itemData", (e) => {
       const element = e.itemData?.element!.cloneNode(true) as HTMLElement;
       const isVideo = element.firstChild instanceof HTMLVideoElement;
@@ -77,8 +112,15 @@ const LightBox = ({
       }
     });
 
+    // 在关闭时清除播放状态
+    lightBox.on('destroy', () => {
+      isPlaying = false;
+      clearInterval(playInterval);
+    });
+
     lightBox.init();
     return () => {
+      clearInterval(playInterval);
       lightBox.destroy();
     };
   }, [childrenSelector, gallery]);
