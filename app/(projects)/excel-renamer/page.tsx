@@ -20,37 +20,45 @@ interface FileInfo {
   error?: string;
 }
 
+async function extractFileName(
+  fileHandle: FileSystemFileHandle
+): Promise<string | null> {
+  const fileData = await fileHandle.getFile();
+  const wb = await XLSX.read(await fileData.arrayBuffer());
+  const firstSheet = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(firstSheet, {
+    header: 1,
+    defval: "",
+  }) as string[][];
+
+  const extension = fileHandle.name.split(".").pop() || "";
+
+  for (const row of rows) {
+    const rowText = row
+      .map((cell) => String(cell || "").trim())
+      .join(" ")
+      .trim()
+      .replaceAll("\n", " ");
+
+    if (!rowText.trim()) continue;
+
+    if (/^附件\d*：?:?$/.test(rowText)) {
+      continue;
+    }
+
+    if (rowText) {
+      return `${rowText}.${extension}`;
+    }
+  }
+  return null;
+}
+
 const ExcelRenamer = () => {
   const [selectedDir, setSelectedDir] =
     useState<FileSystemDirectoryHandle | null>(null);
   const [processing, setProcessing] = useState(false);
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [calculating, setCalculating] = useState(false);
-
-  const extractFileName = (rows: string[][]): string => {
-    for (const row of rows) {
-      // 将每行的所有单元格文本拼接起来
-      const rowText = row
-        .map((cell) => String(cell || "").trim())
-        .join(" ")
-        .trim()
-        .replaceAll("\n", " ");
-
-      if (!rowText.trim()) continue;
-
-      // 检查是否仅为"附件+数字"的格式
-      if (/^附件\d*：?:?$/.test(rowText)) {
-        continue;
-      }
-
-      // 找到第一个有效的文本就直接返回
-      if (rowText) {
-        console.log(rowText + "oo");
-        return rowText;
-      }
-    }
-    return "";
-  };
 
   const handleFolderSelect = async () => {
     try {
@@ -63,20 +71,11 @@ const ExcelRenamer = () => {
         if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
           try {
             const fileHandle = await dirHandle.getFileHandle(entry.name);
-            const fileData = await fileHandle.getFile();
-            const wb = await XLSX.read(await fileData.arrayBuffer());
-            const firstSheet = wb.Sheets[wb.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(firstSheet, {
-              header: 1,
-              defval: "",
-            }) as string[][];
-
-            const newFileName = extractFileName(rows);
-            const extension = entry.name.split(".").pop();
+            const newName = await extractFileName(fileHandle);
 
             fileInfos.push({
               originalName: entry.name,
-              newName: newFileName ? `${newFileName}.${extension}` : null,
+              newName: newName,
               path: entry.name,
             });
           } catch (error) {
@@ -103,38 +102,21 @@ const ExcelRenamer = () => {
     setProcessing(true);
 
     try {
-      for await (const entry of selectedDir.values()) {
-        if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
-          const file = await entry.getFile();
-          const buffer = await file.arrayBuffer();
-          const workbook = XLSX.read(buffer);
-          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const rows = XLSX.utils.sheet_to_json(firstSheet, {
-            header: 1,
-            defval: "",
-          }) as string[][];
-
-          const newFileName = extractFileName(rows);
-
-          if (newFileName) {
-            const newName = `${newFileName}.xlsx`;
-
-            // 验证新文件名是否合法
-            if (newName !== entry.name) {
-              try {
-                await selectedDir.getFileHandle(newName, { create: true });
-                const newHandle = await selectedDir.getFileHandle(newName);
-                const fileData = await entry.getFile();
-                const writable = await newHandle.createWritable();
-                await writable.write(fileData);
-                await writable.close();
-                await selectedDir.removeEntry(entry.name);
-                toast.success(`已重命名: ${entry.name} → ${newName}`);
-              } catch (e) {
-                console.error(e.message);
-                toast.error(`重命名失败: ${entry.name}`);
-              }
-            }
+      for (const file of files) {
+        if (file.newName && file.newName !== file.originalName) {
+          try {
+            const fileHandle = await selectedDir.getFileHandle(file.originalName);
+            await selectedDir.getFileHandle(file.newName, { create: true });
+            const newHandle = await selectedDir.getFileHandle(file.newName);
+            const fileData = await fileHandle.getFile();
+            const writable = await newHandle.createWritable();
+            await writable.write(fileData);
+            await writable.close();
+            await selectedDir.removeEntry(file.originalName);
+            toast.success(`已重命名: ${file.originalName} → ${file.newName}`);
+          } catch (e) {
+            console.error(e.message);
+            toast.error(`重命名失败: ${file.originalName}`);
           }
         }
       }
