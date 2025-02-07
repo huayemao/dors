@@ -182,9 +182,13 @@ export default function ListLayout<
           <div className="relative bg-slate-100  w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
               {list.map((e, i, arr) => (
-                <Link key={JSON.stringify(e)} to={"./" + e.id}>
+                <div
+                  key={JSON.stringify(e)}
+                  onClick={() => navigate("./" + e.id)}
+                  className="cursor-pointer"
+                >
                   {renderEntity(e, { preview: true })}
-                </Link>
+                </div>
               ))}
             </div>
           </div>

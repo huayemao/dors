@@ -408,9 +408,19 @@ export default function CollectionLayout<
           <div className="relative bg-slate-100  w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             <div className="max-w-full  masonry sm:masonry-sm md:masonry-md">
               {list.map((e, i, arr) => (
-                <Link key={JSON.stringify(e)} to={"./" + e.id}>
+                <div
+                  key={e.id ?? JSON.stringify(e)}
+                  className="cursor-pointer"
+                  onClick={(event) => {
+                    // 如果点击的是内部的 a 标签或其他可点击元素，不进行导航
+                    if ((event.target as HTMLElement).closest('a, button, [role="button"]')) {
+                      return;
+                    }
+                    navigate('./' + e.id);
+                  }}
+                >
                   {renderEntity(e, { preview: true })}
-                </Link>
+                </div>
               ))}
             </div>
           </div>
