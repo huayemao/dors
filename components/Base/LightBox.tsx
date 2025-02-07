@@ -28,20 +28,30 @@ const LightBox = ({
     let playInterval: NodeJS.Timeout;
 
     // 创建播放按钮
-    lightBox.on('uiRegister', () => {
+    lightBox.on("uiRegister", () => {
       lightBox.pswp!.ui!.registerElement({
-        name: 'play-button',
+        name: "play-button",
         order: 7,
         isButton: true,
-        html: '<span class="pswp__icn">▶</span>',
+        html: '<span class="pswp__icn" style="color: white;display:flex;align-items:center;justify-content:center;">▶</span>',
         onClick: () => {
           isPlaying = !isPlaying;
-          const button = document.querySelector('.pswp__button--play');
+          const button = document.querySelector(".pswp__button--play-button");
+
           if (button) {
-            button.innerHTML = isPlaying ? '⏸' : '▶';
+            const icon = button.querySelector("span");
+            if (icon) {
+              icon.innerHTML = isPlaying
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pause"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="6 3 20 12 6 21 6 3"/></svg>`;
+              icon.style.color = "white";
+            }
           }
-          
+
           if (isPlaying) {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen();
+            }
             playInterval = setInterval(() => {
               const pswp = lightBox.pswp!;
               if (pswp.currIndex === pswp.getNumItems() - 1) {
@@ -49,12 +59,15 @@ const LightBox = ({
               } else {
                 pswp.next();
               }
-            }, 3000); // 每3秒切换一张
+            }, 6000);
           } else {
             clearInterval(playInterval);
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            }
           }
         },
-        appendTo: 'bar'
+        appendTo: "bar",
       });
     });
 
@@ -113,7 +126,7 @@ const LightBox = ({
     });
 
     // 在关闭时清除播放状态
-    lightBox.on('destroy', () => {
+    lightBox.on("destroy", () => {
       isPlaying = false;
       clearInterval(playInterval);
     });
