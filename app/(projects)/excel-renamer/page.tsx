@@ -19,6 +19,7 @@ interface FileInfo {
   newName: string | null;
   path: string;
   error?: string;
+  needsRename: boolean;
 }
 
 async function extractFileName(
@@ -75,6 +76,7 @@ const ExcelRenamer = () => {
               originalName: entry.name,
               newName: newName,
               path: entry.name,
+              needsRename: newName !== null && newName !== entry.name,
             });
           } catch (error) {
             fileInfos.push({
@@ -82,6 +84,7 @@ const ExcelRenamer = () => {
               newName: null,
               path: entry.name,
               error: "读取失败",
+              needsRename: false,
             });
           }
         }
@@ -228,28 +231,38 @@ const ExcelRenamer = () => {
               </h2>
               <div className="divide-y divide-muted-200 dark:divide-muted-700">
                 {files.map((file, index) => (
-                  <div key={index} className="py-3 flex items-center gap-3">
-                    <FileSpreadsheet className="w-5 h-5 text-primary-500 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
+                  <div key={index} className="py-3 grid grid-cols-[2rem_minmax(0,1fr)_2rem_minmax(0,1fr)_auto] items-center gap-6">
+                    <FileSpreadsheet className="w-5 h-5 text-primary-500" />
+                    <div className="min-w-0">
                       <p className="text-sm text-muted-800 dark:text-muted-200 truncate">
                         {file.originalName}
                       </p>
                     </div>
-                    {file.newName && (
-                      <>
-                        <ArrowRight className="w-5 h-5 text-muted-400" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-primary-500 dark:text-primary-400 truncate">
-                            {file.newName}
-                          </p>
-                        </div>
-                      </>
-                    )}
-                    {file.error && (
-                      <span className="text-sm text-danger-500">
-                        {file.error}
-                      </span>
-                    )}
+                    <div className="flex justify-center">
+                      <ArrowRight className="w-5 h-5 text-muted-400" />
+                    </div>
+                    <div className="min-w-0">
+                      {file.newName ? (
+                        <p className={`text-sm truncate ${
+                          file.needsRename 
+                            ? "text-primary-500 dark:text-primary-400"
+                            : "text-muted-500 dark:text-muted-400"
+                        }`}>
+                          {file.newName}
+                        </p>
+                      ) : file.error ? (
+                        <p className="text-sm text-danger-500">
+                          {file.error}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="w-20 flex justify-end">
+                      {file.newName && !file.needsRename && (
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-muted-100 dark:bg-muted-700 text-muted-500 dark:text-muted-300">
+                          无需重命名
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
