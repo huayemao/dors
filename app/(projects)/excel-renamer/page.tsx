@@ -11,6 +11,7 @@ import {
   Play,
   Loader,
   ArrowRight,
+  RefreshCw,
 } from "lucide-react";
 
 interface FileInfo {
@@ -60,13 +61,10 @@ const ExcelRenamer = () => {
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [calculating, setCalculating] = useState(false);
 
-  const handleFolderSelect = async () => {
+  const scanDirectory = async (dirHandle: FileSystemDirectoryHandle) => {
+    setCalculating(true);
+    const fileInfos: FileInfo[] = [];
     try {
-      const dirHandle = await window.showDirectoryPicker();
-      setSelectedDir(dirHandle);
-      setCalculating(true);
-
-      const fileInfos: FileInfo[] = [];
       for await (const entry of dirHandle.values()) {
         if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
           try {
@@ -91,10 +89,27 @@ const ExcelRenamer = () => {
       setFiles(fileInfos);
     } catch (error) {
       console.error(error);
-      toast.error("选择文件夹失败");
+      toast.error("扫描文件夹失败");
     } finally {
       setCalculating(false);
     }
+  };
+
+  const handleFolderSelect = async () => {
+    try {
+      const dirHandle = await window.showDirectoryPicker();
+      setSelectedDir(dirHandle);
+      await scanDirectory(dirHandle);
+    } catch (error) {
+      console.error(error);
+      toast.error("选择文件夹失败");
+    }
+  };
+
+  const handleRefresh = async () => {
+    if (!selectedDir) return;
+    await scanDirectory(selectedDir);
+    toast.success("文件列表已更新");
   };
 
   const handleProcess = async () => {
@@ -135,7 +150,7 @@ const ExcelRenamer = () => {
 
   return (
     <div className="min-h-screen bg-muted-100 dark:bg-muted-900">
-      <div className="container max-w-3xl mx-auto py-10 px-4">
+      <div className="container max-w-5xl mx-auto py-10 px-4">
         <div className="bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 p-6 rounded-xl shadow-sm space-y-6">
           {/* 标题区域 */}
           <div className="space-y-2 border-b border-muted-200 dark:border-muted-700 pb-4">
@@ -163,12 +178,22 @@ const ExcelRenamer = () => {
                 {calculating ? "计算中..." : "选择文件夹"}
               </BaseButton>
               {selectedDir && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-muted-100 dark:bg-muted-700 rounded-lg">
-                  <Folder className="w-5 h-5 text-primary-500" />
-                  <span className="text-muted-600 dark:text-muted-200">
-                    已选择：{selectedDir.name}
-                  </span>
-                </div>
+                <>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-muted-100 dark:bg-muted-700 rounded-lg">
+                    <Folder className="w-5 h-5 text-primary-500" />
+                    <span className="text-muted-600 dark:text-muted-200">
+                      已选择：{selectedDir.name}
+                    </span>
+                  </div>
+                  <BaseButton
+                    variant="outline"
+                    color="primary"
+                    onClick={handleRefresh}
+                    disabled={processing || calculating}
+                  >
+                    <RefreshCw className={`w-5 h-5 ${calculating ? 'animate-spin' : ''}`} />
+                  </BaseButton>
+                </>
               )}
             </div>
 
