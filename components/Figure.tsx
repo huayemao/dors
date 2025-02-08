@@ -1,9 +1,10 @@
 "use client";
+import { cn } from "@/lib/utils";
 import mime from "mime";
 import { useEffect, useRef } from "react";
 
 export function Figure(props) {
-  const { src, width, height, ignoreCaption } = props;
+  const { src, width, height, ignoreCaption, className, preview } = props;
   const mimetype = mime.getType(src);
   mime.getType(src);
   const ref = useRef<HTMLAnchorElement>(null);
@@ -65,10 +66,14 @@ export function Figure(props) {
       data-pswp-width={width || 800}
       data-pswp-height={height || 600}
     >
-      <figure suppressHydrationWarning>
+      <figure suppressHydrationWarning className={cn({ "not-prose": preview })}>
         <img
           loading="lazy"
-          style={{ width: "100%", height: "auto" }}
+          className={cn({
+            "w-full h-auto": !preview,
+            "h-36 object-cover not-prose": preview,
+            className,
+          })}
           width={width || 800}
           height={height || 600}
           referrerPolicy="origin"

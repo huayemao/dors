@@ -17,6 +17,8 @@ import withClientOnly from "@/lib/client/utils/withClientOnly";
 import LightBox from "./LightBox";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import React from "react";
+import Gallery from "../Gallery";
+import { filterEmptyLines } from "@/lib/mdx/filterEmptyLines";
 
 const parsedMdx = withClientOnly(Content);
 
@@ -40,7 +42,7 @@ function Content({
     parseMDXClient(content)
       .then((res) => {
         // 这里的 type 是 function
-        console.log(typeof res);
+        // console.log(typeof res);
         setRes(res);
       })
       .finally(() => {
@@ -81,17 +83,6 @@ function Content({
   //   setHTML(_html);
   // }
 
-  // 这里的 type 是 object
-  // if (isValidElement(result)) {
-  //   console.log(
-  //     isValidElement(result),
-  //     // @ts-ignore
-  //     (result as ReactElement).type.toString() == React.Fragment.toString(),
-  //     // @ts-ignore
-  //     (result as ReactElement).type.toString()
-  //   );
-  // }
-
   return (
     <>
       <article
@@ -108,13 +99,8 @@ function Content({
               0,
               preview ? 3 : undefined
             )
-          : isValidElement(result) &&
-            (result as ReactElement).type.toString() ==
-              React.Fragment.toString()
-          ? React.Children.toArray((result as any).props.children).slice(
-              0,
-              preview ? 3 : undefined
-            )
+          : isValidElement(result) && preview
+          ? extractPreview(result)
           : result}
       </article>
       {loading && (
@@ -127,4 +113,38 @@ function Content({
       <LightBox gallery={preview ? "div.prose" : ref.current!} />
     </>
   );
+
+  function extractPreview(result: ReactElement): React.ReactNode {
+    // console.log(result);
+    if (result.type.toString() == React.Fragment.toString()) {
+      const children = React.Children.toArray(result.props.children);
+      return children.slice(0, 3);
+    }
+
+    const isGallery = result.type.toString() == Gallery.toString();
+    if (isGallery) {
+      const { children: galleryChildren, ...props } = result.props;
+      const p = React.Children.toArray(galleryChildren)[0] as ReactElement;
+      const c = React.Children.toArray(p.props.children);
+      const changedChildren = filterEmptyLines(c).slice(0, isMobile ? 4 : 9);
+      const id = "g" + Date.now().toString();
+
+      return (
+        <>
+          <Gallery
+            id={id}
+            preview={true}
+            className="grid grid-cols-2 md:grid-cols-3"
+          >
+            {changedChildren.map((e: ReactElement) => ({
+              ...e,
+              props: { ...e.props, preview: true },
+            }))}
+          </Gallery>
+          <LightBox gallery={"#" + id}></LightBox>
+        </>
+      );
+    }
+    return result;
+  }
 }

@@ -36,7 +36,7 @@ export const components = {
     </Annotate>
   ),
   Raw: (props) => <Raw {...props}></Raw>,
-  Gallery: (props) => <Gallery {...props}></Gallery>,
+  Gallery,
   h1: (props) => <h1 id={encodeURIComponent(props.children)} {...props}></h1>,
   h2: (props) => <h2 id={encodeURIComponent(props.children)} {...props}></h2>,
   h3: (props) => <h3 id={encodeURIComponent(props.children)} {...props}></h3>,
