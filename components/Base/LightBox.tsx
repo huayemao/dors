@@ -15,7 +15,8 @@ const LightBox = ({
     let lightBox = new PhotoSwipeLightbox({
       // may select multiple "galleries"
       gallery: gallery,
-
+      tapAction:'toggle-controls',
+      bgClickAction:'toggle-controls',
       // Elements within gallery (slides)
       children: childrenSelector,
 
@@ -49,6 +50,9 @@ const LightBox = ({
           }
 
           if (isPlaying) {
+            const element = lightBox.pswp?.element!;
+            if (element.classList.contains("pswp--ui-visible"))
+              element.classList.remove("pswp--ui-visible");
             if (!document.fullscreenElement) {
               document.documentElement.requestFullscreen();
             }
