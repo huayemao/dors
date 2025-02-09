@@ -2,10 +2,10 @@
 
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
-import { BaseButton, BaseButtonIcon } from "@shuriken-ui/react";
+import { BaseButton, BaseButtonIcon, BaseProgress } from "@shuriken-ui/react";
 import { FileVideo, FolderPlus, Loader } from "lucide-react";
-import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
 const VideoSplitter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -14,6 +14,7 @@ const VideoSplitter = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null); // 视频预览引用
   const ffmpegRef = useRef(new FFmpeg()); // 使用 ref 存储 FFmpeg 实例
   const messageRef = useRef<HTMLDivElement | null>(null); // 用于显示日志信息
+  const [progress, setProgress] = useState(0); // 添加进度状态
 
   const handleFileSelect = async () => {
     try {
@@ -41,45 +42,71 @@ const VideoSplitter = () => {
   };
 
   const loadFFmpeg = async () => {
-    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
-    ffmpeg.on('log', ({ message }) => {
+    ffmpeg.on("log", ({ message }) => {
       if (messageRef.current) {
         messageRef.current.innerHTML = message; // 显示日志信息
       }
       console.log(message);
     });
+
+    ffmpeg.on("progress", ({ progress, time }) => {
+      setProgress(progress * 100); // 更新进度
+    });
+
     await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.wasm`,
+        "application/wasm"
+      ),
     });
   };
 
   const handleProcess = async () => {
     if (!selectedFile) return;
     setProcessing(true);
+    setProgress(0); // 重置进度
 
     try {
       await loadFFmpeg(); // 加载 FFmpeg
       const ffmpeg = ffmpegRef.current;
-      await ffmpeg.writeFile('input.mp4', new Uint8Array(await selectedFile.arrayBuffer()));
+      await ffmpeg.writeFile(
+        "input.mp4",
+        new Uint8Array(await selectedFile.arrayBuffer())
+      );
 
       // 执行视频分割命令
-      await ffmpeg.exec(['-i', 'input.mp4', '-c', 'copy', '-map', '0', '-segment_time', duration.toString(), '-f', 'segment', 'output%03d.mp4']);
+      await ffmpeg.exec([
+        "-i",
+        "input.mp4",
+        "-c",
+        "copy",
+        "-map",
+        "0",
+        "-segment_time",
+        duration.toString(),
+        "-f",
+        "segment",
+        `${selectedFile.name.split(".")[0]}%03d.mp4`,
+      ]);
 
       // 获取分割后的视频文件
-      const files = await ffmpeg.listDir('.');
-      const outputFiles = files.filter(file => file.name.endsWith('.mp4'));
+      const files = await ffmpeg.listDir(".");
+      const outputFiles = files.filter((file) => file.name.endsWith(".mp4"));
 
       // 创建下载链接
       outputFiles.forEach(async (outputFile) => {
         const data = await ffmpeg.readFile(outputFile.name);
-        const url = URL.createObjectURL(new Blob([data], { type: 'video/mp4' }));
+        const url = URL.createObjectURL(
+          new Blob([data], { type: "video/mp4" })
+        );
 
         // 创建下载链接并触发下载
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
-        a.download = outputFile.name;
+        a.download = outputFile.name; // 这里可以根据需要修改文件名
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -118,7 +145,6 @@ const VideoSplitter = () => {
               选择一个视频文件，程序将根据指定的时间间隔进行分割。
             </p>
           </div>
-
           {/* 视频预览区域 */}
           <div className="flex justify-center">
             <div className="relative w-full max-w-md h-64 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
@@ -138,7 +164,6 @@ const VideoSplitter = () => {
               )}
             </div>
           </div>
-
           {/* 操作区域 */}
           <div className="space-y-4">
             <div className="flex items-center gap-4">
@@ -194,6 +219,8 @@ const VideoSplitter = () => {
             </div>
           </div>
           <div ref={messageRef}></div> {/* 显示日志信息的区域 */}
+          {/* 进度条区域 */}
+          <BaseProgress value={progress} max={100} /> {/* 添加进度条 */}
         </div>
       </div>
     </div>
