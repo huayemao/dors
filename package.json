@@ -11,6 +11,8 @@
     "db:pull": "prisma db pull --schema=./prisma/schema.prisma"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",
     "@radix-ui/react-context-menu": "^2.2.2",
