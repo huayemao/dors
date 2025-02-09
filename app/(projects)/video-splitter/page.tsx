@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { BaseButton, BaseButtonIcon, BaseProgress } from "@shuriken-ui/react";
-import { FileVideo, FolderPlus, Loader } from "lucide-react";
+import { FileVideo, FolderPlus, Loader, Trash } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ const VideoSplitter = () => {
   const ffmpegRef = useRef(new FFmpeg()); // 使用 ref 存储 FFmpeg 实例
   const messageRef = useRef<HTMLDivElement | null>(null); // 用于显示日志信息
   const [progress, setProgress] = useState(0); // 添加进度状态
+  const [ffmpegLoaded, setFfmpegLoaded] = useState(false); // 添加状态变量
 
   const handleFileSelect = async () => {
     try {
@@ -46,33 +47,39 @@ const VideoSplitter = () => {
   const loadFFmpeg = async () => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
-    ffmpeg.on("log", ({ message }) => {
+
+    // 显示初始加载提示
+    if (messageRef.current) {
+      messageRef.current.innerHTML = "正在加载 FFmpeg，请稍候...";
+    }
+
+    try {
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(
+          `${baseURL}/ffmpeg-core.wasm`,
+          "application/wasm"
+        ),
+      });
+
+      setFfmpegLoaded(true); // 设置 FFmpeg 加载完成状态
       if (messageRef.current) {
-        messageRef.current.innerHTML = message; // 显示日志信息
+        messageRef.current.innerHTML = "FFmpeg 加载完成"; // 加载完成提示
       }
-      console.log(message);
-    });
-
-    ffmpeg.on("progress", ({ progress, time }) => {
-      setProgress(progress * 100); // 更新进度
-    });
-
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.wasm`,
-        "application/wasm"
-      ),
-    });
+    } catch (error) {
+      console.error(error);
+      if (messageRef.current) {
+        messageRef.current.innerHTML = "加载 FFmpeg 失败"; // 加载失败提示
+      }
+    }
   };
 
   const handleProcess = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !ffmpegLoaded) return; // 确保 FFmpeg 已加载
     setProcessing(true);
     setProgress(0); // 重置进度
 
     try {
-      await loadFFmpeg(); // 加载 FFmpeg
       const ffmpeg = ffmpegRef.current;
       await ffmpeg.writeFile(
         "input.mp4",
@@ -123,6 +130,10 @@ const VideoSplitter = () => {
     }
   };
 
+  useEffect(() => {
+    loadFFmpeg(); // 页面加载时调用 loadFFmpeg
+  }, []); // 空依赖数组确保只在组件挂载时调用
+
   const handleRemoveFile = () => {
     setSelectedFile(null);
     if (videoRef.current) {
@@ -147,11 +158,11 @@ const VideoSplitter = () => {
       </div>
       {/* 视频预览区域 */}
       <div className="flex justify-center">
-        <div className="relative w-full max-w-md h-64 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+        <div className="relative w-full min-h-72 max-h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
           <video
             ref={videoRef}
             controls
-            className={cn("w-full h-full object-cover", {
+            className={cn("w-full h-full object-contain", {
               hidden: !selectedFile,
             })} // 使用 cn 函数控制显隐
           >
@@ -215,7 +226,7 @@ const VideoSplitter = () => {
             onClick={handleRemoveFile}
             disabled={!selectedFile}
           >
-            <FileVideo className="w-5 h-5" />
+            <Trash className="w-5 h-5" />
           </BaseButtonIcon>
         </div>
       </div>
