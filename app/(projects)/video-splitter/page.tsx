@@ -20,6 +20,7 @@ const VideoSplitter = () => {
 
   const handleFileSelect = async () => {
     try {
+      // 尝试使用 showOpenFilePicker
       const [fileHandle] = await window.showOpenFilePicker({
         types: [
           {
@@ -40,7 +41,26 @@ const VideoSplitter = () => {
       setSelectedFile(file); // 移动到这里，确保在设置文件之前更新视频预览
     } catch (error) {
       console.error(error);
-      toast.error("选择文件失败");
+      toast.error("选择文件失败，尝试使用传统文件输入。");
+
+      // 作为后备方法，创建文件输入元素
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "video/*";
+      input.onchange = async (event) => {
+        const target = event.target as HTMLInputElement;
+        if (target.files && target.files.length > 0) {
+          const file = target.files[0];
+          // 设置视频预览
+          const videoUrl = URL.createObjectURL(file);
+          if (videoRef.current) {
+            videoRef.current.src = videoUrl;
+            videoRef.current.load();
+          }
+          setSelectedFile(file); // 更新文件状态
+        }
+      };
+      input.click(); // 触发文件选择对话框
     }
   };
 
