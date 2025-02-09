@@ -6,6 +6,7 @@ import { BaseButton, BaseButtonIcon, BaseProgress } from "@shuriken-ui/react";
 import { FileVideo, FolderPlus, Loader } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { cn } from "@/lib/utils";
 
 const VideoSplitter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -27,7 +28,6 @@ const VideoSplitter = () => {
         ],
       });
       const file = await fileHandle.getFile();
-      setSelectedFile(file);
 
       // 设置视频预览
       const videoUrl = URL.createObjectURL(file);
@@ -35,6 +35,8 @@ const VideoSplitter = () => {
         videoRef.current.src = videoUrl;
         videoRef.current.load();
       }
+
+      setSelectedFile(file); // 移动到这里，确保在设置文件之前更新视频预览
     } catch (error) {
       console.error(error);
       toast.error("选择文件失败");
@@ -148,16 +150,15 @@ const VideoSplitter = () => {
           {/* 视频预览区域 */}
           <div className="flex justify-center">
             <div className="relative w-full max-w-md h-64 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-              {selectedFile ? (
-                <video
-                  ref={videoRef}
-                  controls
-                  className="w-full h-full object-cover"
-                >
-                  <source src="" type="video/mp4" />
-                  您的浏览器不支持视频标签。
-                </video>
-              ) : (
+              <video
+                ref={videoRef}
+                controls
+                className={cn("w-full h-full object-cover",{ 'hidden': !selectedFile })} // 使用 cn 函数控制显隐
+              >
+                <source src="" type="video/mp4" />
+                您的浏览器不支持视频标签。
+              </video>
+              {!selectedFile && ( // 当没有选择文件时显示提示信息
                 <div className="flex items-center justify-center h-full text-muted-500 dark:text-muted-400">
                   请选择一个视频文件以进行预览
                 </div>
