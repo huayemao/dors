@@ -132,100 +132,106 @@ const VideoSplitter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-muted-100 dark:bg-muted-900 flex flex-col items-center">
-      <div className="container max-w-5xl mx-auto py-10 px-4">
-        <div className="bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 p-6 rounded-xl shadow-sm space-y-6">
-          {/* 标题区域 */}
-          <div className="space-y-2 border-b border-muted-200 dark:border-muted-700 pb-4">
-            <div className="flex items-center gap-2">
-              <FileVideo className="w-6 h-6 text-primary-500" />
-              <h1 className="font-heading text-2xl font-bold text-muted-800 dark:text-white">
-                视频分割助手
-              </h1>
+    <div className="bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 p-6 rounded-xl shadow-sm space-y-6">
+      {/* 标题区域 */}
+      <div className="space-y-2 border-b border-muted-200 dark:border-muted-700 pb-4">
+        <div className="flex items-center gap-2">
+          <FileVideo className="w-6 h-6 text-primary-500" />
+          <h1 className="font-heading text-2xl font-bold text-muted-800 dark:text-white">
+            视频分割助手
+          </h1>
+        </div>
+        <p className="text-muted-500 dark:text-muted-400">
+          选择一个视频文件，程序将根据指定的时间间隔进行分割。
+        </p>
+      </div>
+      {/* 视频预览区域 */}
+      <div className="flex justify-center">
+        <div className="relative w-full max-w-md h-64 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+          <video
+            ref={videoRef}
+            controls
+            className={cn("w-full h-full object-cover", {
+              hidden: !selectedFile,
+            })} // 使用 cn 函数控制显隐
+          >
+            <source src="" type="video/mp4" />
+            您的浏览器不支持视频标签。
+          </video>
+          {!selectedFile && ( // 当没有选择文件时显示提示信息
+            <div className="flex items-center justify-center h-full text-muted-500 dark:text-muted-400">
+              请选择一个视频文件以进行预览
             </div>
-            <p className="text-muted-500 dark:text-muted-400">
-              选择一个视频文件，程序将根据指定的时间间隔进行分割。
-            </p>
-          </div>
-          {/* 视频预览区域 */}
-          <div className="flex justify-center">
-            <div className="relative w-full max-w-md h-64 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-              <video
-                ref={videoRef}
-                controls
-                className={cn("w-full h-full object-cover",{ 'hidden': !selectedFile })} // 使用 cn 函数控制显隐
-              >
-                <source src="" type="video/mp4" />
-                您的浏览器不支持视频标签。
-              </video>
-              {!selectedFile && ( // 当没有选择文件时显示提示信息
-                <div className="flex items-center justify-center h-full text-muted-500 dark:text-muted-400">
-                  请选择一个视频文件以进行预览
-                </div>
-              )}
-            </div>
-          </div>
-          {/* 操作区域 */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <BaseButton
-                variant="solid"
-                color="primary"
-                onClick={handleFileSelect}
-                disabled={processing}
-                className="flex items-center"
-                data-nui-tooltip="选择视频文件"
-              >
-                <FolderPlus className="w-5 h-5 me-2" />
-                选择视频文件
-              </BaseButton>
-              <input
-                type="number"
-                value={duration}
-                onChange={(e) => setDuration(Number(e.target.value))}
-                className="border rounded p-2 w-32"
-                placeholder="分割时间（秒）"
-              />
-            </div>
-
-            <div className="flex items-center gap-4">
-              <BaseButton
-                variant="solid"
-                color="primary"
-                onClick={handleProcess}
-                disabled={processing || !selectedFile}
-                className="flex items-center"
-              >
-                {processing ? (
-                  <>
-                    <Loader className="w-5 h-5 me-2 animate-spin" />
-                    分割中...
-                  </>
-                ) : (
-                  <>
-                    <FileVideo className="w-5 h-5 me-2" />
-                    开始分割
-                  </>
-                )}
-              </BaseButton>
-
-              <BaseButtonIcon
-                data-nui-tooltip="删除视频文件"
-                color="danger" // 使用不同的颜色以区分删除按钮
-                onClick={handleRemoveFile}
-                disabled={!selectedFile}
-              >
-                <FileVideo className="w-5 h-5" />
-              </BaseButtonIcon>
-            </div>
-          </div>
-          <div ref={messageRef}></div> {/* 显示日志信息的区域 */}
-          {/* 进度条区域 */}
-          <BaseProgress value={progress} max={100} /> {/* 添加进度条 */}
+          )}
         </div>
       </div>
+      {/* 操作区域 */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <BaseButton
+            variant="solid"
+            color="primary"
+            onClick={handleFileSelect}
+            disabled={processing}
+            className="flex items-center"
+            data-nui-tooltip="选择视频文件"
+          >
+            <FolderPlus className="w-5 h-5 me-2" />
+            选择视频文件
+          </BaseButton>
+          <input
+            type="number"
+            value={duration}
+            onChange={(e) => setDuration(Number(e.target.value))}
+            className="border rounded p-2 w-32"
+            placeholder="分割时间（秒）"
+          />
+        </div>
+
+        <div className="flex items-center gap-4">
+          <BaseButton
+            variant="solid"
+            color="primary"
+            onClick={handleProcess}
+            disabled={processing || !selectedFile}
+            className="flex items-center"
+          >
+            {processing ? (
+              <>
+                <Loader className="w-5 h-5 me-2 animate-spin" />
+                分割中...
+              </>
+            ) : (
+              <>
+                <FileVideo className="w-5 h-5 me-2" />
+                开始分割
+              </>
+            )}
+          </BaseButton>
+
+          <BaseButtonIcon
+            data-nui-tooltip="删除视频文件"
+            color="danger" // 使用不同的颜色以区分删除按钮
+            onClick={handleRemoveFile}
+            disabled={!selectedFile}
+          >
+            <FileVideo className="w-5 h-5" />
+          </BaseButtonIcon>
+        </div>
+      </div>
+      <div ref={messageRef}></div> {/* 显示日志信息的区域 */}
+      {/* 进度条区域 */}
+      <BaseProgress value={progress} max={100} /> {/* 添加进度条 */}
     </div>
   );
 };
 
-export default VideoSplitter;
+export default function Page() {
+  return (
+    <div className="min-h-screen bg-muted-100 dark:bg-muted-900 flex flex-col items-center">
+      <div className="container max-w-5xl mx-auto py-10 px-4">
+        <VideoSplitter />
+      </div>
+    </div>
+  );
+}
