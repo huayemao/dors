@@ -2,7 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
-import { BaseButton, BaseButtonIcon, BaseProgress } from "@shuriken-ui/react";
+import {
+  BaseButton,
+  BaseButtonIcon,
+  BaseProgress,
+  BaseInput,
+} from "@shuriken-ui/react";
 import { FileVideo, FolderPlus, Loader, Trash } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
@@ -66,11 +71,6 @@ const VideoSplitter = () => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
     const ffmpeg = ffmpegRef.current;
 
-    // 显示初始加载提示
-    if (messageRef.current) {
-      messageRef.current.innerHTML = "正在加载 FFmpeg，请稍候...";
-    }
-
     try {
       await ffmpeg.load({
         coreURL: await toBlobURL(
@@ -83,14 +83,13 @@ const VideoSplitter = () => {
         ),
       });
 
+      toast.success("FFmpeg 加载完成");
+
       setFfmpegLoaded(true); // 设置 FFmpeg 加载完成状态
-      if (messageRef.current) {
-        messageRef.current.innerHTML = "FFmpeg 加载完成"; // 加载完成提示
-      }
     } catch (error) {
       console.error(error);
       if (messageRef.current) {
-        messageRef.current.innerHTML = "加载 FFmpeg 失败"; // 加载失败提示
+        toast.error("FFmpeg 加载失败");
       }
     }
   };
@@ -177,6 +176,31 @@ const VideoSplitter = () => {
           选择一个视频文件，程序将根据指定的时间间隔进行分割。
         </p>
       </div>
+      {/* 操作区域 */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-4">
+          <BaseButton
+            variant="solid"
+            color="primary"
+            onClick={handleFileSelect}
+            disabled={processing || !ffmpegLoaded}
+            className="flex items-center"
+            data-nui-tooltip="选择视频文件"
+          >
+            <FolderPlus className="w-5 h-5 me-2" />
+            {ffmpegLoaded ? "选择视频文件" : "加载 FFmpeg..."}
+          </BaseButton>
+          {selectedFile && (
+            <BaseButtonIcon
+              data-nui-tooltip="删除视频文件"
+              onClick={handleRemoveFile}
+              disabled={!selectedFile}
+            >
+              <Trash className="w-5 h-5" />
+            </BaseButtonIcon>
+          )}
+        </div>
+      </div>
       {/* 视频预览区域 */}
       <div className="flex justify-center">
         <div className="relative w-full min-h-72 max-h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
@@ -199,61 +223,39 @@ const VideoSplitter = () => {
       </div>
       {/* 操作区域 */}
       <div className="space-y-4">
-        <div className="flex items-center gap-4">
-          <BaseButton
-            variant="solid"
-            color="primary"
-            onClick={handleFileSelect}
-            disabled={processing}
-            className="flex items-center"
-            data-nui-tooltip="选择视频文件"
-          >
-            <FolderPlus className="w-5 h-5 me-2" />
-            选择视频文件
-          </BaseButton>
-          <input
+        <div>
+          <BaseInput
+            label="分割时间（秒）"
             type="number"
             value={duration}
-            onChange={(e) => setDuration(Number(e.target.value))}
+            onChange={(e) => setDuration(Number(e))}
             className="border rounded p-2 w-32"
             placeholder="分割时间（秒）"
           />
         </div>
-
-        <div className="flex items-center gap-4">
-          <BaseButton
-            variant="solid"
-            color="primary"
-            onClick={handleProcess}
-            disabled={processing || !selectedFile}
-            className="flex items-center"
-          >
-            {processing ? (
-              <>
-                <Loader className="w-5 h-5 me-2 animate-spin" />
-                分割中...
-              </>
-            ) : (
-              <>
-                <FileVideo className="w-5 h-5 me-2" />
-                开始分割
-              </>
-            )}
-          </BaseButton>
-
-          <BaseButtonIcon
-            data-nui-tooltip="删除视频文件"
-            color="danger" // 使用不同的颜色以区分删除按钮
-            onClick={handleRemoveFile}
-            disabled={!selectedFile}
-          >
-            <Trash className="w-5 h-5" />
-          </BaseButtonIcon>
-        </div>
+        <BaseButton
+          variant="solid"
+          color="primary"
+          onClick={handleProcess}
+          disabled={processing || !selectedFile}
+          className="flex items-center"
+        >
+          {processing ? (
+            <>
+              <Loader className="w-5 h-5 me-2 animate-spin" />
+              分割中...
+            </>
+          ) : (
+            <>
+              <FileVideo className="w-5 h-5 me-2" />
+              开始分割
+            </>
+          )}
+        </BaseButton>
       </div>
       <div ref={messageRef}></div> {/* 显示日志信息的区域 */}
       {/* 进度条区域 */}
-      <BaseProgress value={progress} max={100} /> {/* 添加进度条 */}
+      {processing && <BaseProgress value={progress} max={100} />}
     </div>
   );
 };
