@@ -106,7 +106,7 @@ const VideoSplitter = () => {
         new Uint8Array(await selectedFile.arrayBuffer())
       );
 
-      // 执行视频分割命令
+      // 执行视频分割命令，添加 -reset_timestamps 1
       await ffmpeg.exec([
         "-i",
         "input.mp4",
@@ -116,6 +116,8 @@ const VideoSplitter = () => {
         "0",
         "-segment_time",
         duration.toString(),
+        "-reset_timestamps",
+        "1", // 重置时间戳
         "-f",
         "segment",
         `${selectedFile.name.split(".")[0]}%03d.mp4`,
