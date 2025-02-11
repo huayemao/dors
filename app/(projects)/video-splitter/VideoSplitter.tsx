@@ -12,6 +12,7 @@ import { FileVideo, FolderPlus, Loader, Trash } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { cn } from "@/lib/utils";
+import { registerServiceWorker } from "@/lib/client/registerSW";
 
 const VideoSplitter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -154,6 +155,14 @@ const VideoSplitter = () => {
 
   useEffect(() => {
     loadFFmpeg(); // 页面加载时调用 loadFFmpeg
+    registerServiceWorker({
+      onNeedRefresh(updateSW) {
+        const res = confirm("有新的版本");
+        if (res) {
+          updateSW();
+        }
+      },
+    }); // 注册 Service Worker
   }, []); // 空依赖数组确保只在组件挂载时调用
 
   const handleRemoveFile = () => {

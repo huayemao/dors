@@ -20,18 +20,18 @@ const ASSETS = [
 importScripts('/version.js')
 const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation"]
 const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
-const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image']
+const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image', 'https://unpkg.com/@ffmpeg/']
 
 
 self.addEventListener("fetch", (e) => {
   const { request: s } = e,
     url = new URL(s.url);
-  const isDynamicCache = DYNAMIC_PATHS.some(s => url.pathname.includes(s))
-  const isStableDynamicCache = STABLE_DYNAMIC_PATHS.some(s => url.pathname.includes(s))
-  const isAssetsCache = ASSETS.some(s => url.pathname.includes(s))
+  const isDynamicCache = DYNAMIC_PATHS.some(s => url.href.includes(s))
+  const isStableDynamicCache = STABLE_DYNAMIC_PATHS.some(s => url.href.includes(s))
+  const isAssetsCache = ASSETS.some(s => url.href.includes(s))
   if (
     ("GET" === s.method &&
-      self.location.origin === url.origin && (
+      (self.location.origin === url.origin || url.href.includes('unpkg.com')) && (
         isAssetsCache || isDynamicCache || isStableDynamicCache
       )
     )
