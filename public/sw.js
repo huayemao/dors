@@ -114,7 +114,12 @@ self.addEventListener("fetch", (e) => {
     "skip-waiting" === e.data && self.skipWaiting();
     if ("revalidate-navigation-page" === e.data) {
       caches.open(VERSION).then((e) => e.delete('/navigation')).then((res) => {
-        console.log("已清除缓存")
+        console.log("已清除缓存");
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage("revalidate-success"); // 发送消息给客户端
+          });
+        });
       });
     }
   });
