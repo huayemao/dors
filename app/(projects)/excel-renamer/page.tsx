@@ -3,7 +3,7 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { BaseButton } from "@shuriken-ui/react";
+import { BaseButton, BaseProgress } from "@shuriken-ui/react";
 import {
   FileSpreadsheet,
   FolderPlus,
@@ -28,14 +28,28 @@ async function extractFileName(
   const fileData = await fileHandle.getFile();
   const wb = await XLSX.read(await fileData.arrayBuffer());
   const firstSheet = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(firstSheet, {
+  let rows = XLSX.utils.sheet_to_json(firstSheet, {
     header: 1,
     defval: "",
     range: "A1:Z100",
   }) as string[][];
 
-  const extension = fileHandle.name.split(".").pop() || "";
+  // 检查 rows 是否为空，如果为空则读取其他 sheets
+  if (rows.length === 0) {
+    for (let i = 1; i < wb.SheetNames.length; i++) {
+      const sheet = wb.Sheets[wb.SheetNames[i]];
+      rows = XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: "",
+        range: "A1:Z100",
+      }) as string[][];
+      if (rows.length > 0) {
+        break; // 找到非空的 rows，退出循环
+      }
+    }
+  }
 
+  const extension = fileHandle.name.split(".").pop() || "";
   for (const row of rows) {
     const rowText = row
       .map((cell) => String(cell || "").trim())
@@ -62,10 +76,21 @@ const ExcelRenamer = () => {
   const [processing, setProcessing] = useState(false);
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [calculating, setCalculating] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const scanDirectory = async (dirHandle: FileSystemDirectoryHandle) => {
     setCalculating(true);
+    setProgress(0);
+    let totalFiles = 0;
+    for await (const entry of dirHandle.values()) {
+      if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
+        totalFiles++;
+      }
+    }
+    // 重新遍历以获取文件信息
     const fileInfos: FileInfo[] = [];
+    let processedFiles = 0;
+
     try {
       for await (const entry of dirHandle.values()) {
         if (entry.kind === "file" && entry.name.match(/\.(xlsx|xls)$/i)) {
@@ -89,8 +114,10 @@ const ExcelRenamer = () => {
             });
           }
         }
+        processedFiles++;
+        setProgress((processedFiles / totalFiles) * 100);
+        setFiles([...fileInfos]);
       }
-      setFiles(fileInfos);
     } catch (error) {
       console.error(error);
       toast.error("扫描文件夹失败");
@@ -124,7 +151,9 @@ const ExcelRenamer = () => {
       for (const file of files) {
         if (file.newName && file.newName !== file.originalName) {
           try {
-            const fileHandle = await selectedDir.getFileHandle(file.originalName);
+            const fileHandle = await selectedDir.getFileHandle(
+              file.originalName
+            );
             await selectedDir.getFileHandle(file.newName, { create: true });
             const newHandle = await selectedDir.getFileHandle(file.newName);
             const fileData = await fileHandle.getFile();
@@ -195,12 +224,13 @@ const ExcelRenamer = () => {
                     onClick={handleRefresh}
                     disabled={processing || calculating}
                   >
-                    <RefreshCw className={`w-5 h-5 ${calculating ? 'animate-spin' : ''}`} />
+                    <RefreshCw
+                      className={`w-5 h-5 ${calculating ? "animate-spin" : ""}`}
+                    />
                   </BaseButton>
                 </>
               )}
             </div>
-
             {selectedDir && files.length > 0 && (
               <BaseButton
                 variant="solid"
@@ -223,7 +253,8 @@ const ExcelRenamer = () => {
               </BaseButton>
             )}
           </div>
-
+            {/* 进度条区域 */}
+            {calculating && <BaseProgress value={progress} max={100} />}
           {/* 文件列表 */}
           {files.length > 0 && (
             <div className="mt-6 space-y-4">
@@ -232,7 +263,10 @@ const ExcelRenamer = () => {
               </h2>
               <div className="divide-y divide-muted-200 dark:divide-muted-700">
                 {files.map((file, index) => (
-                  <div key={index} className="py-3 grid grid-cols-[2rem_minmax(0,1fr)_2rem_minmax(0,1fr)_auto] items-center gap-6">
+                  <div
+                    key={index}
+                    className="py-3 grid grid-cols-[2rem_minmax(0,1fr)_2rem_minmax(0,1fr)_auto] items-center gap-6"
+                  >
                     <FileSpreadsheet className="w-5 h-5 text-primary-500" />
                     <div className="min-w-0">
                       <p className="text-sm text-muted-800 dark:text-muted-200 truncate">
@@ -244,17 +278,17 @@ const ExcelRenamer = () => {
                     </div>
                     <div className="min-w-0">
                       {file.newName ? (
-                        <p className={`text-sm truncate ${
-                          file.needsRename 
-                            ? "text-primary-500 dark:text-primary-400"
-                            : "text-muted-500 dark:text-muted-400"
-                        }`}>
+                        <p
+                          className={`text-sm truncate ${
+                            file.needsRename
+                              ? "text-primary-500 dark:text-primary-400"
+                              : "text-muted-500 dark:text-muted-400"
+                          }`}
+                        >
                           {file.newName}
                         </p>
                       ) : file.error ? (
-                        <p className="text-sm text-danger-500">
-                          {file.error}
-                        </p>
+                        <p className="text-sm text-danger-500">{file.error}</p>
                       ) : null}
                     </div>
                     <div className="w-20 flex justify-end">
