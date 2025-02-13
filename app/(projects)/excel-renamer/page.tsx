@@ -31,6 +31,7 @@ async function extractFileName(
   const rows = XLSX.utils.sheet_to_json(firstSheet, {
     header: 1,
     defval: "",
+    range: "A1:Z100",
   }) as string[][];
 
   const extension = fileHandle.name.split(".").pop() || "";
