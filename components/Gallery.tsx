@@ -12,12 +12,14 @@ function Gallery({
   return (
     <div
       className={cn(
+        "not-prose",
         c.gallery_root,
         { "masonry-sm md:masonry-md": !preview },
         {
           "grid grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-3 items-center justify-items-center":
             preview,
-        }
+        },
+        className
       )}
       {...props}
     >
