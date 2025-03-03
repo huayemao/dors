@@ -28,7 +28,7 @@ export function Figure(props) {
     }
 
     if (video) {
-      current.href = video.src || "";
+      current.href = video.querySelector('source')?.src || "";
       video.onloadedmetadata = (e) => {
         current.dataset["pswpWidth"] = "" + video.videoWidth;
         current.dataset["pswpHeight"] = "" + video.videoHeight;
@@ -40,7 +40,7 @@ export function Figure(props) {
       <a
         suppressHydrationWarning
         ref={ref}
-        className="!no-underline"
+        className="!no-underline block"
         data-pswp-width={width || 800}
         data-pswp-height={height || 600}
       >
@@ -62,7 +62,7 @@ export function Figure(props) {
     <a
       suppressHydrationWarning
       ref={ref}
-      className="!no-underline"
+      className="!no-underline block"
       data-pswp-width={width || 800}
       data-pswp-height={height || 600}
     >
