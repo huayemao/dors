@@ -22,7 +22,7 @@ export default async function Navigation() {
   return (
     <>
       <main className="w-full min-h-full dark:bg-muted-900 max-w-6xl xl:max-w-[88%] mx-auto flex-1 p-6  space-y-4">
-        <BaseHeading size="3xl" as="h2">
+        <BaseHeading size="3xl" as="h1">
           花野猫的导航页
         </BaseHeading>
         <div className="text-right">
