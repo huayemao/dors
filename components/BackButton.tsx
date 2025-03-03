@@ -1,32 +1,28 @@
+"use client"
 import clsx from "clsx";
+import { MoveLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 interface Props extends React.HTMLAttributes<HTMLAnchorElement> {
   children?: JSX.Element;
 }
 
-export const BackButton = ({ children, className }: Props) => (
-  <Link
-    href={"/"}
-    className={clsx(
-      "flex items-center gap-2 font-sans font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300",
-      className
-    )}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      role="img"
-      width="1em"
-      height="1em"
-      viewBox="0 0 24 24"
-      data-icon="gg:arrow-long-left"
-      className="iconify w-5 h-5 iconify--gg"
+export const BackButton = ({ children, className }: Props) => {
+  const router = useRouter();
+  const handleClick = () => {
+    router.back();
+  };
+  return (
+    <Link
+      href={"../"}
+      onClick={handleClick}
+      className={clsx(
+        "flex items-center gap-2 font-sans font-medium text-base text-muted-400 hover:text-primary-500 transition-colors duration-300",
+        className
+      )}
     >
-      <path
-        fill="currentColor"
-        d="m1.027 11.993l4.235 4.25L6.68 14.83l-1.821-1.828L22.974 13v-2l-18.12.002L6.69 9.174L5.277 7.757l-4.25 4.236Z"
-      ></path>
-    </svg>
-    <span>{children || "返回"}</span>
-  </Link>
-);
+      <MoveLeft width={'1em'} height={'1em'}></MoveLeft>
+      <span>{children || "返回"}</span>
+    </Link>
+  )
+};
