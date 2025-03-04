@@ -34,6 +34,7 @@ export default async function RootLayout({
             name="msvalidate.01"
             content="367ED36ACEB18DEFBDC5FD0CE17B995B"
           />
+          <meta name="msvalidate.01" content="367ED36ACEB18DEFBDC5FD0CE17B995B" />
           {/* <style>
           {` 
           @page {
