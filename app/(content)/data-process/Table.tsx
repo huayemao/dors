@@ -15,7 +15,7 @@ export function Table({
 }: {
   data: any[];
   canEdit?: boolean;
-  actions?: { title: string; href?: string; onClick?: (e:any) => void }[];
+  actions?: { title: string; href?: string; onClick?: (e: any) => void }[];
   onRowClick?: (any) => void;
   tagCols?: number[];
   boldCols?: number[];
@@ -27,7 +27,7 @@ export function Table({
   }, [data]);
 
   const isEllipsisActive = (e) => {
-    return e.offsetWidth < e.scrollWidth;
+    return e.offsetWidth < e.scrollWidth || e.offsetHeight < e.scrollHeight;
   };
 
   useEffect(() => {
@@ -103,7 +103,6 @@ export function Table({
                 ) {
                   return (
                     <td
-                      data-nui-tooltip={value}
                       valign="middle"
                       className="border-t border-muted-200 py-4 px-3 font-sans dark:border-muted-800 "
                       key={key}
@@ -141,7 +140,7 @@ export function Table({
                       >
                         <span
                           className={cn(
-                            "inline-block overflow-hidden overflow-ellipsis",
+                            "inline-block line-clamp-2 whitespace-normal overflow-ellipsis",
                             {
                               "font-semibold": boldCols.includes(i + 1),
                             }
@@ -169,7 +168,7 @@ export function Table({
                   <BaseDropdown variant="context">
                     {actions.map((e) => (
                       <BaseDropdownItem
-                        onClick={()=>e.onClick?.(row)}
+                        onClick={() => e.onClick?.(row)}
                         key={e.title}
                         title={e.title}
                       ></BaseDropdownItem>
