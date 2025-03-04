@@ -30,10 +30,13 @@ export default async function Home({
   const pageCount = await getPageCount();
   return (
     <Fragment key={key}>
+      <h1 className="font-heading leading-normal font-extrabold text-5xl md:text-5xl text-muted-700 dark:text-white text-center  mb-4">
+        {SITE_META.name + ' ' + SITE_META.description}
+      </h1>
       <CatsAndTags simple></CatsAndTags>
       <div className="space-y-4">
         <BaseHeading size="3xl" className="text-center" as="h2">
-          文章
+          文章列表
         </BaseHeading>
         <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
           {SITE_META.introduction}

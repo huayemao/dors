@@ -26,7 +26,7 @@ export function CatsAndTags({
         <Categories />
       </div>
       <BaseCard className="p-6  max-w-3xl mx-auto md:col-span-7">
-        <BaseHeading className="mb-6">
+        <BaseHeading as="h2" className="mb-6">
           {simple ? "精选标签" : "全部标签"}
         </BaseHeading>
         <Tags simple={simple}></Tags>

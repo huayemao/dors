@@ -12,7 +12,7 @@ export function Categories() {
 
   return (
     <BaseCard className="p-6  max-w-3xl mx-auto">
-      <BaseHeading className="mb-6">全部分类</BaseHeading>
+      <BaseHeading as="h2" className="mb-6">全部分类</BaseHeading>
       <div className="relative w-full grid grid-cols-2 lg:grid-cols-3 gap-6">
         {categories
           .filter((e) => !e.hidden)
