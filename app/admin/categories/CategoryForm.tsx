@@ -8,6 +8,7 @@ import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { useNavigate } from "react-router-dom";
 import { useEntity, useEntityDispatch } from "./context";
 import { pick } from "lodash";
+import toast from "react-hot-toast";
 
 export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
@@ -29,9 +30,9 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
     const meta =
       obj.description || obj.icon
         ? {
-            content: obj.description,
-            icon: obj.icon,
-          }
+          description: obj.description,
+          icon: obj.icon,
+        }
         : undefined;
 
     console.log(obj, isEditing, currentEntity);
@@ -47,10 +48,30 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
       if (!entityList) {
         throw new Error("错误");
       }
-      const newList = [...entityList];
-      newList[targetItemIndex] = item;
-      // todo: 改成 editQuestion
-      dispatch({ type: "SET_ENTITY_LIST", payload: newList });
+      fetch(`/api/categories/${currentEntity.id}`, {
+        method: "PUT",
+        body: JSON.stringify(pick(item, ["name", "meta"])),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((obj) => {
+          const newList = [...entityList];
+          newList[targetItemIndex] = item;
+          dispatch({
+            type: "SET_ENTITY_LIST",
+            payload: newList,
+          });
+          dispatch({
+            type: "SET_CURRENT_ENTITY",
+            payload: obj.data,
+          });
+          toast("更新成功");
+          close();
+        });
     } else {
       fetch("/api/categories", {
         method: "POST",
@@ -71,6 +92,7 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
             type: "SET_CURRENT_ENTITY",
             payload: obj.data,
           });
+          toast("创建成功");
           close();
         });
     }

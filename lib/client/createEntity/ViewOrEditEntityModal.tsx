@@ -14,6 +14,7 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useState,
 } from "react";
 import { useParams } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
@@ -62,6 +63,7 @@ export default function ViewOrEditEntityModal<
 
   const { entityId, collectionId } = useParams();
   const entity = entityList.find((e) => String(e.id) == entityId);
+  const [loading, setLoading] = useState(true)
 
   const cancel = useCallback(() => {
     if (state.modalOpen) {
@@ -80,6 +82,7 @@ export default function ViewOrEditEntityModal<
         currentEntity: entity,
       },
     });
+    setLoading(false)
   }, [cancel, dispatch, entity]);
 
   useEffect(() => {
@@ -167,7 +170,13 @@ export default function ViewOrEditEntityModal<
       {entityModalMode == "view" ? (
         <div className="md:px-12">
           <div className="flex justify-center w-full ">
-            {renderEntity(currentEntity, { preview: false })}
+            {loading ? (
+              <div className="flex justify-center items-center w-full h-32">
+                加载中...
+              </div>
+            ) : (
+              renderEntity(currentEntity, { preview: false })
+            )}
           </div>
         </div>
       ) : (
