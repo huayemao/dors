@@ -10,7 +10,7 @@ import { getDateForDateTimeInput } from "@/lib/utils";
 import { BaseButton, BaseInput } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useContext, useRef, useState } from "react";
 import { Panel } from "@/components/Base/Panel";
 
 export const dynamic = "force-dynamic";
@@ -130,21 +130,23 @@ const CoverImageSetting = ({
 export default function Settings({ params }) {
   const post = useContext(PostContext);
   const tags = useContext(TagsContext);
+  const lastModifiedInput = useRef<HTMLInputElement>(null);
 
   const cats = useContext(CategoriesContext);
   const categoryId = post?.posts_category_links[0]?.category_id;
 
   const syncUpdateTime: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    (document.querySelector("#updated_at") as HTMLInputElement).value = (
+    const inputEl = lastModifiedInput.current as HTMLInputElement;
+    inputEl.value = (
       document.querySelector("#created_at") as HTMLInputElement
     ).value;
   };
 
   const useLastEditTime: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    (document.querySelector("#updated_at") as HTMLInputElement).value =
-      getDateForDateTimeInput(post?.updated_at as Date);
+    const inputEl = lastModifiedInput.current as HTMLInputElement;
+    inputEl.value = getDateForDateTimeInput(post?.updated_at as Date);
   };
 
   if (!post) {
@@ -174,6 +176,7 @@ export default function Settings({ params }) {
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Input
+                ref={lastModifiedInput}
                 type="datetime-local"
                 label="自定义修改时间"
                 id={"updated_at"}
