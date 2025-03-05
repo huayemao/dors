@@ -138,12 +138,12 @@ export const NotesContainer = ({
         )}
         renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
         renderEntity={(e: Note, { preview }) => (
-          <ActionsProvider
+          <NotewithActions
             key={e.id}
             data={e}
             preview={preview}
             filterTags={filterTags}
-          ></ActionsProvider>
+          ></NotewithActions>
         )}
         slots={{ search: Search }}
         state={state}
@@ -157,7 +157,7 @@ export const NotesContainer = ({
   );
 };
 
-function ActionsProvider({
+function NotewithActions({
   data,
   ...props
 }: Omit<ComponentProps<typeof NoteItem>, "actions">) {

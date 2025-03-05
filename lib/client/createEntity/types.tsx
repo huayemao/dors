@@ -44,6 +44,7 @@ export type State<
     includeNonKeys?: string[];
   };
   fromLocalStorage: boolean;
+  inMemory?: boolean
 };
 
 export type Action<
@@ -51,50 +52,50 @@ export type Action<
   CollectionType extends BaseCollection
 > =
   | {
-      type: "ANY";
-      payload: Partial<State<EntityType, CollectionType>>;
-    }
+    type: "ANY";
+    payload: Partial<State<EntityType, CollectionType>>;
+  }
   | {
-      type: "SET_FILTERS";
-      payload: {
-        filters: State<EntityType, CollectionType>["filters"];
-        filterConfig?: State<EntityType, CollectionType>["filterConfig"];
-      };
-    }
+    type: "SET_FILTERS";
+    payload: {
+      filters: State<EntityType, CollectionType>["filters"];
+      filterConfig?: State<EntityType, CollectionType>["filterConfig"];
+    };
+  }
   | {
-      type: "SET_ENTITY_MODAL_MODE";
-      payload: State<EntityType, CollectionType>["entityModalMode"];
-    }
+    type: "SET_ENTITY_MODAL_MODE";
+    payload: State<EntityType, CollectionType>["entityModalMode"];
+  }
   | {
-      type: "INIT";
-    }
+    type: "INIT";
+  }
   | {
-      type: "SET_CURRENT_COLLECTION";
-      payload: State<EntityType, CollectionType>["currentCollection"];
-    }
+    type: "SET_CURRENT_COLLECTION";
+    payload: State<EntityType, CollectionType>["currentCollection"];
+  }
   | {
-      type: "SET_CURRENT_ENTITY";
-      payload: State<EntityType, CollectionType>["currentEntity"];
-    }
+    type: "SET_CURRENT_ENTITY";
+    payload: State<EntityType, CollectionType>["currentEntity"];
+  }
   | {
-      type: "INIT_ENTITY_LIST";
-      payload: State<EntityType, CollectionType>["entityList"];
-    }
+    type: "INIT_ENTITY_LIST";
+    payload: State<EntityType, CollectionType>["entityList"];
+  }
   | {
-      type: "SET_ENTITY_LIST";
-      payload: State<EntityType, CollectionType>["entityList"];
-    }
+    type: "SET_ENTITY_LIST";
+    payload: State<EntityType, CollectionType>["entityList"];
+  }
   | {
-      type: "SET_COLLECTION_LIST";
-      payload: State<EntityType, CollectionType>["collectionList"];
-    }
+    type: "SET_COLLECTION_LIST";
+    payload: State<EntityType, CollectionType>["collectionList"];
+  }
   | { type: "REMOVE_ENTITY"; payload: EntityType["id"] }
   | { type: "SET_MODAL_OPEN"; payload: boolean }
   | {
-      type: "CREATE_OR_UPDATE_COLLECTION";
-      payload: NonNullable<
-        State<EntityType, CollectionType>["currentCollection"]
-      >;
-    }
+    type: "CREATE_OR_UPDATE_COLLECTION";
+    payload: NonNullable<
+      State<EntityType, CollectionType>["currentCollection"]
+    >;
+  }
   | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
   | { type: "CANCEL" };

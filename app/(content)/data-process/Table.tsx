@@ -90,7 +90,13 @@ export function Table({
             <tr
               className="text-sm  border-b border-muted-200 transition-colors duration-300 last:border-none hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-900/60"
               key={i}
-              onClick={() => onRowClick?.(row)}
+              onClick={(ev) => {
+                const __html = (ev.target as HTMLElement).outerHTML;
+                if (__html &&  __html.includes('nui-context-')) {
+                  return;
+                }
+                onRowClick?.(row)
+              }}
             >
               {Object.entries(row).map(([key, value], i) => {
                 if (
@@ -168,7 +174,10 @@ export function Table({
                   <BaseDropdown variant="context">
                     {actions.map((e) => (
                       <BaseDropdownItem
-                        onClick={() => e.onClick?.(row)}
+                        onClick={(ev) => {
+                          e.onClick?.(row)
+                          ev.stopPropagation()
+                        }}
                         key={e.title}
                         title={e.title}
                       ></BaseDropdownItem>

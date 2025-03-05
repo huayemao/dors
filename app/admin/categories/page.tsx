@@ -16,6 +16,7 @@ import {
   useEntity,
   useEntityDispatch,
 } from "./context";
+import { Category } from "@/components/Category";
 
 function Categories() {
   return (
@@ -27,7 +28,6 @@ function Categories() {
   );
 }
 
-const IndexPage = () => <>111</>;
 
 function Content() {
   const basename = "/admin/categories";
@@ -35,8 +35,13 @@ function Content() {
   const updateForm = CategoryForm;
   const state = useEntity();
   const dispatch = useEntityDispatch();
-  const renderEntityModalTitle = (e: Cat) => e.name;
-  const renderEntity = (e: Cat) => e.name;
+  const renderEntityModalTitle = (e: Cat) => e.id;
+  const renderEntity = (cat: Cat) => <Category
+    href={`/categories/${cat.id}`}
+    name={cat.name as string}
+    key={cat.id}
+    iconName={(cat.meta as { icon: string }).icon}
+  />;
   // renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
   const router = createBrowserRouter(
     [
@@ -49,39 +54,41 @@ function Content() {
             renderEntity={renderEntity}
           ></ListLayout>
         ),
-      },
-      ...addActionRoutes,
-      {
-        path: ":entityId",
-        element: (
-          <ViewOrEditEntityModal
-            renderEntityModalTitle={renderEntityModalTitle}
-            // renderEntityModalActions={renderEntityModalActions}
-            renderEntity={renderEntity}
-            state={state}
-            dispatch={dispatch}
-            form={createForm}
-          ></ViewOrEditEntityModal>
-        ),
-      },
-      {
-        path: "create",
-        element: (
-          <CreateEntityModal
-            state={state}
-            dispatch={dispatch}
-            form={updateForm}
-          ></CreateEntityModal>
-        ),
-      },
-      {
-        path: "edit",
-        element: (
-          <CreateCollectionModal
-            state={state}
-            dispatch={dispatch}
-          ></CreateCollectionModal>
-        ),
+        children: [
+          ...addActionRoutes,
+          {
+            path: ":entityId",
+            element: (
+              <ViewOrEditEntityModal
+                renderEntityModalTitle={renderEntityModalTitle}
+                // renderEntityModalActions={renderEntityModalActions}
+                renderEntity={renderEntity}
+                state={state}
+                dispatch={dispatch}
+                form={createForm}
+              ></ViewOrEditEntityModal>
+            ),
+          },
+          {
+            path: "create",
+            element: (
+              <CreateEntityModal
+                state={state}
+                dispatch={dispatch}
+                form={updateForm}
+              ></CreateEntityModal>
+            ),
+          },
+          {
+            path: "edit",
+            element: (
+              <CreateCollectionModal
+                state={state}
+                dispatch={dispatch}
+              ></CreateCollectionModal>
+            ),
+          },
+        ]
       },
     ],
     { basename }

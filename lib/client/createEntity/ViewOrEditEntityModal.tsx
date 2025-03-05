@@ -132,13 +132,15 @@ export default function ViewOrEditEntityModal<
               </BaseButtonIcon>
               <BaseDropdown variant="context">
                 {renderEntityModalActions(currentEntity, { preview: false })}
-                <BaseDropdownItem
-                  rounded="md"
-                  data-nui-tooltip="删除"
-                  title="删除"
-                  onClick={handleRemove}
-                  start={<Trash className="h-4 w-4" />}
-                ></BaseDropdownItem>
+                {!state.inMemory &&
+                  <BaseDropdownItem
+                    rounded="md"
+                    data-nui-tooltip="删除"
+                    title="删除"
+                    onClick={handleRemove}
+                    start={<Trash className="h-4 w-4" />}
+                  ></BaseDropdownItem>
+                }
               </BaseDropdown>
             </>
           ) : (

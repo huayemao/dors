@@ -48,6 +48,7 @@ export const createEntityContext = <
     filters: defaultFilters || {},
     filterConfig: defaultFilterConfig || {},
     fromLocalStorage: true,
+    inMemory,
   };
   const reducer = getReducer(defaultCollection, defaultEntity);
   const EntityContext = createContext(initialState);
