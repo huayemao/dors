@@ -96,12 +96,12 @@ function Content({
       >
         {typeof result == "function"
           ? React.Children.toArray(result({}).props.children[0]).slice(
-              0,
-              preview ? 3 : undefined
-            )
+            0,
+            preview ? 3 : undefined
+          )
           : isValidElement(result) && preview
-          ? extractPreview(result)
-          : result}
+            ? extractPreview(result)
+            : result}
       </article>
       {loading && (
         <div className="space-y-2 py-6 ">
@@ -110,7 +110,7 @@ function Content({
           <BasePlaceload className="h-4 w-full rounded" />
         </div>
       )}
-      <LightBox gallery={preview ? "div.prose" : ref.current!} />
+      {!preview && <LightBox gallery={ref.current!} />}
     </>
   );
 
@@ -126,7 +126,8 @@ function Content({
       const { children: galleryChildren, ...props } = result.props;
       const p = React.Children.toArray(galleryChildren)[0] as ReactElement;
       const c = React.Children.toArray(p.props.children);
-      const changedChildren = filterEmptyLines(c).slice(0, isMobile ? 4 : 9);
+      const changedChildren = filterEmptyLines(c);
+      const threshold = isMobile ? 4 : 9;
       const id = "g" + Date.now().toString();
 
       return (
@@ -136,9 +137,9 @@ function Content({
             preview={true}
             className="grid grid-cols-2 md:grid-cols-3"
           >
-            {changedChildren.map((e: ReactElement) => ({
+            {changedChildren.map((e: ReactElement, i) => ({
               ...e,
-              props: { ...e.props, preview: true },
+              props: { ...e.props, preview: true, className: cn({ 'hidden': i >= threshold }) },
             }))}
           </Gallery>
           <LightBox gallery={"#" + id}></LightBox>

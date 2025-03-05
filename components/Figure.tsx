@@ -5,6 +5,20 @@ import { useEffect, useRef } from "react";
 
 export function Figure(props) {
   const { src, width, height, ignoreCaption, className, preview } = props;
+  const Container = ({ children }) => {
+    return <a
+      suppressHydrationWarning
+      ref={ref}
+      className={cn("!no-underline block", className)}
+      data-pswp-width={width || 800}
+      data-pswp-height={height || 600}
+    >
+      {
+        children
+      }
+    </a>
+
+  }
   const mimetype = mime.getType(src);
   mime.getType(src);
   const ref = useRef<HTMLAnchorElement>(null);
@@ -37,18 +51,12 @@ export function Figure(props) {
   }, []);
   if (mimetype?.startsWith("video")) {
     return (
-      <a
-        suppressHydrationWarning
-        ref={ref}
-        className="!no-underline block"
-        data-pswp-width={width || 800}
-        data-pswp-height={height || 600}
-      >
+      <Container>
         <video preload="metadata">
           <source src={src} type={mimetype} />
           Your browser does not support the video tag.
         </video>
-      </a>
+      </Container>
     );
   } else if (mimetype?.startsWith("audio")) {
     return (
@@ -59,13 +67,7 @@ export function Figure(props) {
     );
   }
   return (
-    <a
-      suppressHydrationWarning
-      ref={ref}
-      className="!no-underline block"
-      data-pswp-width={width || 800}
-      data-pswp-height={height || 600}
-    >
+    <Container>
       <figure suppressHydrationWarning className={cn({ "not-prose": preview })}>
         <img
           loading="lazy"
@@ -83,6 +85,6 @@ export function Figure(props) {
           <figcaption suppressHydrationWarning>{props.alt}</figcaption>
         )}
       </figure>
-    </a>
+    </Container>
   );
 }
