@@ -22,7 +22,10 @@ export const getAllCategories = unstable_cache(
 
     return cats.map((e) => ({ ...e, hidden: ids.includes(e.id) }));
   }
-);
+  , undefined, {
+  revalidate: 600,
+  tags: ['all_cats', 'cats']
+});
 
 export const getHiddenCategoryIds = unstable_cache(async () => {
   const settings = await prisma.settings.findFirst({
@@ -37,6 +40,9 @@ export const getHiddenCategoryIds = unstable_cache(async () => {
     ? (settings.value as any[]).map((e) => parseInt(e))
     : [];
   return ids as number[];
+}, undefined, {
+  revalidate: 600,
+  tags: ['cats']
 });
 
 export const getHiddenCategories = unstable_cache(async () => {
@@ -47,4 +53,7 @@ export const getHiddenCategories = unstable_cache(async () => {
     },
     where: { id: { in: ids } },
   });
+}, undefined, {
+  revalidate: 600,
+  tags: ['cats']
 });
