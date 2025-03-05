@@ -20,7 +20,14 @@ const ASSETS = [
 importScripts('/version.js')
 const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation"]
 const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
-const STABLE_DYNAMIC_PATHS = ["/api/files", '/shiki/', '/_next/image', 'https://unpkg.com/@ffmpeg/']
+const STABLE_DYNAMIC_PATHS = [
+  "/api/files",
+  '/shiki/',
+  '/_next/image',
+  'https://unpkg.com/@ffmpeg/',
+  'twimg.com',
+  'sns-bak-v1.xhscdn.com'
+]
 
 
 self.addEventListener("fetch", (e) => {
