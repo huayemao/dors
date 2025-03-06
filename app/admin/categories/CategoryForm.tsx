@@ -6,9 +6,12 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { useNavigate } from "react-router-dom";
-import { useEntity, useEntityDispatch } from "./context";
+import { EntityContextProvider, useEntity, useEntityDispatch } from "./context";
 import { pick } from "lodash";
 import toast from "react-hot-toast";
+import { ClientOnly } from "@/components/ClientOnly";
+
+
 
 export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
@@ -59,14 +62,8 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
           return res.json();
         })
         .then((obj) => {
-          const newList = [...entityList];
-          newList[targetItemIndex] = item;
           dispatch({
-            type: "SET_ENTITY_LIST",
-            payload: newList,
-          });
-          dispatch({
-            type: "SET_CURRENT_ENTITY",
+            type: "CREATE_OR_UPDATE_ENTITY",
             payload: obj.data,
           });
           toast("更新成功");
@@ -85,11 +82,7 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
         })
         .then((obj) => {
           dispatch({
-            type: "SET_ENTITY_LIST",
-            payload: entityList ? entityList.concat(obj.data) : [obj.data],
-          });
-          dispatch({
-            type: "SET_CURRENT_ENTITY",
+            type: "CREATE_OR_UPDATE_ENTITY",
             payload: obj.data,
           });
           toast("创建成功");

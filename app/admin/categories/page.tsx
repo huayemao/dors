@@ -1,11 +1,9 @@
 "use client";
-import Link from "next/link";
 import { useContext, useEffect } from "react";
 import { CategoriesContext } from "@/contexts/categories";
 import { ClientOnly } from "@/components/ClientOnly";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
-import CreateCollectionModal from "@/lib/client/createEntity/CreateCollectionModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
 import CreateEntityModal from "@/lib/client/createEntity/CreateEntityModal";
 import ListLayout from "@/lib/client/createEntity/ListLayout";
@@ -17,6 +15,7 @@ import {
   useEntityDispatch,
 } from "./context";
 import { Category } from "@/components/Category";
+import pick from "lodash/pick";
 
 function Categories() {
   return (
@@ -28,6 +27,15 @@ function Categories() {
   );
 }
 
+function getList(list): any[] {
+  return list.map((e) => {
+    const obj = {
+      ...pick(e, ["id", "name", "desciption"]),
+      ...(e as any).meta,
+    };
+    return obj;
+  });
+}
 
 function Content() {
   const basename = "/admin/categories";
@@ -49,9 +57,9 @@ function Content() {
         path: "/",
         element: (
           <ListLayout
+          getList={getList}
             state={state}
             dispatch={dispatch}
-            renderEntity={renderEntity}
           ></ListLayout>
         ),
         children: [
@@ -79,15 +87,6 @@ function Content() {
               ></CreateEntityModal>
             ),
           },
-          {
-            path: "edit",
-            element: (
-              <CreateCollectionModal
-                state={state}
-                dispatch={dispatch}
-              ></CreateCollectionModal>
-            ),
-          },
         ]
       },
     ],
@@ -111,13 +110,5 @@ function Content() {
   );
 }
 
-export type Props = {
-  isEditing: boolean;
-  id: number;
-  tags: {
-    id: number;
-    name: string | null;
-  }[];
-};
 
 export default Categories;

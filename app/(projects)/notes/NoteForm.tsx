@@ -43,23 +43,8 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
       sortIndex,
     };
 
-    if (isEditing) {
-      if (!entityList) {
-        throw new Error("错误");
-      }
-      const newList = [...entityList];
-      newList[targetItemIndex] = note;
-      // todo: 改成 editQuestion
-      dispatch({ type: "SET_ENTITY_LIST", payload: newList });
-    } else {
-      // todo: 改成 addQuestion
-      dispatch({
-        type: "SET_ENTITY_LIST",
-        payload: entityList ? entityList.concat(note) : [note],
-      });
-    }
     dispatch({
-      type: "SET_CURRENT_ENTITY",
+      type: "CREATE_OR_UPDATE_ENTITY",
       payload: note,
     });
 

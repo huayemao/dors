@@ -1,5 +1,5 @@
 export interface BaseEntity {
-  id: number;
+  id: number | string;
   seq?: string;
   sortIndex?: number;
 }
@@ -44,7 +44,7 @@ export type State<
     includeNonKeys?: string[];
   };
   fromLocalStorage: boolean;
-  inMemory?: boolean
+  inMemory?: boolean;
 };
 
 export type Action<
@@ -96,6 +96,10 @@ export type Action<
     payload: NonNullable<
       State<EntityType, CollectionType>["currentCollection"]
     >;
+  }
+  | {
+    type: "CREATE_OR_UPDATE_ENTITY";
+    payload: NonNullable<EntityType>;
   }
   | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
   | { type: "CANCEL" };

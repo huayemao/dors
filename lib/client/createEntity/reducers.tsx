@@ -9,7 +9,7 @@ export const getReducerSlices = <
 >(
   state: State<EntityType, CollectionType>
 ) => {
-  const removeEntity = (id: number) => {
+  const removeEntity = (id: number | string) => {
     const targetItemIndex = state.entityList?.findIndex((e) => e.id === id);
     const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
     if (hasTarget) {
@@ -39,6 +39,18 @@ export const getReducer = <
     action
   ): AppState => {
     const { removeEntity } = getReducerSlices(state);
+
+    function getShowingList(list: EntityType[]) {
+      const res = filterEntityList({
+        entityList: state.entityList,
+        filters: state.filters,
+        filterConfig: state.filterConfig || state.filterConfig,
+      }).sort((a, b) => {
+        return (b.sortIndex || 0) - (a.sortIndex || 0);
+      });
+      return res
+    }
+
     switch (action.type) {
       case "ANY": {
         return Object.assign({}, state, action.payload);
@@ -165,6 +177,16 @@ export const getReducer = <
           });
         }
       }
+      case "CREATE_OR_UPDATE_ENTITY": {
+        const { payload } = action;
+        const { entityList, currentEntity } = state;
+        const newList = updateOrCreateInList(payload, entityList);
+        return Object.assign({}, state, {
+          entityList: newList,
+          currentEntity: payload,
+          showingEntityList: getShowingList(newList),
+        });
+      }
       // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
       case "SET_COLLECTION_LIST":
         return Object.assign({}, state, {
@@ -278,3 +300,27 @@ export const getReducer = <
   }
   return reducer;
 };
+
+
+
+function updateOrCreateInList(payload, list) {
+  // 如果列表为空，直接返回包含新对象的列表
+  if (!list) {
+    return [payload];
+  }
+
+  // 找到目标对象的索引
+  const targetItemIndex = list.findIndex((item) => item.id === payload.id);
+
+  // 如果找到目标对象（即存在相同id的对象），更新该对象
+  if (targetItemIndex !== -1) {
+    return [
+      ...list.slice(0, targetItemIndex),
+      payload,
+      ...list.slice(targetItemIndex + 1),
+    ];
+  }
+
+  // 如果未找到目标对象（即不存在相同id的对象），将新对象添加到列表中
+  return list.concat(payload);
+}

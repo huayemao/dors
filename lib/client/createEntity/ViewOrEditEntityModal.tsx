@@ -35,15 +35,15 @@ export default function ViewOrEditEntityModal<
   renderEntity,
 }: {
   renderEntityModalTitle?: (
-    entity: BaseEntity,
+    entity: EType,
     options: { preview: boolean }
   ) => ReactNode;
   renderEntityModalActions?: (
-    entity: BaseEntity,
+    entity: EType,
     options: { preview: boolean }
   ) => ReactNode;
   renderEntity: (
-    entity: BaseEntity,
+    entity: EType,
     options: { preview: boolean }
   ) => ReactNode;
   form: FC<PropsWithChildren>;

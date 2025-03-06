@@ -46,7 +46,6 @@ import { BaseCollection, BaseEntity } from "./types";
 import { usePinned } from "@/lib/client/hooks/usePinned";
 import { Modal } from "@/components/Base/Modal";
 import { Table } from "@/app/(content)/data-process/Table";
-import pick from 'lodash/pick'
 
 export default function ListLayout<
   EType extends BaseEntity,
@@ -57,9 +56,9 @@ export default function ListLayout<
   }
 >({
   slots,
-  renderEntity,
   state,
   dispatch,
+  getList,
 }: {
   slots?: Record<
     "head",
@@ -70,10 +69,7 @@ export default function ListLayout<
   >;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
-  renderEntity: (
-    entity: BaseEntity,
-    options: { preview: boolean }
-  ) => ReactNode;
+  getList: (list: EType[]) => object[];
 }) {
   const { entityList } = state;
   const outlet = useOutlet();
@@ -183,14 +179,9 @@ export default function ListLayout<
         <div className="col-span-12">
           <div className="relative bg-slate-100  w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             <div className="max-w-full  bg-white">
-              {list.length !== 0 &&
-                <Table data={list.map(e => {
-                  const obj = {
-                    ...pick(e, ['id', 'name', 'desciption']),
-                    ...(e as any).meta,
-                  }
-                  return obj
-                })}
+              {list.length !== 0 && (
+                <Table
+                  data={getList(list)}
                   canEdit
                   onRowClick={(e) => {
                     navigate("./" + e.id);
@@ -208,7 +199,9 @@ export default function ListLayout<
                         });
                       },
                     },
-                  ]}></Table>}
+                  ]}
+                ></Table>
+              )}
             </div>
           </div>
         </div>

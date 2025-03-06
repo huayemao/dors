@@ -1,6 +1,8 @@
 "use client";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
+import ListLayout from "@/lib/client/createEntity/ListLayout";
 import { getNavResourceItems } from "@/lib/getNavResourceItems";
+import { NavigationItem } from "@/lib/types/NavItem";
 import { type Prisma } from "@prisma/client";
 import {
   BaseButton,
@@ -10,11 +12,43 @@ import {
   BaseList,
   BaseListItem,
 } from "@shuriken-ui/react";
-import { useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { EntityContextProvider, useEntity, useEntityDispatch } from "./context";
+import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
+import CreateEntityModal from "@/lib/client/createEntity/CreateEntityModal";
+import { ClientOnly } from "@/components/ClientOnly";
+import { Application } from "@/components/Application";
 
-type Item = { title: string; subtitle: string; url: string };
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0; // 转换为32位整数
+  }
+  return hash;
+}
 
-export function ResourceForm({
+console.log(simpleHash("Hello, world!")); // 输出一个整数
+
+export const NavItemsConfig = ({
+  settings,
+}: {
+  settings: {
+    key: string;
+    value: Prisma.JsonValue;
+  }[];
+}) => {
+  return (
+    <ClientOnly>
+      <EntityContextProvider>
+        <Content settings={settings}></Content>
+      </EntityContextProvider>
+    </ClientOnly>
+  );
+};
+
+function Content({
   settings,
 }: {
   settings: {
@@ -22,42 +56,76 @@ export function ResourceForm({
     value: Prisma.JsonValue;
   }[];
 }) {
-  const settingItemValue = settings.find(
-    (e) => e.key === "nav_resource"
-  )?.value;
+  let resourceList = useMemo(() => {
+    const settingItemValue = settings.find(
+      (e) => e.key === "nav_resource"
+    )?.value;
+    const list = getNavResourceItems(settingItemValue as any[] | undefined);
+    if (!Array.isArray(list)) {
+      return [list];
+    }
+    return list;
+  }, [settings]);
 
-  let resourceList = getNavResourceItems(settingItemValue as any[] | undefined);
-
-  if (!Array.isArray(resourceList)) {
-    resourceList = [resourceList];
-  }
-
-  const [value, setValue] = useState(resourceList);
-  const ref = useRef<HTMLDivElement>(null);
+  const state = useEntity();
+  const dispatch = useEntityDispatch();
 
   // todo: list 输入组件
 
+
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: (
+          <ListLayout
+            state={state}
+            dispatch={dispatch}
+            getList={(e) => e}
+          ></ListLayout>
+        ),
+        children: [
+          {
+            path: ":entityId",
+            element: (
+              <ViewOrEditEntityModal
+                renderEntityModalTitle={(e: NavigationItem & { id: string | number }) => e.title}
+                // renderEntityModalActions={renderEntityModalActions}
+                renderEntity={(e: NavigationItem & { id: string | number }) => <Application href={e.url} name={e.title} iconName={e.iconName || 'link'}></Application>}
+                state={state}
+                dispatch={dispatch}
+                form={Form}
+              ></ViewOrEditEntityModal>
+            ),
+          },
+          {
+            path: "create",
+            element: (
+              <CreateEntityModal
+                state={state}
+                dispatch={dispatch}
+                form={Form}
+              ></CreateEntityModal>
+            ),
+          },
+        ],
+      },
+    ],
+    { basename: "/admin/settings" }
+  );
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_ENTITY_LIST",
+      payload: resourceList.map((e) => ({ ...e, id: simpleHash(e.url) })),
+    });
+  }, [dispatch, resourceList]);
+
+  console.log(resourceList, state.entityList);
+
   return (
     <div>
-      <div ref={ref}>
-        <BaseInput id="title" label="标题"></BaseInput>
-        <BaseInput id="subtitle" label="副标题"></BaseInput>
-        <BaseInput id="url" label="链接"></BaseInput>
-      </div>
-      <BaseButton
-        onClick={() => {
-          setValue((value) => {
-            const el = ref.current!;
-            const inputs = Array.from(el.querySelectorAll("input"));
-            const json = Object.fromEntries(
-              inputs.map((el) => [el.id, el.value])
-            );
-            return value.concat(json as Item);
-          });
-        }}
-      >
-        确定
-      </BaseButton>
+      <RouterProvider router={router} />
       <form action="/api/settings" method="POST">
         <input
           className="hidden"
@@ -65,7 +133,7 @@ export function ResourceForm({
           name="key"
           value={"nav_resource"}
         />
-        {value.map((v) => (
+        {state.entityList.map((v) => (
           <textarea
             className="hidden"
             key={v.url}
@@ -73,9 +141,9 @@ export function ResourceForm({
             value={JSON.stringify(v)}
           ></textarea>
         ))}
-        x<BaseButton type="submit">提交</BaseButton>
+        <BaseButton type="submit">提交</BaseButton>
       </form>
-      <BaseList>
+      {/* <BaseList>
         {value.map((e) => {
           return (
             <BaseListItem
@@ -95,7 +163,42 @@ export function ResourceForm({
             ></BaseListItem>
           );
         })}
-      </BaseList>
+      </BaseList> */}
     </div>
   );
 }
+
+const Form = () => {
+  const state = useEntity();
+  const dispatch = useEntityDispatch();
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <>
+      {" "}
+      <div ref={ref}>
+        <BaseInput id="title" label="标题" defaultValue={state.currentEntity.title}></BaseInput>
+        <BaseInput id="subtitle" label="副标题" defaultValue={state.currentEntity.subtitle}></BaseInput>
+        <BaseInput id="url" label="链接" defaultValue={state.currentEntity.url}></BaseInput>
+        <BaseInput id="iconName" label="icon 名称" defaultValue={state.currentEntity.iconName}></BaseInput>
+      </div>
+      <BaseButton
+        onClick={() => {
+          const el = ref.current!;
+          const inputs = Array.from(el.querySelectorAll("input"));
+          const json = Object.fromEntries(
+            inputs.map((el) => [el.id, el.value])
+          );
+          dispatch({
+            type: "CREATE_OR_UPDATE_ENTITY",
+            payload: {
+              ...json,
+              id: simpleHash(json.url),
+            } as NavigationItem & { id: number },
+          });
+        }}
+      >
+        确定
+      </BaseButton>
+    </>
+  );
+};

@@ -19,7 +19,7 @@ export default function CreateEntityModal<
   dispatch: EntityDispatch<EType, CType>;
   form: FC<PropsWithChildren>;
   renderEntityModalTitle?: (
-    entity: BaseEntity,
+    entity: EType,
     options?: { preview: boolean }
   ) => ReactNode;
 }) {

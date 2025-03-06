@@ -72,7 +72,7 @@ export default function CollectionLayout<
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
   renderEntity: (
-    entity: BaseEntity,
+    entity: EType,
     options: { preview: boolean }
   ) => ReactNode;
 }) {

@@ -8,5 +8,6 @@ export function getNavResourceItems(resourceItemsRes: string[] | undefined) {
     title: string;
     subtitle: string;
     url: string;
+    iconName?: string;
   }[];
 }

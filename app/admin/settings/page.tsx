@@ -1,7 +1,7 @@
 import { getAllCategories } from "@/lib/server/categories";
 import prisma from "@/lib/prisma";
 import { HiddenCatsForm } from "./HiddenCatsForm";
-import { ResourceForm } from "./ResourceForm";
+import { NavItemsConfig } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
 import { Panel } from "@/components/Base/Panel";
 import { BaseButton, BaseInput, BaseTextarea } from "@shuriken-ui/react";
@@ -21,8 +21,8 @@ export default async function AdminSettingsPage({ params }) {
         <Panel title="文章分类">
           <HiddenCatsForm settings={settings} cats={cats}></HiddenCatsForm>
         </Panel>
-        <Panel title="导航栏">
-          <ResourceForm settings={settings}></ResourceForm>
+        <Panel title="导航栏" className="max-w-full">
+          <NavItemsConfig settings={settings}></NavItemsConfig>
         </Panel>
         <Panel title="导航内容对应 post id">
           <form action="/api/settings" method="POST">
