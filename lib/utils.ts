@@ -48,10 +48,7 @@ export async function sleep(s: number) {
   });
 }
 
-export async function markdownExcerpt(markdown) {
-  const result = await remark().use(excerpt).process(markdown);
-  return result.toString().slice(0, 100);
-}
+
 
 export function getWordCount(htmlContent) {
   // 去除 HTML 标签

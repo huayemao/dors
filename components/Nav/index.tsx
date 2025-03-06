@@ -89,22 +89,16 @@ export const Nav = ({
       icon: HomeIcon,
     },
     {
-      title: "阅读导航",
-      icon: LinkIcon,
-      children: [
-        {
-          title: "关于",
-          href: "/about",
-          text: "花野猫何许人也",
-          icon: HandshakeIcon,
-        },
-        {
-          title: "分类&标签",
-          href: "/tags",
-          text: "按分类或标签快速检索",
-          icon: TagIcon,
-        },
-      ],
+      title: "关于",
+      href: "/about",
+    },
+    {
+      title: "文章",
+      href: "/posts",
+    },
+    {
+      title: "集萃",
+      href: "/collection",
     },
     {
       title: "自留地",

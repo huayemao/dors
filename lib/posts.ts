@@ -75,6 +75,7 @@ type getPostOptions = PaginateOptions & {
   unCategorized?: boolean;
   protected?: boolean;
   includeHiddenCategories?: boolean;
+  type?: "collection" | "normal";
 };
 
 export const getPosts = unstable_cache(async (options: getPostOptions = {}) => {
@@ -84,8 +85,6 @@ export const getPosts = unstable_cache(async (options: getPostOptions = {}) => {
     ).map(async (e) => {
       return {
         ...e,
-        content: await markdownToHtml(e.content),
-        wordCount: getWordCount(e.content),
         tags: e.tags_posts_links.map((e) => e.tags),
         category: e.posts_category_links?.[0]?.categories,
       };
@@ -151,7 +150,14 @@ async function getAllPosts(options: getPostOptions = {}) {
     orderBy: {
       updated_at: "desc",
     },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      excerpt: true,
+      cover_image: true,
+      created_at: true,
+      updated_at: true,
+      type: true,
       posts_category_links: {
         include: {
           categories: true,
@@ -177,6 +183,12 @@ type ProcessedPost = Awaited<ReturnType<typeof getPosts>>[0] & {
 
 async function getWhereInput(options: getPostOptions) {
   const whereInput: Prisma.Enumerable<Prisma.postsWhereInput> = [];
+
+  if (options.type) {
+    whereInput.push({
+      type: options.type
+    });
+  }
 
   if (options.tagId) {
     whereInput.push({

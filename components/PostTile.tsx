@@ -1,12 +1,12 @@
 import { SITE_META } from "@/constants";
-import { getPost } from "@/lib/posts";
+import { getPost, getPosts } from "@/lib/posts";
 import { cn, getDateString, isDataURL } from "@/lib/utils";
 import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Category } from "./Category";
 import Tag from "./Tag";
-type Post = Awaited<ReturnType<typeof getPost>>;
+type Post = Awaited<ReturnType<typeof getPosts>>[number];
 
 interface Props {
   post: Post;
@@ -133,7 +133,6 @@ function PostTile({
                   ? "更新于 " + getDateString(post?.updated_at)
                   : ""}
               </div>
-              <div>— {post?.wordCount} 字</div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { getPost, getRecentPosts } from "@/lib/posts";
-import { cn, markdownExcerpt } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import dynamic from "next/dynamic";
 import { BackButton } from "../BackButton";
@@ -46,8 +46,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
   /* @ts-ignore */
   const blurDataURL = post.cover_image?.dataURLs?.blur;
 
-  const excerpt =
-    post.excerpt || (await markdownExcerpt(post?.content || "")) + "...";
+  const excerpt = post.excerpt;
 
   const isNotes = isNoteCollection(content);
   const isCollection = post.type == "collection"

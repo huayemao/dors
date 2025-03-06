@@ -1,4 +1,5 @@
 import { CatsAndTags } from "@/components/CatsAndTags";
+import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Posts";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
@@ -22,11 +23,11 @@ export default async function Home({
     await getPosts({
       ...searchParams,
       protected: false,
-      type: 'normal'
     })
   );
 
   const key = posts.map((e) => e.id).join();
+  const pageCount = await getPageCount();
   return (
     <Fragment key={key}>
       <h1 className="font-heading leading-normal font-extrabold text-5xl md:text-5xl text-muted-700 dark:text-white text-center  mb-4">
@@ -41,6 +42,9 @@ export default async function Home({
           {SITE_META.introduction}
         </p>
         <Posts data={posts} />
+        <Suspense>
+          <Pagination pageCount={pageCount}></Pagination>
+        </Suspense>{" "}
       </div>
     </Fragment>
   );

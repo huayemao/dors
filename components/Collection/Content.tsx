@@ -8,7 +8,7 @@ import {
   useState,
   useLayoutEffect,
 } from "react";
-import { markdownExcerpt } from "@/lib/utils";
+import { markdownExcerpt } from "@/lib/isomorphic/getExcerpt";
 import { evaluateSync } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
 import * as runtime from "react/jsx-runtime";

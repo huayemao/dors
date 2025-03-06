@@ -2,6 +2,7 @@ import { createPost } from "@/lib/posts";
 import { revalidateHomePage } from "@/lib/server/retalidate";
 import { NextResponse } from "next/server";
 import { readPostFormData } from "../updatePost/readPostFormData";
+import { markdownExcerpt } from "@/lib/isomorphic/getExcerpt";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
   const post = await createPost({
     type: type!,
     content,
-    excerpt,
+    excerpt: excerpt ?? await markdownExcerpt(content),
     title,
     categoryId,
     tags,

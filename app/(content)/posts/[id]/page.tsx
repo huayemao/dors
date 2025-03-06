@@ -1,7 +1,6 @@
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
 import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
-import { markdownExcerpt } from "@/lib/utils";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -35,8 +34,7 @@ export async function generateMetadata({
     return redirect("/protected/" + id);
   }
 
-  const abstract =
-    post.excerpt || (await markdownExcerpt(post.content)) + "...";
+  const abstract = post.excerpt;
 
   const headerRegex = /^(?!\s)(#{1,6})(.*)/gm;
   const headers =
@@ -56,11 +54,11 @@ export async function generateMetadata({
     abstract: abstract,
     keywords,
     openGraph: {
-      description: abstract,
+      description: abstract || "",
       images: [
         SITE_META.url +
-          "/_next/image?url=" +
-          encodeURIComponent((post.cover_image as any).src.large)+'&w=640&q=60',
+        "/_next/image?url=" +
+        encodeURIComponent((post.cover_image as any).src.large) + '&w=640&q=60',
         (post.cover_image as any)?.dataURLs?.small,
       ],
     },
