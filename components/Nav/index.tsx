@@ -65,13 +65,6 @@ export const Nav = ({
       // @ts-ignore
       text: e.meta?.description || "",
     }))
-    .concat([
-      {
-        title: "小记",
-        href: "/notes",
-        text: "本地记录功能",
-      },
-    ])
     .concat(
       ...resourceItems.map((e) => {
         return {
