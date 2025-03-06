@@ -6,9 +6,7 @@ import { BackButton } from "../BackButton";
 import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
-import CollectionContent from "../Collection/Content";
-import { markdownToJson } from "../Collection/markdownToJson";
-import parseMDX  from "@/lib/mdx/parseMDX";
+import parseMDX from "@/lib/mdx/parseMDX";
 import Prose from "../Base/Prose";
 import { NotesContainer } from "../Notes/NotesContainer";
 import ContentModal from "./ContentModal";
@@ -75,7 +73,7 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                   <BackButton />
                 </div>
                 {
-                  isNotes ?
+                  isNotes || isCollection ?
                     (
                       <div className="xl:max-w-7xl mx-auto">
                         <ClientOnly>
@@ -85,13 +83,6 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
                           </NotesContextProvider>
                         </ClientOnly>
                       </div>
-                    ) :
-                    isCollection ? (
-                      <ClientOnly>
-                        <CollectionContent
-                          items={markdownToJson(post.content!)}
-                        ></CollectionContent>
-                      </ClientOnly>
                     ) : (
                       <Prose content={content} />
                     )}
