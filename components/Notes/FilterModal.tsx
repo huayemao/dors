@@ -29,6 +29,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { useFilter } from "./useFilter";
+import { cn } from "@/lib/utils";
 
 let lastTab = "all";
 
@@ -49,13 +50,13 @@ const FilterModal: FC<{
 
   const search = useCallback(
     (v) => {
-      if (!!v)
+      if (v != state.filters.content)
         dispatch({
           type: "SET_FILTERS",
           payload: {
             filters: {
               ...state.filters,
-              content: v,
+              content: v ?? undefined,
             },
           },
         });
@@ -84,6 +85,11 @@ const FilterModal: FC<{
   }
   // @ts-ignore
   const includeArchived = !state.filters.tags?.omit?.length;
+
+  const value = useMemo(
+    () => state.filters.content,
+    [state.filters.content]
+  ) as string;
 
   return (
     <div className="space-y-4">
@@ -114,10 +120,24 @@ const FilterModal: FC<{
         <></>
       </BaseTabSlider>
       <BaseInput
-        classes={{ wrapper: "flex-1" }}
+        classes={{ wrapper: "flex-1 relative nui-autocomplete" }}
         icon="lucide:search"
         onChange={search}
-        defaultValue={(state.filters.content as string) || ""}
+        value={value || ""}
+        action={
+          <button
+            type="button"
+            tabIndex={-1}
+            className={cn(
+              "nui-autocomplete-clear absolute right-0  end-0 top-0 z-[1] flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 hover:text-primary-500",
+              { '!hidden': !value }
+            )}
+            onClick={() => search("")}
+          >
+            <XIcon className="nui-autocomplete-clear-inner" />
+          </button>
+        }
+        // clearable
       ></BaseInput>
       <div className="relative">
         <TagsIcon className="size-5 text-current mb-2"></TagsIcon> 标签

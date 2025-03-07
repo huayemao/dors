@@ -70,6 +70,7 @@ export function CollectionHeader<
   const Collections = (
     <div className="absolute md:static top-4 left-0 right-0 w-fit mx-auto">
       <BaseDropdown
+        fixed
         classes={{
           wrapper: "border-none bg-transparent",
           content: "border-none bg-transparent",
@@ -77,6 +78,7 @@ export function CollectionHeader<
         }}
         size="lg"
         label={state.currentCollection?.name}
+        variant={isMobile ? "text" : "button"}
         headerLabel="合集"
       >
         {state.collectionList?.map((e) => (
