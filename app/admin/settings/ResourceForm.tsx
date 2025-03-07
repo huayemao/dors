@@ -1,6 +1,5 @@
 "use client";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
-import ListLayout from "@/lib/client/createEntity/ListLayout";
 import { getNavResourceItems } from "@/lib/getNavResourceItems";
 import { NavigationItem } from "@/lib/types/NavItem";
 import { type Prisma } from "@prisma/client";
@@ -19,6 +18,9 @@ import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityMod
 import CreateEntityModal from "@/lib/client/createEntity/CreateEntityModal";
 import { ClientOnly } from "@/components/ClientOnly";
 import { Application } from "@/components/Application";
+import EntityRouteSimple from "@/lib/client/createEntity/EntityRouteSimple";
+import { basename } from "path";
+import { CategoryForm } from "../categories/CategoryForm";
 
 function simpleHash(str) {
   let hash = 0;
@@ -70,50 +72,6 @@ function Content({
   const state = useEntity();
   const dispatch = useEntityDispatch();
 
-  // todo: list 输入组件
-
-
-  const router = createBrowserRouter(
-    [
-      {
-        path: "/",
-        element: (
-          <ListLayout
-            state={state}
-            dispatch={dispatch}
-            getList={(e) => e}
-          ></ListLayout>
-        ),
-        children: [
-          {
-            path: ":entityId",
-            element: (
-              <ViewOrEditEntityModal
-                renderEntityModalTitle={(e: NavigationItem & { id: string | number }) => e.title}
-                // renderEntityModalActions={renderEntityModalActions}
-                renderEntity={(e: NavigationItem & { id: string | number }) => <Application href={e.url} name={e.title} iconName={e.iconName || 'link'}></Application>}
-                state={state}
-                dispatch={dispatch}
-                form={Form}
-              ></ViewOrEditEntityModal>
-            ),
-          },
-          {
-            path: "create",
-            element: (
-              <CreateEntityModal
-                state={state}
-                dispatch={dispatch}
-                form={Form}
-              ></CreateEntityModal>
-            ),
-          },
-        ],
-      },
-    ],
-    { basename: "/admin/settings" }
-  );
-
   useEffect(() => {
     dispatch({
       type: "SET_ENTITY_LIST",
@@ -125,7 +83,17 @@ function Content({
 
   return (
     <div>
-      <RouterProvider router={router} />
+      <EntityRouteSimple
+        key="categories"
+        renderEntityModalTitle={(e: NavigationItem & { id: string | number }) => e.title}
+        renderEntity={(e: NavigationItem & { id: string | number }) => <Application href={e.url} name={e.title} iconName={e.iconName || 'link'}></Application>}
+        state={state}
+        dispatch={dispatch}
+        layout="table"
+        basename={"/admin/settings"}
+        createForm={Form}
+        updateForm={Form}
+      ></EntityRouteSimple>
       <form action="/api/settings" method="POST">
         <input
           className="hidden"

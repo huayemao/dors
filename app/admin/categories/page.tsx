@@ -2,11 +2,6 @@
 import { useContext, useEffect } from "react";
 import { CategoriesContext } from "@/contexts/categories";
 import { ClientOnly } from "@/components/ClientOnly";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { addActionRoutes } from "@/components/PostEditor/AddAction";
-import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
-import CreateEntityModal from "@/lib/client/createEntity/CreateEntityModal";
-import ListLayout from "@/lib/client/createEntity/ListLayout";
 import { CategoryForm } from "./CategoryForm";
 import {
   Cat,
@@ -16,6 +11,7 @@ import {
 } from "./context";
 import { Category } from "@/components/Category";
 import pick from "lodash/pick";
+import EntityRouteSimple from "@/lib/client/createEntity/EntityRouteSimple";
 
 function Categories() {
   return (
@@ -39,8 +35,6 @@ function getList(list): any[] {
 
 function Content() {
   const basename = "/admin/categories";
-  const createForm = CategoryForm;
-  const updateForm = CategoryForm;
   const state = useEntity();
   const dispatch = useEntityDispatch();
   const renderEntityModalTitle = (e: Cat) => e.id;
@@ -50,48 +44,6 @@ function Content() {
     key={cat.id}
     iconName={(cat.meta as { icon: string }).icon}
   />;
-  // renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
-  const router = createBrowserRouter(
-    [
-      {
-        path: "/",
-        element: (
-          <ListLayout
-          getList={getList}
-            state={state}
-            dispatch={dispatch}
-          ></ListLayout>
-        ),
-        children: [
-          ...addActionRoutes,
-          {
-            path: ":entityId",
-            element: (
-              <ViewOrEditEntityModal
-                renderEntityModalTitle={renderEntityModalTitle}
-                // renderEntityModalActions={renderEntityModalActions}
-                renderEntity={renderEntity}
-                state={state}
-                dispatch={dispatch}
-                form={createForm}
-              ></ViewOrEditEntityModal>
-            ),
-          },
-          {
-            path: "create",
-            element: (
-              <CreateEntityModal
-                state={state}
-                dispatch={dispatch}
-                form={updateForm}
-              ></CreateEntityModal>
-            ),
-          },
-        ]
-      },
-    ],
-    { basename }
-  );
 
   const cats = useContext(CategoriesContext);
   // todo: 这个没有默认 list
@@ -105,7 +57,18 @@ function Content() {
 
   return (
     <main className="p-6">
-      <RouterProvider router={router} />
+      <EntityRouteSimple
+        key="categories"
+        renderEntityModalTitle={renderEntityModalTitle}
+        renderEntity={renderEntity}
+        state={state}
+        dispatch={dispatch}
+        layout="table"
+        getList={getList}
+        basename={basename}
+        createForm={CategoryForm}
+        updateForm={CategoryForm}
+      ></EntityRouteSimple>
     </main>
   );
 }

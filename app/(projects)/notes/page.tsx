@@ -22,5 +22,5 @@ export default function NotesPage() {
       },
     });
   }, [currentCollection, navigate, params.id]);
-  return <></>;
+  return <div>小记</div>;
 }
