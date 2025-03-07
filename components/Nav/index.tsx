@@ -79,7 +79,6 @@ export const Nav = ({
     {
       title: "主页",
       href: "/",
-      icon: HomeIcon,
     },
     {
       title: "关于",
@@ -92,26 +91,6 @@ export const Nav = ({
     {
       title: "集萃",
       href: "/collection",
-    },
-    {
-      title: "自留地",
-      icon: GlobeLockIcon,
-      children: [
-        {
-          title: "自留地",
-          text: "私有文章",
-          href: "/protected",
-          icon: GlobeLockIcon,
-          prefetch: false,
-        },
-        {
-          title: "资源",
-          icon: LinkIcon,
-          href: "/navigation",
-          text: "我的导航页",
-        },
-        ...extraPrivateMenuItems,
-      ],
     },
     {
       title: "管理",
