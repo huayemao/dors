@@ -105,14 +105,14 @@ export default function CollectionLayout<
 
   return (
     <>
-      <BaseCard shadow="flat" className="">
+      <div className="bg-muted-100 pt-6">
         <CollectionHeader
           dispatch={dispatch}
           state={state}
           Search={Search}
         />
         <div className="col-span-12">
-          <div className="relative bg-slate-100 w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
+          <div className="relative bg-muted-100 w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             {layout === "masonry" ? (
               <div className="max-w-full masonry sm:masonry-sm md:masonry-md">
                 {list.map((e, i, arr) => (
@@ -157,7 +157,7 @@ export default function CollectionLayout<
             )}
           </div>
         </div>
-      </BaseCard>
+      </div>
       <AnimatePresence>{outlet}</AnimatePresence>
     </>
   );

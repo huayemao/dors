@@ -113,6 +113,12 @@ const FilterModal: FC<{
       >
         <></>
       </BaseTabSlider>
+      <BaseInput
+        classes={{ wrapper: "flex-1" }}
+        icon="lucide:search"
+        onChange={search}
+        defaultValue={(state.filters.content as string) || ""}
+      ></BaseInput>
       <div className="relative">
         <TagsIcon className="size-5 text-current mb-2"></TagsIcon> 标签
         <BaseCard color="muted" className="p-4 space-y-4">

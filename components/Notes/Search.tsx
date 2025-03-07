@@ -10,7 +10,7 @@ const ActionModal = ({ children }) => {
   const [active, setActive] = useState(false);
   return (
     <>
-      <button className="absolute right-0  end-0 top-0 z-[1] flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 hover:text-primary-500">
+      <button className="flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 hover:text-primary-500">
         <FilterIcon
           className="size-4"
           onClick={() => {
@@ -49,36 +49,10 @@ const Search: FC<{
     };
   }, [state.entityList]);
 
-  const search = useCallback(
-    (v) => {
-      if (v != state.filters.content)
-        dispatch({
-          type: "SET_FILTERS",
-          payload: {
-            filters: {
-              ...state.filters,
-              all: v,
-            },
-          },
-        });
-    },
-    [dispatch, state.filters]
-  );
-
   return (
-    <div className="flex-1 mx-2">
-      <BaseInput
-        classes={{ wrapper: "flex-1" }}
-        icon="lucide:search"
-        onChange={search}
-        defaultValue={(state.filters.content as string) || ""}
-        action={
-          <ActionModal>
-            <FilterModal dispatch={dispatch} state={state}></FilterModal>
-          </ActionModal>
-        }
-      ></BaseInput>
-    </div>
+    <ActionModal>
+      <FilterModal dispatch={dispatch} state={state}></FilterModal>
+    </ActionModal>
   );
 };
 
