@@ -105,7 +105,7 @@ export default function CollectionLayout<
 
   return (
     <>
-      <div className="bg-muted-100 pt-6">
+      <div className="bg-muted-100 pt-6 relative">
         <CollectionHeader
           dispatch={dispatch}
           state={state}

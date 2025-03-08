@@ -1,14 +1,14 @@
 import {
   BaseButton,
-  BaseButtonIcon,
+  BaseIconBox,
   BaseDropdown,
   BaseDropdownItem,
-  BaseIconBox,
 } from "@shuriken-ui/react";
 import {
   CopyIcon,
   EditIcon,
   EllipsisIcon,
+  MoveUpIcon,
   PlusIcon,
   UploadIcon,
 } from "lucide-react";
@@ -41,7 +41,7 @@ export function CollectionHeader<
 >({ dispatch, state, Search }: CollectionHeaderProps<EType, CType>) {
   const headerRef = useRef(null);
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
-  const pinned = usePinned(headerRef, 24);
+  const pinned = usePinned(headerRef, isMobile ? 24 : 20);
   const navigate = useNavigate();
 
   const exportToClipBoard = useCallback(
@@ -77,7 +77,7 @@ export function CollectionHeader<
         }}
         size={isMobile ? "md" : "lg"}
         label={state.currentCollection?.name}
-        variant={isMobile ? "text" : "button"}
+        variant={isMobile ? "text" : pinned ? "button" : "text"}
         headerLabel="合集"
       >
         {state.collectionList?.map((e) => (
@@ -124,8 +124,8 @@ export function CollectionHeader<
       <div
         ref={headerRef}
         className={cn(
-          " mx-auto my-2 mt-16 lg:-mt-4 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3 w-fit",
-          { "sticky bg-white  shadow-lg": pinned }
+          "sticky mx-auto my-2 lg:-mt-16 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3 w-fit",
+          { " bg-white  shadow-lg": pinned }
         )}
       >
         <div className="flex items-center justify-around gap-2 lg:gap-4 relative w-full ">
@@ -144,19 +144,10 @@ export function CollectionHeader<
               navigate("./create");
             }}
           >
-            <PlusIcon className="h-4 w-4 mr-2" />
-            新建
+            <PlusIcon className="h-4 w-4 md:mr-2" />
+            <span className="hidden md:inline-block">新建</span>
           </BaseButton>
-          <BaseDropdown
-            size="lg"
-            rounded="md"
-            variant="text"
-            renderButton={() => (
-              <BaseButtonIcon size="sm">
-                <EllipsisIcon className="h-4 w-4" />
-              </BaseButtonIcon>
-            )}
-          >
+          <BaseDropdown size="lg" rounded="md" variant="context">
             <BaseDropdownItem
               data-nui-tooltip-position="down"
               onClick={exportToClipBoard}
@@ -173,7 +164,22 @@ export function CollectionHeader<
           </BaseDropdown>
         </div>
       </div>
-      {/* {isMobile && !!state.collectionList.length && Collections} */}
+      <BaseButton
+        variant="solid"
+        color="primary"
+        rounded="full"
+        size="lg"
+        shadow="flat"
+        className={cn(
+          "fixed bottom-4 right-4  z-10 drop-shadow-lg transition-all duration-300 !p-2 w-12",
+          {
+            "opacity-0": !pinned,
+          }
+        )}
+        onClick={() => window.scrollTo(0, 0)}
+      >
+        <MoveUpIcon strokeWidth={2} className="size-6"></MoveUpIcon>
+      </BaseButton>
     </>
   );
 }
