@@ -21,6 +21,7 @@ import { cn, readFromClipboard } from "@/lib/utils";
 import { copyToClipboard } from "../utils/copyToClipboard";
 import { usePinned } from "../hooks/usePinned";
 import { useMediaQuery } from "@uidotdev/usehooks";
+import c from "@/styles/createEntity.module.css";
 
 interface CollectionHeaderProps<
   EType extends BaseEntity,
@@ -72,11 +73,10 @@ export function CollectionHeader<
       <BaseDropdown
         fixed
         classes={{
-          wrapper: "border-none bg-transparent",
+          wrapper: "border-none bg-transparent " + c["collection-dropdown"],
           content: "border-none bg-transparent",
-          menu: "border-none bg-transparent",
         }}
-        size="lg"
+        size={isMobile ? "md" : "lg"}
         label={state.currentCollection?.name}
         variant={isMobile ? "text" : "button"}
         headerLabel="合集"
@@ -130,7 +130,7 @@ export function CollectionHeader<
         )}
       >
         <div className="flex items-center justify-around gap-2 lg:gap-4 relative w-full ">
-          {!isMobile && Collections}
+          {Collections}
           <div className="">
             {Search && <Search dispatch={dispatch} state={state} />}
           </div>
@@ -174,7 +174,7 @@ export function CollectionHeader<
           </BaseDropdown>
         </div>
       </div>
-      {isMobile && !!state.collectionList.length && Collections}
+      {/* {isMobile && !!state.collectionList.length && Collections} */}
     </>
   );
 }

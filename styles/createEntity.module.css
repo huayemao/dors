@@ -1,0 +1,3 @@
+.collection-dropdown :global(.nui-text-button-inner) {
+  @apply truncate inline-block max-w-20 md:max-w-full;
+}
