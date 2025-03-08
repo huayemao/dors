@@ -190,9 +190,17 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                         />
                       )}
                       {activeValue === "preview" && (
-                        <BaseCard shadow="flat" className="px-4 bg-white">
-                          <Prose content={content}></Prose>
-                        </BaseCard>
+                        <>
+                          <textarea
+                            name="content"
+                            id="content"
+                            value={content}
+                            className="hidden"
+                          ></textarea>
+                          <BaseCard shadow="flat" className="px-4 bg-white">
+                            <Prose content={content}></Prose>
+                          </BaseCard>
+                        </>
                       )}
                     </>
                   )}
