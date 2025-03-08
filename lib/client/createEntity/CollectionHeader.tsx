@@ -40,7 +40,8 @@ export function CollectionHeader<
   CType extends BaseCollection
 >({ dispatch, state, Search }: CollectionHeaderProps<EType, CType>) {
   const headerRef = useRef(null);
-  const pinned = usePinned(headerRef);
+  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
+  const pinned = usePinned(headerRef, 24);
   const navigate = useNavigate();
 
   const exportToClipBoard = useCallback(
@@ -66,10 +67,8 @@ export function CollectionHeader<
     });
   }, [dispatch]);
 
-  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
-
   const Collections = (
-    <div className="absolute md:static top-4 left-0 right-0 w-fit mx-auto">
+    <div className="top-4 left-0 right-0 w-fit mx-auto">
       <BaseDropdown
         fixed
         classes={{
@@ -125,8 +124,8 @@ export function CollectionHeader<
       <div
         ref={headerRef}
         className={cn(
-          "sticky mx-auto my-2 mt-16 lg:mt-0 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  bg-white  transition-all duration-300 px-6 py-3 w-fit",
-          { "shadow-lg": true }
+          " mx-auto my-2 mt-16 lg:-mt-4 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3 w-fit",
+          { "sticky bg-white  shadow-lg": pinned }
         )}
       >
         <div className="flex items-center justify-around gap-2 lg:gap-4 relative w-full ">
