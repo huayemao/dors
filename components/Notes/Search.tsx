@@ -10,14 +10,14 @@ const ActionModal = ({ children }) => {
   const [active, setActive] = useState(false);
   return (
     <>
-      <button className="flex h-10 w-10 items-center justify-center text-muted-400 transition-colors duration-300 hover:text-primary-500">
+      <BaseButtonIcon size="sm" color="primary" rounded="full">
         <FilterIcon
           className="size-4"
           onClick={() => {
             setActive(true);
           }}
         ></FilterIcon>
-      </button>
+      </BaseButtonIcon>
       <AnimatePresence>
         <Modal
           key={String(active)}
