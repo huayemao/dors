@@ -21,12 +21,13 @@ import { Archive, Copy, Edit2, LinkIcon } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
-import { useClickAway } from "@uidotdev/usehooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_NAME, HIDDEN_TAGS } from "./constants";
 import Search from "./Search";
+import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 
 export const useActions = (note: Note) => {
+  const close = useCloseModal()
   const state = useEntity();
   const dispatch = useEntityDispatch();
   const navigate = useNavigate();
@@ -87,6 +88,9 @@ export const useActions = (note: Note) => {
           // todo: 改成 editQuestion
           dispatch({ type: "SET_ENTITY_LIST", payload: newList });
           toast.success("归档成功");
+          if(state.currentEntity?.id === note.id) {
+            close();
+          }
         },
         start: <Archive className="h-4 w-4" />,
         stopPropagation: true,

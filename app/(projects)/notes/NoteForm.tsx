@@ -14,6 +14,7 @@ import { Note } from "./constants";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
 import { useNavigate } from "react-router-dom";
 import Prose from "@/components/Base/Prose";
+import { HIDDEN_TAGS } from "@/components/Notes/constants";
 
 export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
@@ -43,6 +44,13 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
       sortIndex,
     };
 
+    const isNewArchive =
+      isEditing &&
+      HIDDEN_TAGS.some(
+        (t) =>
+          !entityList[targetItemIndex].tags.includes(t) && note.tags.includes(t)
+      );
+
     dispatch({
       type: "CREATE_OR_UPDATE_ENTITY",
       payload: note,
@@ -55,13 +63,17 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
       });
     }
 
-    setTimeout(() => {
-      // 给 localstorage 同步
-      dispatch({
-        type: "SET_ENTITY_MODAL_MODE",
-        payload: "view",
-      });
-    }, 100);
+    if (isNewArchive) {
+      close();
+    } else {
+      setTimeout(() => {
+        // 给 localstorage 同步
+        dispatch({
+          type: "SET_ENTITY_MODAL_MODE",
+          payload: "view",
+        });
+      }, 100);
+    }
   };
 
   const allTags = useMemo(
