@@ -185,6 +185,7 @@ export const getReducer = <
           entityList: newList,
           currentEntity: payload,
           showingEntityList: getShowingList(newList),
+          fromLocalStorage: false
         });
       }
       // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
