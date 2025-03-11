@@ -88,7 +88,7 @@ export const useActions = (note: Note) => {
           // todo: 改成 editQuestion
           dispatch({ type: "SET_ENTITY_LIST", payload: newList });
           toast.success("归档成功");
-          if(state.currentEntity?.id === note.id) {
+          if (state.currentEntity?.id === note.id) {
             close();
           }
         },
@@ -134,30 +134,28 @@ export const NotesContainer = ({
   }, []);
 
   return (
-    <main>
-      <EntityRoute
-        key="notes"
-        renderEntityModalTitle={(e: Note) => (
-          <NoteModalTitle note={e} filterTags={filterTags} />
-        )}
-        renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
-        renderEntity={(e: Note, { preview }) => (
-          <NotewithActions
-            key={e.id}
-            data={e}
-            preview={preview}
-            filterTags={filterTags}
-          ></NotewithActions>
-        )}
-        slots={{ search: Search }}
-        state={state}
-        dispatch={dispatch}
-        RootPage={NotesPage}
-        basename={basename}
-        createForm={NoteForm}
-        updateForm={NoteForm}
-      ></EntityRoute>
-    </main>
+    <EntityRoute
+      key="notes"
+      renderEntityModalTitle={(e: Note) => (
+        <NoteModalTitle note={e} filterTags={filterTags} />
+      )}
+      renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
+      renderEntity={(e: Note, { preview }) => (
+        <NotewithActions
+          key={e.id}
+          data={e}
+          preview={preview}
+          filterTags={filterTags}
+        ></NotewithActions>
+      )}
+      slots={{ search: Search }}
+      state={state}
+      dispatch={dispatch}
+      RootPage={NotesPage}
+      basename={basename}
+      createForm={NoteForm}
+      updateForm={NoteForm}
+    ></EntityRoute>
   );
 };
 
@@ -199,6 +197,6 @@ export function getExcludeIds(
   return hasHiddenTags || typeof hasHiddenTags == "undefined"
     ? undefined
     : entityList
-        .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
-        .map((e) => e.id);
+      .filter((e) => e.tags.some((t) => HIDDEN_TAGS.includes(t)))
+      .map((e) => e.id);
 }
