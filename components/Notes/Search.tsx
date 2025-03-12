@@ -10,13 +10,15 @@ const ActionModal = ({ children }) => {
   const [active, setActive] = useState(false);
   return (
     <>
-      <BaseButtonIcon size="sm" color="primary" rounded="full">
-        <FilterIcon
-          className="size-4"
-          onClick={() => {
-            setActive(true);
-          }}
-        ></FilterIcon>
+      <BaseButtonIcon
+        size="sm"
+        color="primary"
+        rounded="full"
+        onClick={() => {
+          setActive(true);
+        }}
+      >
+        <FilterIcon className="size-4"></FilterIcon>
       </BaseButtonIcon>
       <AnimatePresence>
         <Modal
