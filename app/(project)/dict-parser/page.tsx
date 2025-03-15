@@ -11,7 +11,7 @@ import { Panel } from "@/components/Base/Panel";
 
 export default function DictParserPage() {
   const [parsedEntry, setParsedEntry] = useState<string | null>(null);
-  const [parsedResult, setParsedResult] = useState<any>(null);
+  const [parsedResult, setParsedResult] = useState<DictEntryType[] | DictEntryType | null>(null);
 
   return (
     <div className="w-full bg-slate-100">
@@ -32,7 +32,9 @@ export default function DictParserPage() {
                 const input = (document.getElementById("htmlInput") as HTMLTextAreaElement).value;
                 try {
                   const result = parseDictEntry(input);
-                  const mdx = `<DictEntry entry={${JSON.stringify(result, null, 2)}}/>`;
+                  const mdx = Array.isArray(result) 
+                    ? result.map(entry => `<DictEntry entry={${JSON.stringify(entry, null, 2)}}/>`).join('\n')
+                    : `<DictEntry entry={${JSON.stringify(result, null, 2)}}/>`;
                   setParsedEntry(mdx);
                   setParsedResult(result);
                 } catch (error) {

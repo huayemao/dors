@@ -14,25 +14,37 @@ export interface DictEntryType {
   href: string;
 }
 
-export function parseDictEntry(html: string): DictEntryType {
+export function parseDictEntry(html: string): DictEntryType | DictEntryType[] {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
-
-  const wordId = doc.querySelector("li")?.getAttribute("data-word-id") || "";
-  const phrase = doc.querySelector(".phrase")?.textContent || "";
-  const pos = doc.querySelector(".pos")?.textContent || "";
-  const definition = doc.querySelector(".def")?.textContent || "";
-  const translation = doc.querySelector(".trans")?.textContent || "";
-  const href = doc.querySelector("a.tb")?.getAttribute("href") || "";
-
-  return {
-    wordId,
-    phrase,
-    pos,
-    definition,
-    translation,
-    href,
+  
+  // 查找所有词条
+  const entries = doc.querySelectorAll(".wordlistentry-row");
+  
+  // 如果没有找到任何词条，返回空数组
+  if (entries.length === 0) {
+    return [];
+  }
+  
+  // 解析函数
+  const parseEntry = (element: Element): DictEntryType => {
+    return {
+      wordId: element.getAttribute("data-word-id") || "",
+      phrase: element.querySelector(".phrase")?.textContent || "",
+      pos: element.querySelector(".pos")?.textContent || "",
+      definition: element.querySelector(".def")?.textContent || "",
+      translation: element.querySelector(".trans")?.textContent || "",
+      href: element.querySelector("a.tb")?.getAttribute("href") || "",
+    };
   };
+
+  // 如果只有一个词条，返回单个对象
+  if (entries.length === 1) {
+    return parseEntry(entries[0]);
+  }
+  
+  // 如果有多个词条，返回数组
+  return Array.from(entries).map(parseEntry);
 }
 
 export function dictEntryToMarkdown(entry: DictEntryType): string {
