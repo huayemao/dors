@@ -3,6 +3,7 @@ import Carousel from "@/components/Carousel";
 import { ClientOnly } from "@/components/ClientOnly";
 import Columns from "@/components/Columns";
 import DataList from "@/components/DataList";
+import DictEntry from "@/components/DictEntry";
 import { DigitsHighlightButton } from "@/components/DigitsHighlightButton";
 import { Figure } from "@/components/Figure";
 import Gallery from "@/components/Gallery";
@@ -118,4 +119,5 @@ export const components = {
     //   </div>
     // );
   },
+  DictEntry:DictEntry
 };
