@@ -48,7 +48,7 @@ export function parseDictEntry(html: string): DictEntryType | DictEntryType[] {
 }
 
 export function dictEntryToMarkdown(entry: DictEntryType): string {
-  return `<a class="font-bold  no-underline" href="${entry.href}"><dt>${entry.phrase} <small class="text-primary-600 font-cursive"></a>&emsp;${entry.pos}</small></dt>
+  return `<dt class="!mt-0"><a class="font-bold  no-underline" href="${entry.href}">${entry.phrase}</a><small class="text-primary-600 font-cursive">&emsp;${entry.pos}</small></dt>
     <dd><i>${entry.definition}</i></dd>
     <dd class="font-sans"><i>${entry.translation}</i></dd>
   `;
