@@ -23,6 +23,9 @@ module.exports = withShurikenUI({
 				DEFAULT: {
 					css: [
 						{
+							"strong": {
+								fontWeight: 'bold',
+							},
 							// "a:active": { color: colors.green[700] },
 							// "a:visited": { color: colors.green[900] },
 							"a code": {
