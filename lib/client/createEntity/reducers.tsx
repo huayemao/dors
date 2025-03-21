@@ -42,7 +42,7 @@ export const getReducer = <
 
     function getShowingList(list: EntityType[]) {
       const res = filterEntityList({
-        entityList: state.entityList,
+        entityList: list,
         filters: state.filters,
         filterConfig: state.filterConfig || state.filterConfig,
       }).sort((a, b) => {
