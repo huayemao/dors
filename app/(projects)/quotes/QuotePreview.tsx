@@ -35,12 +35,12 @@ export default function QuotePreview() {
                 background: config.position == 'top' ? 'linear-gradient(rgba(0,0,0,.53),transparent 100%)' : 'linear-gradient(transparent,rgba(0,0,0,.53) 40%)',
               }}>
                 <blockquote className="flex gap-6 text-white items-end text-5xl leading-normal" style={{ boxSizing: 'border-box', fontFamily: 'georgia', }}>
-                  <span className={cn("first-letter:text-8xl   rounded-lg  p-4 flex-[2]  italic  text-balance", {
+                  <p className={cn("first-letter:text-8xl   rounded-lg  p-4 flex-[2]  italic  text-balance", {
                     'bg-slate-900/10': !!config.backdrop,
                   })} style={{ color: 'white', fontFamily: 'georgia', fontStyle: 'italic' }}>
-                    <QuoteIcon className="size-8 absolute right-16 top-32 text-white" fill="white"></QuoteIcon>
+                    <QuoteIcon className="size-8 absolute right-16 top-32 text-white whitespace-pre-wrap" fill="white"></QuoteIcon>
                     {item.quote}
-                  </span>
+                  </p>
                   <span className="flex-[1] uppercase text-balance text-right" style={{ fontFamily: "georgia" }}>
                     — {item.artwork}
                   </span>

@@ -30,7 +30,7 @@ export const QuoteForm: FC<PropsWithChildren> = ({ children }) => {
 
     const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (e) => {
         e.preventDefault();
-        
+
         const quote = {
             ...currentEntity,
             id: currentEntity?.id || Date.now(),
@@ -69,7 +69,8 @@ export const QuoteForm: FC<PropsWithChildren> = ({ children }) => {
                     <div className="p-4 md:p-8">
                         <div className="grid grid-cols-12 gap-4">
                             <div className="col-span-12">
-                                <BaseInput
+                                <BaseTextarea
+                                    rows={6}
                                     label="引用原文"
                                     size="sm"
                                     id="quote"
