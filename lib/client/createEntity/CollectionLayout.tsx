@@ -136,9 +136,9 @@ export default function CollectionLayout<
                   <Table
                     data={getList(list)}
                     canEdit
-                    onRowClick={(e) => {
-                      navigate("./" + e.id);
-                    }}
+                    // onRowClick={(e) => {
+                    //   navigate("./" + e.id);
+                    // }}
                     actions={[
                       {
                         title: "编辑",

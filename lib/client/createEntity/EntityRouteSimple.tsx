@@ -7,7 +7,7 @@ import CollectionLayout from "@/lib/client/createEntity/CollectionLayout";
 import CreateCollectionModal from "./CreateCollectionModal";
 import CreateEntityModal from "./CreateEntityModal";
 import ViewOrEditEntityModal from "@/lib/client/createEntity/ViewOrEditEntityModal";
-import { ComponentProps, FC, PropsWithChildren, useCallback } from "react";
+import { ComponentProps, FC, PropsWithChildren, ReactNode, useCallback } from "react";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
@@ -33,6 +33,7 @@ type Props<EType extends BaseEntity, CType extends BaseCollection> = {
   updateForm: FC<PropsWithChildren>;
   RootPage?: FC<PropsWithChildren>;
   extraRoutes?: RouteObject[];
+  EntityPreviewPage?: FC
 } & Omit<ComponentProps<typeof ViewOrEditEntityModal>, "form">;
 
 export default function EntityRouteSimple<
@@ -46,12 +47,14 @@ export default function EntityRouteSimple<
   updateForm,
   RootPage,
   renderEntity,
+  EntityPreviewPage,
   renderEntityModalTitle,
   renderEntityModalActions,
   slots,
   layout,
   getList,
 }: Props<EType, CType>) {
+  const isView = state.entityModalMode == 'view'
   const router = createBrowserRouter(
     [
       {
@@ -69,7 +72,7 @@ export default function EntityRouteSimple<
           ...addActionRoutes,
           {
             path: ":entityId",
-            element: (
+            element: EntityPreviewPage && isView ? <EntityPreviewPage /> : (
               <ViewOrEditEntityModal
                 renderEntityModalTitle={renderEntityModalTitle}
                 renderEntityModalActions={renderEntityModalActions}

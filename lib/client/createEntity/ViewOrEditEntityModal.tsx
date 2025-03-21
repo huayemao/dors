@@ -78,7 +78,7 @@ export default function ViewOrEditEntityModal<
     dispatch({
       type: "ANY",
       payload: {
-        entityModalMode: "view",
+        // entityModalMode: "view",
         currentEntity: entity,
       },
     });

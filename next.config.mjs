@@ -124,6 +124,10 @@ const nextConfig = {
           source: "/notes/:path*",
           destination: "/notes",
         },
+        {
+          source: "/quotes/:path*",
+          destination: "/quotes",
+        },
       ],
     };
   },

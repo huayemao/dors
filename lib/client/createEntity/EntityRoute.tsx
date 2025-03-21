@@ -33,6 +33,7 @@ type Props<EType extends BaseEntity, CType extends BaseCollection> = {
   updateForm: FC<PropsWithChildren>;
   RootPage: FC<PropsWithChildren>;
   extraRoutes?: RouteObject[];
+  EntityPreviewPage?: FC
 } & Omit<ComponentProps<typeof ViewOrEditEntityModal>, "form">;
 
 export default function EntityRoute<
@@ -51,7 +52,10 @@ export default function EntityRoute<
   slots,
   layout,
   extraRoutes = [],
+  EntityPreviewPage
 }: Props<EType, CType>) {
+  const isView = state.entityModalMode == 'view'
+  console.log(isView)
   const router = createBrowserRouter(
     [
       {
@@ -83,7 +87,7 @@ export default function EntityRoute<
           ...addActionRoutes,
           {
             path: ":entityId",
-            element: (
+            element: EntityPreviewPage && isView ? <EntityPreviewPage /> : (
               <ViewOrEditEntityModal
                 renderEntityModalTitle={renderEntityModalTitle}
                 renderEntityModalActions={renderEntityModalActions}
