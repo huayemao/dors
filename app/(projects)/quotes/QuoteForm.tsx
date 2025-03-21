@@ -81,7 +81,8 @@ export const QuoteForm: FC<PropsWithChildren> = ({ children }) => {
                             </div>
 
                             <div className="col-span-12">
-                                <BaseInput
+                                <BaseTextarea
+                                    rows={6}
                                     label="翻译"
                                     size="sm"
                                     id="translation"
