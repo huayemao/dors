@@ -227,6 +227,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
               <textarea
                 id="content"
                 name="content"
+                rows={5}
                 onChange={(e) => {
                   const thisEl = e.nativeEvent.target as HTMLTextAreaElement;
                   // @ts-ignore
