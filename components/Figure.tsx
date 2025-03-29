@@ -29,12 +29,15 @@ export function Figure(props) {
     const current = ref.current;
     const img = current.querySelector("img");
     const video = current.querySelector("video");
+    
     if (img) {
       current.href = img.src || "";
-      img.onloadedmetadata = (e) => {
+      
+      if (img.complete && img.naturalWidth) {
         current.dataset["pswpWidth"] = "" + img.naturalWidth;
         current.dataset["pswpHeight"] = "" + img.naturalHeight;
-      };
+      }
+
       img.onload = (e) => {
         current.dataset["pswpWidth"] = "" + img.naturalWidth;
         current.dataset["pswpHeight"] = "" + img.naturalHeight;
