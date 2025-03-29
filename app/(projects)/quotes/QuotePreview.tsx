@@ -6,7 +6,7 @@ import { QuoteIcon, Download } from "lucide-react";
 import { useEntity } from "./context";
 import { BaseRadio } from "@shuriken-ui/react";
 import { useState } from "react";
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 import { useHover } from "@uidotdev/usehooks";
 
 const config = {
@@ -18,32 +18,40 @@ export default function QuotePreview() {
   const state = useEntity();
   const { currentEntity: item } = state;
   const [fontSize, setFontSize] = useState(32);
+  const [textColor, setTextColor] = useState("white");
   const [ref, isHovered] = useHover();
   const [isExporting, setIsExporting] = useState(false);
 
   const fontSizeOptions = [
-    { label: '小', value: 24 },
-    { label: '中', value: 32 },
-    { label: '大', value: 48 },
-    { label: '特大', value: 64 },
+    { label: "小", value: 24 },
+    { label: "中", value: 32 },
+    { label: "大", value: 48 },
+    { label: "特大", value: 64 },
+  ];
+
+  const colorOptions = [
+    { label: "白色", value: "white" },
+    { label: "米色", value: "rgb(247, 233, 212)" },
   ];
 
   const handleExport = async () => {
     setIsExporting(true);
     try {
-      const element = document.querySelector('.root') as HTMLElement;
+      const element = document.querySelector(".root") as HTMLElement;
       if (!element) return;
 
-      element.style.height = element.clientHeight+'px';
+      element.style.height = element.clientHeight + "px";
       // 等待所有图片加载完成
-      const images = element.getElementsByTagName('img');
-      await Promise.all(Array.from(images).map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise((resolve) => {
-          img.onload = resolve;
-          img.onerror = resolve;
-        });
-      }));
+      const images = element.getElementsByTagName("img");
+      await Promise.all(
+        Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve;
+          });
+        })
+      );
 
       const canvas = await html2canvas(element, {
         useCORS: true,
@@ -53,28 +61,25 @@ export default function QuotePreview() {
         backgroundColor: null, // 保持背景透明
       });
 
-
       // document.body.appendChild(canvas)
       // 确保转换为 blob 并使用 URL.createObjectURL
       canvas.toBlob((blob) => {
-        
         if (!blob) {
-          console.error('Failed to create blob');
+          console.error("Failed to create blob");
           return;
         }
         const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.download = `quote-${item.artwork || 'export'}.png`;
+        const link = document.createElement("a");
+        link.download = `quote-${item.artwork || "export"}.png`;
         link.href = url;
         link.click();
-        
+
         // 清理
         setTimeout(() => URL.revokeObjectURL(url), 100);
-        setIsExporting(false)
-      }, 'image/png');
-
+        setIsExporting(false);
+      }, "image/png");
     } catch (error) {
-      console.error('导出失败:', error);
+      console.error("导出失败:", error);
     } finally {
       setIsExporting(false);
     }
@@ -160,11 +165,12 @@ export default function QuotePreview() {
                 }}
               >
                 <blockquote
-                  className="whitespace-pre-wrap flex gap-6 text-white items-end text-5xl leading-normal"
-                  style={{ 
-                    boxSizing: "border-box", 
+                  className="whitespace-pre-wrap flex gap-6 items-end text-5xl leading-normal"
+                  style={{
+                    boxSizing: "border-box",
                     fontFamily: "georgia",
-                    fontSize: `${fontSize}px`
+                    fontSize: `${fontSize}px`,
+                    color: textColor,
                   }}
                 >
                   <p
@@ -175,15 +181,10 @@ export default function QuotePreview() {
                       }
                     )}
                     style={{
-                      color: "white",
                       fontFamily: "georgia,serif",
                       fontStyle: "italic",
                     }}
                   >
-                    <QuoteIcon
-                      className="size-8 absolute right-16 top-32 text-white"
-                      fill="white"
-                    ></QuoteIcon>
                     {item.quote}
                   </p>
                   <span
@@ -193,6 +194,13 @@ export default function QuotePreview() {
                     — {item.artwork}
                   </span>
                 </blockquote>
+                <div className="absolute right-16 top-32">
+                  <QuoteIcon
+                    className="size-8"
+                    style={{ color: textColor }}
+                    fill={textColor}
+                  ></QuoteIcon>
+                </div>
               </div>
             </div>
           </div>
@@ -207,7 +215,7 @@ export default function QuotePreview() {
         >
           <div className="p-4">
             <label className="block text-sm font-medium mb-2">字体大小</label>
-            <div className="flex gap-4">
+            <div className="flex gap-4 mb-4">
               {fontSizeOptions.map((option) => (
                 <BaseRadio
                   key={option.value}
@@ -216,6 +224,20 @@ export default function QuotePreview() {
                   value={option.value}
                   checked={fontSize === option.value}
                   onChange={(v) => setFontSize(Number(v))}
+                />
+              ))}
+            </div>
+
+            <label className="block text-sm font-medium mb-2">文字颜色</label>
+            <div className="flex gap-4">
+              {colorOptions.map((option) => (
+                <BaseRadio
+                  key={option.value}
+                  name="textColor"
+                  label={option.label}
+                  value={option.value}
+                  checked={textColor === option.value}
+                  onChange={(v) => setTextColor(v)}
                 />
               ))}
             </div>
