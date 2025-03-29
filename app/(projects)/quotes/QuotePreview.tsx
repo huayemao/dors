@@ -2,8 +2,12 @@ import { Panel } from "@/components/Base/Panel";
 import Prose from "@/components/Base/Prose";
 import { ClientOnly } from "@/components/ClientOnly";
 import { cn } from "@/lib/utils";
-import { QuoteIcon } from "lucide-react";
+import { QuoteIcon, Download } from "lucide-react";
 import { useEntity } from "./context";
+import { BaseRadio } from "@shuriken-ui/react";
+import { useState } from "react";
+import html2canvas from 'html2canvas';
+import { useHover } from "@uidotdev/usehooks";
 
 const config = {
   position: "bottom",
@@ -13,6 +17,69 @@ const config = {
 export default function QuotePreview() {
   const state = useEntity();
   const { currentEntity: item } = state;
+  const [fontSize, setFontSize] = useState(32);
+  const [ref, isHovered] = useHover();
+  const [isExporting, setIsExporting] = useState(false);
+
+  const fontSizeOptions = [
+    { label: '小', value: 24 },
+    { label: '中', value: 32 },
+    { label: '大', value: 48 },
+    { label: '特大', value: 64 },
+  ];
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const element = document.querySelector('.root') as HTMLElement;
+      if (!element) return;
+
+      element.style.height = element.clientHeight+'px';
+      // 等待所有图片加载完成
+      const images = element.getElementsByTagName('img');
+      await Promise.all(Array.from(images).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }));
+
+      const canvas = await html2canvas(element, {
+        useCORS: true,
+        scale: 2,
+        logging: true, // 临时开启日志以便调试
+        allowTaint: true, // 允许跨域图片
+        backgroundColor: null, // 保持背景透明
+      });
+
+
+      // document.body.appendChild(canvas)
+      // 确保转换为 blob 并使用 URL.createObjectURL
+      canvas.toBlob((blob) => {
+        
+        if (!blob) {
+          console.error('Failed to create blob');
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `quote-${item.artwork || 'export'}.png`;
+        link.href = url;
+        link.click();
+        
+        // 清理
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        setIsExporting(false)
+      }, 'image/png');
+
+    } catch (error) {
+      console.error('导出失败:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div
       className="min-h-screen bg-muted-100 dark:bg-muted-900 lg:grid grid-cols-12 gap-4 justify-center  items-start p-4"
@@ -20,7 +87,8 @@ export default function QuotePreview() {
     >
       <div className="flex-1 col-span-8 px-4">
         <div
-          className="root"
+          ref={ref}
+          className="root relative"
           style={{
             boxSizing: "border-box",
             contain: "content",
@@ -30,6 +98,14 @@ export default function QuotePreview() {
             width: "inherit",
           }}
         >
+          {isHovered && !isExporting && (
+            <button
+              onClick={handleExport}
+              className="absolute p-2 rounded top-4 right-4 z-[200] text-white bg-black/50 hover:bg-black/70"
+            >
+              <Download className="h-4 w-4" />
+            </button>
+          )}
           <div
             className="content-card-container"
             style={{
@@ -85,11 +161,15 @@ export default function QuotePreview() {
               >
                 <blockquote
                   className="whitespace-pre-wrap flex gap-6 text-white items-end text-5xl leading-normal"
-                  style={{ boxSizing: "border-box", fontFamily: "georgia" }}
+                  style={{ 
+                    boxSizing: "border-box", 
+                    fontFamily: "georgia",
+                    fontSize: `${fontSize}px`
+                  }}
                 >
                   <p
                     className={cn(
-                      "first-letter:text-8xl   rounded-lg  p-4 flex-[2]  italic  text-balance",
+                      "rounded-lg  p-4 flex-[2]  italic  text-balance",
                       {
                         "bg-slate-900/10": !!config.backdrop,
                       }
@@ -107,8 +187,8 @@ export default function QuotePreview() {
                     {item.quote}
                   </p>
                   <span
-                    className="flex-[1] uppercase text-balance text-right"
-                    style={{ fontFamily: "georgia" }}
+                    className="flex-[1] uppercase text-balance text-right font-bold"
+                    style={{ fontFamily: "georgia,serif" }}
                   >
                     — {item.artwork}
                   </span>
@@ -120,6 +200,27 @@ export default function QuotePreview() {
         <div></div>
       </div>
       <div className="col-span-4">
+        <Panel
+          title="控制"
+          description="调整显示效果"
+          className="!bg-transparent !border-none !max-w-full mb-4"
+        >
+          <div className="p-4">
+            <label className="block text-sm font-medium mb-2">字体大小</label>
+            <div className="flex gap-4">
+              {fontSizeOptions.map((option) => (
+                <BaseRadio
+                  key={option.value}
+                  name="fontSize"
+                  label={option.label}
+                  value={option.value}
+                  checked={fontSize === option.value}
+                  onChange={(v) => setFontSize(Number(v))}
+                />
+              ))}
+            </div>
+          </div>
+        </Panel>
         <Panel
           title="译文"
           description=""
