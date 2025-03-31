@@ -7,6 +7,7 @@ import React from "react";
 
 export interface NavigationItemProps {
   prefetch?: boolean;
+  as?: React.ElementType;
   href?: string;
   className?: string;
   title: string;
@@ -16,62 +17,76 @@ export interface NavigationItemProps {
   onClick?: () => void;
 }
 
-export const NavigationItem = React.forwardRef<HTMLLIElement, NavigationItemProps>(({
-  prefetch,
-  onClick,
-  children,
-  icon: Icon,
-  href,
-  className,
-  title,
-}, ref) => {
-  if (children) {
-    return (
-      <li
-        ref={ref}
-        className="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility"
-      >
-        <BaseDropdown
-          oonClick={onClick}
-          // @ts-ignore
-          label={
-            <div className="flex items-center gap-2">
-              {Icon && <Icon className="h-4 w-4" strokeWidth={1.5}></Icon>}
-              {title}
-            </div>
-          }
-          classes={{ wrapper: "flex item-center " }}
-          variant="text"
+export const NavigationItem = React.forwardRef<
+  HTMLLIElement,
+  NavigationItemProps
+>(
+  (
+    {
+      as = "li",
+      prefetch,
+      onClick,
+      children,
+      icon: Icon,
+      href,
+      className,
+      title,
+      ...restProps
+    },
+    ref
+  ) => {
+    const Comp = as;
+    if (children) {
+      return (
+        <Comp
+          {...restProps}
+          ref={ref}
+          className={cn(
+            "text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility",
+            className
+          )}
         >
-          {children.map((e) => (
-            <BaseDropdownItem
-              key={e.href + e.title}
-              href={e.href}
-              title={e.title}
-              text={e.text}
-              rounded="sm"
-            />
-          ))}
-        </BaseDropdown>
-      </li>
-    );
-  }
-  return (
-    <li ref={ref}>
-      <Link
-        prefetch={prefetch}
-        onClick={onClick}
-        href={href!}
+          <BaseDropdown
+            oonClick={onClick}
+            // @ts-ignore
+            label={
+              <div className="flex items-center gap-2">
+                {Icon && <Icon className="h-4 w-4" strokeWidth={1.5}></Icon>}
+                {title}
+              </div>
+            }
+            classes={{ wrapper: "flex item-center " }}
+            variant="text"
+          >
+            {children.map((e) => (
+              <BaseDropdownItem
+                key={e.href + e.title}
+                href={e.href}
+                title={e.title}
+                text={e.text}
+                rounded="sm"
+              />
+            ))}
+          </BaseDropdown>
+        </Comp>
+      );
+    }
+    return (
+      <Comp
+        {...restProps}
+        ref={ref}
         className={cn(
           "flex items-center gap-2 font-sans text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility",
           className
         )}
       >
-        {Icon && <Icon strokeWidth={1.5} className="h-4 w-4" />}
-        {title}
-      </Link>
-    </li>
-  );
-});
+        <Link prefetch={prefetch} onClick={onClick} href={href!}>
+          {Icon && <Icon strokeWidth={1.5} className="h-4 w-4" />}
+          {title}
+        </Link>
+      </Comp>
+    );
+  }
+);
 
-NavigationItem.displayName = 'NavigationItem';
+NavigationItem.displayName = "NavigationItem";
