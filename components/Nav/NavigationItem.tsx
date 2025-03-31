@@ -3,6 +3,7 @@ import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
 import { LucideProps } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
+import React from "react";
 
 export interface NavigationItemProps {
   prefetch?: boolean;
@@ -15,7 +16,7 @@ export interface NavigationItemProps {
   onClick?: () => void;
 }
 
-export const NavigationItem: React.FC<NavigationItemProps> = ({
+export const NavigationItem = React.forwardRef<HTMLLIElement, NavigationItemProps>(({
   prefetch,
   onClick,
   children,
@@ -23,10 +24,11 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
   href,
   className,
   title,
-}) => {
+}, ref) => {
   if (children) {
     return (
       <li
+        ref={ref}
         className="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 py-2 md:mx-2 tw-accessibility"
       >
         <BaseDropdown
@@ -55,7 +57,7 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
     );
   }
   return (
-    <li>
+    <li ref={ref}>
       <Link
         prefetch={prefetch}
         onClick={onClick}
@@ -70,4 +72,6 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
       </Link>
     </li>
   );
-};
+});
+
+NavigationItem.displayName = 'NavigationItem';

@@ -27,10 +27,34 @@ import { NavigationItem, NavigationItemProps } from "./NavigationItem";
 import { MenuButton } from "./MenuButton";
 import useScrolled from "./useScroll";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { ClientNavContent } from "./ClientNav";
+import { useIsClient } from "@uidotdev/usehooks";
 
 const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
   ssr: false,
 });
+
+
+
+const ServerNavContent = ({ menuItems, closeMobileNav }: { menuItems: any[], closeMobileNav: () => void }) => {
+  return (
+    <div id="nav-content" className="hidden justify-center lg:relative lg:flex lg:text-left flex-grow">
+      <div className="">
+        <ul className="flex lg:items-center justify-between mt-3 mb-1 lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
+          {menuItems.map((e) => (
+            <NavigationItem
+              key={e.href || e.title}
+              className="min-w-32 lg:min-w-fit"
+              {...e}
+              onClick={closeMobileNav}
+            />
+          ))}
+        </ul>
+      </div>
+    </div >
+  );
+};
 
 export const Nav = ({
   resourceItems = [],
@@ -44,6 +68,7 @@ export const Nav = ({
   const categories = useContext(CategoriesContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const scrolled = useScrolled(60);
+  const isClient = useIsClient();
 
   useEffect(() => {
     if (mobileOpen) {
@@ -93,29 +118,17 @@ export const Nav = ({
       href: "/collection",
     },
     {
-      title: "管理",
-      icon: Settings2,
-      children: [
-        {
-          title: "后台",
-          href: "/admin",
-          text: "后台管理页面",
-        },
-        {
-          title: "部署",
-          href: "https://vercel.com/huayemaos-projects/dors/deployments",
-          text: "vercel 部署页面",
-        },
-      ],
+      title: "工作台",
+      href: "/apps",
     },
   ];
-
   return (
     <nav
       className={clsx(
-        "fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
+        "fixed z-10 top-0 w-full transition-shadow duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
         {
-          "bg-white dark:bg-muted-800 shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10":
+          "shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10": scrolled,
+          "bg-white dark:bg-muted-800 ":
             scrolled || mobileOpen,
           "h-screen lg:h-fit": mobileOpen,
           "dark:bg-muted-900": !scrolled && !mobileOpen,
@@ -150,29 +163,21 @@ export const Nav = ({
             mobileOpen={mobileOpen}
           ></MenuButton>
         </div>
-        <div
-          id="nav-content"
-          className={cn(
-            "flex  justify-center lg:relative lg:flex lg:text-left opacity-100 flex-grow ease-in-out",
-            {
-              hidden: !mobileOpen,
-              "absolute inset-12 items-center": mobileOpen,
-            }
-          )}
-        >
-          <ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row  lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
-            {menuItems.map((e) => (
-              <NavigationItem
-                key={e.href || e.title}
-                {...e}
-                onClick={closeMobileNav}
-              ></NavigationItem>
-            ))}
-          </ul>
-          <div className="lg:hidden absolute bottom-4 flex justify-center">
-            <ThemeButton />
-          </div>
-        </div>
+
+        {isClient ? (
+          <AnimatePresence>
+            <ClientNavContent
+              menuItems={menuItems}
+              mobileOpen={mobileOpen}
+              closeMobileNav={closeMobileNav}
+            />
+          </AnimatePresence>
+        ) : (
+          <ServerNavContent
+            menuItems={menuItems}
+            closeMobileNav={closeMobileNav}
+          />
+        )}
 
         <div className="hidden lg:flex items-center lg:w-1/5 lg:justify-end lg:gap-x-4">
           <button
