@@ -1,0 +1,24 @@
+{
+    "name": "Dors 工作台",
+    "short_name": "工作台",
+    "description": "花野猫先生日常辛勤劳作之处",
+    "start_url": "/apps",
+    "scope": "/apps",
+    "display": "standalone",
+    "background_color": "#fff",
+    "theme_color": "#312e81",
+    "icons": [
+        {
+            "src": "/apps/icon.svg",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/apps/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

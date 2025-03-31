@@ -10,12 +10,17 @@ function deleteCache() {
     }
     const { waiting, active } = r;
     if (waiting) {
-      waiting.postMessage("skip-waiting");
+      waiting.postMessage({ type: "skip-waiting" });
       return;
     }
-    active?.postMessage("revalidate-navigation-page");
+    active?.postMessage({ 
+      type: "revalidate-page",
+      path: "/navigation"
+    });
+    
     navigator.serviceWorker.addEventListener("message", function(event) {
-      if (event.data === "revalidate-success") {
+      const { type, path } = event.data;
+      if (type === "revalidate-success" && path === "/navigation") {
         toast("缓存已清除！");
         window.location.reload();
       }

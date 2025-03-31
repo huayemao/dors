@@ -18,8 +18,8 @@ const ASSETS = [
   // "/shiki/onig.wasm",
 ];
 importScripts('/version.js')
-const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation"]
-const SSR_PATHS = ['/navigation?_rsc', "notes?_rsc"]
+const DYNAMIC_PATHS = ['/_next/static/chunks', 'favicon.ico', "/herbal", "/navigation", "/apps"]
+const SSR_PATHS = ['/navigation?_rsc', "/notes?_rsc", "/apps"]
 const STABLE_DYNAMIC_PATHS = [
   "/api/files",
   '/shiki/',
@@ -118,13 +118,21 @@ self.addEventListener("fetch", (e) => {
     e.waitUntil(s);
   }),
   self.addEventListener("message", (e) => {
-    "skip-waiting" === e.data && self.skipWaiting();
-    if ("revalidate-navigation-page" === e.data) {
-      caches.open(VERSION).then((e) => e.delete('/navigation')).then((res) => {
-        console.log("已清除缓存");
+    const { type, path } = e.data;
+    
+    if (type === "skip-waiting") {
+      self.skipWaiting();
+    }
+    
+    if (type === "revalidate-page") {
+      caches.open(VERSION).then((cache) => cache.delete(path)).then(() => {
+        console.log(`已清除路径 ${path} 的缓存`);
         self.clients.matchAll().then(clients => {
           clients.forEach(client => {
-            client.postMessage("revalidate-success"); // 发送消息给客户端
+            client.postMessage({
+              type: "revalidate-success",
+              path
+            });
           });
         });
       });
