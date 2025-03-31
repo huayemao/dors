@@ -9,16 +9,14 @@ import { useState } from "react";
 import html2canvas from "html2canvas";
 import { useHover } from "@uidotdev/usehooks";
 
-const config = {
-  position: "bottom",
-  backdrop: false,
-};
 
 export default function QuotePreview() {
   const state = useEntity();
   const { currentEntity: item } = state;
   const [fontSize, setFontSize] = useState(32);
   const [textColor, setTextColor] = useState("white");
+  const [position, setPosition] = useState("bottom");
+  const [backdrop, setBackdrop] = useState(false);
   const [ref, isHovered] = useHover();
   const [isExporting, setIsExporting] = useState(false);
 
@@ -88,7 +86,7 @@ export default function QuotePreview() {
   return (
     <div
       className="min-h-screen bg-muted-100 dark:bg-muted-900 lg:grid grid-cols-12 gap-4 justify-center  items-start p-4"
-      // style={{ background: '#f7e9d4' }}
+    // style={{ background: '#f7e9d4' }}
     >
       <div className="flex-1 col-span-8 px-4">
         <div
@@ -145,21 +143,21 @@ export default function QuotePreview() {
                 flexDirection: "column",
                 gap: "0px",
                 height: "-webkit-fill-available",
-                justifyContent: config.position == "top" ? "start" : "end",
+                justifyContent: position == "top" ? "start" : "end",
                 marginTop: "auto",
                 zIndex: 100,
               }}
             >
               <div
                 className={cn("flex  p-12 relative", {
-                  "-mt-6 pb-32": config.position == "top",
-                  "pt-20": config.position == "bottom",
+                  "-mt-6 pb-32": position == "top",
+                  "pt-20": position == "bottom",
                 })}
                 style={{
                   alignItems: "flex-start",
                   color: "var(--color-neutral-foreground-1)",
                   background:
-                    config.position == "top"
+                    position == "top"
                       ? "linear-gradient(rgba(0,0,0,.53),transparent 100%)"
                       : "linear-gradient(transparent,rgba(0,0,0,.53) 40%)",
                 }}
@@ -177,7 +175,7 @@ export default function QuotePreview() {
                     className={cn(
                       "rounded-lg  p-4 flex-[2]  italic  text-balance",
                       {
-                        "bg-slate-900/10": !!config.backdrop,
+                        "bg-slate-900/10": !!backdrop,
                       }
                     )}
                     style={{
@@ -194,7 +192,10 @@ export default function QuotePreview() {
                     — {item.artwork}
                   </span>
                 </blockquote>
-                <div className="absolute right-16 top-32">
+                <div className={cn("absolute right-16 ",
+                  { "top-32": position == 'bottom' },
+                  { "top-16": position == 'top' },
+                )}>
                   <QuoteIcon
                     className="size-8"
                     style={{ color: textColor }}
@@ -240,6 +241,42 @@ export default function QuotePreview() {
                   onChange={(v) => setTextColor(v)}
                 />
               ))}
+            </div>
+
+            <label className="block text-sm font-medium mb-2">文字位置</label>
+            <div className="flex gap-4 mb-4">
+              <BaseRadio
+                name="position"
+                label="顶部"
+                value="top"
+                checked={position === "top"}
+                onChange={(v) => setPosition(v)}
+              />
+              <BaseRadio
+                name="position"
+                label="底部"
+                value="bottom"
+                checked={position === "bottom"}
+                onChange={(v) => setPosition(v)}
+              />
+            </div>
+
+            <label className="block text-sm font-medium mb-2">背景效果</label>
+            <div className="flex gap-4">
+              <BaseRadio
+                name="backdrop"
+                label="透明"
+                value={"false"}
+                checked={!backdrop}
+                onChange={(v) => { setBackdrop(Boolean(v)); }}
+              />
+              <BaseRadio
+                name="backdrop"
+                label="半透明"
+                value={"true"}
+                checked={backdrop}
+                onChange={(v) => setBackdrop(Boolean(v))}
+              />
             </div>
           </div>
         </Panel>
