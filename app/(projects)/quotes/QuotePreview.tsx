@@ -2,7 +2,7 @@ import { Panel } from "@/components/Base/Panel";
 import Prose from "@/components/Base/Prose";
 import { ClientOnly } from "@/components/ClientOnly";
 import { cn } from "@/lib/utils";
-import { QuoteIcon, Download } from "lucide-react";
+import { QuoteIcon, Download, RotateCcw } from "lucide-react";
 import { useEntity } from "./context";
 import { BaseRadio } from "@shuriken-ui/react";
 import { useState } from "react";
@@ -19,6 +19,7 @@ export default function QuotePreview() {
   const [backdrop, setBackdrop] = useState(false);
   const [ref, isHovered] = useHover();
   const [isExporting, setIsExporting] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const fontSizeOptions = [
     { label: "小", value: 24 },
@@ -84,10 +85,7 @@ export default function QuotePreview() {
   };
 
   return (
-    <div
-      className="lg:grid grid-cols-12 gap-4 justify-center  items-start p-4"
-    // style={{ background: '#f7e9d4' }}
-    >
+    <div className="lg:grid grid-cols-12 gap-4 justify-center items-start p-4">
       <div className="flex-1 col-span-8 px-4">
         <div
           ref={ref}
@@ -102,111 +100,148 @@ export default function QuotePreview() {
           }}
         >
           {isHovered && !isExporting && (
-            <button
-              onClick={handleExport}
-              className="absolute p-2 rounded top-4 right-4 z-[200] text-white bg-black/50 hover:bg-black/70"
-            >
-              <Download className="h-4 w-4" />
-            </button>
+            <div className="absolute top-4 right-4 z-[200] flex gap-2">
+              <button
+                onClick={() => setIsFlipped(!isFlipped)}
+                className="p-2 rounded text-white bg-black/50 hover:bg-black/70"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+              <button
+                onClick={handleExport}
+                className="p-2 rounded text-white bg-black/50 hover:bg-black/70"
+              >
+                <Download className="h-4 w-4" />
+              </button>
+            </div>
           )}
           <div
-            className="content-card-container"
+            className="content-card-container relative transition-transform duration-500"
             style={{
               alignItems: "flex-start",
               display: "flex",
               flexDirection: "column",
               gap: "0px",
               width: "100%",
+              transformStyle: "preserve-3d",
+              transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
             }}
           >
-            <img
-              aria-hidden="true"
-              className="media"
-              slot="media"
-              alt=""
-              src={item.image}
-              style={{
-                alignSelf: "stretch",
-                /* aspectRatio: '4 / 3', */ display: "flex",
-                width: "100%",
-                /* position: 'absolute', */ zIndex: -1,
-              }}
-            />
-            <div
-              className="body"
-              style={{
-                inset: 0,
-                position: "absolute",
-                alignItems: "flex-start",
-                alignSelf: "stretch",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0px",
-                height: "-webkit-fill-available",
-                justifyContent: position == "top" ? "start" : "end",
-                marginTop: "auto",
-                zIndex: 100,
+            <div className="front w-full" style={{ backfaceVisibility: "hidden" }}>
+              <img
+                aria-hidden="true"
+                className="media"
+                slot="media"
+                alt=""
+                src={item.image}
+                style={{
+                  alignSelf: "stretch",
+                  display: "flex",
+                  width: "100%",
+                  zIndex: -1,
+                }}
+              />
+              <div
+                className="body"
+                style={{
+                  inset: 0,
+                  position: "absolute",
+                  alignItems: "flex-start",
+                  alignSelf: "stretch",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0px",
+                  height: "-webkit-fill-available",
+                  justifyContent: position == "top" ? "start" : "end",
+                  marginTop: "auto",
+                  zIndex: 100,
+                }}
+              >
+                <div
+                  className={cn("flex p-12 relative", {
+                    "-mt-6 pb-32": position == "top",
+                    "pt-20": position == "bottom",
+                  })}
+                  style={{
+                    alignItems: "flex-start",
+                    color: "var(--color-neutral-foreground-1)",
+                    background:
+                      position == "top"
+                        ? "linear-gradient(rgba(0,0,0,.53),transparent 100%)"
+                        : "linear-gradient(transparent,rgba(0,0,0,.53) 40%)",
+                  }}
+                >
+                  <blockquote
+                    className="whitespace-pre-wrap flex gap-6 items-end text-5xl leading-normal"
+                    style={{
+                      boxSizing: "border-box",
+                      fontFamily: "georgia",
+                      fontSize: `${fontSize}px`,
+                      color: textColor,
+                    }}
+                  >
+                    <p
+                      className={cn(
+                        "rounded-lg p-4 flex-[2] italic text-balance",
+                        {
+                          "bg-slate-900/10": !!backdrop,
+                        }
+                      )}
+                      style={{
+                        fontFamily: "georgia,serif",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {item.quote}
+                    </p>
+                    <span
+                      className="flex-[1] uppercase text-balance text-right font-bold"
+                      style={{ fontFamily: "georgia,serif" }}
+                    >
+                      — {item.artwork}
+                    </span>
+                  </blockquote>
+                  <div className={cn("absolute right-16 ",
+                    { "top-32": position == 'bottom' },
+                    { "top-16": position == 'top' },
+                  )}>
+                    <QuoteIcon
+                      className="size-8"
+                      style={{ color: textColor }}
+                      fill={textColor}
+                    ></QuoteIcon>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div 
+              className="back absolute inset-0 w-full" 
+              style={{ 
+                backfaceVisibility: "hidden",
+                background: `url(${item.image})`,
+                transform: "rotateY(180deg)",
               }}
             >
               <div
-                className={cn("flex  p-12 relative", {
-                  "-mt-6 pb-32": position == "top",
-                  "pt-20": position == "bottom",
-                })}
+                className="flex relative p-8 italic h-full"
                 style={{
-                  alignItems: "flex-start",
-                  color: "var(--color-neutral-foreground-1)",
-                  background:
-                    position == "top"
-                      ? "linear-gradient(rgba(0,0,0,.53),transparent 100%)"
-                      : "linear-gradient(transparent,rgba(0,0,0,.53) 40%)",
+                  background: "linear-gradient(90deg,transparent,rgba(0,0,0,.63) 40%)",
+                  fontFamily: "serif",
                 }}
               >
-                <blockquote
-                  className="whitespace-pre-wrap flex gap-6 items-end text-5xl leading-normal"
+                <div
                   style={{
-                    boxSizing: "border-box",
-                    fontFamily: "georgia",
-                    fontSize: `${fontSize}px`,
-                    color: textColor,
+                    color: "rgb(247, 233, 212)",
+                    opacity: 0.95,
                   }}
+                  className="whitespace-pre-wrap"
                 >
-                  <p
-                    className={cn(
-                      "rounded-lg  p-4 flex-[2]  italic  text-balance",
-                      {
-                        "bg-slate-900/10": !!backdrop,
-                      }
-                    )}
-                    style={{
-                      fontFamily: "georgia,serif",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {item.quote}
-                  </p>
-                  <span
-                    className="flex-[1] uppercase text-balance text-right font-bold"
-                    style={{ fontFamily: "georgia,serif" }}
-                  >
-                    — {item.artwork}
-                  </span>
-                </blockquote>
-                <div className={cn("absolute right-16 ",
-                  { "top-32": position == 'bottom' },
-                  { "top-16": position == 'top' },
-                )}>
-                  <QuoteIcon
-                    className="size-8"
-                    style={{ color: textColor }}
-                    fill={textColor}
-                  ></QuoteIcon>
+                  {item.translation}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div></div>
       </div>
       <div className="col-span-4">
         <Panel
@@ -277,37 +312,6 @@ export default function QuotePreview() {
                 checked={backdrop}
                 onChange={(v) => setBackdrop(Boolean(v))}
               />
-            </div>
-          </div>
-        </Panel>
-        <Panel
-          title="译文"
-          description=""
-          className="!bg-transparent !border-none !max-w-full"
-        >
-          <div
-            className="text-lg  rounded "
-            style={{
-              background: `url(${item.image})`,
-            }}
-          >
-            <div
-              className="flex relative p-8  italic"
-              style={{
-                background:
-                  "linear-gradient(90deg,transparent,rgba(0,0,0,.63) 40%)",
-                fontFamily: "serif",
-              }}
-            >
-              <div
-                style={{
-                  color: "rgb(247, 233, 212)",
-                  opacity: 0.95,
-                }}
-                className="whitespace-pre-wrap"
-              >
-                {item.translation}
-              </div>
             </div>
           </div>
         </Panel>
