@@ -85,7 +85,7 @@ export default function QuotePreview() {
 
   return (
     <div
-      className="min-h-screen bg-muted-100 dark:bg-muted-900 lg:grid grid-cols-12 gap-4 justify-center  items-start p-4"
+      className="lg:grid grid-cols-12 gap-4 justify-center  items-start p-4"
     // style={{ background: '#f7e9d4' }}
     >
       <div className="flex-1 col-span-8 px-4">

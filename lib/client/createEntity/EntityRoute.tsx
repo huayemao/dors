@@ -33,7 +33,10 @@ type Props<EType extends BaseEntity, CType extends BaseCollection> = {
   updateForm: FC<PropsWithChildren>;
   RootPage: FC<PropsWithChildren>;
   extraRoutes?: RouteObject[];
-  EntityPreviewPage?: FC
+  EntityPreviewPage?: FC<{
+    state: EntityState<EType, CType>;
+    dispatch: EntityDispatch<EType, CType>;
+  }>;
 } & Omit<ComponentProps<typeof ViewOrEditEntityModal>, "form">;
 
 export default function EntityRoute<
@@ -87,7 +90,7 @@ export default function EntityRoute<
           ...addActionRoutes,
           {
             path: ":entityId",
-            element: EntityPreviewPage && isView ? <EntityPreviewPage /> : (
+            element: EntityPreviewPage && isView ? <EntityPreviewPage state={state as EntityState<EType, CType>} dispatch={dispatch as EntityDispatch<EType, CType>} /> : (
               <ViewOrEditEntityModal
                 renderEntityModalTitle={renderEntityModalTitle}
                 renderEntityModalActions={renderEntityModalActions}

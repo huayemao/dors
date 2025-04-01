@@ -131,7 +131,7 @@ export default function CollectionLayout<
                 ))}
               </div>
             ) : (
-              <div className="max-w-full bg-white">
+              <div className="max-w-full bg-white border shadow">
                 {list.length !== 0 && (
                   <Table
                     data={getList(list)}
@@ -140,6 +140,12 @@ export default function CollectionLayout<
                     //   navigate("./" + e.id);
                     // }}
                     actions={[
+                      {
+                        title: "查看",
+                        onClick: (e) => {
+                          navigate("./" + e.id);
+                        },
+                      },
                       {
                         title: "编辑",
                         onClick: (e) => {
