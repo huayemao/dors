@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BaseCollection, BaseEntity } from "@/lib/client/createEntity/types";
 import { EntityDispatch, EntityState } from "@/lib/client/createEntity/createEntityContext";
 import { useParams } from "react-router-dom";
+import { BaseButtonClose } from "@shuriken-ui/react";
 
 const DialogQuotePreview = <
   EType extends BaseEntity,
@@ -71,8 +72,9 @@ const DialogQuotePreview = <
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
+            className="flex-1"
           >
-            <Dialog.Panel className="w-full max-w-7xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl">
+            <Dialog.Panel className="w-full transform overflow-hidden  bg-white p-6 text-left align-middle shadow-xl relative">
               <div className="mt-2">
                 {loading ? (
                   <div className="flex justify-center items-center w-full h-32">
@@ -82,14 +84,11 @@ const DialogQuotePreview = <
                   <QuotePreview />
                 )}
               </div>
-              <div className="mt-4">
-                <button
+              <div className="absolute right-4 top-4">
+                <BaseButtonClose
                   type="button"
-                  className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   onClick={onClose}
-                >
-                  关闭
-                </button>
+                />
               </div>
             </Dialog.Panel>
           </motion.div>
