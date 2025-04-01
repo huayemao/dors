@@ -143,6 +143,7 @@ export function CollectionHeader<
               dispatch({ type: "INIT" });
               navigate("./create");
             }}
+            className=" xs:!p-1  xs:w-8 xs:h-8"
           >
             <PlusIcon className="h-4 w-4 md:mr-2" />
             <span className="hidden md:inline-block">新建</span>
