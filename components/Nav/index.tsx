@@ -134,7 +134,7 @@ export const Nav = ({
       <motion.nav
         key={String(mobileOpen)}
         className={clsx(
-          "fixed z-10 top-0 w-full transition-shadow duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
+          "fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
           {
             "shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10": scrolled,
             "bg-white dark:bg-muted-800 ": scrolled,
