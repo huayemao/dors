@@ -17,7 +17,6 @@ export interface Options {
   onNeedRefresh: (updateSw: () => void) => void
 }
 export const registerServiceWorker = once(async (options: Options) => {
-  console.log('updating...')
   await waitForPageToLoad()
 
   const { serviceWorker } = navigator
@@ -26,15 +25,18 @@ export const registerServiceWorker = once(async (options: Options) => {
   })
 
   const needsRefresh = (reg: ServiceWorkerRegistration) => {
+
     const updateSw = () => {
       const { waiting } = reg
       if (waiting) {
-        waiting.postMessage('skip-waiting')
+        waiting.postMessage({ type: 'skip-waiting' })
       }
     }
 
     options.onNeedRefresh(updateSw)
   }
+
+  console.log(registration)
 
   // ensure the case when the updatefound event was missed is also handled
   // by re-invoking the prompt when there's a waiting Service Worker

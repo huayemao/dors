@@ -58,7 +58,6 @@ export default function EntityRoute<
   EntityPreviewPage
 }: Props<EType, CType>) {
   const isView = state.entityModalMode == 'view'
-  console.log(isView)
   const router = createBrowserRouter(
     [
       {
