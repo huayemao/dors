@@ -67,7 +67,7 @@ export function NoteItem({
       ? (props) => (
         <BaseCard
           rounded="md"
-          className="border-none relative break-inside-avoid my-3"
+          className="border-none relative break-inside-avoid"
         >
           {props.children}
         </BaseCard>
@@ -110,7 +110,7 @@ export function NoteItem({
           {Main}
           <div className=" m-2 p-2 ">
             <div className="mb-1 flex gap-2 flex-wrap items-end">
-              {data.tags?.map((e) => (
+              {data.tags.length ? data.tags.map((e) => (
                 <span key={e} className="cursor-pointer flex-shrink-0">
                   <BaseTag
                     key={e}
@@ -126,7 +126,16 @@ export function NoteItem({
                     {e}
                   </BaseTag>
                 </span>
-              ))}
+              )) : <span
+                className="opacity-0"
+              >
+                <BaseTag
+                  size="sm"
+                  variant="pastel"
+                  color="muted"
+                >
+                  t {/* 这里只是为了对齐   */}
+                </BaseTag></span>}
               <div className=" ml-auto not-prose text-right xs:text-xs md:text-sm text-slate-400">
                 {getDateStr(new Date(data.id)).slice(0, -5)}
               </div>
