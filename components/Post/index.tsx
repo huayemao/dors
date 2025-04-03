@@ -1,4 +1,4 @@
-import { getPost, getRecentPosts } from "@/lib/posts";
+import { getPost, getRecentPosts } from "@/lib/server/posts";
 import { cn } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import dynamic from "next/dynamic";

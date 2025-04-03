@@ -1,6 +1,6 @@
 "use client";
 
-import { getPost } from "@/lib/posts";
+import { getPost } from "@/lib/server/posts";
 import { FC, PropsWithChildren, createContext } from "react";
 
 const initialState = null;

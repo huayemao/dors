@@ -1,5 +1,5 @@
 import { Panel } from "@/components/Base/Panel";
-import { getPosts } from "@/lib/posts";
+import { getPosts } from "@/lib/server/posts";
 import { BaseButtonAction } from "@shuriken-ui/react";
 import { PostsTable } from "./PostsTable";
 

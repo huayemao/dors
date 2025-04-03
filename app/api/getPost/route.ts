@@ -1,4 +1,4 @@
-import { createPost, getPost } from "@/lib/posts";
+import { createPost, getPost } from "@/lib/server/posts";
 import { isAuthenticated } from "@/lib/server/isAuthenticated";
 import { NextRequest, NextResponse } from "next/server";
 

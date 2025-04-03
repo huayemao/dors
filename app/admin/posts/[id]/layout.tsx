@@ -1,5 +1,5 @@
 import { PostContextProvider } from "@/contexts/post";
-import { getPost } from "@/lib/posts";
+import { getPost } from "@/lib/server/posts";
 import { notFound } from "next/navigation";
 
 export const dynamic = 'force-dynamic'

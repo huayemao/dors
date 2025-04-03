@@ -1,6 +1,6 @@
 import { Posts } from "@/components/Posts";
 import { PaginateOptions } from "@/lib/paginator";
-import { getPosts, getProcessedPosts } from "@/lib/posts";
+import { getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { getTagIds } from "@/lib/server/tags";
 
 type SearchParams = PaginateOptions;

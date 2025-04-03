@@ -1,6 +1,6 @@
 import FeaturedPosts from "@/components/FeaturedPosts";
 import PostTile from "@/components/PostTile";
-import { type Posts } from "@/lib/posts";
+import { type Posts } from "@/lib/server/posts";
 
 export function Posts({
   data,

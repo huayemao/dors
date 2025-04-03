@@ -1,4 +1,4 @@
-import { getPost, updatePost } from "@/lib/posts";
+import { getPost, updatePost } from "@/lib/server/posts";
 import { revalidateHomePage } from "@/lib/server/retalidate";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";

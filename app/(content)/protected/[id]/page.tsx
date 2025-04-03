@@ -1,5 +1,5 @@
 import Post from "@/components/Post";
-import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
+import { getPost, getPostIds, getRecentPosts } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { notFound } from "next/navigation";
 

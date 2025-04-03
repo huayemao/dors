@@ -2,7 +2,7 @@ import { CatsAndTags } from "@/components/CatsAndTags";
 import { Posts } from "@/components/Posts";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
-import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
+import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { BaseHeading, BaseIconBox } from "@shuriken-ui/react";
 import { NotebookIcon } from "lucide-react";
 import Icon from "@/components/Base/Icon";

@@ -1,5 +1,5 @@
 import Post from "@/components/Post";
-import { getFeaturedPostIds, getPost, getRecentPosts } from "@/lib/posts";
+import { getFeaturedPostIds, getPost, getRecentPosts } from "@/lib/server/posts";
 
 export default async function About() {
   const postIds = await getFeaturedPostIds();

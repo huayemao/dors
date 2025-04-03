@@ -1,11 +1,11 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
 import prisma, { Prisma, tags } from "@/lib/prisma";
-import { getHiddenCategoryIds } from "./server/categories";
-import { PaginateOptions, getPrismaPaginationParams } from "./paginator";
-import { getBlurImage, getImageBuffer, getSmallImage } from "./server/image";
-import { updatePostTags } from "./server/tags";
-import { PexelsPhoto } from "./types/PexelsPhoto";
-import { getPexelImages, getWordCount, isDataURL, markdownToHtml } from "./utils";
+import { getHiddenCategoryIds } from "./categories";
+import { PaginateOptions, getPrismaPaginationParams } from "../paginator";
+import { getBlurImage, getImageBuffer, getSmallImage } from "./image";
+import { updatePostTags } from "./tags";
+import { PexelsPhoto } from "../types/PexelsPhoto";
+import { getPexelImages, getWordCount, isDataURL, markdownToHtml } from "../utils";
 import { unstable_cache } from "next/cache";
 
 export const getPost = unstable_cache(async (id: number) => {
@@ -75,7 +75,7 @@ type getPostOptions = PaginateOptions & {
   unCategorized?: boolean;
   protected?: boolean;
   includeHiddenCategories?: boolean;
-  type?: "collection" | "normal";
+  type?: "collection" | "normal" | "diary-collection";
 };
 
 export const getPosts = unstable_cache(async (options: getPostOptions = {}) => {

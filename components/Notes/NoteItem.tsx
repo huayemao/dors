@@ -1,3 +1,4 @@
+"use client"
 import Prose from "@/components/Base/Prose";
 import { BaseCard, BaseTag, BaseButton } from "@shuriken-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
@@ -22,7 +23,7 @@ export function NoteItem({
 }: {
   preview?;
   data: Note;
-  filterTags: (v: string[]) => void;
+  filterTags?: (v: string[]) => void;
   actions: Record<
     string,
     {
@@ -120,7 +121,7 @@ export function NoteItem({
                     onClick={(ev) => {
                       ev.preventDefault();
                       ev.stopPropagation();
-                      filterTags([e]);
+                      filterTags?.([e]);
                     }}
                   >
                     {e}

@@ -1,5 +1,5 @@
 import { SITE_META } from "@/constants";
-import { getPost, getPosts } from "@/lib/posts";
+import { getPost, getPosts } from "@/lib/server/posts";
 import { cn, getDateString, isDataURL } from "@/lib/utils";
 import config from "next.config.mjs";
 import Image from "next/image";

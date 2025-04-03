@@ -1,7 +1,7 @@
 import { Posts } from "@/components/Posts";
 import { getAllCategories } from "@/lib/server/categories";
 import { PaginateOptions } from "@/lib/paginator";
-import { getPosts, getProcessedPosts } from "@/lib/posts";
+import { getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { Metadata } from "next";
 import { SITE_META } from "@/constants";
 import { BaseHeading } from "@shuriken-ui/react";

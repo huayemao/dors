@@ -1,6 +1,6 @@
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
-import { getPost, getPostIds, getRecentPosts } from "@/lib/posts";
+import { getPost, getPostIds, getRecentPosts } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";

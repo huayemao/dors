@@ -1,5 +1,5 @@
 import { PaginateOptions } from "@/lib/paginator";
-import { getPageCount, getPosts, getProcessedPosts } from "@/lib/posts";
+import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { getResourceItems } from "@/lib/server/resource";
 import { Application } from "@/components/Application";
 import { ClearCacheButton } from "@/components/ClearCacheButton";

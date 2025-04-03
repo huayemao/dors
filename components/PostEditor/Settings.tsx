@@ -4,7 +4,7 @@ import { detectChange } from "./detectChange";
 import { CategoriesContext } from "@/contexts/categories";
 import { PostContext } from "@/contexts/post";
 import { TagsContext } from "@/contexts/tags";
-import { getPost } from "@/lib/posts";
+import { getPost } from "@/lib/server/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getDateForDateTimeInput } from "@/lib/utils";
 import { BaseButton, BaseInput } from "@shuriken-ui/react";

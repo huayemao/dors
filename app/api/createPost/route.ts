@@ -1,4 +1,4 @@
-import { createPost } from "@/lib/posts";
+import { createPost } from "@/lib/server/posts";
 import { revalidateHomePage } from "@/lib/server/retalidate";
 import { NextResponse } from "next/server";
 import { readPostFormData } from "../updatePost/readPostFormData";

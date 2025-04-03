@@ -40,7 +40,6 @@ function Content({
   const isMobile = useMediaQuery("only screen and (max-width : 720px)");
 
   useEffect(() => {
-    setLoading(true);
     onLoadingChange?.(true);
     parseMDXClient(content)
       .then((res) => {

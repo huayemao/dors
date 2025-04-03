@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { CategoriesContext } from "@/contexts/categories";
-import { getPost } from "@/lib/posts";
+import { getPost } from "@/lib/server/posts";
 import { cn, copyTextToClipboard, getDateForDateTimeInput } from "@/lib/utils";
 import {
   BaseButton,

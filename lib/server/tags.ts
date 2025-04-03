@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { getPost } from "../posts";
+import { getPost } from "./posts";
 import { unstable_cache } from "next/cache";
 
 // todo: 如果要能检索全部文章的话，摘要得单独拿出来，方便用来渲染文章
