@@ -111,10 +111,10 @@ export default function CollectionLayout<
           state={state}
           Search={Search}
         />
-        <div className="col-span-12">
+        <div className="lg:max-w-7xl mx-auto">
           <div className="relative bg-muted-100 w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             {layout === "masonry" ? (
-              <div className="max-w-full masonry sm:masonry-sm md:masonry-md">
+              <div className="max-w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
                 {list.map((e, i, arr) => (
                   <div
                     key={e.id ?? JSON.stringify(e)}

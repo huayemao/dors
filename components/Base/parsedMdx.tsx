@@ -27,10 +27,12 @@ function Content({
   content,
   preview = false,
   className,
+  onLoadingChange,
 }: {
   content: string;
   preview?: boolean;
   className?: string;
+  onLoadingChange?: (loading: boolean) => void;
 }) {
   const [result, setRes] = useState<MDXContent>();
   const [loading, setLoading] = useState(true);
@@ -39,6 +41,7 @@ function Content({
 
   useEffect(() => {
     setLoading(true);
+    onLoadingChange?.(true);
     parseMDXClient(content)
       .then((res) => {
         // 这里的 type 是 function
@@ -47,8 +50,9 @@ function Content({
       })
       .finally(() => {
         setLoading(false);
+        onLoadingChange?.(false);
       });
-  }, [content]);
+  }, [content, onLoadingChange]);
 
   // function update() {
   //   if (!preview || !ref.current) {

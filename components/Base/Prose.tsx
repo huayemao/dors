@@ -13,10 +13,12 @@ const Prose = forwardRef(function P(
     content,
     preview = false,
     className,
+    onLoadingChange,
   }: {
     content;
     preview?: boolean;
     className?: string;
+    onLoadingChange?: (loading: boolean) => void;
   },
   ref: Ref<HTMLElement>
 ) {
@@ -25,7 +27,12 @@ const Prose = forwardRef(function P(
       {typeof content == "string" ? (
         // <ClientOnly>
         //   <ErrorBoundary errorComponent={ErrorComp}>
-        <ParsedMdx className={className} preview={preview} content={content} />
+        <ParsedMdx 
+          className={className} 
+          preview={preview} 
+          content={content} 
+          onLoadingChange={onLoadingChange}
+        />
       ) : (
         //   </ErrorBoundary>
         // </ClientOnly>
