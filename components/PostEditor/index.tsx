@@ -162,6 +162,10 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
                     label: "收藏夹",
                     value: "collection",
                   },
+                  {
+                    label: "月度随记",
+                    value: "diary-collection",
+                  },
                 ]}
               ></SelectWithName>
               <label className="text-stone-400 hover:text-stone-500">
