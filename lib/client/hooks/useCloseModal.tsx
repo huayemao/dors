@@ -9,7 +9,7 @@ export function useCloseModal() {
       if (
         history.length > 1 &&
         !!document.referrer &&
-        document.referrer.includes(location.hostname)
+        document.referrer.includes(location.hostname) && location.href.includes(document.referrer)
       ) {
         navigate(-1);
       } else {
