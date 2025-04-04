@@ -62,7 +62,7 @@ export default async function DiariesPage() {
               <h2 className="text-2xl font-bold mb-6">{post.title}</h2>
               <div className="space-y-4 md:space-y-6">
                 {post.processedNotes.map((note) => (
-                  <ProcessedDiary key={note.id} data={note} />
+                  <ProcessedDiary key={note.id} data={note} postId={post.id} />
                 ))}
               </div>
             </div>

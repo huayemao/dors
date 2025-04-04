@@ -1,14 +1,15 @@
 "use client";
 
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard, BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 import { cn } from "@/lib/utils";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Edit2 } from "lucide-react";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import LightBox from "@/components/Base/LightBox";
 import Prose from "../Base/Prose";
+import { useRouter } from "next/navigation";
 
 dayjs.locale('zh-cn');
 
@@ -16,12 +17,14 @@ interface ProcessedDiaryProps {
   data: Note & {
     parsedContent: React.ReactNode;
   };
+  postId: string | number;
 }
 
-export const ProcessedDiary: FC<ProcessedDiaryProps> = ({ data }) => {
+export const ProcessedDiary: FC<ProcessedDiaryProps> = ({ data, postId }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflow, setIsOverflow] = useState(false);
+  const router = useRouter();
 
   const checkOverflow = useCallback(() => {
     if (contentRef.current) {
@@ -49,12 +52,26 @@ export const ProcessedDiary: FC<ProcessedDiaryProps> = ({ data }) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleEdit = () => {
+    // Navigate to the notes page with the post ID and note ID
+    router.push(`/notes/${postId}/${data.id}`)
+  };
+
   return (
     <BaseCard rounded="md" className={cn("border-none relative")}>
       <div className="p-4">
-        {/* Date display */}
-        <div className="text-sm md:text-base text-slate-400 border-b pb-2">
-          {dayjs(data.id).format('YYYY年M月D日 dddd')}
+        {/* Date display and Edit dropdown */}
+        <div className="flex justify-between items-center text-sm md:text-base text-slate-400 border-b pb-2">
+          <div>{dayjs(data.id).format('YYYY年M月D日 dddd')}</div>
+          <BaseDropdown
+            variant="context"
+          >
+            <BaseDropdownItem
+              onClick={handleEdit}
+              title="编辑"
+              start={<Edit2 className="h-4 w-4" />}
+            />
+          </BaseDropdown>
         </div>
 
         {/* Content area */}
