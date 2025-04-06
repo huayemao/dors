@@ -15,6 +15,12 @@ import { myRemarkPlugin } from "./myRemarkPlugin";
 import "katex/dist/katex.min.css";
 import { cache } from "react";
 
+// Cache for MDX parsing results
+const mdxResultCache = new Map<string, any>();
+
+// Timeout for MDX parsing (in milliseconds)
+const MDX_TIMEOUT = 10000; // 10 seconds
+
 export default cache(parseMDX);
 
 async function parseMDX(
@@ -22,7 +28,46 @@ async function parseMDX(
   options?: { components: {} }
 ) {
   try {
-    return await compileMDX({
+    // Generate a cache key based on content
+    const cacheKey = post?.content || "";
+
+    // Check if we have a cached result
+    if (mdxResultCache.has(cacheKey)) {
+      return mdxResultCache.get(cacheKey);
+    }
+
+    // Create a promise that will reject after the timeout
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("MDX parsing timed out"));
+      }, MDX_TIMEOUT);
+    });
+
+    const list = [
+      // myRemarkPlugin,
+
+      //@ts-ignore
+      remarkGfm,
+      //@ts-ignore
+      remarkMath,
+      remarkDirective,
+      myRemarkPlugin,
+      //@ts-ignore
+    ];
+
+    if (post.content?.includes("```")) {
+      //@ts-ignore
+      list.unshift([
+        //@ts-ignore
+        remarkShikiTwoslash,
+        {
+          theme,
+          // langs: languages,
+        },
+      ]);
+    }
+    // Create the actual MDX parsing promise
+    const parsePromise = compileMDX({
       source: post?.content || "",
       components: { ...components, ...(options?.components || {}) },
       options: {
@@ -36,30 +81,21 @@ async function parseMDX(
             //@ts-ignore
             [rehypeKatex],
           ],
-          remarkPlugins: [
-            // myRemarkPlugin,
-            [
-              //@ts-ignore
-              remarkShikiTwoslash,
-              {
-                theme,
-                // langs: languages,
-              },
-            ],
-            //@ts-ignore
-            remarkGfm,
-            //@ts-ignore
-            remarkMath,
-            remarkDirective,
-            myRemarkPlugin,
-            //@ts-ignore
-          ],
+          remarkPlugins: list,
           format: "mdx",
         },
       },
     });
+
+    // Race the parsing against the timeout
+    const result = await Promise.race([parsePromise, timeoutPromise]);
+
+    // Cache the result
+    mdxResultCache.set(cacheKey, result);
+
+    return result;
   } catch (error) {
-    console.error(error)
+    console.error("MDX parsing error:", error);
     return { content: post.content };
   }
 }
