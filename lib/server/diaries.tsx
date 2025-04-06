@@ -37,43 +37,36 @@ export const getDiaryPosts = unstable_cache(
 );
 
 // Process diary entries with optimized MDX parsing
-export async function processDiaryEntries(posts: Awaited<ReturnType<typeof getDiaryPosts>>) {
-  // Process all posts in a single batch
-  const processedPosts = await Promise.all(
-    posts.map(async (post) => {
-      try {
-        // Parse the notes from the post content
-        const notes = JSON.parse(post.content || "[]") as Note[];
-        
-        // Sort notes by updatedAt in descending order
-        const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
-        
-        // Process all notes in a single batch for MDX parsing
-        const processedNotes = await Promise.all(
-          sortedNotes.map(async (note) => {
-            // Parse the MDX content
-            const parsedContent = await parseMDX({ content: note.content });
-            
-            return {
-              ...note,
-              parsedContent: parsedContent.content
-            };
-          })
-        );
+export async function processDiaryEntries(post: Awaited<ReturnType<typeof getDiaryPosts>>[number]) {
+  try {
+    // Parse the notes from the post content
+    const notes = JSON.parse(post.content || "[]") as Note[];
+    
+    // Sort notes by updatedAt in descending order
+    const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
+    
+    // Process all notes in a single batch for MDX parsing
+    const processedNotes = await Promise.all(
+      sortedNotes.map(async (note) => {
+        // Parse the MDX content
+        const parsedContent = await parseMDX({ content: note.content });
         
         return {
-          ...post,
-          processedNotes
+          ...note,
+          parsedContent: parsedContent.content
         };
-      } catch (e) {
-        console.error("Failed to process diary post:", e);
-        return {
-          ...post,
-          processedNotes: []
-        };
-      }
-    })
-  );
-  
-  return processedPosts;
+      })
+    );
+    
+    return {
+      ...post,
+      processedNotes
+    };
+  } catch (e) {
+    console.error("Failed to process diary post:", e);
+    return {
+      ...post,
+      processedNotes: []
+    };
+  }
 } 

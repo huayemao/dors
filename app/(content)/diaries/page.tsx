@@ -1,13 +1,32 @@
 import { BaseCard } from "@shuriken-ui/react";
 import { getDiaryPosts, processDiaryEntries } from "@/lib/server/diaries";
 import { ProcessedDiary } from "@/components/Diary/ProcessedDiary";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 
-export default async function DiariesPage() {
+export default async function DiariesPage({
+  searchParams,
+}: {
+  searchParams: { postId?: string };
+}) {
   // Get all diary posts with caching
   const posts = await getDiaryPosts();
   
-  // Process all diary entries with optimized MDX parsing
-  const processedPosts = await processDiaryEntries(posts);
+  // Get the active post ID from the URL or default to the latest post
+  const activePostId = searchParams.postId 
+    ? parseInt(searchParams.postId) 
+    : posts[0]?.id;
+
+  // Find the active post
+  const activePost = posts.find(post => post.id === activePostId);
+
+  // If no active post is found, return 404
+  if (!activePost) {
+    notFound();
+  }
+  
+  // Process only the active diary entry with optimized MDX parsing
+  const processedActivePost = await processDiaryEntries(activePost);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -17,14 +36,18 @@ export default async function DiariesPage() {
           <div className="p-4">
             <h2 className="text-lg font-semibold mb-4">月份</h2>
             <div className="flex flex-wrap gap-2">
-              {processedPosts.map((post) => (
-                <a
+              {posts.map((post) => (
+                <Link
                   key={post.id}
-                  href={`#${post.title}`}
-                  className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors"
+                  href={`/diaries?postId=${post.id}`}
+                  className={`px-3 py-1 text-sm rounded-full transition-colors ${
+                    post.id === activePostId
+                      ? "bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400"
+                      : "bg-gray-100 dark:bg-gray-800 hover:bg-primary-100 dark:hover:bg-primary-900"
+                  }`}
                 >
                   {post.title}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -41,32 +64,34 @@ export default async function DiariesPage() {
                 这里记录了每个月的点滴生活，点击月份可以快速跳转到对应的日记集合。
               </p>
               <div className="space-y-3">
-                {processedPosts.map((post) => (
-                  <a
+                {posts.map((post) => (
+                  <Link
                     key={post.id}
-                    href={`#${post.title}`}
-                    className="block text-sm hover:text-primary-500 transition-colors pl-2 border-l-2 border-transparent hover:border-primary-500"
+                    href={`/diaries?postId=${post.id}`}
+                    className={`block text-sm transition-colors pl-2 border-l-2 ${
+                      post.id === activePostId
+                        ? "text-primary-500 border-primary-500"
+                        : "border-transparent hover:text-primary-500 hover:border-primary-500"
+                    }`}
                   >
                     {post.title}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Diary list */}
+        {/* Diary list - only show active post */}
         <div className="lg:col-span-1 max-w-3xl">
-          {processedPosts.map((post) => (
-            <div key={post.id} id={post.title} className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">{post.title}</h2>
-              <div className="space-y-4 md:space-y-6">
-                {post.processedNotes.map((note) => (
-                  <ProcessedDiary key={note.id} data={note} postId={post.id} />
-                ))}
-              </div>
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6">{processedActivePost.title}</h2>
+            <div className="space-y-4 md:space-y-6">
+              {processedActivePost.processedNotes.map((note) => (
+                <ProcessedDiary key={note.id} data={note} postId={processedActivePost.id} />
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>
