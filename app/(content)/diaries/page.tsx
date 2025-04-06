@@ -11,10 +11,10 @@ export default async function DiariesPage({
 }) {
   // Get all diary posts with caching
   const posts = await getDiaryPosts();
-  
+
   // Get the active post ID from the URL or default to the latest post
-  const activePostId = searchParams.postId 
-    ? parseInt(searchParams.postId) 
+  const activePostId = searchParams.postId
+    ? parseInt(searchParams.postId)
     : posts[0]?.id;
 
   // Find the active post
@@ -24,7 +24,7 @@ export default async function DiariesPage({
   if (!activePost) {
     notFound();
   }
-  
+
   // Process only the active diary entry with optimized MDX parsing
   const processedActivePost = await processDiaryEntries(activePost);
 
@@ -40,11 +40,10 @@ export default async function DiariesPage({
                 <Link
                   key={post.id}
                   href={`/diaries?postId=${post.id}`}
-                  className={`px-3 py-1 text-sm rounded-full transition-colors ${
-                    post.id === activePostId
+                  className={`px-3 py-1 text-sm rounded-full transition-colors ${post.id === activePostId
                       ? "bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400"
                       : "bg-gray-100 dark:bg-gray-800 hover:bg-primary-100 dark:hover:bg-primary-900"
-                  }`}
+                    }`}
                 >
                   {post.title}
                 </Link>
@@ -68,11 +67,10 @@ export default async function DiariesPage({
                   <Link
                     key={post.id}
                     href={`/diaries?postId=${post.id}`}
-                    className={`block text-sm transition-colors pl-2 border-l-2 ${
-                      post.id === activePostId
+                    className={`block text-sm transition-colors pl-2 border-l-2 ${post.id === activePostId
                         ? "text-primary-500 border-primary-500"
                         : "border-transparent hover:text-primary-500 hover:border-primary-500"
-                    }`}
+                      }`}
                   >
                     {post.title}
                   </Link>
@@ -88,7 +86,7 @@ export default async function DiariesPage({
             <h2 className="text-2xl font-bold mb-6">{processedActivePost.title}</h2>
             <div className="space-y-4 md:space-y-6">
               {processedActivePost.processedNotes.map((note) => (
-                <ProcessedDiary key={note.id} data={note} postId={processedActivePost.id} />
+                <ProcessedDiary key={note.id + note.updatedAt} data={note} postId={processedActivePost.id} />
               ))}
             </div>
           </div>

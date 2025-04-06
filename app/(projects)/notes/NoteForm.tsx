@@ -40,9 +40,9 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
     const note = {
       ...currentEntity,
       id: isEditing ? currentEntity.id : Date.now(),
-
       // @ts-ignore
       ...(obj as Omit<Note, "id">),
+      updatedAt: Date.now(),
       sortIndex,
     };
 

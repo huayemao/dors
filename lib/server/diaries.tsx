@@ -69,8 +69,8 @@ export async function processDiaryEntries(post: Awaited<ReturnType<typeof getDia
     // Parse the notes from the post content
     const notes = JSON.parse(post.content || "[]") as Note[];
     
-    // Sort notes by updatedAt in descending order
-    const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
+    // Sort notes by id(createdTime) in descending order
+    const sortedNotes = notes.sort((a, b) => b.id - a.id);
     
     // Process notes in batches to avoid overwhelming the system
     const BATCH_SIZE = 5; // Process 5 notes at a time
