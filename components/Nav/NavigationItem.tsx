@@ -15,6 +15,7 @@ export interface NavigationItemProps {
   children?: NavigationItemProps[];
   text?: string;
   onClick?: () => void;
+  renderButton?(): React.ReactNode;
 }
 
 export const NavigationItem = React.forwardRef<
@@ -31,11 +32,13 @@ export const NavigationItem = React.forwardRef<
       href,
       className,
       title,
+      renderButton,
       ...restProps
     },
     ref
   ) => {
     const Comp = as;
+
     if (children) {
       return (
         <Comp
@@ -47,6 +50,7 @@ export const NavigationItem = React.forwardRef<
           )}
         >
           <BaseDropdown
+            fixed
             oonClick={onClick}
             // @ts-ignore
             label={
@@ -55,6 +59,7 @@ export const NavigationItem = React.forwardRef<
                 {title}
               </div>
             }
+            renderButton={renderButton}
             classes={{ wrapper: "flex item-center " }}
             variant="text"
           >

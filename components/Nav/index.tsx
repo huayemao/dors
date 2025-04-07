@@ -1,8 +1,6 @@
 "use client";
-import { CategoriesContext } from "@/contexts/categories";
 import { cn } from "@/lib/utils";
 import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
-import clsx from "clsx";
 import {
   GlobeLockIcon,
   HandshakeIcon,
@@ -66,14 +64,17 @@ const ServerNavContent = ({
 
 export const Nav = ({
   resourceItems = [],
+  simple = false,
+  className
 }: {
   resourceItems?: {
     title: string;
     subtitle: string;
     url: string;
   }[];
+  className?: string
+  simple?: boolean
 }) => {
-  const categories = useContext(CategoriesContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const scrolled = useScrolled(60);
   const isClient = useIsClient();
@@ -90,23 +91,6 @@ export const Nav = ({
     setMobileOpen(false);
   }, []);
 
-  const extraPrivateMenuItems = categories
-    .filter((e) => !!e.hidden)
-    .map((e) => ({
-      title: e.name!,
-      href: "/categories/" + e.id,
-      // @ts-ignore
-      text: e.meta?.description || "",
-    }))
-    .concat(
-      ...resourceItems.map((e) => {
-        return {
-          title: e.title,
-          text: e.subtitle,
-          href: e.url,
-        };
-      })
-    );
 
   const menuItems: NavigationItemProps[] = [
     {
@@ -134,14 +118,16 @@ export const Nav = ({
     <AnimatePresence mode="wait" initial={false}>
       <motion.nav
         key={String(mobileOpen)}
-        className={clsx(
+        className={cn(
           "fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
           {
-            "shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10": scrolled,
-            "bg-white dark:bg-muted-800 ": scrolled,
-            "h-screen lg:h-fit": mobileOpen,
+            "shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10": scrolled && !simple,
+            "bg-white dark:bg-muted-800 ": scrolled && !simple,
+            "h-screen lg:h-fit z-[11]": mobileOpen,
             "dark:bg-muted-900": !scrolled,
+            'static bg-muted-100': simple,
           }
+          , className
         )}
       >
         {mobileOpen && (
@@ -167,7 +153,7 @@ export const Nav = ({
     "
         >
           <div className="flex justify-between items-center w-full lg:w-1/5">
-            <Logo onClick={closeMobileNav}/>
+            <Logo onClick={closeMobileNav} />
             <MenuButton
               setMobileOpen={setMobileOpen}
               mobileOpen={mobileOpen}

@@ -6,7 +6,7 @@ import {
   NavigationItem,
   NavigationItemProps,
 } from "@/components/Nav/NavigationItem";
-import { Nav } from "@/components/Nav";
+import { Nav } from "@/components/Nav/index";
 import Link from "next/link";
 import Image from "next/image";
 import { BaseHeading } from "@shuriken-ui/react";
@@ -18,29 +18,22 @@ export const metadata: Metadata = {
   manifest: "/notes/manifest.webmanifest",
 };
 
-const menuItems: NavigationItemProps[] = [
-  {
-    title: "导航",
-    children: [
-      {
-        title: "小记列表",
-        href: "/notes",
-      },
-    ],
-  },
-];
+
 
 export default function NotesLayout({ }) {
   return (
-    <main className="flex-1 bg-muted-100 dark:bg-muted-900">
-      <NotesContextProvider>
-        {/* <Image
+    <>
+      <Nav simple ></Nav>
+      <main className="flex-1 bg-muted-100 dark:bg-muted-900">
+        <NotesContextProvider>
+          {/* <Image
         src={DorsLogo}
         className="absolute top-4 left-4"
         alt="dors"
         height={48}
       ></Image> */}
-        <header className="h-16 bg-muted-100">
+
+          {/* <header className="h-16 bg-muted-100">
           <Link
             href="/"
             className="absolute left-0 top-4 title-font font-medium items-center text-muted-900 dark:text-muted-100
@@ -68,12 +61,15 @@ export default function NotesLayout({ }) {
               ))}
             </ul>
           </nav>
-        </header>
-        <ClientOnly>
-          <NotesContainer></NotesContainer>
-        </ClientOnly>
-        <footer></footer>
-      </NotesContextProvider>
-    </main>
+        </header> */}
+
+
+          <ClientOnly>
+            <NotesContainer></NotesContainer>
+          </ClientOnly>
+          <footer></footer>
+        </NotesContextProvider>
+      </main>
+    </>
   );
 }

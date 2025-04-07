@@ -124,7 +124,7 @@ export function CollectionHeader<
       <div
         ref={headerRef}
         className={cn(
-          "sticky mx-auto my-2 lg:-mt-16 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3 w-fit",
+          "sticky mx-auto my-2 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3 w-fit",
           { " bg-white  shadow-lg": pinned }
         )}
       >
