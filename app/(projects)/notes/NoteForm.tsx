@@ -89,7 +89,7 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
   return (
     <form method="POST" onSubmit={handleSubmit}>
       <div className="ltablet:col-span-6 col-span-12 md:col-span-12">
-        <div className="relative w-full bg-white transition-all duration-300 rounded-md">
+        <div className="relative w-full transition-all duration-300 rounded-md">
           <div className="lg:grid lg:grid-cols-12 p-4 md:p-8 gap-4">
             <fieldset className="relative lg:col-span-6">
               <div className="grid grid-cols-12 gap-4">

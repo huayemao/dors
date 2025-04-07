@@ -92,7 +92,7 @@ export function NoteItem({
         />
         {preview && isOverflow && (
           <>
-            <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent" >
+            <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-muted-800 dark:via-muted-800/80 via-white/80 to-transparent" >
               {/* <span className="text-primary-500 absolute left-4 bottom-2">
                 更多
               </span> */}
