@@ -28,6 +28,7 @@ export type State<
   CollectionType extends BaseCollection & {
     _entityList?: EntityType[];
     entityList?: EntityType[];
+    type?: string;
   }
 > = {
   modalOpen: boolean;

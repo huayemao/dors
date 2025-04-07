@@ -27,7 +27,7 @@ export const getReducerSlices = <
 
 export const getReducer = <
   EntityType extends BaseEntity,
-  CollectionType extends BaseCollection & { _entityList?: EntityType[] }
+  CollectionType extends BaseCollection & { _entityList?: EntityType[], type?: string }
 >(
   defaultCollection: CollectionType,
   defaultEntity: EntityType
@@ -38,14 +38,22 @@ export const getReducer = <
     state,
     action
   ): AppState => {
+    const { currentCollection } = state;
     const { removeEntity } = getReducerSlices(state);
 
-    function getShowingList(list: EntityType[]) {
-      const res = filterEntityList({
+    function getShowingList(list: EntityType[], filters = state.filters, filterConfig = state.filterConfig) {
+      let res = filterEntityList({
         entityList: list,
-        filters: state.filters,
-        filterConfig: state.filterConfig || state.filterConfig,
-      }).sort((a, b) => {
+        filters,
+        filterConfig,
+      })
+
+      if (currentCollection?.type === 'diary-collection') {
+        res = res.sort((a, b) => {
+          return Number(b.id) - Number(a.id);
+        })
+      }
+      res = res.sort((a, b) => {
         return (b.sortIndex || 0) - (a.sortIndex || 0);
       });
       return res
@@ -56,13 +64,7 @@ export const getReducer = <
         return Object.assign({}, state, action.payload);
       }
       case "SET_FILTERS": {
-        const list = filterEntityList({
-          entityList: state.entityList,
-          filters: action.payload.filters,
-          filterConfig: action.payload.filterConfig || state.filterConfig,
-        }).sort((a, b) => {
-          return (b.sortIndex || 0) - (a.sortIndex || 0);
-        });
+        const list = getShowingList(state.entityList, action.payload.filters, action.payload.filterConfig || state.filterConfig);
         return Object.assign({}, state, {
           filters: action.payload.filters,
           filterConfig: action.payload.filterConfig || state.filterConfig,
@@ -130,11 +132,7 @@ export const getReducer = <
       }
 
       case "SET_ENTITY_LIST": {
-        const list = filterEntityList({
-          entityList: action.payload,
-          filters: state.filters,
-          filterConfig: state.filterConfig,
-        });
+        const list = getShowingList(action.payload)
         return Object.assign({}, state, {
           entityList: action.payload,
           fromLocalStorage: false,
@@ -142,11 +140,7 @@ export const getReducer = <
         });
       }
       case "INIT_ENTITY_LIST": {
-        const list = filterEntityList({
-          entityList: action.payload,
-          filters: state.filters,
-          filterConfig: state.filterConfig,
-        });
+        const list = getShowingList(action.payload);
         return Object.assign({}, state, {
           fromLocalStorage: true,
           entityList: action.payload,
