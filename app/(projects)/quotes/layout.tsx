@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function NotesLayout({ }) {
   return (
-    <main className="flex-1 bg-slate-100">
+    <main className="flex-1 bg-muted-100 dark:bg-muted-900">
       <QuotesContextProvider>
         <Header />
         <ClientOnly>
