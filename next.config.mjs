@@ -44,6 +44,7 @@ const nextConfig = {
       : undefined,
   images: {
     unoptimized: process.env.OUTPUT_MODE === "export",
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       "huayemao.run",
       "pexels.com",
@@ -52,11 +53,16 @@ const nextConfig = {
       "fms.news.cn",
       "project-management.info",
       "runestone.academy",
-    ].map((e) => ({
-      protocol: "https",
-      hostname: "**." + e,
-      port: "",
-    })),
+    ].flatMap((e) => ([
+      {
+        protocol: "https",
+        hostname: "**." + e,
+        port: "",
+      },
+      {
+        hostname: e,
+      },
+    ]))
   },
   experimental: {
     serverComponentsExternalPackages: ["prisma", "shiki", "vscode-oniguruma"],

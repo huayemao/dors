@@ -2,9 +2,9 @@ export const SITE_META = {
   name: "Dors.",
   description: "花野猫的数字花园",
   introduction: "花野猫生活、工作、学习的记录和分享",
-  url: "https://dors.huayemao.run",
+  url: "https://huayemao.run",
   author: {
-    url: "https://dors.huayemao.run",
+    url: "https://huayemao.run",
     name: "花野猫",
   },
 };
