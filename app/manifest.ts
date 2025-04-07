@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: SITE_META.name,
     short_name: SITE_META.name,
     description: SITE_META.description + "——" + SITE_META.introduction,
-    start_url: "/",
+    start_url: "/apps",
     display: "standalone",
     background_color: "#fff",
     theme_color: "#312e81",

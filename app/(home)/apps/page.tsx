@@ -13,7 +13,6 @@ export const revalidate = 1200;
 export const metadata: Metadata = {
     title: '工作台',
     description: '花野猫先生辛勤劳作之地',
-    manifest: "/apps/manifest.webmanifest",
 };
 
 
