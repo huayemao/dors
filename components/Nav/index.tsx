@@ -119,10 +119,10 @@ export const Nav = ({
       <motion.nav
         key={String(mobileOpen)}
         className={cn(
-          "fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
+          "dark:bg-muted-800 fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
           {
             "shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10": scrolled && !simple,
-            "bg-white dark:bg-muted-800 ": scrolled && !simple,
+            "bg-white": scrolled && !simple,
             "h-screen lg:h-fit z-[11]": mobileOpen,
             "dark:bg-muted-900": !scrolled,
             'static bg-muted-100': simple,
@@ -132,7 +132,7 @@ export const Nav = ({
       >
         {mobileOpen && (
           <motion.div
-            className=" absolute inset-0 bg-white"
+            className="absolute inset-0 bg-white dark:bg-muted-800 "
             initial={{ opacity: 0 }}
             animate={{
               opacity: 1,

@@ -58,7 +58,7 @@ export const ClientNavContent = ({
             }}
             className={cn({ "m-8 w-full space-y-4": isMobile })}
           >
-            <motion.ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5 divide-y lg:divide-y-0">
+            <motion.ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5 divide-y dark:divide-muted-100/60 lg:divide-y-0">
               {menuItems.map((e, index) => (
                 <NavigationItem
                   key={e.href || e.title}
