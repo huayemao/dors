@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
+import { BaseDropdown, BaseDropdownItem, BaseThemeToggle } from "@shuriken-ui/react";
 import {
   GlobeLockIcon,
   HandshakeIcon,
@@ -29,10 +29,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ClientNavContent } from "./ClientNav";
 import { useIsClient } from "@uidotdev/usehooks";
 import Logo from "./Logo";
-
-const ThemeButton = dynamic(() => import("@/components/ThemeButton"), {
-  ssr: false,
-});
 
 const ServerNavContent = ({
   menuItems,
@@ -205,7 +201,7 @@ export const Nav = ({
                 </svg>
               </div>
             </button>
-            <ThemeButton />
+            <BaseThemeToggle />
           </div>
         </div>
       </motion.nav>

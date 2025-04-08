@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useClientMediaQuery } from "@/lib/client/hooks/useClientMediaQuery";
 import { cn } from "@/lib/utils";
 import { NavigationItem } from "./NavigationItem";
-import ThemeButton from "@/components/ThemeButton";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Fragment } from "react";
+import { BaseThemeToggle } from "@shuriken-ui/react";
 
 interface ClientNavContentProps {
   menuItems: any[];
@@ -96,7 +96,7 @@ export const ClientNavContent = ({
             ></motion.div>
             {isMobile && (
               <div className="flex justify-center">
-                <ThemeButton />
+                <BaseThemeToggle />
               </div>
             )}
           </motion.div>
