@@ -15,7 +15,7 @@ export function MenuButton({
       onClick={() => {
         setMobileOpen((open) => !open);
       }}
-      className={cn("flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none lg:hidden", className)}
+      className={cn("flex relative justify-center items-center ml-auto w-10 h-10 focus:outline-none md:hidden", className)}
     >
       <div
         className={cn(

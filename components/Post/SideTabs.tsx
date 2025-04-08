@@ -36,7 +36,7 @@ function RecentPosts({ posts }) {
 export default function SideTabs({ post, posts }) {
   const [markdownOpen, setMarkdownOpen] = useState(false);
   const [key, setKey] = useState(0);
-  const isMobile = useMediaQuery("only screen and (max-width : 992px)");
+  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

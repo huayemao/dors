@@ -40,14 +40,14 @@ const ServerNavContent = ({
   return (
     <div
       id="nav-content"
-      className="hidden justify-center lg:relative lg:flex lg:text-left flex-grow"
+      className="hidden justify-center md:relative md:flex md:text-left flex-grow"
     >
       <div className="">
-        <ul className="flex lg:items-center justify-between mt-3 mb-1 lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5">
+        <ul className="flex md:items-center justify-between mt-3 mb-1 md:flex-row md:mx-auto md:mt-0 md:mb-0 md:gap-x-5">
           {menuItems.map((e) => (
             <NavigationItem
               key={e.href || e.title}
-              className="min-w-32 lg:min-w-fit"
+              className="min-w-32 md:min-w-fit"
               {...e}
               onClick={closeMobileNav}
             />
@@ -115,11 +115,11 @@ export const Nav = ({
       <motion.nav
         key={String(mobileOpen)}
         className={cn(
-          "dark:bg-muted-800 fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center flex-shrink-0 px-5 print:hidden",
+          "dark:bg-muted-800 fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col md:flex-row md:items-center flex-shrink-0 px-5 print:hidden",
           {
-            "shadow-lg shadow-muted-400/10 dark:shadow-muted-800/10": scrolled && !simple,
+            "shadow-md shadow-muted-400/10 dark:shadow-muted-800/10": scrolled && !simple,
             "bg-white": scrolled && !simple,
-            "h-screen lg:h-fit z-[11]": mobileOpen,
+            "h-screen md:h-fit z-[11]": mobileOpen,
             "dark:bg-muted-900": !scrolled,
             'static bg-muted-100': simple,
           }
@@ -148,7 +148,7 @@ export const Nav = ({
           className="w-full max-w-6xl mx-auto xl:max-w-[88%] flex flex-wrap py-3 flex-row items-center sm:justify-between
     "
         >
-          <div className="flex justify-between items-center w-full lg:w-1/5">
+          <div className="flex justify-between items-center w-full md:w-1/5">
             <Logo onClick={closeMobileNav} />
             <MenuButton
               setMobileOpen={setMobileOpen}
@@ -169,7 +169,7 @@ export const Nav = ({
             />
           )}
 
-          <div className="hidden lg:flex items-center lg:w-1/5 lg:justify-end lg:gap-x-4">
+          <div className="hidden md:flex items-center md:w-1/5 md:justify-end md:gap-x-4">
             <button
               type="button"
               className=" group h-12 w-12 rounded-full flex items-center justify-center tw-accessibility"

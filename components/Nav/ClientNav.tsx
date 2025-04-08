@@ -18,7 +18,7 @@ export const ClientNavContent = ({
   mobileOpen,
   closeMobileNav,
 }: ClientNavContentProps) => {
-  const isMobile = useClientMediaQuery("only screen and (max-width : 720px)");
+  const isMobile = useClientMediaQuery("only screen and (max-width : 768px)");
   return (
     <>
       {(mobileOpen || !isMobile) && (
@@ -42,7 +42,7 @@ export const ClientNavContent = ({
           }}
           id="nav-content"
           className={cn(
-            "flex justify-center lg:relative lg:flex lg:text-left flex-grow overflow-hidden",
+            "flex justify-center md:relative md:flex md:text-left flex-grow overflow-hidden",
             {
               "absolute inset-12": mobileOpen,
             }
@@ -58,12 +58,12 @@ export const ClientNavContent = ({
             }}
             className={cn({ "m-8 w-full space-y-4": isMobile })}
           >
-            <motion.ul className="flex flex-col lg:items-center justify-between mt-3 mb-1 lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0 lg:gap-x-5 divide-y dark:divide-muted-100/60 lg:divide-y-0">
+            <motion.ul className="flex flex-col md:items-center justify-between mt-3 mb-1 md:flex-row md:mx-auto md:mt-0 md:mb-0 md:gap-x-5 divide-y dark:divide-muted-100/60 md:divide-y-0">
               {menuItems.map((e, index) => (
                 <NavigationItem
                   key={e.href || e.title}
                   {...e}
-                  className="min-w-32 lg:min-w-fit px-2"
+                  className="min-w-32 md:min-w-fit px-2"
                   onClick={closeMobileNav}
                   as={motion.li}
                   initial={{ opacity: 0, x: -20 }}
@@ -83,7 +83,7 @@ export const ClientNavContent = ({
               ))}
             </motion.ul>
             <motion.div
-              className="lg:hidden absolute bottom-4 flex justify-center"
+              className="md:hidden absolute bottom-4 flex justify-center"
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,

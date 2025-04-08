@@ -37,7 +37,7 @@ function Content({
   const [result, setRes] = useState<MDXContent>();
   const [loading, setLoading] = useState(true);
   const ref = useRef<HTMLElement>(null);
-  const isMobile = useMediaQuery("only screen and (max-width : 720px)");
+  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
 
   useEffect(() => {
     onLoadingChange?.(true);
