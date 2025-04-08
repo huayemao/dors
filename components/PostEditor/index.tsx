@@ -166,6 +166,10 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
                     label: "月度随记",
                     value: "diary-collection",
                   },
+                  {
+                    label: "页面",
+                    value: "page",
+                  },
                 ]}
               ></SelectWithName>
               <label className="text-stone-400 hover:text-stone-500">

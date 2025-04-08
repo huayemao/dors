@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     category_id,
     tags,
     cover_image_url,
-    type
+    type,
+    slug
   } = readPostFormData(formData);
 
 
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
     tags,
     id: id!,
     type: type,
+    slug,
     content,
     excerpt,
     title,
@@ -70,8 +72,8 @@ export async function POST(request: Request) {
 
   await revalidateHomePage(res.id);
   await revalidateTag('posts')
-  
-  if(post.type === "diary-collection") {
+
+  if (post.type === "diary-collection") {
     revalidateTag("diary-posts");
   }
 

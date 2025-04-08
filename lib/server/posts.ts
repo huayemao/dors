@@ -49,19 +49,52 @@ export const getPost = unstable_cache(async (id: number) => {
   tags: ['posts']
 }
 );
+export const getPostBySlug = unstable_cache(async (slug: string) => {
+  const res = await prisma.posts.findFirst({
+    where: {
+      slug: slug,
+    },
+    include: {
+      posts_category_links: {
+        include: {
+          categories: true,
+        },
+      },
+      tags_posts_links: {
+        include: {
+          tags: true,
+        },
+      },
+    },
+  });
+
+  if (!res) {
+    return null;
+  }
+
+  return {
+    ...res,
+    tags: res?.tags_posts_links.map((e) => e.tags),
+  };
+},
+  ['get_post'], {
+  tags: ['posts']
+}
+);
 
 export interface FindManyArgs {
   take?: number;
   skip?: number;
 }
 
-export const getPostIds = unstable_cache(async (params?: { protected?: boolean }) => {
+export const getPostIds = unstable_cache(async (params?: { protected?: boolean, type?: PostType; }) => {
   return await prisma.posts.findMany({
     orderBy: {
       updated_at: "desc",
     },
     where: {
       protected: params?.protected,
+      type: params?.type,
     },
     select: {
       id: true,
@@ -69,16 +102,18 @@ export const getPostIds = unstable_cache(async (params?: { protected?: boolean }
   });
 });
 
+type PostType = "collection" | "normal" | "diary-collection" | "page"
+
 type getPostOptions = PaginateOptions & {
   tagId?: number;
   categoryId?: number;
   unCategorized?: boolean;
   protected?: boolean;
   includeHiddenCategories?: boolean;
-  type?: "collection" | "normal" | "diary-collection";
+  type?: PostType;
 };
 
-export const getPosts = unstable_cache(async (options: getPostOptions = {}) => {
+export const getPosts = unstable_cache(async (options: getPostOptions = { type: 'normal' }) => {
   return await Promise.all(
     (
       await getAllPosts(options)
@@ -299,6 +334,7 @@ type PostPayload = {
   created_at?: string;
   categoryId?: string;
   cover_image_url?: string;
+  slug?: string
 };
 
 type CreatePostPayload = Omit<PostPayload, "id">;
@@ -320,7 +356,8 @@ export async function updatePost(
     updated_at,
     created_at,
     categoryId,
-    type
+    type,
+    slug
   } = params;
 
   if (tags && tags.sort().toString() !== postTagNames.sort().toString()) {
@@ -355,6 +392,7 @@ export async function updatePost(
     },
     data: {
       type,
+      slug: slug || undefined,
       protected: isProtected,
       excerpt: typeof excerpt == "string" ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,

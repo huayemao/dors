@@ -63,8 +63,8 @@ const CoverImageSetting = ({
   editTime,
 }: {
   originalPhoto:
-  | PexelsPhoto
-  | { dataURLs: { large: string }; alt?: string; src: { large: string } };
+    | PexelsPhoto
+    | { dataURLs: { large: string }; alt?: string; src: { large: string } };
   postId: string;
   editTime: string;
 }) => {
@@ -211,6 +211,24 @@ export default function Settings({ params }) {
                 使用创建时间
               </BaseButton>
             </div>
+          </div>
+        </form>
+        <SaveButton postId={String(post.id)}></SaveButton>
+      </Panel>
+      <Panel
+        title="slug"
+      >
+        <form>
+          <div>
+            <Input
+              type="text"
+              label="slug"
+              id={"slug"}
+              name="slug"
+              // 不传修改为当前时间
+              defaultValue={post.slug || ""}
+              data-original-value={post.slug || ""}
+            />
           </div>
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>

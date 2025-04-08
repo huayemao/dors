@@ -1,0 +1,98 @@
+import Prose from "@/components/Base/Prose";
+import Post from "@/components/Post";
+import { SITE_META } from "@/constants";
+import {
+  getPost,
+  getPostBySlug,
+  getPostIds,
+  getRecentPosts,
+} from "@/lib/server/posts";
+import nextConfig from "@/next.config.mjs";
+import { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
+
+export const revalidate = 36000;
+
+export async function generateStaticParams() {
+  const posts = await getPostIds({ protected: false, type: "page" });
+  const allPostIds = posts.map((post) => ({
+    id: String(post.id),
+  }));
+  const params =
+    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 10);
+  return params;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  // read route params
+  const slug = params.slug;
+  const post = await getPostBySlug(slug);
+
+  if (!post || !post.content) {
+    return notFound();
+  }
+
+  if (post.protected) {
+    return redirect("/protected/" + post.id);
+  }
+
+  const abstract = post.excerpt;
+
+  const headerRegex = /^(?!\s)(#{1,6})(.*)/gm;
+  const headers =
+    post.content!.match(headerRegex)?.map((e) => e.replace(/^(#+\s+)/, "")) ||
+    [];
+
+  const keywords = post.tags
+    .map((e) => e?.name || "")
+    .concat([post.title || ""])
+    .concat(SITE_META.author.name)
+    .concat(headers)
+    .filter((e) => !!e);
+
+  return {
+    title: `${post.title} | ${SITE_META.name}`,
+    description: abstract,
+    abstract: abstract,
+    keywords,
+    openGraph: {
+      description: abstract || "",
+      images: [
+        SITE_META.url +
+          "/_next/image?url=" +
+          encodeURIComponent((post.cover_image as any).src.large) +
+          "&w=640&q=60",
+        (post.cover_image as any)?.dataURLs?.small,
+      ],
+    },
+  };
+}
+
+export default async function page({ params }) {
+  if (!params.slug) {
+    return;
+  }
+
+  const slug = params.slug;
+
+  if (!slug) {
+    return notFound();
+  }
+
+  const post = await getPostBySlug(slug);
+
+  if (!post) {
+    return notFound();
+  }
+
+  return (
+    <main className="w-full">
+      {/* @ts-ignore */}
+      <Prose content={post.content} />
+    </main>
+  );
+}

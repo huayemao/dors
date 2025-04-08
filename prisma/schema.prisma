@@ -548,6 +548,7 @@ model posts {
   excerpt                                      String?                @db.MediumText
   protected                                    Boolean                @default(false)
   title                                        String?                @db.VarChar(255)
+  slug                                         String?                @db.VarChar(80)
   created_at                                   DateTime?              @db.DateTime(6)
   updated_at                                   DateTime?              @db.DateTime(6)
   published_at                                 DateTime?              @db.DateTime(6)
