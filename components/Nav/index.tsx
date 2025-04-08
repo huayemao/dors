@@ -94,21 +94,26 @@ export const Nav = ({
       href: "/",
     },
     {
-      title: "关于",
-      href: "/about",
-    },
-    {
       title: "文章",
       href: "/posts",
+    },
+    {
+      title: "工作台",
+      href: "/apps",
+    },
+    {
+      title: "关于",
+      href: "/about",
     },
     {
       title: "集萃",
       href: "/collection",
     },
     {
-      title: "工作台",
-      href: "/apps",
+      title: "友链",
+      href: "/friends",
     },
+
   ];
   return (
     <AnimatePresence mode="wait" initial={false}>

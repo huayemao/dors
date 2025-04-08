@@ -71,7 +71,7 @@ export const ClientNavContent = ({
                     opacity: 1,
                     x: 0,
                     transition: {
-                      delay: 0.2 + index * 0.1,
+                      delay: 0.15 + index * 0.08,
                     },
                   }}
                   exit={{
