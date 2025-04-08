@@ -62,6 +62,9 @@ export default async function Home({
       <h1 className="font-heading leading-normal font-extrabold text-5xl md:text-5xl text-muted-700 dark:text-white text-center  mb-4">
         {SITE_META.name + " " + SITE_META.description}
       </h1>
+      <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
+        {SITE_META.introduction}
+      </p>
       <div className="ltablet:overflow-visible flex justify-around gap-6 overflow-x-auto pb-8 lg:overflow-visible ">
         {apps.map((app, i) => (
           <Application key={i} {...app}></Application>
@@ -72,9 +75,6 @@ export default async function Home({
         <BaseHeading size="3xl" className="text-center" as="h2">
           文章列表
         </BaseHeading>
-        <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
-          {SITE_META.introduction}
-        </p>
         <Posts data={posts} />
       </div>
     </Fragment>
