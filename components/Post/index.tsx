@@ -2,7 +2,7 @@ import { getPost, getRecentPosts } from "@/lib/server/posts";
 import { cn } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import dynamic from "next/dynamic";
-import { BackButton } from "../BackButton";
+import { BackButton } from "./BackButton";
 import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
 import SideTabs from "./SideTabs";
@@ -11,23 +11,24 @@ import Prose from "../Base/Prose";
 import { NotesContainer } from "../Notes/NotesContainer";
 import ContentModal from "./ContentModal";
 import { NotesContextProvider } from "@/contexts/notes";
+import { ActionButton } from "./ActionButton";
 
 // todo: 这个抽成 content
 
 const isNoteCollection = (str: any) => {
   try {
-    if (typeof str != 'string') {
-      return false
+    if (typeof str != "string") {
+      return false;
     }
-    const obj = JSON.parse(str)
+    const obj = JSON.parse(str);
     if (obj[0].content) {
-      return true
+      return true;
     }
-    return false
+    return false;
   } catch (error) {
-    return false
+    return false;
   }
-}
+};
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
@@ -49,9 +50,8 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
   const excerpt = post.excerpt;
 
   const isNotes = isNoteCollection(content);
-  const isCollection = post.type == "collection"
-  const isFullWidth = isNotes || isCollection
-
+  const isCollection = post.type == "collection";
+  const isFullWidth = isNotes || isCollection;
 
   return (
     <div>
@@ -62,42 +62,51 @@ export default async function Post({ data: post, recentPosts: posts }: Props) {
         blurDataURL={blurDataURL}
       />
       <section className="w-full py-12 px-4 bg-white dark:bg-muted-900">
-        <div className={cn("w-full max-w-6xl mx-auto", { 'max-w-full': isFullWidth })}>
+        <div
+          className={cn("w-full max-w-6xl mx-auto", {
+            "max-w-full": isFullWidth,
+          })}
+        >
           <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
-            <div className={cn("w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto ptablet:print:w-full", {
-              'lg:w-full ptablet:w-full': isFullWidth
-            })}>
+            <div
+              className={cn(
+                "w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto ptablet:print:w-full",
+                {
+                  "lg:w-full ptablet:w-full": isFullWidth,
+                }
+              )}
+            >
               <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
                 <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
+                  <ActionButton post={post} posts={posts} />
                 </div>
-                {
-                  isNotes || isCollection ?
-                    (
-                      <div className="xl:max-w-7xl mx-auto">
-                        <ClientOnly>
-                          <NotesContextProvider>
-                            <NotesContainer basename={post.protected ? "/protected" : "/posts"}>
-                            </NotesContainer>
-                          </NotesContextProvider>
-                        </ClientOnly>
-                      </div>
-                    ) : (
-                      <Prose content={content} />
-                    )}
+                {isNotes || isCollection ? (
+                  <div className="xl:max-w-7xl mx-auto">
+                    <ClientOnly>
+                      <NotesContextProvider>
+                        <NotesContainer
+                          basename={post.protected ? "/protected" : "/posts"}
+                        ></NotesContainer>
+                      </NotesContextProvider>
+                    </ClientOnly>
+                  </div>
+                ) : (
+                  <Prose content={content} />
+                )}
               </div>
             </div>
-            {!isFullWidth &&
+            {!isFullWidth && (
               <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">
                 <ClientOnly>
                   <SideTabs post={post} posts={posts}></SideTabs>
                 </ClientOnly>
-              </div>}
+              </div>
+            )}
           </div>
         </div>
-      </section >
-      {!isCollection && !isNotes && <ContentModal></ContentModal>
-      }
-    </div >
+      </section>
+      {!isCollection && !isNotes && <ContentModal></ContentModal>}
+    </div>
   );
 }

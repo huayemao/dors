@@ -13,10 +13,6 @@ const TOC = dynamic(() => import("./toc"), {
   ssr: false,
 });
 
-const NavListPortal = dynamic(() => import("./NavListPortal"), {
-  ssr: false,
-});
-
 function RecentPosts({ posts }) {
   return (
     <ul className="space-y-6">
@@ -34,15 +30,35 @@ function RecentPosts({ posts }) {
 }
 
 export default function SideTabs({ post, posts }) {
-  const [markdownOpen, setMarkdownOpen] = useState(false);
   const [key, setKey] = useState(0);
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // 强制 portal 重新渲染，不晓得是否有更好的方法
     setKey((v) => v + 1);
   }, []);
+
+  return (
+    <>
+      {!isMobile && (
+        <div className="hidden md:block sticky top-20">
+          <ActionTabs post={post} posts={posts} />
+        </div>
+      )}
+    </>
+  );
+}
+
+export function ActionTabs({ post, posts }) {
+  const [markdownOpen, setMarkdownOpen] = useState(false);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  const tabs = [{ label: "选项", value: "actions" }];
+
+  if (post.content?.includes("##")) {
+    tabs.unshift({ label: "文章大纲", value: "toc" });
+  }
 
   const Actions = (
     <div className="flex justify-between gap-3">
@@ -82,33 +98,6 @@ export default function SideTabs({ post, posts }) {
 
   return (
     <>
-      <div className="hidden md:block sticky top-20">{renderTabs()}</div>
-      {isMobile && (
-        <NavListPortal key={post.id + key}>{renderTabs()}</NavListPortal>
-      )}
-      <Modal
-        actions={
-          <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
-        }
-        className={"whitespace-pre-wrap"}
-        open={markdownOpen}
-        onClose={() => {
-          setMarkdownOpen(false);
-        }}
-        title={post.title}
-      >
-        <div ref={ref}>{post.content}</div>
-      </Modal>
-    </>
-  );
-
-  function renderTabs() {
-    const tabs = [{ label: "选项", value: "actions" }];
-
-    if (post.content?.includes("##")) {
-      tabs.unshift({ label: "文章大纲", value: "toc" });
-    }
-    return (
       <BaseTabs defaultValue={tabs[0].value} tabs={tabs}>
         {(activeValue) => (
           <>
@@ -126,6 +115,20 @@ export default function SideTabs({ post, posts }) {
           </>
         )}
       </BaseTabs>
-    );
-  }
+
+      <Modal
+        actions={
+          <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
+        }
+        className={"whitespace-pre-wrap"}
+        open={markdownOpen}
+        onClose={() => {
+          setMarkdownOpen(false);
+        }}
+        title={post.title}
+      >
+        <div ref={ref}>{post.content}</div>
+      </Modal>
+    </>
+  );
 }
