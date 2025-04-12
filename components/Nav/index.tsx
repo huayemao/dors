@@ -150,7 +150,7 @@ export const Nav = ({
           ></motion.div>
         )}
         <div
-          className="w-full max-w-6xl mx-auto xl:max-w-[88%] flex flex-wrap py-3 flex-row items-center sm:justify-between
+          className="w-full max-w-6xl mx-auto xl:max-w-[88%] flex py-3 flex-row items-center sm:justify-between
     "
         >
           <div className="flex justify-between items-center w-full md:w-1/5">
