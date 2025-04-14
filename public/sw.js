@@ -119,13 +119,20 @@ self.addEventListener("fetch", (e) => {
   }),
   self.addEventListener("message", (e) => {
     const { type, path } = e.data;
-    
+
     if (type === "skip-waiting") {
       self.skipWaiting();
     }
-    
+
     if (type === "revalidate-page") {
-      caches.open(VERSION).then((cache) => cache.delete(path)).then(() => {
+      caches.open(VERSION).then((cache) => {
+        cache.keys().then((requests) => {
+          const matched = requests.find(request => request.url.includes(path))
+          if (matched) {
+            cache.delete(matched)
+          }
+        })
+      }).then(() => {
         console.log(`已清除路径 ${path} 的缓存`);
         self.clients.matchAll().then(clients => {
           clients.forEach(client => {
