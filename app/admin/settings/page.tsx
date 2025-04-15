@@ -21,7 +21,7 @@ export default async function AdminSettingsPage({ params }) {
         <Panel title="文章分类">
           <HiddenCatsForm settings={settings} cats={cats}></HiddenCatsForm>
         </Panel>
-        <Panel title="导航栏" className="max-w-full">
+        <Panel title="导航栏" className="max-w-full w-fit">
           <NavItemsConfig settings={settings}></NavItemsConfig>
         </Panel>
         <Panel title="导航内容对应 post id">

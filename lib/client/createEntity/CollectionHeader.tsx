@@ -119,17 +119,23 @@ export function CollectionHeader<
     </div>
   );
 
+  const isSimple = !state.collectionList.length
+
   return (
     <>
       <div
         ref={headerRef}
         className={cn(
-          "sticky mx-auto my-2 rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3 w-fit",
-          { " bg-white  shadow-lg": pinned }
+          "mx-auto  rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3",
+          { " bg-white  shadow-lg": !isSimple && pinned },
+          { "w-fit sticky my-2 ": !isSimple },
         )}
       >
-        <div className="flex items-center justify-around gap-2 lg:gap-4 relative w-full ">
-          {Collections}
+        <div className={cn("flex items-center  gap-2 lg:gap-4 relative w-full ", {
+          "justify-end lg:max-w-7xl mx-auto ptablet:px-8": isSimple,
+          "justify-around": !isSimple,
+        })}>
+          {!isSimple && Collections}
           <div className="">
             {Search && <Search dispatch={dispatch} state={state} />}
           </div>
