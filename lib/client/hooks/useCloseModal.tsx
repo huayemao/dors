@@ -4,19 +4,24 @@ import { useNavigate, useLocation, useRoutes } from "react-router-dom";
 
 export function useCloseModal() {
   const navigate = useNavigate();
+  const locationR = useLocation();
   return useCallback(
     function () {
       if (
-        !document.referrer ||
         history.length > 1 &&
         !!document.referrer &&
-        document.referrer.includes(location.hostname) && location.href.includes(document.referrer)
+        document.referrer.includes(location.hostname) &&
+        location.href.includes(document.referrer)
       ) {
         navigate(-1);
       } else {
-        navigate("../", { replace: true });
+        if (locationR.search) {
+          navigate({ search: "" });
+        } else {
+          navigate("../", { replace: true });
+        }
       }
     },
-    [navigate]
+    [navigate, locationR]
   );
 }

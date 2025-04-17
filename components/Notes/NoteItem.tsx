@@ -1,10 +1,18 @@
-"use client"
+"use client";
 import Prose from "@/components/Base/Prose";
 import { BaseCard, BaseTag, BaseButton } from "@shuriken-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 
 import { cn, getDateStr } from "@/lib/utils";
-import { FC, Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FC,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -41,7 +49,8 @@ export function NoteItem({
 
   const checkOverflow = useCallback(() => {
     if (preview && contentRef.current) {
-      const isOverflowing = contentRef.current.scrollHeight > contentRef.current.clientHeight;
+      const isOverflowing =
+        contentRef.current.scrollHeight > contentRef.current.clientHeight;
       setIsOverflow(isOverflowing);
     }
   }, [preview]);
@@ -66,13 +75,13 @@ export function NoteItem({
   const Container = useMemo(() => {
     return preview
       ? (props) => (
-        <BaseCard
-          rounded="md"
-          className="border-none relative break-inside-avoid"
-        >
-          {props.children}
-        </BaseCard>
-      )
+          <BaseCard
+            rounded="md"
+            className="border-none relative break-inside-avoid"
+          >
+            {props.children}
+          </BaseCard>
+        )
       : Fragment;
   }, [preview]);
 
@@ -80,8 +89,7 @@ export function NoteItem({
     () => (
       <div
         ref={contentRef}
-        className={cn("px-4 relative", {
-          "min-w-[80%]": !preview,
+        className={cn("px-4 relative flex-1", {
           "lg:px-6 xs:max-h-72 xs:h-auto h-72  overflow-hidden": preview,
         })}
       >
@@ -92,7 +100,7 @@ export function NoteItem({
         />
         {preview && isOverflow && (
           <>
-            <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-muted-800 dark:via-muted-800/80 via-white/80 to-transparent" >
+            <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-muted-800 dark:via-muted-800/80 via-white/80 to-transparent">
               {/* <span className="text-primary-500 absolute left-4 bottom-2">
                 更多
               </span> */}
@@ -111,32 +119,31 @@ export function NoteItem({
           {Main}
           <div className=" m-2 p-2 ">
             <div className="mb-1 flex gap-2 flex-wrap items-end">
-              {data.tags.length ? data.tags.map((e) => (
-                <span key={e} className="cursor-pointer flex-shrink-0">
-                  <BaseTag
-                    key={e}
-                    size="sm"
-                    variant="pastel"
-                    color="muted"
-                    onClick={(ev) => {
-                      ev.preventDefault();
-                      ev.stopPropagation();
-                      filterTags?.([e]);
-                    }}
-                  >
-                    {e}
+              {data.tags.length ? (
+                data.tags.map((e) => (
+                  <span key={e} className="cursor-pointer flex-shrink-0">
+                    <BaseTag
+                      key={e}
+                      size="sm"
+                      variant="pastel"
+                      color="muted"
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        filterTags?.([e]);
+                      }}
+                    >
+                      {e}
+                    </BaseTag>
+                  </span>
+                ))
+              ) : (
+                <span className="opacity-0">
+                  <BaseTag size="sm" variant="pastel" color="muted">
+                    t {/* 这里只是为了对齐   */}
                   </BaseTag>
                 </span>
-              )) : <span
-                className="opacity-0"
-              >
-                <BaseTag
-                  size="sm"
-                  variant="pastel"
-                  color="muted"
-                >
-                  t {/* 这里只是为了对齐   */}
-                </BaseTag></span>}
+              )}
               <div className=" ml-auto not-prose text-right xs:text-xs md:text-sm text-slate-400">
                 {getDateStr(new Date(data.id)).slice(0, -5)}
               </div>
