@@ -45,44 +45,15 @@ export const getReducer = <
     action
   ): AppState => {
     const { currentCollection } = state;
-    const { removeEntity } = getReducerSlices(state, getShowingList);
-
-    function getShowingList(
-      list: EntityType[],
-      filters = state.filters,
-      filterConfig = state.filterConfig
-    ) {
-      let res = filterEntityList({
-        entityList: list,
-        filters,
-        filterConfig,
-      });
-
-      if (currentCollection?.type === "diary-collection") {
-        res = res.sort((a, b) => {
-          return Number(b.id) - Number(a.id);
-        });
-      }
-      res = res.sort((a, b) => {
-        return (b.sortIndex || 0) - (a.sortIndex || 0);
-      });
-      return res;
-    }
 
     switch (action.type) {
       case "ANY": {
         return Object.assign({}, state, action.payload);
       }
       case "SET_FILTERS": {
-        const list = getShowingList(
-          state.entityList,
-          action.payload.filters,
-          action.payload.filterConfig || state.filterConfig
-        );
         return Object.assign({}, state, {
           filters: action.payload.filters,
           filterConfig: action.payload.filterConfig || state.filterConfig,
-          showingEntityList: list,
         });
       }
       case "SET_MODAL_OPEN": {
@@ -146,19 +117,15 @@ export const getReducer = <
       }
 
       case "SET_ENTITY_LIST": {
-        const list = getShowingList(action.payload);
         return Object.assign({}, state, {
           entityList: action.payload,
           fromLocalStorage: false,
-          showingEntityList: list,
         });
       }
       case "INIT_ENTITY_LIST": {
-        const list = getShowingList(action.payload);
         return Object.assign({}, state, {
           fromLocalStorage: true,
           entityList: action.payload,
-          showingEntityList: list,
         });
       }
       case "CREATE_OR_UPDATE_COLLECTION": {
@@ -192,11 +159,9 @@ export const getReducer = <
         return Object.assign({}, state, {
           entityList: newList,
           currentEntity: payload,
-          showingEntityList: getShowingList(newList),
           fromLocalStorage: false,
         });
       }
-      // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
       case "SET_COLLECTION_LIST":
         return Object.assign({}, state, {
           collectionList: action.payload,
@@ -214,7 +179,14 @@ export const getReducer = <
           entityModalMode: "view",
         });
       case "REMOVE_ENTITY": {
-        return removeEntity(action.payload);
+        const targetItemIndex = state.entityList?.findIndex((e) => e.id === action.payload);
+        const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
+        if (hasTarget) {
+          return Object.assign({}, state, {
+            entityList: state.entityList?.filter((e, i) => e.id != action.payload),
+          });
+        }
+        return state;
       }
       case "REMOVE_COLLECTION": {
         const removeItem = (id) => {
@@ -239,74 +211,6 @@ export const getReducer = <
     }
   };
 
-  function filterEntityList<
-    EType extends BaseEntity,
-    CType extends BaseCollection
-  >({
-    entityList,
-    filters,
-    filterConfig,
-  }: {
-    entityList: EntityState<EType, CType>["entityList"];
-    filters: EntityState<EType, CType>["filters"];
-    filterConfig: AppState["filterConfig"];
-  }) {
-    let list = entityList;
-    for (const [key, filter] of Object.entries(filters)) {
-      if (filterConfig.excludeIds) {
-        list = list.filter((e) => {
-          return !filterConfig.excludeIds?.includes(e.id);
-        });
-      }
-      if (typeof filter == "undefined") {
-        continue;
-      }
-      if (typeof filter === "string") {
-        if (key == "all") {
-          list = list.filter((e) => {
-            const obj = pick(e, ["tags", "content"]);
-            return JSON.stringify(obj).includes(filter);
-          });
-        } else {
-          list = list.filter((e) => {
-            return e[key].includes(filter);
-          });
-        }
-      }
-      if (Array.isArray(filter)) {
-        list = list.filter((item) => {
-          const itemValue = item[key];
-          if (Array.isArray(itemValue)) {
-            const hasValue = itemValue.some((item) => filter.includes(item));
-            const pass = filterConfig.includeNonKeys?.includes(key);
-            return pass
-              ? hasValue || !filter.length || !itemValue.length
-              : hasValue;
-          }
-          return true;
-        });
-      }
-      if (typeof filter == "object" && "omit" in filter) {
-        list = list.filter((item) => {
-          const itemValue = item[key];
-          if (Array.isArray(itemValue)) {
-            const shouldNotOmit = !itemValue.some((v) =>
-              filter.omit.includes(v)
-            );
-            const shouldPick = !filter.pick
-              ? true
-              : itemValue.some((v) => filter.pick!.includes(v));
-
-            const pass = filterConfig.includeNonKeys?.includes(key);
-            return pass
-              ? (shouldNotOmit && shouldPick) || !itemValue.length
-              : shouldNotOmit && shouldPick;
-          }
-        });
-      }
-    }
-    return list;
-  }
   return reducer;
 };
 

@@ -37,7 +37,6 @@ export type State<
   currentEntity: EntityType;
   collectionList: CollectionType[];
   entityList: EntityType[];
-  showingEntityList: EntityType[];
   filters: FiltersType<EntityType>;
   filterConfig: {
     excludeIds?: EntityType["id"][];
@@ -104,3 +103,4 @@ export type Action<
   }
   | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
   | { type: "CANCEL" };
+

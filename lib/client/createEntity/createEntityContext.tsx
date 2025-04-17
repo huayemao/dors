@@ -1,4 +1,5 @@
 "use client";
+import { pick } from "lodash";
 import {
   Context,
   Dispatch,
@@ -18,7 +19,10 @@ import { getReducer } from "./reducers";
 
 export const createEntityContext = <
   EntityType extends BaseEntity,
-  CollectionType extends BaseCollection & { _entityList?: EntityType[] }
+  CollectionType extends BaseCollection & { 
+    _entityList?: EntityType[];
+    type?: string;
+  }
 >({
   defaultEntity,
   defaultCollection,
@@ -35,7 +39,6 @@ export const createEntityContext = <
   inMemory?: boolean;
 }) => {
   type AppState = State<EntityType, CollectionType>;
-  // type AppAction = Action<EntityType, CollectionType>;
 
   const initialState: State<EntityType, CollectionType> = {
     modalOpen: false,
@@ -44,17 +47,71 @@ export const createEntityContext = <
     currentEntity: defaultEntity,
     collectionList: [],
     entityList: [],
-    showingEntityList: [],
     filters: defaultFilters || {},
     filterConfig: defaultFilterConfig || {},
     fromLocalStorage: true,
     inMemory,
   };
+
+  function getShowingList(state: AppState): EntityType[] {
+    let list = state.entityList;
+    
+    // Apply filters
+    for (const [key, filter] of Object.entries(state.filters)) {
+      if (state.filterConfig.excludeIds) {
+        list = list.filter((e) => !state.filterConfig.excludeIds?.includes(e.id));
+      }
+      if (typeof filter === "undefined") continue;
+      
+      if (typeof filter === "string") {
+        if (key === "all") {
+          list = list.filter((e) => {
+            const obj = pick(e, ["tags", "content"]);
+            return JSON.stringify(obj).includes(filter);
+          });
+        } else {
+          list = list.filter((e) => e[key].includes(filter));
+        }
+      }
+      
+      if (Array.isArray(filter)) {
+        list = list.filter((item) => {
+          const itemValue = item[key];
+          if (Array.isArray(itemValue)) {
+            const hasValue = itemValue.some((item) => filter.includes(item));
+            const pass = state.filterConfig.includeNonKeys?.includes(key);
+            return pass ? hasValue || !filter.length || !itemValue.length : hasValue;
+          }
+          return true;
+        });
+      }
+      
+      if (typeof filter === "object" && "omit" in filter) {
+        list = list.filter((item) => {
+          const itemValue = item[key];
+          if (Array.isArray(itemValue)) {
+            const shouldNotOmit = !itemValue.some((v) => filter.omit.includes(v));
+            const shouldPick = !filter.pick ? true : itemValue.some((v) => filter.pick!.includes(v));
+            const pass = state.filterConfig.includeNonKeys?.includes(key);
+            return pass ? (shouldNotOmit && shouldPick) || !itemValue.length : shouldNotOmit && shouldPick;
+          }
+          return true;
+        });
+      }
+    }
+
+    // Apply sorting
+    if (state.currentCollection?.type === "diary-collection") {
+      list = list.sort((a, b) => Number(b.id) - Number(a.id));
+    }
+    list = list.sort((a, b) => (b.sortIndex || 0) - (a.sortIndex || 0));
+
+    return list;
+  }
+
   const reducer = getReducer(defaultCollection, defaultEntity);
   const EntityContext = createContext(initialState);
-  const EntityDispatchContext = createContext<
-    Dispatch<Action<EntityType, CollectionType>>
-  >(() => {});
+  const EntityDispatchContext = createContext<Dispatch<Action<EntityType, CollectionType>>>(() => {});
 
   const collectionListKey = key + "_collectionList";
 
@@ -191,7 +248,11 @@ export const createEntityContext = <
   };
 
   function useEntity() {
-    return useContext(EntityContext);
+    const state = useContext(EntityContext);
+    return {
+      ...state,
+      showingEntityList: getShowingList(state),
+    };
   }
 
   function useEntityDispatch() {
@@ -199,7 +260,7 @@ export const createEntityContext = <
   }
 
   return {
-    EntityContext: EntityContext,
+    EntityContext,
     EntityDispatchContext,
     EntityContextProvider,
     useEntity,
