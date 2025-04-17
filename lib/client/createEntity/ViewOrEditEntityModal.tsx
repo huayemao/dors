@@ -16,12 +16,13 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { AddAction } from "@/components/PostEditor/AddAction";
 import { useCloseModal } from "../hooks/useCloseModal";
+import { PreviewModal } from "@/components/Base/PreviewModal";
 
 export default function ViewOrEditEntityModal<
   EType extends BaseEntity,
@@ -64,6 +65,10 @@ export default function ViewOrEditEntityModal<
   const { entityId, collectionId } = useParams();
   const entity = entityList.find((e) => String(e.id) == entityId);
   const [loading, setLoading] = useState(true)
+  const location = useLocation();
+  const sp = new URLSearchParams(location.search);
+  const isFull = sp.get('view')==='full'
+
 
   const cancel = useCallback(() => {
     if (state.modalOpen) {
@@ -109,6 +114,12 @@ export default function ViewOrEditEntityModal<
       close();
     })();
   }, [close, currentEntity.id, dispatch]);
+
+  if(isFull){
+    return <PreviewModal open={currentEntity && modalOpen} onClose={close} loading={false}>
+       {renderEntity(currentEntity, { preview: false })}
+    </PreviewModal>
+  }
 
   return (
     <Modal

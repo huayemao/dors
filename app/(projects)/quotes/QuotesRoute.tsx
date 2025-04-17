@@ -26,6 +26,7 @@ import { BaseCollection, BaseEntity } from "@/lib/client/createEntity/types";
 import { EntityDispatch, EntityState } from "@/lib/client/createEntity/createEntityContext";
 import { useParams } from "react-router-dom";
 import { BaseButtonClose } from "@shuriken-ui/react";
+import { PreviewModal } from "@/components/Base/PreviewModal";
 
 const DialogQuotePreview = <
   EType extends BaseEntity,
@@ -56,45 +57,9 @@ const DialogQuotePreview = <
   }, [dispatch, entity]);
 
   return (
-    <Dialog as={motion.div} open className="relative z-50" onClose={onClose}>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="fixed inset-0 bg-black bg-opacity-25"
-      />
-
-      <div className="fixed inset-0 overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="flex-1"
-          >
-            <Dialog.Panel className="w-full transform overflow-hidden  bg-white p-6 text-left align-middle shadow-xl relative">
-              <div className="mt-2">
-                {loading ? (
-                  <div className="flex justify-center items-center w-full h-32">
-                    加载中...
-                  </div>
-                ) : (
-                  <QuotePreview />
-                )}
-              </div>
-              <div className="absolute right-4 top-4">
-                <BaseButtonClose
-                  type="button"
-                  onClick={onClose}
-                />
-              </div>
-            </Dialog.Panel>
-          </motion.div>
-        </div>
-      </div>
-    </Dialog>
+    <PreviewModal open onClose={onClose} loading={loading}>
+      <QuotePreview />
+    </PreviewModal>
   );
 };
 
@@ -118,7 +83,7 @@ export const QuotesRoute = ({
     <>
       <EntityRoute
         key="quotes"
-        renderEntityModalTitle={(e: Quote) => e.id}
+        renderEntityModalTitle={(e: Quote) => <>e.id</>}
         layout="table"
         renderEntity={(e: Quote, { preview }) => (
           <button onClick={() => handlePreview(e)}>预览</button>

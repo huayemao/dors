@@ -7,6 +7,7 @@ export function useCloseModal() {
   return useCallback(
     function () {
       if (
+        !document.referrer ||
         history.length > 1 &&
         !!document.referrer &&
         document.referrer.includes(location.hostname) && location.href.includes(document.referrer)
