@@ -89,7 +89,7 @@ export function Table({
           return (
             <tr
               className="text-sm  border-b border-muted-200 transition-colors duration-300 last:border-none hover:bg-muted-200/40 dark:border-muted-800 dark:hover:bg-muted-900/60"
-              key={i}
+              key={row.id ?? i}
               onClick={(ev) => {
                 const __html = (ev.target as HTMLElement).outerHTML;
                 if (__html &&  __html.includes('nui-context-')) {

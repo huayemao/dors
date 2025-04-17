@@ -1,7 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  BaseCard,
-} from "@shuriken-ui/react";
+import { BaseCard } from "@shuriken-ui/react";
 
 import {
   FC,
@@ -13,11 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  useNavigate,
-  useOutlet,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useOutlet, useParams } from "react-router-dom";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { fetchWithAuth } from "../utils/fetch";
@@ -38,7 +32,7 @@ export default function CollectionLayout<
   dispatch,
   fetchCollection,
   layout = "masonry",
-  getList = (e) => e
+  getList = (e) => e,
 }: {
   slots?: Record<
     "search",
@@ -49,13 +43,10 @@ export default function CollectionLayout<
   >;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
-  renderEntity: (
-    entity: EType,
-    options: { preview: boolean }
-  ) => ReactNode;
+  renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
   fetchCollection?: (id: string) => Promise<CType | null>;
   layout?: "masonry" | "table";
-  getList?: (list: EType[]) => object[]
+  getList?: (list: EType[]) => object[];
 }) {
   const { collectionId } = useParams();
   const outlet = useOutlet();
@@ -102,15 +93,10 @@ export default function CollectionLayout<
 
   let list = useMemo(() => state.showingEntityList, [state.showingEntityList]);
 
-
   return (
     <>
       <div className="pt-3 relative">
-        <CollectionHeader
-          dispatch={dispatch}
-          state={state}
-          Search={Search}
-        />
+        <CollectionHeader dispatch={dispatch} state={state} Search={Search} />
         <div className="lg:max-w-7xl mx-auto">
           <div className="relative w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             {layout === "masonry" ? (
@@ -120,10 +106,14 @@ export default function CollectionLayout<
                     key={e.id ?? JSON.stringify(e)}
                     className="cursor-pointer"
                     onClick={(event) => {
-                      if ((event.target as HTMLElement).closest('a, button, [role="button"]')) {
+                      if (
+                        (event.target as HTMLElement).closest(
+                          'a, button, [role="button"]'
+                        )
+                      ) {
                         return;
                       }
-                      navigate('./' + e.id);
+                      navigate("./" + e.id);
                     }}
                   >
                     {renderEntity(e, { preview: true })}
@@ -156,6 +146,15 @@ export default function CollectionLayout<
                           });
                         },
                       },
+                      {
+                        title: "删除",
+                        onClick: (e) => {
+                          dispatch({
+                            type: "REMOVE_ENTITY",
+                            payload: e.id,
+                          });
+                        },
+                      },
                     ]}
                   />
                 )}
@@ -168,5 +167,3 @@ export default function CollectionLayout<
     </>
   );
 }
-
-

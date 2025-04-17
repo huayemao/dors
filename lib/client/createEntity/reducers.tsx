@@ -7,14 +7,17 @@ export const getReducerSlices = <
   EntityType extends BaseEntity,
   CollectionType extends BaseCollection & { _entityList?: EntityType[] }
 >(
-  state: State<EntityType, CollectionType>
+  state: State<EntityType, CollectionType>,
+  getShowingList: (list: EntityType[]) => EntityType[]
 ) => {
   const removeEntity = (id: number | string) => {
     const targetItemIndex = state.entityList?.findIndex((e) => e.id === id);
     const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
     if (hasTarget) {
+      const newEntityList = state.entityList?.filter((e, i) => e.id != id);
       return Object.assign({}, state, {
-        entityList: state.entityList?.filter((e, i) => e.id != id),
+        entityList: newEntityList,
+        showingEntityList: getShowingList(newEntityList),
       });
     }
     return state;
@@ -27,7 +30,10 @@ export const getReducerSlices = <
 
 export const getReducer = <
   EntityType extends BaseEntity,
-  CollectionType extends BaseCollection & { _entityList?: EntityType[], type?: string }
+  CollectionType extends BaseCollection & {
+    _entityList?: EntityType[];
+    type?: string;
+  }
 >(
   defaultCollection: CollectionType,
   defaultEntity: EntityType
@@ -39,24 +45,28 @@ export const getReducer = <
     action
   ): AppState => {
     const { currentCollection } = state;
-    const { removeEntity } = getReducerSlices(state);
+    const { removeEntity } = getReducerSlices(state, getShowingList);
 
-    function getShowingList(list: EntityType[], filters = state.filters, filterConfig = state.filterConfig) {
+    function getShowingList(
+      list: EntityType[],
+      filters = state.filters,
+      filterConfig = state.filterConfig
+    ) {
       let res = filterEntityList({
         entityList: list,
         filters,
         filterConfig,
-      })
+      });
 
-      if (currentCollection?.type === 'diary-collection') {
+      if (currentCollection?.type === "diary-collection") {
         res = res.sort((a, b) => {
           return Number(b.id) - Number(a.id);
-        })
+        });
       }
       res = res.sort((a, b) => {
         return (b.sortIndex || 0) - (a.sortIndex || 0);
       });
-      return res
+      return res;
     }
 
     switch (action.type) {
@@ -64,7 +74,11 @@ export const getReducer = <
         return Object.assign({}, state, action.payload);
       }
       case "SET_FILTERS": {
-        const list = getShowingList(state.entityList, action.payload.filters, action.payload.filterConfig || state.filterConfig);
+        const list = getShowingList(
+          state.entityList,
+          action.payload.filters,
+          action.payload.filterConfig || state.filterConfig
+        );
         return Object.assign({}, state, {
           filters: action.payload.filters,
           filterConfig: action.payload.filterConfig || state.filterConfig,
@@ -132,7 +146,7 @@ export const getReducer = <
       }
 
       case "SET_ENTITY_LIST": {
-        const list = getShowingList(action.payload)
+        const list = getShowingList(action.payload);
         return Object.assign({}, state, {
           entityList: action.payload,
           fromLocalStorage: false,
@@ -179,7 +193,7 @@ export const getReducer = <
           entityList: newList,
           currentEntity: payload,
           showingEntityList: getShowingList(newList),
-          fromLocalStorage: false
+          fromLocalStorage: false,
         });
       }
       // todo: reducer 里面实际还涉及到 storage 操作，怎么办？
@@ -250,7 +264,7 @@ export const getReducer = <
       if (typeof filter === "string") {
         if (key == "all") {
           list = list.filter((e) => {
-            const obj = pick(e, ["tags", "content",]);
+            const obj = pick(e, ["tags", "content"]);
             return JSON.stringify(obj).includes(filter);
           });
         } else {
@@ -295,8 +309,6 @@ export const getReducer = <
   }
   return reducer;
 };
-
-
 
 function updateOrCreateInList(payload, list) {
   // 如果列表为空，直接返回包含新对象的列表

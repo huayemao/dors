@@ -84,7 +84,7 @@ function Content({
   return (
     <div>
       <EntityRouteSimple
-        key="categories"
+        key="navigation"
         renderEntityModalTitle={(e: NavigationItem & { id: string | number }) => e.title}
         renderEntity={(e: NavigationItem & { id: string | number }) => <Application href={e.url} name={e.title} iconName={e.iconName || 'link'}></Application>}
         state={state}
