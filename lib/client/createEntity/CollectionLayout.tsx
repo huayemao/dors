@@ -11,7 +11,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { useNavigate, useOutlet, useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useOutlet,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { fetchWithAuth } from "../utils/fetch";
@@ -163,7 +168,9 @@ export default function CollectionLayout<
           </div>
         </div>
       </div>
-      <AnimatePresence>{outlet}</AnimatePresence>
+      <AnimatePresence mode="wait" initial={false}>
+        {outlet}
+      </AnimatePresence>
     </>
   );
 }

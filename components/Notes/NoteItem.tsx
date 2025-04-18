@@ -89,7 +89,7 @@ export function NoteItem({
     () => (
       <div
         ref={contentRef}
-        className={cn("px-4 relative flex-1", {
+        className={cn("px-4 relative mx-auto w-full", {
           "lg:px-6 xs:max-h-72 xs:h-auto h-72  overflow-hidden": preview,
         })}
       >

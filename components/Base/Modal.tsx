@@ -11,6 +11,7 @@ export const Modal = ({
   actions,
   className,
   size,
+  classes,
 }: {
   open: boolean;
   onClose: () => void;
@@ -19,6 +20,9 @@ export const Modal = ({
   actions?: React.ReactNode;
   className?: string;
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+  classes?: {
+    wrapper?: string;
+  };
 }) => {
   const dialogClasses = (() => {
     const classes: string[] = [];
@@ -49,10 +53,11 @@ export const Modal = ({
 
   return (
     <Dialog
-      key={String(open)}
-      unmount={false}
       onClose={onClose}
-      className="z-50 fixed inset-0 bg-muted-800/70 dark:bg-muted-900/80"
+      className={cn(
+        "z-50 fixed inset-0 bg-muted-800/70 dark:bg-muted-900/80",
+        classes?.wrapper
+      )}
       open={open}
       as={motion.div}
       // initial={{ opacity: 0 }}

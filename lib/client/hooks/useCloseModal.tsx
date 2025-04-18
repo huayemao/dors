@@ -16,7 +16,7 @@ export function useCloseModal() {
         navigate(-1);
       } else {
         if (locationR.search) {
-          navigate({ search: "" });
+          navigate({ search: "" }, { replace: true });
         } else {
           navigate("../", { replace: true });
         }

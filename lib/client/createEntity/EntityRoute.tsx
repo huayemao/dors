@@ -55,9 +55,9 @@ export default function EntityRoute<
   slots,
   layout,
   extraRoutes = [],
-  EntityPreviewPage
+  EntityPreviewPage,
 }: Props<EType, CType>) {
-  const isView = state.entityModalMode == 'view'
+  const isView = state.entityModalMode == "view";
   const router = createBrowserRouter(
     [
       {
@@ -89,16 +89,22 @@ export default function EntityRoute<
           ...addActionRoutes,
           {
             path: ":entityId",
-            element: EntityPreviewPage && isView ? <EntityPreviewPage state={state as EntityState<EType, CType>} dispatch={dispatch as EntityDispatch<EType, CType>} /> : (
-              <ViewOrEditEntityModal
-                renderEntityModalTitle={renderEntityModalTitle}
-                renderEntityModalActions={renderEntityModalActions}
-                renderEntity={renderEntity}
-                state={state}
-                dispatch={dispatch}
-                form={createForm}
-              ></ViewOrEditEntityModal>
-            ),
+            element:
+              EntityPreviewPage && isView ? (
+                <EntityPreviewPage
+                  state={state as EntityState<EType, CType>}
+                  dispatch={dispatch as EntityDispatch<EType, CType>}
+                />
+              ) : (
+                <ViewOrEditEntityModal
+                  renderEntityModalTitle={renderEntityModalTitle}
+                  renderEntityModalActions={renderEntityModalActions}
+                  renderEntity={renderEntity}
+                  state={state}
+                  dispatch={dispatch}
+                  form={createForm}
+                ></ViewOrEditEntityModal>
+              ),
           },
           {
             path: "create",

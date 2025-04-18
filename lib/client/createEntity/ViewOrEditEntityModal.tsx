@@ -1,6 +1,7 @@
 import { Modal } from "@/components/Base/Modal";
 import { cn } from "@/lib/utils";
 import { copyTextToClipboard, withConfirm } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BaseButton,
   BaseButtonIcon,
@@ -16,7 +17,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { FormFoot } from "@/lib/client/createEntity/FormFoot";
 import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
@@ -43,10 +44,7 @@ export default function ViewOrEditEntityModal<
     entity: EType,
     options: { preview: boolean }
   ) => ReactNode;
-  renderEntity: (
-    entity: EType,
-    options: { preview: boolean }
-  ) => ReactNode;
+  renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
   form: FC<PropsWithChildren>;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
@@ -64,46 +62,24 @@ export default function ViewOrEditEntityModal<
 
   const { entityId, collectionId } = useParams();
   const entity = entityList.find((e) => String(e.id) == entityId);
-  const [loading, setLoading] = useState(true)
-  const location = useLocation();
-  const sp = new URLSearchParams(location.search);
-  const isFull = sp.get('view')==='full'
-
-
-  const cancel = useCallback(() => {
-    if (state.modalOpen) {
-      dispatch({ type: "CANCEL" });
-    }
-  }, [dispatch, state.modalOpen]);
+  const [loading, setLoading] = useState(true);
+  const [sp] = useSearchParams();
+  const isFull = sp.get("view") === "full";
 
   useEffect(() => {
     if (!entity) {
       return;
     }
+
+    // 设置当前实体
     dispatch({
       type: "ANY",
       payload: {
-        // entityModalMode: "view",
         currentEntity: entity,
       },
     });
-    setLoading(false)
-  }, [cancel, dispatch, entity]);
-
-  useEffect(() => {
-    if (!state.modalOpen) {
-      dispatch({
-        type: "ANY",
-        payload: {
-          modalOpen: true,
-        },
-      });
-    }
-
-    return () => {
-      cancel();
-    };
-  }, [cancel, dispatch]);
+    setLoading(false);
+  }, [entity, dispatch]);
 
   const handleRemove = useCallback(() => {
     withConfirm(() => {
@@ -115,88 +91,102 @@ export default function ViewOrEditEntityModal<
     })();
   }, [close, currentEntity.id, dispatch]);
 
-  if(isFull){
-    return <PreviewModal open={currentEntity && modalOpen} onClose={close} loading={false}>
-       {renderEntity(currentEntity, { preview: false })}
-    </PreviewModal>
-  }
-
   return (
-    <Modal
-      open={modalOpen}
-      onClose={close}
-      title={renderEntityModalTitle(currentEntity, { preview: false })}
-      className={cn({ "max-w-7xl": entityModalMode == "edit" })}
-      actions={
-        <>
-          {entityModalMode == "view" ? (
+    <>
+      {/* 如果 open 条件写 isFull 会导致 isFull 变为假时，modal 会打开，整个组件卸载不掉 */}
+      {!isFull ? (
+        <Modal
+          key={"modal"}
+          open
+          onClose={close}
+          title={renderEntityModalTitle(currentEntity, { preview: false })}
+          className={cn({
+            "max-w-7xl": entityModalMode == "edit",
+            // 'h-screen w-screen': isFull,
+          })}
+          // classes={{
+          //   wrapper: cn({
+          //     "!hidden h-screen w-screen": isFull,
+          //   }),
+          // }}
+          actions={
             <>
-              <BaseButtonIcon
-                rounded="md"
-                size="sm"
-                data-nui-tooltip="编辑"
-                onClick={() => {
-                  dispatch({
-                    type: "SET_ENTITY_MODAL_MODE",
-                    payload: "edit",
-                  });
-                }}
-              >
-                <Edit2 className="h-4 w-4"></Edit2>
-              </BaseButtonIcon>
-              <BaseDropdown variant="context">
-                {renderEntityModalActions(currentEntity, { preview: false })}
-                {!state.inMemory &&
-                  <BaseDropdownItem
+              {entityModalMode == "view" ? (
+                <>
+                  <BaseButtonIcon
                     rounded="md"
-                    data-nui-tooltip="删除"
-                    title="删除"
-                    onClick={handleRemove}
-                    start={<Trash className="h-4 w-4" />}
-                  ></BaseDropdownItem>
-                }
-              </BaseDropdown>
+                    size="sm"
+                    data-nui-tooltip="编辑"
+                    onClick={() => {
+                      dispatch({
+                        type: "SET_ENTITY_MODAL_MODE",
+                        payload: "edit",
+                      });
+                    }}
+                  >
+                    <Edit2 className="h-4 w-4"></Edit2>
+                  </BaseButtonIcon>
+                  <BaseDropdown variant="context">
+                    {renderEntityModalActions(currentEntity, {
+                      preview: false,
+                    })}
+                    {!state.inMemory && (
+                      <BaseDropdownItem
+                        rounded="md"
+                        data-nui-tooltip="删除"
+                        title="删除"
+                        onClick={handleRemove}
+                        start={<Trash className="h-4 w-4" />}
+                      ></BaseDropdownItem>
+                    )}
+                  </BaseDropdown>
+                </>
+              ) : (
+                <>
+                  <BaseButtonIcon
+                    rounded="md"
+                    size="sm"
+                    data-nui-tooltip="返回"
+                    onClick={() => {
+                      dispatch({
+                        type: "SET_ENTITY_MODAL_MODE",
+                        payload: "view",
+                      });
+                    }}
+                  >
+                    <ArrowLeftIcon className="h-4 w-4"></ArrowLeftIcon>
+                  </BaseButtonIcon>
+                  <AddAction base="../"></AddAction>
+                </>
+              )}
             </>
+          }
+        >
+          {entityModalMode == "view" ? (
+            <div className="md:px-12">
+              <div className="flex justify-center w-full ">
+                {loading ? (
+                  <div className="flex justify-center items-center w-full h-32">
+                    加载中...
+                  </div>
+                ) : (
+                  renderEntity(currentEntity, { preview: false })
+                )}
+              </div>
+            </div>
           ) : (
             <>
-              <BaseButtonIcon
-                rounded="md"
-                size="sm"
-                data-nui-tooltip="返回"
-                onClick={() => {
-                  dispatch({
-                    type: "SET_ENTITY_MODAL_MODE",
-                    payload: "view",
-                  });
-                }}
-              >
-                <ArrowLeftIcon className="h-4 w-4"></ArrowLeftIcon>
-              </BaseButtonIcon>
-              <AddAction base="../"></AddAction>
+              <Form>
+                <FormFoot></FormFoot>
+              </Form>
             </>
           )}
-        </>
-      }
-    >
-      {entityModalMode == "view" ? (
-        <div className="md:px-12">
-          <div className="flex justify-center w-full ">
-            {loading ? (
-              <div className="flex justify-center items-center w-full h-32">
-                加载中...
-              </div>
-            ) : (
-              renderEntity(currentEntity, { preview: false })
-            )}
-          </div>
-        </div>
+        </Modal>
       ) : (
-        <>
-          <Form>
-            <FormFoot></FormFoot>
-          </Form>
-        </>
+        <PreviewModal key={"modal"} open onClose={close} loading={false}>
+          {renderEntity(currentEntity, { preview: false })}
+        </PreviewModal>
       )}
-    </Modal>
+    </>
   );
 }
