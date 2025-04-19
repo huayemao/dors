@@ -1,11 +1,12 @@
 "use client";
 import { Menu, MoveLeft } from "lucide-react";
-import { Modal } from "../Base/Modal";
+import { PreviewModal } from "../Base/PreviewModal";
 import { ActionTabs } from "./SideTabs";
 import { useState } from "react";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { BaseButtonIcon } from "@shuriken-ui/react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
+import { AnimatePresence } from "framer-motion";
 interface Props extends React.HTMLAttributes<HTMLAnchorElement> {
   children?: JSX.Element;
   post;
@@ -24,9 +25,11 @@ export const ActionButton = withClientOnly(
         <BaseButtonIcon size="sm" onClick={handleClick}>
           <Menu className="size-4 fill-current"></Menu>
         </BaseButtonIcon>
-        <Modal open={open} onClose={() => setOpen(false)} size="lg">
-          <ActionTabs post={post} posts={posts}></ActionTabs>
-        </Modal>
+        <AnimatePresence>
+          <PreviewModal key={String(open)} open={open} onClose={() => setOpen(false)}>
+            <ActionTabs post={post} posts={posts}></ActionTabs>
+          </PreviewModal>
+        </AnimatePresence>
       </>
     ) : null;
   }

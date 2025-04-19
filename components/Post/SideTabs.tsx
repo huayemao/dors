@@ -8,6 +8,7 @@ import { Modal } from "../Base/Modal";
 import { MiniPostTile } from "../MiniPostTile";
 import { ShareButton } from "../ShareButton";
 import { CopyToClipboard } from "../copy-to-clipboard";
+import { AnimatePresence } from "framer-motion";
 
 const TOC = dynamic(() => import("./toc"), {
   ssr: false,
@@ -115,20 +116,22 @@ export function ActionTabs({ post, posts }) {
           </>
         )}
       </BaseTabs>
-
-      <Modal
-        actions={
-          <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
-        }
-        className={"whitespace-pre-wrap"}
-        open={markdownOpen}
-        onClose={() => {
-          setMarkdownOpen(false);
-        }}
-        title={post.title}
-      >
-        <div ref={ref}>{post.content}</div>
-      </Modal>
+      <AnimatePresence>
+        <Modal
+          key={String(markdownOpen)}
+          actions={
+            <>{<CopyToClipboard getValue={() => ref.current!.innerText} />}</>
+          }
+          className={"whitespace-pre-wrap"}
+          open={markdownOpen}
+          onClose={() => {
+            setMarkdownOpen(false);
+          }}
+          title={post.title}
+        >
+          <div ref={ref}>{post.content}</div>
+        </Modal>
+      </AnimatePresence>
     </>
   );
 }
