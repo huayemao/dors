@@ -19,7 +19,7 @@ export default async function PostsByTag({
   };
 }) {
   const posts = await getProcessedPosts(
-    await getPosts({ ...searchParams, tagId: Number(params.id) })
+    await getPosts({ perPage: 200, ...searchParams, tagId: Number(params.id) })
   );
 
   return <Posts data={posts} />;
