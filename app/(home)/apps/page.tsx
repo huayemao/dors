@@ -54,7 +54,7 @@ export default async function Apps({
             <div className="flex justify-end">
                 <ClearCacheButton path="/apps" />
             </div>
-            <div className="flex justify-around gap-6  pb-8 flex-wrap">
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 pb-8">
                 {apps.map((app, i) => (
                     <Application key={i} {...app}></Application>
                 ))}
