@@ -1,3 +1,4 @@
+import { SITE_META } from "@/constants";
 import { BaseCard, BasePlaceload } from "@shuriken-ui/react";
 
 export default function DiariesLoading() {
@@ -22,9 +23,11 @@ export default function DiariesLoading() {
       <div className="lg:grid lg:grid-cols-2 gap-12">
         {/* Desktop month selector loading */}
         <div className="hidden lg:block lg:col-span-1">
-          <div className="sticky top-20">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">日记归档</h2>
+          <div className="sticky top-24">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-semibold mb-2">
+                {SITE_META.author.name}的日记归档
+              </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
                 这里记录了每个月的点滴生活，点击月份可以快速跳转到对应的日记集合。
               </p>
@@ -70,4 +73,4 @@ export default function DiariesLoading() {
       </div>
     </div>
   );
-} 
+}

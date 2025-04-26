@@ -1,4 +1,5 @@
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseButtonAction, BaseCard } from "@shuriken-ui/react";
+import { SITE_META } from "@/constants";
 import { getDiaryPosts, processDiaryEntries } from "@/lib/server/diaries";
 import { ProcessedDiary } from "@/components/Diary/ProcessedDiary";
 import { notFound } from "next/navigation";
@@ -33,7 +34,7 @@ export default async function DiariesPage({
       {/* Mobile month selector */}
       <div className="lg:hidden mb-8">
         <BaseCard rounded="md">
-          <div className="p-4">
+          <div className="p-4 relative">
             <h2 className="text-lg font-semibold mb-4">月份</h2>
             <div className="flex flex-wrap gap-2">
               {posts.map((post) => (
@@ -49,16 +50,17 @@ export default async function DiariesPage({
                 </Link>
               ))}
             </div>
+            <BaseButtonAction className="absolute right-4 top-4" color="muted" href={'/notes/'+activePostId}>转到小记</BaseButtonAction>
           </div>
         </BaseCard>
       </div>
 
-      <div className="lg:grid lg:grid-cols-2 gap-12">
+      <div className="lg:grid lg:grid-cols-5 gap-12">
         {/* Desktop month selector */}
-        <div className="hidden lg:block lg:col-span-1">
-          <div className="sticky top-20">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">日记归档</h2>
+        <div className="hidden lg:block lg:col-span-2">
+          <div className="sticky top-24">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-semibold mb-2">{SITE_META.author.name}的日记归档</h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
                 这里记录了每个月的点滴生活，点击月份可以快速跳转到对应的日记集合。
               </p>
@@ -76,12 +78,16 @@ export default async function DiariesPage({
                   </Link>
                 ))}
               </div>
+              <div className="w-full text-right">
+                <BaseButtonAction color="primary" href={'/notes/'+activePostId}>转到小记</BaseButtonAction>
+              </div>
+
             </div>
           </div>
         </div>
 
         {/* Diary list - only show active post */}
-        <div className="lg:col-span-1 max-w-3xl">
+        <div className="lg:col-span-3 max-w-3xl">
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6">{processedActivePost.title}</h2>
             <div className="space-y-4 md:space-y-6">
