@@ -65,11 +65,6 @@ export default async function Home({
       <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
         {SITE_META.introduction}
       </p>
-      <div className="ltablet:overflow-visible flex justify-around gap-6 overflow-x-auto pb-8 lg:overflow-visible ">
-        {apps.map((app, i) => (
-          <Application key={i} {...app}></Application>
-        ))}
-      </div>
       <CatsAndTags simple></CatsAndTags>
       <div className="space-y-4">
         <BaseHeading size="3xl" className="text-center" as="h2">
