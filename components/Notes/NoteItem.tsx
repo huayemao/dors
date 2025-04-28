@@ -94,6 +94,7 @@ export function NoteItem({
         })}
       >
         <Prose
+          className="mx-auto"
           onLoadingChange={setLoading}
           key={data.id}
           content={data.content}
