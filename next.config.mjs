@@ -32,6 +32,7 @@ class RevisionPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   webpack(config, { buildId }) {
     config.resolve.fallback = { fs: false, child_process: false };
     config.plugins.push(new RevisionPlugin({ buildId }));
@@ -67,7 +68,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["prisma", "shiki", "vscode-oniguruma"],
   },
-  output: process.env.OUTPUT_MODE,
   basePath:
     process.env.OUTPUT_MODE === "export" && process.env.GITHUB_PAGE
       ? "/dors"
