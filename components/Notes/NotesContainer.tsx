@@ -21,7 +21,7 @@ import { Archive, Copy, Edit2, LinkIcon } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BASE_NAME, HIDDEN_TAGS } from "./constants";
 import Search from "./Search";
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
@@ -32,6 +32,7 @@ export const useActions = (note: Note) => {
   const dispatch = useEntityDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const params = useParams();
   const res = useMemo(() => {
     const targetItemIndex = state.entityList?.findIndex(
       (e) => e.id === note.id
@@ -88,7 +89,7 @@ export const useActions = (note: Note) => {
           // todo: 改成 editQuestion
           dispatch({ type: "SET_ENTITY_LIST", payload: newList });
           toast.success("归档成功");
-          if (state.currentEntity?.id === note.id) {
+          if (!!params.entityId && state.currentEntity?.id === note.id) {
             close();
           }
         },
@@ -96,7 +97,7 @@ export const useActions = (note: Note) => {
         stopPropagation: true,
       },
     };
-  }, [dispatch, navigate, note, state.entityList]);
+  }, [dispatch, navigate, params.entityId, note, state.entityList]);
 
   return res;
 };
