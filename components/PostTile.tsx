@@ -46,15 +46,22 @@ function PostTile({
       >
         <Link href={"/posts/" + id} className="flex items-center">
           <div className="relative flex justify-start gap-2 w-full">
-            <Image
-              unoptimized={config.output === "export" || isDataURL(url)}
+            {typeof url == 'string' && (isDataURL(url) || !url.startsWith("/")) ? <img
               className="h-12 w-12 mask mask-blob object-cover"
               src={url}
-              alt={post.title || "Post image"}
+              alt={post?.title || "featured image"}
               width="48"
               height="48"
-              blurDataURL={blurDataURL}
-            />
+            /> :
+              <Image
+                unoptimized={config.output === "export"}
+                className="h-12 w-12 mask mask-blob object-cover"
+                src={url}
+                alt={post.title || "Post image"}
+                width="48"
+                height="48"
+                blurDataURL={blurDataURL}
+              />}
             <div className="truncate">
               <h3
                 title={post.title as string}
@@ -99,17 +106,25 @@ function PostTile({
                       )
                   )}
               </div>
-              <Image
+              {typeof url == 'string' && (isDataURL(url) || !url.startsWith("/")) ? <img
                 className="rounded-xl w-[348px] h-[208px] object-cover"
                 src={url}
-                placeholder={(blurDataURL && "blur") || undefined}
-                unoptimized={config.output === "export" || isDataURL(url)}
-                blurDataURL={blurDataURL}
-                alt={post.title || SITE_META.name}
-                quality={url.toString().includes(SITE_META.url) ? 100 : 80}
+                alt={post?.title || "featured image"}
                 width="348"
                 height="208"
-              />
+              /> :
+                <Image
+                  className="rounded-xl w-[348px] h-[208px] object-cover"
+                  src={url}
+                  placeholder={(blurDataURL && "blur") || undefined}
+                  unoptimized={config.output === "export"}
+                  blurDataURL={blurDataURL}
+                  alt={post.title || SITE_META.name}
+                  quality={url.toString().includes(SITE_META.url) ? 100 : 80}
+                  width="348"
+                  height="208"
+                />
+              }
             </div>
             <h3 className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6">
               {title}

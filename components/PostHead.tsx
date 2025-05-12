@@ -30,17 +30,23 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
           <div className="w-full mx-auto grid md:grid-cols-2 gap-2 ">
             <div className="bg-cover bg-center w-full mb-5 md:mb-0 ptablet:px-5 ltablet:px-4">
               {/* todo: 图片的齿唇其实需要优化 */}
-              <Image
+              {typeof url == 'string' && (isDataURL(url) || !url.startsWith("/")) ? <img
                 className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px]  rounded-3xl"
                 src={url}
                 alt={post?.title || "featured image"}
                 width={512}
                 height={373}
+              /> : <Image
+                alt={post?.title || "featured image"}
+                unoptimized={nextConfig.output === "export"}
+                className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px]  rounded-3xl"
+                src={url}
                 quality={url.toString().includes(SITE_META.url) ? 100 : 80}
-                unoptimized={nextConfig.output === "export" || isDataURL(url)}
                 blurDataURL={typeof url === "string" ? blurDataURL : undefined}
                 placeholder={(blurDataURL && "blur") || undefined}
               />
+              }
+
             </div>
 
             <div className="h-full flex items-center ptablet:px-4 ltablet:px-6 break-words justify-center">

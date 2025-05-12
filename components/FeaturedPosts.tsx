@@ -40,17 +40,25 @@ const Hero = ({
 "
     >
       <div className="h-full p-5">
-        <Image
-          unoptimized={config.output === "export" || isDataURL(imageSrc)}
-          className="block h-full w-full object-cover rounded-xl "
-          /* @ts-ignore */
+        {typeof imageSrc == 'string' && (isDataURL(imageSrc) || !imageSrc.startsWith("/")) ? <img
+          className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px]  rounded-3xl"
           src={imageSrc}
-          placeholder="blur"
-          alt={title}
+          alt={title || "featured image"}
           width={365}
           height={356}
-          style={{ aspectRatio: "365/356" }}
-        />
+        /> :
+          <Image
+            unoptimized={config.output === "export"}
+            className="block h-full w-full object-cover rounded-xl "
+            /* @ts-ignore */
+            src={imageSrc}
+            placeholder="blur"
+            alt={title}
+            width={365}
+            height={356}
+            style={{ aspectRatio: "365/356" }}
+          />
+        }
       </div>
       <div className=" flex flex-col items-start gap-4 px-6 md:px-10 py-8 -mt-8 md:mt-0 md:-ml-5">
         <div className="w-full space-y-4">

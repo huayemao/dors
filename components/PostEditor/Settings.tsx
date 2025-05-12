@@ -6,7 +6,7 @@ import { PostContext } from "@/contexts/post";
 import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/server/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
-import { getDateForDateTimeInput } from "@/lib/utils";
+import { getDateForDateTimeInput, isDataURL } from "@/lib/utils";
 import { BaseButton, BaseInput } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -63,8 +63,8 @@ const CoverImageSetting = ({
   editTime,
 }: {
   originalPhoto:
-    | PexelsPhoto
-    | { dataURLs: { large: string }; alt?: string; src: { large: string } };
+  | PexelsPhoto
+  | { dataURLs: { large: string }; alt?: string; src: { large: string } };
   postId: string;
   editTime: string;
 }) => {
@@ -74,13 +74,20 @@ const CoverImageSetting = ({
   return (
     <>
       <form>
-        <Image
+        {typeof photo.src?.large == 'string' && (isDataURL(photo.src?.large) || !photo.src?.large.startsWith("/")) ? <img
+          className="w-full"
+          src={photo.src?.large}
+          alt={photo.alt || "featured image"}
           width={300}
           height={240}
-          className="w-full"
-          alt={photo.alt || ""}
-          src={photo.src?.large || ""}
-        />
+        /> :
+          <Image
+            width={300}
+            height={240}
+            className="w-full"
+            alt={photo.alt || ""}
+            src={photo.src?.large || ""}
+          />}
         <div className="text-right mt-2">
           <BaseButton
             loading={loading}
