@@ -19,7 +19,8 @@ export async function POST(request: Request) {
     tags,
     cover_image_url,
     type,
-    slug
+    slug,
+    toc,
   } = readPostFormData(formData);
 
 
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
     created_at,
     categoryId: category_id,
     cover_image_url,
+    toc
   });
 
   await revalidateHomePage(res.id);

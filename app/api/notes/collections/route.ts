@@ -1,4 +1,4 @@
-import { createPost, getPost, getPosts } from "@/lib/server/posts";
+import { getPosts } from "@/lib/server/posts";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

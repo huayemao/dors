@@ -15,6 +15,9 @@ export function readPostFormData(formData: FormData) {
   const tags = formData.has("tags")
     ? (formData.getAll("tags") as string[])
     : undefined;
+  const toc = formData.has("toc")
+    ? (formData.getAll("toc") as string[])
+    : undefined;
 
   return {
     id,
@@ -30,5 +33,6 @@ export function readPostFormData(formData: FormData) {
     cover_image_url,
     type,
     slug,
+    toc
   };
 }

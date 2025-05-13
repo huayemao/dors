@@ -170,6 +170,10 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
                     label: "页面",
                     value: "page",
                   },
+                  {
+                    label: "知识库",
+                    value: "book",
+                  },
                 ]}
               ></SelectWithName>
               <label className="text-stone-400 hover:text-stone-500">

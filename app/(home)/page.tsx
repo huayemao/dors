@@ -1,5 +1,6 @@
 import { CatsAndTags } from "@/components/CatsAndTags";
 import { Posts } from "@/components/Posts";
+import { Books, BookSummary } from "@/components/Books";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
@@ -30,6 +31,8 @@ export default async function Home({
       type: "normal",
     })
   );
+
+  const books = await getPosts({ type: "book" }) as BookSummary[];
 
   const resourceItems = await getResourceItems();
 
@@ -66,11 +69,14 @@ export default async function Home({
         {SITE_META.introduction}
       </p>
       <CatsAndTags simple></CatsAndTags>
-      <div className="space-y-4">
-        <BaseHeading size="3xl" className="text-center" as="h2">
-          文章列表
-        </BaseHeading>
-        <Posts data={posts} />
+      <div className="space-y-8">
+          <Books data={books}/>
+        <div className="space-y-4">
+          <BaseHeading size="3xl" className="text-center" as="h2">
+            文章列表
+          </BaseHeading>
+          <Posts data={posts} />
+        </div>
       </div>
     </Fragment>
   );

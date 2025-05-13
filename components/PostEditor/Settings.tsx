@@ -240,6 +240,15 @@ export default function Settings({ params }) {
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
+      <Panel
+        title="目录"
+        description="选择要包含在目录中的文章"
+      >
+        <form className="mb-3">
+          <TOC></TOC>
+        </form>
+        <SaveButton postId={String(post.id)}></SaveButton>
+      </Panel>
     </div>
   );
 
@@ -267,9 +276,6 @@ export default function Settings({ params }) {
           })}
         </select>
         <BaseAutocomplete
-          // @ts-ignore
-          // id="tags"
-          // name="tags"
           onChange={setValue}
           value={value}
           items={tags.map((e) => e.name as string)}
@@ -277,6 +283,44 @@ export default function Settings({ params }) {
           icon="lucide:list-filter"
           placeholder="搜索..."
           label="标签"
+          allowCreate
+          multiple
+        />
+      </>
+    );
+  }
+
+  function TOC() {
+    const [value, setValue] = useState<string[]>(
+      (post!.toc as { id: number; title: string }[] || [])?.map((e) => String(e?.id)).sort() || []
+    );
+
+    return (
+      <>
+        <select
+          multiple
+          id="toc"
+          name="toc"
+          defaultValue={value}
+          data-original-value={(post!.toc as { id: number; title: string }[] || [])?.map((e) => String(e?.id)).sort() || []}
+          className="hidden"
+        >
+          {value.map((e) => {
+            return (
+              <option value={e} key={e} selected>
+                {e}
+              </option>
+            );
+          })}
+        </select>
+        <BaseAutocomplete
+          onChange={setValue}
+          value={value}
+          items={(post!.toc as { id: number; title: string }[] || [])?.map((e) => e.title as string) || []}
+          rounded="md"
+          icon="lucide:list-filter"
+          placeholder="搜索..."
+          label="目录"
           allowCreate
           multiple
         />

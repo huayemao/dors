@@ -550,6 +550,7 @@ model posts {
   protected                                    Boolean                @default(false)
   title                                        String?                @db.VarChar(255)
   slug                                         String?                @db.VarChar(80)
+  toc                                          Json?                  @db.Json
   created_at                                   DateTime?              @db.DateTime(6)
   updated_at                                   DateTime?              @db.DateTime(6)
   published_at                                 DateTime?              @db.DateTime(6)

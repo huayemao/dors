@@ -1,18 +1,32 @@
 import { SITE_META } from "@/constants";
-import { getPost, getPosts } from "@/lib/server/posts";
 import { cn, getDateString, isDataURL } from "@/lib/utils";
 import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Category } from "./Category";
 import Tag from "./Tag";
-type Post = Awaited<ReturnType<typeof getPosts>>[number];
+
+type PostWithRelations = {
+  id: number;
+  title: string | null;
+  tags: Array<{ id: number; name: string | null } | null>;
+  updated_at: Date | null;
+  created_at: Date | null;
+  cover_image: any;
+  posts_category_links: Array<{
+    categories: {
+      id: number;
+      name: string | null;
+      meta: { icon: string } | null;
+    } | null;
+  }>;
+};
 
 interface Props {
-  post: Post;
+  post: PostWithRelations;
   url: string;
   blurDataURL: string;
-  type: "default" | "mini";
+  type?: "default" | "mini" | "normal";
   rounded?: boolean;
 }
 
@@ -79,7 +93,7 @@ function PostTile({
     );
   }
 
-  const cat = post!.posts_category_links![0].categories!;
+  const cat = post.posts_category_links[0].categories;
 
   return (
     <hgroup className="relative" key={id}>
@@ -94,7 +108,7 @@ function PostTile({
               <div className="space-x-2 absolute top-3 left-3">
                 {tags &&
                   tags?.length > 0 &&
-                  (tags as { id: number; name: string }[]).map(
+                  tags.map(
                     (t) =>
                       t && (
                         <Tag
@@ -134,14 +148,16 @@ function PostTile({
             suppressHydrationWarning
             className="flex items-center justify-start w-full relative"
           >
-            <Category
-              size="sm"
-              href={`/categories/${cat.id}`}
-              name={cat.name as string}
-              key={cat.id}
-              as={"span"}
-              iconName={(cat.meta as { icon: string }).icon}
-            />
+            {cat && (
+              <Category
+                size="sm"
+                href={`/categories/${cat.id}`}
+                name={cat.name as string}
+                key={cat.id}
+                as={"span"}
+                iconName={(cat.meta as { icon: string }).icon}
+              />
+            )}
             <div className="block ml-auto font-sans text-sm text-muted-400 text-right">
               <div>
                 {post?.updated_at

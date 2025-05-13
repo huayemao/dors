@@ -19,6 +19,7 @@ export function Posts({
           {data.map((e) => (
             <PostTile
               rounded={mini}
+              /* @ts-ignore */
               post={e}
               /* @ts-ignore */
               blurDataURL={e.blurDataURL}

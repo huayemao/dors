@@ -8,6 +8,35 @@ import { PexelsPhoto } from "../types/PexelsPhoto";
 import { getPexelImages, getWordCount, isDataURL, markdownToHtml } from "../utils";
 import { unstable_cache } from "next/cache";
 
+type PostWithRelations = Prisma.postsGetPayload<{
+  include: {
+    posts_category_links: {
+      include: {
+        categories: true;
+      };
+    };
+    tags_posts_links: {
+      include: {
+        tags: true;
+      };
+    };
+  };
+}> & {
+  toc?: Prisma.JsonValue;
+};
+
+// 添加 Prisma 类型扩展
+declare global {
+  namespace Prisma {
+    interface postsCreateInput {
+      toc?: { id: number }[];
+    }
+    interface postsUpdateInput {
+      toc?: { id: number }[];
+    }
+  }
+}
+
 export const getPost = unstable_cache(async (id: number) => {
   const res = await prisma.posts.findUnique({
     where: {
@@ -25,7 +54,7 @@ export const getPost = unstable_cache(async (id: number) => {
         },
       },
     },
-  });
+  }) as PostWithRelations | null;
 
   if (!res) {
     return null;
@@ -39,16 +68,51 @@ export const getPost = unstable_cache(async (id: number) => {
 
   const html = await markdownToHtml(res.content);
   const wordCount = getWordCount(html);
+
+  // 如果是书籍类型，获取包含的文章
+  let posts: Array<{
+    id: number;
+    title: string | null;
+    updated_at: Date | null;
+    created_at: Date | null;
+    type: string;
+  }> = [];
+
+  if (res.type === "book" && res.toc) {
+    const toc = res.toc as { id: number }[];
+    if (toc.length > 0) {
+      const tocIds = toc.map(item => item.id);
+      posts = await prisma.posts.findMany({
+        where: {
+          id: {
+            in: tocIds
+          }
+        },
+        select: {
+          id: true,
+          title: true,
+          updated_at: true,
+          created_at: true,
+          type: true,
+        },
+      });
+
+      posts = tocIds.map(id => posts.find(post => post.id === id)).filter(Boolean) as typeof posts;
+    }
+  }
+
   return {
     ...res,
     tags: res?.tags_posts_links.map((e) => e.tags),
     wordCount,
+    posts,
   };
 },
   ['get_post'], {
   tags: ['posts']
 }
 );
+
 export const getPostBySlug = unstable_cache(async (slug: string) => {
   const res = await prisma.posts.findFirst({
     where: {
@@ -102,7 +166,7 @@ export const getPostIds = unstable_cache(async (params?: { protected?: boolean, 
   });
 });
 
-type PostType = "collection" | "normal" | "diary-collection" | "page"
+type PostType = "collection" | "normal" | "diary-collection" | "page" | "book"
 
 type getPostOptions = PaginateOptions & {
   tagId?: number;
@@ -114,17 +178,56 @@ type getPostOptions = PaginateOptions & {
 };
 
 export const getPosts = unstable_cache(async (options: getPostOptions = { type: 'normal' }) => {
-  return await Promise.all(
-    (
-      await getAllPosts(options)
-    ).map(async (e) => {
-      return {
-        ...e,
-        tags: e.tags_posts_links.map((e) => e.tags),
-        category: e.posts_category_links?.[0]?.categories,
-      };
-    })
-  );
+  const posts = await getAllPosts(options);
+
+  // 如果是书籍类型，获取每本书包含的文章
+  if (options.type === 'book') {
+    const postsWithBooks = await Promise.all(
+      posts.map(async (post) => {
+        const toc = (post as any).toc as { id: number }[] | undefined;
+        let containedPosts: Array<{
+          id: number;
+          title: string | null;
+          updated_at: Date | null;
+        }> = [];
+
+
+        if (toc) {
+          const tocIds = toc.map(item => item.id)
+
+          containedPosts = await prisma.posts.findMany({
+            where: {
+              id: {
+                in: tocIds
+              }
+            },
+            select: {
+              id: true,
+              title: true,
+              updated_at: true,
+            },
+            orderBy: {
+              created_at: 'asc'
+            }
+          });
+          containedPosts = tocIds.map(id => containedPosts.find(post => post.id === id)).filter(Boolean) as typeof posts;
+        }
+        return {
+          ...post,
+          posts: containedPosts
+        };
+      })
+    );
+    return postsWithBooks;
+  }
+
+  return posts.map((e) => {
+    return {
+      ...e,
+      tags: e.tags_posts_links.map((e) => e.tags),
+      category: e.posts_category_links?.[0]?.categories,
+    };
+  });
 }, ['all-posts'], {
   tags: ['posts']
 });
@@ -193,6 +296,7 @@ async function getAllPosts(options: getPostOptions = {}) {
       created_at: true,
       updated_at: true,
       type: true,
+      toc: true,
       posts_category_links: {
         include: {
           categories: true,
@@ -334,7 +438,8 @@ type PostPayload = {
   created_at?: string;
   categoryId?: string;
   cover_image_url?: string;
-  slug?: string
+  slug?: string;
+  toc?: string[];
 };
 
 type CreatePostPayload = Omit<PostPayload, "id">;
@@ -343,22 +448,24 @@ export async function updatePost(
   post: Awaited<ReturnType<typeof getPost>>,
   params: PostPayload
 ) {
-  const postTagNames = post?.tags.map((e) => e?.name) as string[];
-
   const {
-    tags,
     id,
     content,
     excerpt,
     title,
-    changePhoto,
+    categoryId,
+    tags,
     isProtected,
+    type,
+    slug,
     updated_at,
     created_at,
-    categoryId,
-    type,
-    slug
+    changePhoto,
+    cover_image_url,
+    toc,
   } = params;
+
+  const postTagNames = post?.tags.map((e) => e?.name) as string[];
 
   if (tags && tags.sort().toString() !== postTagNames.sort().toString()) {
     const existedTags = await prisma.tags.findMany({
@@ -370,11 +477,8 @@ export async function updatePost(
     });
 
     const tagsIds = await addTags(tags, existedTags);
-
-    updatePostTags(post, tagsIds);
+    await updatePostTags(post, tagsIds);
   }
-  // await prisma.tags.find; tags 也必须要查？或者如果对比结果相同就不用查
-  // todo: 应该有 diff 的
 
   const shouldChangeCoverImage =
     // 没有 dataURLs?.blur 的，说明是之前的，
@@ -401,6 +505,7 @@ export async function updatePost(
         changePhoto === "on" ? await buildRandomCoverImage() : coverImage,
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       created_at: created_at ? new Date(created_at as string) : undefined,
+      toc: toc?.map(e => ({ id: Number(e) })) || undefined,
       tags_posts_links: {},
       posts_category_links: categoryId
         ? {
@@ -432,7 +537,7 @@ async function buildCoverImage(url: string) {
 }
 
 export async function createPost(params: CreatePostPayload) {
-  const { content, excerpt, title, categoryId, tags, isProtected, type } = params;
+  const { content, excerpt, title, categoryId, tags, isProtected, type, toc } = params;
 
   let coverImage: any;
 
@@ -464,6 +569,7 @@ export async function createPost(params: CreatePostPayload) {
       },
       cover_image: coverImage,
       protected: isProtected,
+      toc: toc?.map(e => ({ id: Number(e) })) || undefined,
     },
   });
 

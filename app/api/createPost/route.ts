@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     category_id: categoryId,
     tags,
     type,
+    toc
   } = readPostFormData(formData);
 
   const post = await createPost({
@@ -32,6 +33,7 @@ export async function POST(request: Request) {
         ? true
         : false
       : undefined,
+    toc
   });
 
   await revalidateHomePage(post.id);
