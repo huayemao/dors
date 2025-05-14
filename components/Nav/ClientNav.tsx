@@ -5,18 +5,20 @@ import { cn } from "@/lib/utils";
 import { NavigationItem } from "./NavigationItem";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Fragment } from "react";
-import { BaseThemeToggle } from "@shuriken-ui/react";
+import { BaseInput, BaseThemeToggle } from "@shuriken-ui/react";
 
 interface ClientNavContentProps {
   menuItems: any[];
   mobileOpen: boolean;
   closeMobileNav: () => void;
+  openSearchPanel?: () => void;
 }
 
 export const ClientNavContent = ({
   menuItems,
   mobileOpen,
   closeMobileNav,
+  openSearchPanel
 }: ClientNavContentProps) => {
   const isMobile = useClientMediaQuery("only screen and (max-width : 768px)");
   return (
@@ -95,8 +97,17 @@ export const ClientNavContent = ({
               }}
             ></motion.div>
             {isMobile && (
-              <div className="flex justify-center">
+              <div className="flex flex-col gap-4 items-center justify-center">
                 <BaseThemeToggle />
+                <BaseInput
+                  classes={{ wrapper: "flex-1 relative nui-autocomplete" }}
+                  icon="lucide:search"
+                  contrast="muted"
+                  onClick={openSearchPanel}
+                  placeholder="搜索"
+
+                // clearable
+                ></BaseInput>
               </div>
             )}
           </motion.div>
