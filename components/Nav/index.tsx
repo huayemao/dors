@@ -9,6 +9,7 @@ import {
   LucideProps,
   Settings2,
   TagIcon,
+  SearchIcon, // ✅ 新增
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -29,6 +30,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ClientNavContent } from "./ClientNav";
 import { useIsClient } from "@uidotdev/usehooks";
 import Logo from "./Logo";
+import { SearchPanel } from "./SearchPanel";
 
 const ServerNavContent = ({
   menuItems,
@@ -72,6 +74,7 @@ export const Nav = ({
   simple?: boolean
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const scrolled = useScrolled(60);
   const isClient = useIsClient();
 
@@ -116,100 +119,96 @@ export const Nav = ({
 
   ];
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.nav
-        key={String(mobileOpen)}
-        className={cn(
-          "dark:bg-muted-800 fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col md:flex-row md:items-center flex-shrink-0 px-5 print:hidden",
-          {
-            "shadow-md shadow-muted-400/10 dark:shadow-muted-800/10": scrolled && !simple,
-            "bg-white": scrolled && !simple,
-            "h-screen md:h-fit z-[11]": mobileOpen,
-            "dark:bg-muted-900": !scrolled,
-            'static bg-muted-100': simple,
-          }
-          , className
-        )}
-      >
-        {mobileOpen && (
-          <motion.div
-            className="absolute inset-0 bg-white dark:bg-muted-800 "
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: {
-                opacity: { duration: 0.2 },
-              },
-            }}
-            exit={{
-              opacity: 0,
-              transition: {
-                opacity: { duration: 0.2 },
-              },
-            }}
-          ></motion.div>
-        )}
-        <div
-          className="w-full max-w-6xl mx-auto xl:max-w-[88%] flex py-3 flex-row items-center sm:justify-between
-    "
-        >
-          <div className="flex justify-between items-center w-full md:w-1/5">
-            <Logo onClick={closeMobileNav} />
-            <MenuButton
-              setMobileOpen={setMobileOpen}
-              mobileOpen={mobileOpen}
-            ></MenuButton>
-          </div>
-
-          {isClient ? (
-            <ClientNavContent
-              menuItems={menuItems}
-              mobileOpen={mobileOpen}
-              closeMobileNav={closeMobileNav}
-            />
-          ) : (
-            <ServerNavContent
-              menuItems={menuItems}
-              closeMobileNav={closeMobileNav}
-            />
+    <>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.nav
+          key={String(mobileOpen)}
+          className={cn(
+            "dark:bg-muted-800 fixed z-10 top-0 w-full transition-all duration-300 ease-in-out flex flex-col md:flex-row md:items-center flex-shrink-0 px-5 print:hidden",
+            {
+              "shadow-md shadow-muted-400/10 dark:shadow-muted-800/10": scrolled && !simple,
+              "bg-white": scrolled && !simple,
+              "h-screen md:h-fit z-[11]": mobileOpen,
+              "dark:bg-muted-900": !scrolled,
+              'static bg-muted-100': simple,
+            }
+            , className
           )}
+        >
+          {mobileOpen && (
+            <motion.div
+              className="absolute inset-0 bg-white dark:bg-muted-800 "
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: {
+                  opacity: { duration: 0.2 },
+                },
+              }}
+              exit={{
+                opacity: 0,
+                transition: {
+                  opacity: { duration: 0.2 },
+                },
+              }}
+            ></motion.div>
+          )}
+          <div
+            className="w-full max-w-6xl mx-auto xl:max-w-[88%] flex py-3 flex-row items-center sm:justify-between
+    "
+          >
+            <div className="flex justify-between items-center w-full md:w-1/5">
+              <Logo onClick={closeMobileNav} />
+              <MenuButton
+                setMobileOpen={setMobileOpen}
+                mobileOpen={mobileOpen}
+              ></MenuButton>
+            </div>
 
-          <div className="hidden md:flex items-center md:w-1/5 md:justify-end md:gap-x-4">
-            <button
-              type="button"
-              className=" group h-12 w-12 rounded-full flex items-center justify-center tw-accessibility"
-            >
-              <div
-                className="h-10 w-10 flex items-center justify-center rounded-full text-muted-400 group-hover:text-muted-500 group-hover:bg-muted-100 dark:group-hover:bg-muted-700 dark:group-hover:text-muted-100 transition-colors duration-300
-          "
+            {isClient ? (
+              <ClientNavContent
+                menuItems={menuItems}
+                mobileOpen={mobileOpen}
+                closeMobileNav={closeMobileNav}
+                openSearchPanel={() => {
+                  closeMobileNav();
+                  setIsSearchOpen(true)
+                }}
+              />
+            ) : (
+              <ServerNavContent
+                menuItems={menuItems}
+                closeMobileNav={closeMobileNav}
+              />
+            )}
+
+            <div className="hidden md:flex items-center md:w-1/5 md:justify-end md:gap-x-4">
+              <button
+                type="button"
+                className="group h-12 w-12 rounded-full flex items-center justify-center tw-accessibility"
+                onClick={() => setIsSearchOpen(true)}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  role="img"
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 24 24"
-                  data-icon="lucide:search"
-                  className="iconify w-4 h-4 iconify--lucide"
+                <div
+                  className="h-10 w-10 flex items-center justify-center rounded-full text-muted-400 group-hover:text-muted-500 group-hover:bg-muted-100 dark:group-hover:bg-muted-700 dark:group-hover:text-muted-100 transition-colors duration-300"
                 >
-                  <g
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  >
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21l-4.35-4.35"></path>
-                  </g>
-                </svg>
-              </div>
-            </button>
-            <BaseThemeToggle />
+                  <SearchIcon
+                    role="img"
+                    width="1em"
+                    height="1em"
+                    viewBox="0 0 24 24"
+                    data-icon="lucide:search"
+                    className="iconify w-4 h-4 iconify--lucide"
+                  />
+                </div>
+              </button>
+              <BaseThemeToggle />
+            </div>
           </div>
-        </div>
-      </motion.nav>
-    </AnimatePresence>
+        </motion.nav>
+      </AnimatePresence>
+      <AnimatePresence>
+        <SearchPanel key={String(isSearchOpen)} isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)}></SearchPanel>
+      </AnimatePresence>
+    </>
   );
 };
