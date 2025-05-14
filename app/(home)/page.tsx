@@ -1,6 +1,6 @@
 import { CatsAndTags } from "@/components/CatsAndTags";
-import { Posts } from "@/components/Posts";
-import { Books, BookSummary } from "@/components/Books";
+import { Posts } from "@/components/Tiles/Posts";
+import { Books, BookSummary } from "@/components/Tiles/Books";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
@@ -32,7 +32,10 @@ export default async function Home({
     })
   );
 
-  const books = await getPosts({ type: "book" }) as BookSummary[];
+  const books = await getPosts({ 
+    type: "book",
+    includeHiddenCategories: true 
+  }) as BookSummary[];
 
   const resourceItems = await getResourceItems();
 

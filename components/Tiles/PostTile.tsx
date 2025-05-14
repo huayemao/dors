@@ -3,8 +3,8 @@ import { cn, getDateString, isDataURL } from "@/lib/utils";
 import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
-import { Category } from "./Category";
-import Tag from "./Tag";
+import { Category } from "../Category";
+import Tag from "../Tag";
 
 type PostWithRelations = {
   id: number;

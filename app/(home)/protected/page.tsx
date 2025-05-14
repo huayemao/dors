@@ -1,5 +1,5 @@
 import Pagination from "@/components/Pagination";
-import { Posts } from "@/components/Posts";
+import { Posts } from "@/components/Tiles/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { Suspense } from "react";

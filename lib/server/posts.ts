@@ -191,7 +191,6 @@ export const getPosts = unstable_cache(async (options: getPostOptions = { type: 
           updated_at: Date | null;
         }> = [];
 
-
         if (toc) {
           const tocIds = toc.map(item => item.id)
 
@@ -214,7 +213,8 @@ export const getPosts = unstable_cache(async (options: getPostOptions = { type: 
         }
         return {
           ...post,
-          posts: containedPosts
+          posts: containedPosts,
+          tags: post.tags_posts_links.map((e) => e.tags),
         };
       })
     );
@@ -312,7 +312,7 @@ async function getAllPosts(options: getPostOptions = {}) {
     take: take,
     skip,
   });
-  return res
+  return res;
 }
 
 type ProcessedPost = Awaited<ReturnType<typeof getPosts>>[0] & {

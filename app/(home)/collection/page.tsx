@@ -1,6 +1,5 @@
 import { CatsAndTags } from "@/components/CatsAndTags";
 import Pagination from "@/components/Pagination";
-import { Posts } from "@/components/Posts";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";

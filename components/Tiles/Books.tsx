@@ -12,6 +12,7 @@ export type BookSummary = {
     title: string | null;
     updated_at: Date | null;
   }>;
+  tags?: Array<{ id: number; name: string | null } | null>;
 };
 
 export function Books({data}:{data:BookSummary[]}) {
@@ -31,6 +32,7 @@ export function Books({data}:{data:BookSummary[]}) {
             title={book.title}
             coverImage={book.cover_image}
             posts={book.posts}
+            tags={book.tags}
           />
         ))}
       </div>

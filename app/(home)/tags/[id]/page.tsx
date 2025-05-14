@@ -1,4 +1,4 @@
-import { Posts } from "@/components/Posts";
+import { Posts } from "@/components/Tiles/Posts";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { getTagIds } from "@/lib/server/tags";
