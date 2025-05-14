@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: SITE_META.description + SITE_META.introduction,
   abstract: SITE_META.description + SITE_META.introduction,
   authors: SITE_META.author,
-  icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
+  icons: { icon: ["/favicon.ico", { sizes: 'any', url: '/favicon.svg', type: 'image/svg+xml' }], apple: "/apple-touch-icon.png" },
   openGraph: {
     description: SITE_META.description + SITE_META.introduction,
     images: SITE_META.url + "/img/huayemao.png",
