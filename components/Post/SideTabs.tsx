@@ -5,7 +5,7 @@ import { Code2, MessageSquareIcon, PenBox } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { Modal } from "../Base/Modal";
-import { MiniPostTile } from "../MiniPostTile";
+import { MiniPostTile } from "../Tiles/MiniPostTile";
 import { ShareButton } from "../ShareButton";
 import { CopyToClipboard } from "../copy-to-clipboard";
 import { AnimatePresence } from "framer-motion";
