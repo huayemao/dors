@@ -1,5 +1,5 @@
 "use client";
-import { readFromClipboard } from "@/lib/utils";
+import { cn, readFromClipboard } from "@/lib/utils";
 import {
   BaseButton,
   BaseCard,
@@ -152,16 +152,18 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                 defaultValue="edit"
               >
                 {(activeValue) => (
-                  <>
+                  <div className={cn("min-h-72 lg:min-h-[400px]", {
+                    "lg:min-h-[60vh]": content.length > 800
+                  })}>
                     {activeValue === "edit" && (
                       <TextareaAutosize
                         key={currentEntity?.id}
                         id="content"
                         name="content"
-                        className="nui-focus border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all duration-300 focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-48 text-sm leading-[1.6] rounded resize-none p-2"
+                        className="nui-focus overflow-hidden border-muted-300 placeholder:text-muted-300 focus:border-muted-300 focus:shadow-muted-300/50 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 dark:focus:shadow-muted-800/50 peer w-full border bg-white font-sans transition-all focus:shadow-lg disabled:cursor-not-allowed disabled:opacity-75 min-h-48 text-sm leading-[1.5] rounded resize-none p-2"
                         placeholder="请输入内容"
                         minRows={10}
-                        defaultValue={content}
+                        value={content}
                         onChange={(e) => {
                           setContent(e.target.value);
                         }}
@@ -175,12 +177,12 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                           value={content}
                           className="hidden"
                         ></textarea>
-                        <BaseCard shadow="flat" className="w-fit px-4 lg:py-6 lg:px-8 bg-white min-h-96 lg:min-h-[60vh]">
+                        <BaseCard shadow="flat" className="w-full px-4 lg:py-6 lg:px-8 bg-white ">
                           <Prose content={content} className="max-w-full"></Prose>
                         </BaseCard>
                       </>
                     )}
-                  </>
+                  </div>
                 )}
               </BaseTabSlider>
             </div>
