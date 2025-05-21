@@ -101,7 +101,7 @@ export default function ViewOrEditEntityModal<
           onClose={close}
           title={renderEntityModalTitle(currentEntity, { preview: false })}
           className={cn({
-            "max-w-7xl": entityModalMode == "edit",
+            // "max-w-7xl": entityModalMode == "edit",
             // 'h-screen w-screen': isFull,
           })}
           // classes={{
