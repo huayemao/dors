@@ -3,6 +3,7 @@ import { getTags } from "@/lib/server/tags";
 import { CategoriesContextProvider } from "@/contexts/categories";
 import { TagsContextProvider } from "@/contexts/tags";
 import { Nav } from "./Nav";
+import { ClientOnly } from "@/components/ClientOnly";
 
 export default async function AdminLayout({
   children,
@@ -17,7 +18,9 @@ export default async function AdminLayout({
   return (
     <CategoriesContextProvider Categories={categories}>
       <TagsContextProvider tags={tags}>
-        <Nav>{children}</Nav>
+        <ClientOnly>
+          <Nav>{children}</Nav>
+        </ClientOnly>
       </TagsContextProvider>
     </CategoriesContextProvider>
   );

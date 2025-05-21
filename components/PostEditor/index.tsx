@@ -132,13 +132,13 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
       >
         <div
           className={cn(
-            "toolbox sticky right-0 left-0 top-[-1px] pt-2 mb-4  transition-all max-w-screen-lg",
+            "toolbox sticky right-0 left-0 top-[-1px] pt-2 mb-4  transition-all max-w-screen-lg dark:bg-gray-900",
             { "p-4": pinned }
           )}
         >
           <div
             className={cn("flex items-center transition-all", {
-              "nui-card nui-card-shadow nui-card-rounded-md px-4 py-2 bg-white":
+              "nui-card nui-card-shadow nui-card-rounded-md px-4 py-2 bg-white dark:bg-slate-950":
                 pinned,
             })}
           >
@@ -176,7 +176,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
                   },
                 ]}
               ></SelectWithName>
-              <label className="text-stone-400 hover:text-stone-500">
+              <label className="text-muted-400 hover:text-muted-500">
                 <BaseButtonIcon
                   rounded="md"
                   size="sm"
@@ -203,7 +203,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
             <Action />
           </div>
         </div>
-        <div className="bg-white dark:bg-black  overflow-x-hidden">
+        <div className="bg-white dark:bg-muted-950  overflow-x-hidden">
           {post && (
             <input
               hidden
@@ -214,13 +214,13 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
             />
           )}
 
-          <div className="w-full border-stone-200 p-8 md:p-12 md:pt-16 px-4 md:px-8 dark:border-stone-700  xs:rounded-lg xs:border shadow-lg">
-            <div className="mb-5 flex flex-col space-y-3 border-b border-stone-200 pb-5 dark:border-stone-700">
+          <div className="w-full border-muted-200 p-8 md:p-12 md:pt-16 px-4 md:px-8 dark:border-muted-700  xs:rounded-lg xs:border shadow-lg">
+            <div className="mb-5 flex flex-col space-y-3 border-b border-muted-200 pb-5 dark:border-muted-700">
               <input
                 id={"title"}
                 name="title"
                 placeholder="标题"
-                className="dark:placeholder-text-600 border-none px-0 font-cal text-3xl placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
+                className="dark:placeholder-text-600 border-none px-0 font-cal text-3xl placeholder:text-muted-400 focus:outline-none focus:ring-0 dark:bg-muted-950 dark:text-white"
                 type="text"
                 data-original-value={post?.title}
                 defaultValue={post?.title || ""}
@@ -231,7 +231,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
                 name="excerpt"
                 data-original-value={post?.excerpt || ""}
                 defaultValue={post?.excerpt || ""}
-                className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-stone-400 focus:outline-none focus:ring-0 dark:bg-black dark:text-white"
+                className="dark:placeholder-text-600 w-full resize-none border-none px-0 placeholder:text-muted-400 focus:outline-none focus:ring-0 dark:bg-muted-950 dark:text-white"
               />
             </div>
             {/* todo: 参考这个 https://tailwindcss.com/docs/content */}
@@ -255,7 +255,7 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
                 value={content}
                 data-original-value={post?.content}
                 placeholder="正文"
-                className="w-full rounded dark:bg-black dark:text-white border-none px-0 dark:placeholder-text-600 placeholder:text-stone-400 focus:outline-none focus:ring-none"
+                className="w-full rounded dark:bg-muted-950 dark:text-white border-none px-0 dark:placeholder-text-600 placeholder:text-muted-400 focus:outline-none focus:ring-none"
               />
             </div>
           </div>
@@ -289,13 +289,13 @@ export function PostEditorContent({ post, mdxContent }: PostEditorProps) {
           <>
             <Link
               to={`./settings`}
-              className="flex items-center space-x-1 text-sm text-stone-400 hover:text-stone-500"
+              className="flex items-center space-x-1 text-sm text-muted-400 hover:text-muted-500"
             >
               <BaseButtonIcon rounded="md" size="sm">
                 <Settings className="h-4 w-4" />
               </BaseButtonIcon>
             </Link>
-            <label className="text-stone-400 hover:text-stone-500">
+            <label className="text-muted-400 hover:text-muted-500">
               <BaseButtonIcon
                 onClick={() => setReserveUpdateTime((v) => !v)}
                 rounded="md"

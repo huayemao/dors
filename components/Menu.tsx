@@ -37,8 +37,8 @@ export function AdminMenu() {
   const segs = useSelectedLayoutSegments() || [];
 
   return (
-    <div className="nui-slimscroll relative flex w-full grow flex-col overflow-y-auto py-6 px-6">
-      <ul className="py-2">
+    <div className="nui-slimscroll relative flex  grow flex-col overflow-y-auto py-6 px-6">
+      <ul className="py-2 min-w-40">
         {menuItems.map((e) => {
           const LucideIcon = icons[e.iconName];
           const isSelected =
@@ -50,14 +50,16 @@ export function AdminMenu() {
                 <Link
                   href={e.href}
                   className={cn(
-                    "nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex w-full cursor-pointer items-center rounded-lg py-3 transition-colors duration-300 gap-4 px-4",
+                    "nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex cursor-pointer rounded-lg py-3 transition-colors duration-300 gap-4 px-4 items-center justify-between",
                     {
                       "text-primary-500": isSelected,
                     }
                   )}
                 >
-                  <LucideIcon className="icon w-5 h-5  shrink-0" />
-                  <span className="whitespace-nowrap font-sans text-sm block">
+                  <span className="grow ">
+                    <LucideIcon className="icon w-5 h-5 ml-auto " />
+                  </span>
+                  <span className="whitespace-nowrap font-sans text-sm block  flex-[4] shrink-0 truncate  basis-8">
                     {e.title}
                   </span>
                 </Link>
@@ -69,4 +71,3 @@ export function AdminMenu() {
     </div>
   );
 }
-

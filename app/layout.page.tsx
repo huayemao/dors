@@ -46,13 +46,6 @@ export default async function RootLayout({
           }
   `}
         </style> */}
-          <Script id="darkMode" strategy="beforeInteractive">
-            {`if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  document.documentElement.classList.add('dark')
-} else {
-  document.documentElement.classList.remove('dark')
-}`}
-          </Script>
           <Script
             id="tencentShare"
             src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"

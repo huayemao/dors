@@ -32,7 +32,7 @@ export default function Logo({
       </Link>
 
       <div className="absolute -right-2 -top-2 group">
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg  hover:bg-primary-100 group-hover:bg-primary-100 transition-all duration-300 cursor-pointer">
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg   group-hover:bg-primary-100 dark:group-hover:bg-muted-600 transition-all duration-300 cursor-pointer">
           <Grip className="size-4  group-hover:scale-110 transition-transform duration-300" />
         </div>
         <div className="absolute z-10 left-0 top-4 w-48 lg:w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-1 group-hover:translate-y-0">
