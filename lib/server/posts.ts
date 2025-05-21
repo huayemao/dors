@@ -482,11 +482,11 @@ export async function updatePost(
 
   const shouldChangeCoverImage =
     // 没有 dataURLs?.blur 的，说明是之前的，
-    params.cover_image_url || !(post?.cover_image as any).dataURLs?.blur;
+    cover_image_url || !(post?.cover_image as any).dataURLs?.blur;
 
   const coverImage = shouldChangeCoverImage
     ? await buildCoverImage(
-      params.cover_image_url || (post?.cover_image as any).src.large
+      cover_image_url || (post?.cover_image as any).src.large
     )
     : undefined;
 

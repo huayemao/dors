@@ -1,6 +1,7 @@
 import { Console } from "console";
 import { getPlaiceholder } from "plaiceholder";
 import sharp from "sharp";
+import prisma from "../prisma";
 
 export async function getSmallImage(imageBuffer: Buffer) {
   // 使用sharp库处理图片
@@ -21,8 +22,16 @@ export async function getBlurImage(buffer: Buffer) {
   return base64;
 }
 export async function getImageBuffer(url: any) {
-  if (url.startsWith('/')) {
-    url = process.env.NEXT_PUBLIC_BASE_URL + url
+  if(url?.startsWith('/api/files/')){
+    const id = url.split('/api/files/')[1];
+    const file = await prisma.file.findFirst({
+      where: {
+        name: decodeURIComponent(id),
+      },
+    });
+    if (file) {
+      return Buffer.from(await file.data);
+    }
   }
   return await fetch(url).then(async (res) => {
     return Buffer.from(await res.arrayBuffer())

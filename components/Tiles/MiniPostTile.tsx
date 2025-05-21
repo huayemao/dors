@@ -34,10 +34,10 @@ export function MiniPostTile({
             width="48"
             height="48"
           />
-          <div className="truncate">
+          <div className="">
             <h3
               title={post.title as string}
-              className="truncate font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1"
+              className="line-clamp-2 max-w-60 font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden mb-1"
             >
               {post.title}
             </h3>

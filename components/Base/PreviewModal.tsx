@@ -32,7 +32,7 @@ export const PreviewModal = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="flex-1"
+            className="flex-1 max-w-full"
           >
             <Dialog.Panel className="min-h-[80vh] w-full transform overflow-hidden flex justify-center items-center bg-white dark:bg-muted-800 p-6 lg:p-8 text-left align-middle shadow-xl relative">
               <div className="mt-2 flex justify-center">
