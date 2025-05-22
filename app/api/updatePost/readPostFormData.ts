@@ -15,9 +15,10 @@ export function readPostFormData(formData: FormData) {
   const tags = formData.has("tags")
     ? (formData.getAll("tags") as string[])
     : undefined;
-  const toc = formData.has("toc")
+  const tocRaw = formData.has("toc")
     ? (formData.getAll("toc") as string[])
     : undefined;
+  const toc = tocRaw?.length == 1 && tocRaw[0].includes(',') ? tocRaw[0].split(',') : tocRaw;
 
   return {
     id,

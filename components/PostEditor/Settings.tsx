@@ -7,7 +7,7 @@ import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/server/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getDateForDateTimeInput, isDataURL } from "@/lib/utils";
-import { BaseButton, BaseInput } from "@shuriken-ui/react";
+import { BaseButton, BaseInput, BaseTextarea } from "@shuriken-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MouseEventHandler, useContext, useRef, useState } from "react";
@@ -160,6 +160,8 @@ export default function Settings({ params }) {
     return notFound();
   }
 
+  console.log(post.posts)
+  console.log(post.posts?.map(e => e.id).join(",") || "")
   return (
     <div className="grid lg:grid-cols-2 gap-4 max-w-5xl mx-auto">
       <Panel title="封面图片" description="可更换为随机图片或自定义图片">
@@ -245,7 +247,15 @@ export default function Settings({ params }) {
         description="选择要包含在目录中的文章"
       >
         <form className="mb-3">
-          <TOC></TOC>
+          <div>
+            <Input
+              label="文章 id，以逗号分隔"
+              id={"toc"}
+              name="toc"
+              defaultValue={post.posts?.map(e => e.id).join(",") || ""}
+              data-original-value={post.posts?.map(e => e.id).join(",") || ""}
+            />
+          </div>
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
