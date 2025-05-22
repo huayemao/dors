@@ -134,6 +134,10 @@ const nextConfig = {
           source: "/quotes/:path*",
           destination: "/quotes",
         },
+        {
+          source: "/admin/posts/:id/settings",
+          destination: "/admin/posts/:id/",
+        },
       ],
     };
   },
