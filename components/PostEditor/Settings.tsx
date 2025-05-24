@@ -63,8 +63,8 @@ const CoverImageSetting = ({
   editTime,
 }: {
   originalPhoto:
-  | PexelsPhoto
-  | { dataURLs: { large: string }; alt?: string; src: { large: string } };
+    | PexelsPhoto
+    | { dataURLs: { large: string }; alt?: string; src: { large: string } };
   postId: string;
   editTime: string;
 }) => {
@@ -74,20 +74,26 @@ const CoverImageSetting = ({
   return (
     <>
       <form>
-        {typeof photo.src?.large == 'string' && (isDataURL(photo.src?.large) || !photo.src?.large.startsWith("/")) ? <img
-          className="w-full"
-          src={photo.src?.large}
-          alt={photo.alt || "featured image"}
-          width={300}
-          height={240}
-        /> :
+        {typeof photo.src?.large == "string" &&
+        (isDataURL(photo.src?.large) ||
+          !(
+            photo.src?.large.startsWith("/") ||
+            photo.src?.large.startsWith("https://images.pexels.com/")
+          )) ? (
+          <img
+            className="w-full"
+            src={photo.src?.large}
+            alt={photo.alt || "featured image"}
+          />
+        ) : (
           <Image
-            width={300}
-            height={240}
+            width={288}
+            height={162}
             className="w-full"
             alt={photo.alt || ""}
             src={photo.src?.large || ""}
-          />}
+          />
+        )}
         <div className="text-right mt-2">
           <BaseButton
             loading={loading}
@@ -160,10 +166,10 @@ export default function Settings({ params }) {
     return notFound();
   }
 
-  console.log(post.posts)
-  console.log(post.posts?.map(e => e.id).join(",") || "")
+  console.log(post.posts);
+  console.log(post.posts?.map((e) => e.id).join(",") || "");
   return (
-    <div className="grid lg:grid-cols-2 gap-4 max-w-5xl mx-auto">
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-4 max-w-5xl mx-auto">
       <Panel title="封面图片" description="可更换为随机图片或自定义图片">
         <CoverImageSetting
           originalPhoto={post.cover_image as PexelsPhoto}
@@ -224,9 +230,7 @@ export default function Settings({ params }) {
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
-      <Panel
-        title="slug"
-      >
+      <Panel title="slug">
         <form>
           <div>
             <Input
@@ -242,18 +246,15 @@ export default function Settings({ params }) {
         </form>
         <SaveButton postId={String(post.id)}></SaveButton>
       </Panel>
-      <Panel
-        title="目录"
-        description="选择要包含在目录中的文章"
-      >
+      <Panel title="目录" description="选择要包含在目录中的文章">
         <form className="mb-3">
           <div>
             <Input
               label="文章 id，以逗号分隔"
               id={"toc"}
               name="toc"
-              defaultValue={post.posts?.map(e => e.id).join(",") || ""}
-              data-original-value={post.posts?.map(e => e.id).join(",") || ""}
+              defaultValue={post.posts?.map((e) => e.id).join(",") || ""}
+              data-original-value={post.posts?.map((e) => e.id).join(",") || ""}
             />
           </div>
         </form>
@@ -302,7 +303,9 @@ export default function Settings({ params }) {
 
   function TOC() {
     const [value, setValue] = useState<string[]>(
-      (post!.toc as { id: number; title: string }[] || [])?.map((e) => String(e?.id)).sort() || []
+      ((post!.toc as { id: number; title: string }[]) || [])
+        ?.map((e) => String(e?.id))
+        .sort() || []
     );
 
     return (
@@ -312,7 +315,11 @@ export default function Settings({ params }) {
           id="toc"
           name="toc"
           defaultValue={value}
-          data-original-value={(post!.toc as { id: number; title: string }[] || [])?.map((e) => String(e?.id)).sort() || []}
+          data-original-value={
+            ((post!.toc as { id: number; title: string }[]) || [])
+              ?.map((e) => String(e?.id))
+              .sort() || []
+          }
           className="hidden"
         >
           {value.map((e) => {
@@ -326,7 +333,11 @@ export default function Settings({ params }) {
         <BaseAutocomplete
           onChange={setValue}
           value={value}
-          items={(post!.toc as { id: number; title: string }[] || [])?.map((e) => e.title as string) || []}
+          items={
+            ((post!.toc as { id: number; title: string }[]) || [])?.map(
+              (e) => e.title as string
+            ) || []
+          }
           rounded="md"
           icon="lucide:list-filter"
           placeholder="搜索..."
