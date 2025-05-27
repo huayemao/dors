@@ -94,13 +94,22 @@ function TOCItem({
   // todoL 这里并没有做成 tree
   return (
     <li
-      className={cn("border-l-2", {
-        " bg-primary-100/60 border-primary-500 fonts": isActive,
-      })}
+      className={cn(
+        "border-l-2 rounded-sm",
+        "border-slate-200 dark:border-slate-700",
+        {
+          "bg-primary-100/60 border-primary-500 dark:bg-primary-400/10 dark:border-primary-400": isActive,
+        }
+      )}
     >
       <a
-        style={{ textIndent: level - 2 + "em" }}
-        className="w-full py-1 px-4 inline-block"
+        style={{ textIndent: (level - 2) + "em" }}
+        className={cn(
+          "w-full py-1 px-4 inline-block text-slate-900 dark:text-slate-200",
+          {
+            "text-primary-900 dark:text-slate-50 font-semibold": isActive,
+          }
+        )}
         aria-current={isActive || undefined}
         href={href}
         dangerouslySetInnerHTML={{ __html: text }}
