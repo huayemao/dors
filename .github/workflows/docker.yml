@@ -41,7 +41,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ github.repository }}:latest
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             HTTP_BASIC_AUTH=${{ secrets.HTTP_BASIC_AUTH }} 
