@@ -1,4 +1,3 @@
-import { useDebounce } from "@uidotdev/usehooks";
 import { useState, useEffect, useCallback } from "react";
 
 function useScrolled(threshold = 60) {
@@ -6,19 +5,26 @@ function useScrolled(threshold = 60) {
 
   const onScroll = useCallback(() => {
     const isScrolled = window.scrollY >= threshold;
-    if (isScrolled !== scrolled) {
-      setScrolled(isScrolled);
-    }
-  }, [scrolled, threshold]);
+    setScrolled((prevScrolled) => {
+      // 只在状态真正需要改变时才返回新值
+      if (isScrolled !== prevScrolled) {
+        return isScrolled;
+      }
+      return prevScrolled;
+    });
+  }, [threshold]); // 只依赖 threshold
 
   useEffect(() => {
+    // 初始化时检查一次状态
+    onScroll();
+    
     window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, [onScroll]);
 
-  return useDebounce(scrolled, 200);
+  return scrolled;
 }
 
 export default useScrolled;

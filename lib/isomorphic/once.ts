@@ -1,8 +1,9 @@
-export const once = (fn) => {
-    let called = false;
-    return function (...args) {
-        if (called) return;
-        called = true;
-        return fn.apply(this, args);
+export const once = <T extends (...args: any[]) => any>(fn: T) => {
+    let promise: ReturnType<T> | null = null;
+    return function (...args: Parameters<T>) {
+        if (!promise) {
+            promise = fn.apply(this, args);
+        }
+        return promise;
     };
 };

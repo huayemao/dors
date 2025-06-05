@@ -36,6 +36,7 @@ self.addEventListener("fetch", (e) => {
   const isDynamicCache = DYNAMIC_PATHS.some(s => url.href.includes(s))
   const isStableDynamicCache = STABLE_DYNAMIC_PATHS.some(s => url.href.includes(s))
   const isAssetsCache = ASSETS.some(s => url.href.includes(s))
+  
   if (
     ("GET" === s.method &&
       (self.location.origin === url.origin || url.href.includes('unpkg.com')) && (
@@ -43,62 +44,30 @@ self.addEventListener("fetch", (e) => {
       )
     )
   ) {
-    if (isStableDynamicCache) {
-      caches.match(url).then((res) => {
-        if (!res) {
-          caches.open("STABLE_CACHE").then((e) => {
-            e.add(url);
-          });
-        }
-      });
-    }
-    if (isDynamicCache) {
-
-
-      caches.match(url).then((res) => {
-        if (!res) {
-          const isSSRPath = SSR_PATHS.find(path => url.href.includes(path));
-          if (isSSRPath) {
-            caches.open(VERSION)
-              .then(c => {
-                return c.keys()
-              }).then(requests => {
-                const matched = requests.find(request => request.url.includes(url.pathname + '?'))
-                console.log(matched)
-                if (matched) {
-                  return
-                }
-                caches.open(VERSION).then((e) => {
-                  e.add(url);
-                });
-              })
-          }
-          else {
-            caches.open(VERSION).then((e) => {
-              e.add(url);
-            });
-          }
-        }
-      });
-    }
     e.respondWith(
       (async () => {
-        return caches.match(s).then((e) => {
+        // 首先尝试从缓存中获取
+        const cachedResponse = await caches.match(s);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        // 如果缓存中没有，则获取新响应
+        const response = await fetch(s);
+        
+        // 根据不同的缓存策略存储响应
+        if (isStableDynamicCache) {
+          const cache = await caches.open("STABLE_CACHE");
+          await cache.put(s, response.clone());
+        } else if (isDynamicCache) {
           const isSSRPath = SSR_PATHS.find(path => url.href.includes(path));
-          if (isSSRPath) {
-            return caches.open(VERSION)
-              .then(c => {
-                return c.keys()
-              }).then(requests => {
-                return requests.find(request => request.url.includes(url.pathname + '?'))
-              })
-              .then(r => {
-                return caches.match(r)
-              }).then(e => e || fetch(s))
-          } else {
-            return e || fetch(s);
+          if (!isSSRPath) {
+            const cache = await caches.open(VERSION);
+            await cache.put(s, response.clone());
           }
-        });
+        }
+        
+        return response;
       })()
     );
   }

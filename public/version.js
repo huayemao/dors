@@ -1,1 +1,1 @@
-const VERSION='19f79999500c57b3e6dd172fdc30ddc66e8453e5';
+const VERSION='beeb0bce48bd912cb9a0771de489c3eece74c9b0';
