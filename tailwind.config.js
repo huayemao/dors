@@ -28,23 +28,9 @@ module.exports = withShurikenUI({
 							},
 							// "a:active": { color: colors.green[700] },
 							// "a:visited": { color: colors.green[900] },
-							"a code": {
+							"a code,h1 code,h2 code,h3 code,h4 code,blockquote code": {
 								color: theme("colors.primary[500]"),
-							},
-							"h1 code": {
-								color: theme("colors.primary[500]"),
-							},
-							"h2 code": {
-								color: theme("colors.primary[500]"),
-							},
-							"h3 code": {
-								color: theme("colors.primary[500]"),
-							},
-							"h4 code": {
-								color: theme("colors.primary[500]"),
-							},
-							"blockquote code": {
-								color: theme("colors.primary[500]"),
+								"@apply dark:text-primary-400": {},
 							},
 							blockquote: {
 								quotes: `"“" "„"`,
@@ -69,14 +55,17 @@ module.exports = withShurikenUI({
 							},
 							"thead th code": {
 								color: theme("colors.primary[500]"),
+								"@apply dark:text-primary-400": {},
 							},
 							code: {
 								fontWeight: 500,
 								color: theme("colors.primary[500]"),
 								backgroundColor: theme("colors.primary[100]"),
+								"@apply dark:bg-primary-900 dark:text-primary-300": {},
 							},
 							"pre code": {
 								fontFamily: "monospace",
+								"@apply dark:bg-slate-900 dark:text-slate-100": {},
 							},
 							"ul, ol, blockquote, figure": {
 								breakInside: "avoid",
