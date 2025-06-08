@@ -29,7 +29,7 @@ export async function generateMetadata({
   if (!post || !post.content) {
     return notFound();
   }
-
+  // 写在这里是故意的，这里写了，page 中就需要写，而也能实现跳转
   if (post.protected) {
     return redirect("/protected/" + id);
   }
@@ -57,8 +57,9 @@ export async function generateMetadata({
       description: abstract || "",
       images: [
         SITE_META.url +
-        "/_next/image?url=" +
-        encodeURIComponent((post.cover_image as any).src.large) + '&w=640&q=60',
+          "/_next/image?url=" +
+          encodeURIComponent((post.cover_image as any).src.large) +
+          "&w=640&q=60",
         (post.cover_image as any)?.dataURLs?.small,
       ],
     },
@@ -80,6 +81,10 @@ export default async function page({ params }) {
 
   if (!post) {
     return notFound();
+  }
+
+  if (post.type.includes("collection")) {
+    return redirect("/notes/" + params.id);
   }
 
   let posts = await getRecentPosts({ protected: false });

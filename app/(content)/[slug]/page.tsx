@@ -36,10 +36,10 @@ export async function generateMetadata({
     return notFound();
   }
 
+  // 写在这里是故意的，这里写了，page 中就需要写，而也能实现跳转
   if (post.protected) {
     return redirect("/protected/" + post.id);
   }
-
   const abstract = post.excerpt;
 
   const headerRegex = /^(?!\s)(#{1,6})(.*)/gm;
@@ -88,11 +88,14 @@ export default async function page({ params }) {
   if (!post) {
     return notFound();
   }
+  if (post.type.includes("collection")) {
+    return redirect("/notes/" + params.id);
+  }
 
   return (
     <main className="w-full bg-white container mx-auto min-h-[100vh_-_168px] my-8 p-4 px-6 dark:bg-muted-800">
       {/* @ts-ignore */}
-      <Prose content={post.content} className="max-w-full"/>
+      <Prose content={post.content} className="max-w-full" />
       {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
       <div className="lg:grid-cols-4"></div>
     </main>
