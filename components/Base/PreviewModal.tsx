@@ -35,7 +35,7 @@ export const PreviewModal = ({
             className="flex-1 max-w-full"
           >
             <Dialog.Panel className="min-h-[80vh] w-full transform overflow-hidden flex justify-center items-center bg-white dark:bg-muted-800 p-6 lg:p-8 text-left align-middle shadow-xl relative">
-              <div className="mt-2 flex justify-center">
+              <div className="mt-2 flex justify-center min-w-[95%] md:min-w-[75%] ">
                 {loading ? (
                   <div className="flex justify-center items-center w-full h-32">
                     加载中...

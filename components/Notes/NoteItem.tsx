@@ -98,6 +98,7 @@ export function NoteItem({
           onLoadingChange={setLoading}
           key={data.id}
           content={data.content}
+          preview={preview}
         />
         {preview && isOverflow && (
           <>

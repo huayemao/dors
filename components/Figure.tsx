@@ -1,10 +1,16 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@uidotdev/usehooks";
 import mime from "mime";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 export function Figure(props) {
   const { src, width, height, ignoreCaption, className, preview } = props;
+
+  const mimetype = mime.getType(src);
+  mime.getType(src);
+  const ref = useRef<HTMLAnchorElement>(null);
+  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
   const Container = ({ children }) => {
     return <a
       suppressHydrationWarning
@@ -19,14 +25,15 @@ export function Figure(props) {
     </a>
 
   }
-  const mimetype = mime.getType(src);
-  mime.getType(src);
-  const ref = useRef<HTMLAnchorElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!ref.current) {
       return;
     }
     const current = ref.current;
+
+    if(current.closest('.not-prose')?.className.includes('gallery')){
+      current.style.maxWidth = isMobile? "40%" : "30%";
+    }
     const img = current.querySelector("img");
     const video = current.querySelector("video");
     
