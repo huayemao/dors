@@ -2,38 +2,47 @@
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import mime from "mime";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 
-export function Figure(props) {
-  const { src, width, height, ignoreCaption, className, preview } = props;
+interface FigureProps {
+  src: string;
+  width?: number;
+  height?: number;
+  ignoreCaption?: boolean;
+  className?: string;
+  preview?: boolean;
+  alt?: string;
+}
 
-  const mimetype = mime.getType(src);
-  mime.getType(src);
+export function Figure({
+  src,
+  width,
+  height,
+  ignoreCaption,
+  className,
+  preview,
+  alt,
+  ...props
+}: FigureProps) {
   const ref = useRef<HTMLAnchorElement>(null);
-  const isMobile = useMediaQuery("only screen and (max-width : 768px)");
-  const Container = ({ children }) => {
-    return <a
+  const mimetype = mime.getType(src);
+
+  const Container = ({ children }: { children: React.ReactNode }) => (
+    <a
       suppressHydrationWarning
       ref={ref}
       className={cn("!no-underline block", className)}
       data-pswp-width={width || 800}
       data-pswp-height={height || 600}
     >
-      {
-        children
-      }
+      {children}
     </a>
+  );
 
-  }
   useLayoutEffect(() => {
-    if (!ref.current) {
-      return;
-    }
+    if (!ref.current) return;
     const current = ref.current;
 
-    if(current.closest('.not-prose')?.className.includes('gallery')){
-      current.style.maxWidth = isMobile? "40%" : "30%";
-    }
     const img = current.querySelector("img");
     const video = current.querySelector("video");
     
@@ -41,41 +50,56 @@ export function Figure(props) {
       current.href = img.src || "";
       
       if (img.complete && img.naturalWidth) {
-        current.dataset["pswpWidth"] = "" + img.naturalWidth;
-        current.dataset["pswpHeight"] = "" + img.naturalHeight;
+        current.dataset.pswpWidth = String(img.naturalWidth);
+        current.dataset.pswpHeight = String(img.naturalHeight);
       }
 
-      img.onload = (e) => {
-        current.dataset["pswpWidth"] = "" + img.naturalWidth;
-        current.dataset["pswpHeight"] = "" + img.naturalHeight;
+      img.onload = () => {
+        current.dataset.pswpWidth = String(img.naturalWidth);
+        current.dataset.pswpHeight = String(img.naturalHeight);
       };
     }
 
     if (video) {
-      current.href = video.querySelector('source')?.src || "";
-      video.onloadedmetadata = (e) => {
-        current.dataset["pswpWidth"] = "" + video.videoWidth;
-        current.dataset["pswpHeight"] = "" + video.videoHeight;
+      const source = video.querySelector('source');
+      current.href = source?.src || "";
+      
+      video.onloadedmetadata = () => {
+        current.dataset.pswpWidth = String(video.videoWidth);
+        current.dataset.pswpHeight = String(video.videoHeight);
       };
     }
   }, []);
+
   if (mimetype?.startsWith("video")) {
     return (
       <Container>
-        <video preload="metadata">
+        <video 
+          preload="metadata"
+          className={cn({
+            "w-full h-auto": !preview,
+            "h-36 object-cover": preview,
+          })}
+          muted
+          loop
+          playsInline
+        >
           <source src={src} type={mimetype} />
           Your browser does not support the video tag.
         </video>
       </Container>
     );
-  } else if (mimetype?.startsWith("audio")) {
+  }
+
+  if (mimetype?.startsWith("audio")) {
     return (
-      <audio controls preload="metadata">
+      <audio controls preload="metadata" className="w-full">
         <source src={src} type={mimetype} />
-        Your browser does not support the aduio tag.
+        Your browser does not support the audio tag.
       </audio>
     );
   }
+
   return (
     <Container>
       <figure suppressHydrationWarning className={cn({ "not-prose": preview })}>
@@ -83,16 +107,17 @@ export function Figure(props) {
           loading="lazy"
           className={cn({
             "w-full h-auto": !preview,
-            "h-36 object-cover not-prose": preview,
-            className,
+            "h-36 object-cover": preview,
           })}
           width={width || 800}
           height={height || 600}
           referrerPolicy="origin"
+          src={src}
+          alt={alt}
           {...props}
         />
-        {!ignoreCaption && (
-          <figcaption suppressHydrationWarning>{props.alt}</figcaption>
+        {!ignoreCaption && alt && (
+          <figcaption suppressHydrationWarning>{alt}</figcaption>
         )}
       </figure>
     </Container>

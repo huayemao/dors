@@ -11,6 +11,7 @@ const LightBox = ({
   gallery?: string | HTMLElement;
   childrenSelector?: string;
 }) => {
+  console.log(gallery)
   useEffect(() => {
     let lightBox = new PhotoSwipeLightbox({
       // may select multiple "galleries"

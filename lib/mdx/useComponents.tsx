@@ -76,29 +76,29 @@ export const components = {
     );
   },
   NavList: NavList,
-  p: (props) => {
-    if (props.children) {
-      const arr = React.Children.toArray(props.children);
-      if (
-        arr.every((e) => {
-          const isEmpty = typeof e == "string" && !e.trim();
-          const ps = (e as ReactElement).props;
-          return isEmpty || ps?.href || ps?.src;
-        })
-      ) {
-        const filtered = filterEmptyLines(arr);
+  // p: (props) => {
+  //   if (props.children) {
+  //     const arr = React.Children.toArray(props.children);
+  //     if (
+  //       arr.every((e) => {
+  //         const isEmpty = typeof e == "string" && !e.trim();
+  //         const ps = (e as ReactElement).props;
+  //         return isEmpty || ps?.href || ps?.src;
+  //       })
+  //     ) {
+  //       const filtered = filterEmptyLines(arr);
 
-        return (
-          <>
-            {React.Children.map(filtered, (child) => {
-              return React.cloneElement(child as ReactElement);
-            })}
-          </>
-        );
-      }
-    }
-    return <p {...props} suppressHydrationWarning></p>;
-  },
+  //       return (
+  //         <>
+  //           {React.Children.map(filtered, (child) => {
+  //             return React.cloneElement(child as ReactElement);
+  //           })}
+  //         </>
+  //       );
+  //     }
+  //   }
+  //   return <p {...props} suppressHydrationWarning></p>;
+  // },
   div: (props) => {
     const { className, children, rest } = props;
     if (!className.includes("note")) {
