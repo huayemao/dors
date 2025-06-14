@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function NotesPage() {
   const nav = useNavigate();
-  const toCreate = () => nav("/notes/create");
+  const toCreate = () => nav("/create");
 
   return (
     <div className="py-8 px-4  mx-auto max-w-5xl space-y-8">

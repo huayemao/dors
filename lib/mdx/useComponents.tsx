@@ -49,9 +49,7 @@ export const components = {
       <Iframe {...props}></Iframe>
     </ClientOnly>
   ),
-  img: (props) => {
-    return <Figure {...props} />;
-  },
+  img: Figure,
   PlayList: (props) => {
     const arr = React.Children.toArray(props.children);
     const ul = arr[0] as ReactElement;

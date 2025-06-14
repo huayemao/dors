@@ -79,17 +79,32 @@ export default function ViewOrEditEntityModal<
       },
     });
     setLoading(false);
+
+    return () => {
+      dispatch({
+        type: "ANY",
+        payload: {
+          entityModalMode:'view',
+          currentEntity: undefined,
+        },
+      });
+    };
   }, [entity, dispatch]);
 
   const handleRemove = useCallback(() => {
     withConfirm(() => {
+      if(currentEntity.id)
       dispatch({
         type: "REMOVE_ENTITY",
         payload: currentEntity.id,
       });
       close();
     })();
-  }, [close, currentEntity.id, dispatch]);
+  }, [close, currentEntity?.id, dispatch]);
+
+  if(!currentEntity){
+    return <></>
+  }
 
   return (
     <>
