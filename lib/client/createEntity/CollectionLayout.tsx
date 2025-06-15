@@ -61,8 +61,10 @@ export default function CollectionLayout<
   dispatch: EntityDispatch<EType, CType>;
   renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
   fetchCollection: (id: string) => Promise<CType | null>;
-  syncToCloud: (collection: EntityState<any, any>['currentCollection'],
-                entityList: EntityState<any, any>['entityList']) => Promise<any>;
+  syncToCloud: (
+    collection: EntityState<any, any>["currentCollection"],
+    entityList: EntityState<any, any>["entityList"]
+  ) => Promise<any>;
   layout?: "masonry" | "stack" | "table";
   getList?: (list: EType[]) => object[];
 }) {
@@ -78,34 +80,58 @@ export default function CollectionLayout<
     setFetching(true);
 
     return fetchCollection(String(state.currentCollection.id))
+      .then((obj) => {
+        if (!obj) {
+          throw new Error("api 返回数据格式错误");
+        }
+
+        if (
+          !isNull(obj.updated_at) &&
+          obj.updated_at === state.currentCollection!.updated_at
+        ) {
+          toast.success("数据已为最新", { position: "bottom-left" });
+          console.log("最新");
+          return;
+        }
+
+        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+        if (answer) {
+          dispatch({
+            type: "SET_CURRENT_COLLECTION",
+            payload: obj,
+          });
+          toast.success("同步数据成功");
+        }
+      })
       .catch((e) => {
         toast.error("同步数据失败：" + e.message);
       })
       .finally(() => {
         setFetching(false);
       });
-  }, [state, fetchCollection]);
+  }, [state.currentCollection, fetchCollection, dispatch]);
 
   const handleSyncToCloud = useCallback(() => {
     setUploading(true);
-    return syncToCloud(state.currentCollection, state.entityList).then((obj) => {
-      const c = {
+    return syncToCloud(state.currentCollection, state.entityList)
+      .then((obj) => {
+        const c = {
           ...state.currentCollection,
           ...obj,
           online: true,
-        } as CType
-      dispatch({
-        type: "CREATE_OR_UPDATE_COLLECTION",
-        payload: c,
+        } as CType;
+        dispatch({
+          type: "CREATE_OR_UPDATE_COLLECTION",
+          payload: c,
+        });
+        toast.success("数据上传成功");
       })
-      toast.success("数据上传成功");
-    })
-    .catch((e) => {
-      toast.error("上传失败：" + e?.message);
-    })
-    .finally(() => {
-      setUploading(false);
-    });
+      .catch((e) => {
+        toast.error("上传失败：" + e?.message);
+      })
+      .finally(() => {
+        setUploading(false);
+      });
   }, [dispatch, state.currentCollection, state.entityList, syncToCloud]);
 
   useEffect(() => {
@@ -121,12 +147,10 @@ export default function CollectionLayout<
       let collection =
         state.collectionList.find((e) => e.id == collectionId) || null;
 
-
       dispatch({
-        type: "SET_CURRENT_COLLECTION", 
+        type: "SET_CURRENT_COLLECTION",
         payload: collection, // 作为 fallback
       });
-
 
       if ((!collection || collection.online) && fetchCollection && !fetching) {
         setFetching(true);
@@ -141,7 +165,8 @@ export default function CollectionLayout<
               obj.updated_at === collection!.updated_at
             ) {
               toast.success("数据已为最新", { position: "bottom-left" });
-              return 
+              console.log("最新");
+              return;
             }
 
             const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
@@ -225,9 +250,7 @@ export default function CollectionLayout<
                     payload: index,
                   });
                 }}
-                renderItem={(entity) =>
-                  renderEntity(entity, { preview: true })
-                }
+                renderItem={(entity) => renderEntity(entity, { preview: true })}
                 getItemId={(entity) => entity.id ?? JSON.stringify(entity)}
               />
             ) : (
