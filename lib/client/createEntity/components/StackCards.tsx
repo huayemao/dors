@@ -25,12 +25,12 @@ export const StackCards = <T,>({
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-full relative">
+    <div className="max-w-full max-h-[65vh] relative">
       <Swiper
         effect={'cards'}
         grabCursor={true}
         modules={[EffectCards]}
-        className="h-full max-w-full lg:max-w-xl"
+        className="h-full w-fit max-w-full  lg:max-w-xl"
         cardsEffect={{
           perSlideOffset: 4,
           perSlideRotate: 2,
@@ -71,7 +71,7 @@ export const StackCards = <T,>({
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+      <div className="rounded absolute -bottom-12 left-4 right-4 flex gap-x-2 gap-y-3 justify-center p-4 flex-wrap z-10">
         {items.map((_, i) => (
           <button
             key={i}
