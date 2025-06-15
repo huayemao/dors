@@ -6,20 +6,11 @@ import {
   BaseInput,
 } from "@shuriken-ui/react";
 import { DOMAttributes, useCallback, useEffect, useReducer } from "react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useCloseModal } from "../hooks/useCloseModal";
-import {
-  EntityDispatch,
-  EntityState,
-} from "./createEntityContext";
-import {
-  BaseCollection,
-  BaseEntity
-} from "./types";
+import { EntityDispatch, EntityState } from "./createEntityContext";
+import { BaseCollection, BaseEntity } from "./types";
 import { Trash } from "lucide-react";
 import { withConfirm } from "@/lib/utils";
 
@@ -51,11 +42,12 @@ export default function CreateCollectionModal<
 
   useEffect(() => {
     if (isEditing) {
-      const targetItemIndex = collectionList?.findIndex(
+      const targetCollection = collectionList?.find(
         (e) => e.id === Number(params.collectionId)
       );
-      const targetCollection = collectionList[targetItemIndex];
-      dispatch({ type: "SET_CURRENT_COLLECTION", payload: targetCollection });
+      if (targetCollection) {
+        dispatch({ type: "SET_CURRENT_COLLECTION", payload: targetCollection });
+      }
     } else {
       dispatch({
         type: "SET_CURRENT_COLLECTION",
@@ -121,11 +113,12 @@ function CollectionForm<
 
   useEffect(() => {
     if (isEditing) {
-      const targetItemIndex = collectionList?.findIndex(
+      const targetCollection = collectionList?.find(
         (e) => e.id === Number(params.collectionId)
       );
-      const targetCollection = collectionList[targetItemIndex];
-      dispatch({ type: "SET_CURRENT_COLLECTION", payload: targetCollection });
+      if (targetCollection) {
+        dispatch({ type: "SET_CURRENT_COLLECTION", payload: targetCollection });
+      }
     } else {
       dispatch({
         type: "SET_CURRENT_COLLECTION",

@@ -10,7 +10,7 @@ export default function LocalNoteCollections() {
   return (
     <BaseCard rounded="lg" className="p-4">
       <ul className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {collectionList.map((e, i) => (
+        {collectionList?.map((e, i) => (
           <li key={e.id}>
             <Link
               to={"/" + e.id}

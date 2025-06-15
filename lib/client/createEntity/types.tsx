@@ -35,9 +35,9 @@ export type State<
 > = {
   modalOpen: boolean;
   entityModalMode: "view" | "edit";
-  currentCollection: CollectionType | null;
+  currentCollection: CollectionType | null | undefined;
   currentEntity: EntityType;
-  collectionList: CollectionType[];
+  collectionList: CollectionType[] | undefined;
   entityList: EntityType[];
   filters: FiltersType<EntityType>;
   filterConfig: {
@@ -45,7 +45,7 @@ export type State<
     // 比如一个小记，没有标签，也留存，不被筛选掉
     includeNonKeys?: string[];
   };
-  fromLocalStorage: boolean;
+  shouldSyncToLocalStorage: boolean;
   inMemory?: boolean;
   currentIndex: number;
 };

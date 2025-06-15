@@ -130,7 +130,7 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
     </div>
   );
 
-  const isSimple = !state.collectionList.length
+  const isSimple = state.collectionList && !state.collectionList.length;  
 
   const SettingsDialog = (
     <SlideDialog open={settingsOpen} onClose={() => setSettingsOpen(false)}>

@@ -31,7 +31,7 @@ export default function QuotesPage() {
     <BaseButton onClick={() => { navigate('./create') }}>创建</BaseButton>
     <BaseCard rounded="lg" className="p-4">
       <ul className="grid lg:grid-cols-2 gap-4">
-        {collectionList.map((e, i) => (
+        {collectionList?.map((e, i) => (
           <li key={e.id} className="rounded-xl hover:bg-muted-100 focus-within:bg-muted-100 dark:hover:bg-muted-700/70 dark:focus-within:bg-muted-700/70 group flex items-center gap-3 p-2">
             <div className="nui-avatar nui-avatar-md nui-avatar-rounded-full bg-primary-100 dark:bg-primary-500/20 text-primary-500 ms-1 </li>shrink-0">
               <GalleryVertical className="size-5"></GalleryVertical>

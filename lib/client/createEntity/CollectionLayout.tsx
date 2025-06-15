@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { BaseCard } from "@shuriken-ui/react";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCards, EffectCoverflow, EffectCreative } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/effect-cards';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/effect-creative';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCards, EffectCoverflow, EffectCreative } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-cards";
+import "swiper/css/effect-coverflow";
+import "swiper/css/effect-creative";
 
 import {
   FC,
@@ -30,6 +30,7 @@ import { CollectionHeader } from "./CollectionHeader";
 import { Table } from "@/app/(content)/data-process/Table";
 import { StackCards } from "./components/StackCards";
 import { toast } from "react-hot-toast";
+import isNull from "lodash/isNull";
 
 export default function CollectionLayout<
   EType extends BaseEntity,
@@ -45,6 +46,7 @@ export default function CollectionLayout<
   state,
   dispatch,
   fetchCollection,
+  syncToCloud,
   layout = "masonry",
   getList = (e) => e,
 }: {
@@ -58,7 +60,9 @@ export default function CollectionLayout<
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
   renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
-  fetchCollection?: (id: string) => Promise<CType | null>;
+  fetchCollection: (id: string) => Promise<CType | null>;
+  syncToCloud: (collection: EntityState<any, any>['currentCollection'],
+                entityList: EntityState<any, any>['entityList']) => Promise<any>;
   layout?: "masonry" | "stack" | "table";
   getList?: (list: EType[]) => object[];
 }) {
@@ -68,139 +72,106 @@ export default function CollectionLayout<
   const [uploading, setUploading] = useState(false);
 
   const handleSyncFromCloud = useCallback(() => {
-    if (!state.currentCollection?.id || !fetchCollection) {
+    if (!state.currentCollection?.id) {
       return;
     }
     setFetching(true);
 
     return fetchCollection(String(state.currentCollection.id))
-      .then((res) => {
-        if (!res) return;
-        if (res.updated_at == state.currentCollection?.updated_at) {
-          toast.success("数据已为最新", { position: "bottom-left" });
-          return;
-        }
-        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
-        if (answer) {
-          dispatch({
-            type: "SET_CURRENT_COLLECTION",
-            payload: res,
-          });
-          toast.success("同步数据成功");
-        }
-      })
       .catch((e) => {
         toast.error("同步数据失败：" + e.message);
       })
       .finally(() => {
         setFetching(false);
       });
-  }, [state.currentCollection?.id, state.currentCollection?.updated_at, fetchCollection, dispatch]);
+  }, [state, fetchCollection]);
 
   const handleSyncToCloud = useCallback(() => {
-    if (!state.currentCollection?.id) return;
     setUploading(true);
-    const fd = new FormData();
-    fd.append("id", state.currentCollection.id + "");
-    fd.append("content", JSON.stringify(state.entityList));
-    fd.append("meta", JSON.stringify({
-      layout: state.currentCollection?.layout || "masonry"
-    }));
-
-    fetchWithAuth("/api/updatePost", {
-      method: "POST",
-      headers: { accept: "application/json" },
-      body: fd,
+    return syncToCloud(state.currentCollection, state.entityList).then((obj) => {
+      const c = {
+          ...state.currentCollection,
+          ...obj,
+          online: true,
+        } as CType
+      dispatch({
+        type: "CREATE_OR_UPDATE_COLLECTION",
+        payload: c,
+      })
+      toast.success("数据上传成功");
     })
-      .then((res) => res.json())
-      .then((json) => json.data)
-      .then((obj) => {
-        toast.success("数据上传成功");
-      })
-      .catch((e) => {
-        toast.error("上传失败：" + e?.message);
-      })
-      .finally(() => {
-        setUploading(false);
-      });
-  }, [state.currentCollection?.id, state.currentCollection?.layout, state.entityList]);
+    .catch((e) => {
+      toast.error("上传失败：" + e?.message);
+    })
+    .finally(() => {
+      setUploading(false);
+    });
+  }, [dispatch, state.currentCollection, state.entityList, syncToCloud]);
 
   useEffect(() => {
+    let ignore = false;
     if (!collectionId) {
       return;
     }
 
-    let collection =
-      state.collectionList.find((e) => e.id == collectionId) || null;
     if (collectionId != state.currentCollection?.id) {
-      if (!collection && fetchCollection) {
-        fetchCollection(collectionId)
-          .then((res) => {
-            collection = res;
+      if (!state.collectionList) {
+        return;
+      }
+      let collection =
+        state.collectionList.find((e) => e.id == collectionId) || null;
+
+
+      dispatch({
+        type: "SET_CURRENT_COLLECTION", 
+        payload: collection, // 作为 fallback
+      });
+
+
+      if ((!collection || collection.online) && fetchCollection && !fetching) {
+        setFetching(true);
+        fetchCollection(String(collectionId))
+          .then((obj) => {
+            if (!obj) {
+              throw new Error("api 返回数据格式错误");
+            }
+
+            if (
+              !isNull(obj.updated_at) &&
+              obj.updated_at === collection!.updated_at
+            ) {
+              toast.success("数据已为最新", { position: "bottom-left" });
+              return 
+            }
+
+            const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+            if (answer) {
+              dispatch({
+                type: "SET_CURRENT_COLLECTION",
+                payload: obj,
+              });
+              toast.success("同步数据成功");
+            }
           })
-          .catch((error) => {
-            console.error("从网络获取数据失败：" + error);
-            collection = null;
+          .catch((e) => {
+            toast.error("同步数据失败：" + e.message);
           })
-          .then(() => {
-            dispatch({
-              type: "SET_CURRENT_COLLECTION",
-              payload: collection,
-            });
+          .finally(() => {
+            setFetching(false);
           });
       }
-      dispatch({
-        type: "SET_CURRENT_COLLECTION",
-        payload: collection,
-      });
     }
-  }, [
-    collectionId,
-    dispatch,
-    state.collectionList,
-    state.currentCollection?.id,
-    fetchCollection,
-  ]);
 
-  // 自动同步逻辑
-  useEffect(() => {
-    let ignore = false;
-
-    if (state.currentCollection?.online && fetchCollection) {
-      const id = toast.loading("正在从云端获取数据", {
-        position: "bottom-left",
-      });
-      fetchCollection(String(state.currentCollection.id))?.then((e) => {
-        if (ignore) {
-          toast.dismiss(id);
-          return;
-        }
-        if (!e) return;
-        if (e.updated_at == state.currentCollection?.updated_at) {
-          toast.dismiss(id);
-          toast.success("数据已为最新", { position: "bottom-left" });
-          return;
-        }
-        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
-        toast.dismiss(id);
-        if (answer) {
-          dispatch({
-            type: "SET_CURRENT_COLLECTION",
-            payload: e,
-          });
-          toast.success("同步数据成功");
-        }
-      });
-    }
     return () => {
       ignore = true;
     };
   }, [
-    state.currentCollection?.id,
-    state.currentCollection?.online,
-    state.currentCollection?.updated_at,
-    fetchCollection,
+    collectionId,
     dispatch,
+    fetchCollection,
+    fetching,
+    state.collectionList,
+    state.currentCollection,
   ]);
 
   const navigate = useNavigate();
@@ -212,10 +183,10 @@ export default function CollectionLayout<
   return (
     <>
       <div className="pt-3 relative">
-        <CollectionHeader 
-          dispatch={dispatch} 
-          state={state} 
-          Search={Search} 
+        <CollectionHeader
+          dispatch={dispatch}
+          state={state}
+          Search={Search}
           onSyncFromCloud={handleSyncFromCloud}
           onSyncToCloud={handleSyncToCloud}
           isFetching={fetching}
@@ -251,10 +222,12 @@ export default function CollectionLayout<
                 onIndexChange={(index) => {
                   dispatch({
                     type: "SET_CURRENT_INDEX",
-                    payload: index
+                    payload: index,
                   });
                 }}
-                renderItem={(entity) => renderEntity(entity, { preview: false })}
+                renderItem={(entity) =>
+                  renderEntity(entity, { preview: false })
+                }
                 getItemId={(entity) => entity.id ?? JSON.stringify(entity)}
               />
             ) : (

@@ -43,13 +43,13 @@ export const createEntityContext = <
   const initialState: State<EntityType, CollectionType> = {
     modalOpen: false,
     entityModalMode: "view",
-    currentCollection: null,
+    currentCollection: undefined,
     currentEntity: defaultEntity,
-    collectionList: [],
+    collectionList: undefined,
     entityList: [],
     filters: defaultFilters || {},
     filterConfig: defaultFilterConfig || {},
-    fromLocalStorage: true,
+    shouldSyncToLocalStorage: false,
     inMemory,
     currentIndex: 0,
   };
@@ -132,7 +132,7 @@ export const createEntityContext = <
           if (!res || !(res as any).length) {
             list = [defaultCollection];
           } else {
-            list = res as CollectionType[];
+            list = (res || []) as CollectionType[];
           }
           dispatch({
             type: "ANY",
@@ -225,11 +225,12 @@ export const createEntityContext = <
         return;
       }
       saveEntities();
+
       function saveEntities() {
         if (!state.currentCollection?.id) {
           return;
         }
-        if (!pending && !state.fromLocalStorage) {
+        if (!pending && state.shouldSyncToLocalStorage) {
           // todo：起初读取值的时候不要反向同步
           localforage.setItem(
             state.currentCollection.id + "",
@@ -237,7 +238,7 @@ export const createEntityContext = <
           );
         }
       }
-    }, [state.entityList]);
+    }, [pending, state.currentCollection?.id, state.entityList, state.shouldSyncToLocalStorage]);
 
     return (
       <EntityContext.Provider value={state}>
