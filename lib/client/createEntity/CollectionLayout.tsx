@@ -64,7 +64,66 @@ export default function CollectionLayout<
 }) {
   const { collectionId } = useParams();
   const outlet = useOutlet();
-  const swiperRef = useRef<any>(null);
+  const [fetching, setFetching] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleSyncFromCloud = useCallback(() => {
+    if (!state.currentCollection?.id || !fetchCollection) {
+      return;
+    }
+    setFetching(true);
+
+    return fetchCollection(String(state.currentCollection.id))
+      .then((res) => {
+        if (!res) return;
+        if (res.updated_at == state.currentCollection?.updated_at) {
+          toast.success("数据已为最新", { position: "bottom-left" });
+          return;
+        }
+        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+        if (answer) {
+          dispatch({
+            type: "SET_CURRENT_COLLECTION",
+            payload: res,
+          });
+          toast.success("同步数据成功");
+        }
+      })
+      .catch((e) => {
+        toast.error("同步数据失败：" + e.message);
+      })
+      .finally(() => {
+        setFetching(false);
+      });
+  }, [state.currentCollection?.id, state.currentCollection?.updated_at, fetchCollection, dispatch]);
+
+  const handleSyncToCloud = useCallback(() => {
+    if (!state.currentCollection?.id) return;
+    setUploading(true);
+    const fd = new FormData();
+    fd.append("id", state.currentCollection.id + "");
+    fd.append("content", JSON.stringify(state.entityList));
+    fd.append("meta", JSON.stringify({
+      layout: state.currentCollection?.layout || "masonry"
+    }));
+
+    fetchWithAuth("/api/updatePost", {
+      method: "POST",
+      headers: { accept: "application/json" },
+      body: fd,
+    })
+      .then((res) => res.json())
+      .then((json) => json.data)
+      .then((obj) => {
+        toast.success("数据上传成功");
+      })
+      .catch((e) => {
+        toast.error("上传失败：" + e?.message);
+      })
+      .finally(() => {
+        setUploading(false);
+      });
+  }, [state.currentCollection?.id, state.currentCollection?.layout, state.entityList]);
 
   useEffect(() => {
     if (!collectionId) {
@@ -144,21 +203,6 @@ export default function CollectionLayout<
     dispatch,
   ]);
 
-  const handleSync = useCallback((res: CType) => {
-    if (res.updated_at == state.currentCollection?.updated_at) {
-      toast.success("数据已为最新", { position: "bottom-left" });
-      return;
-    }
-    const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
-    if (answer) {
-      dispatch({
-        type: "SET_CURRENT_COLLECTION",
-        payload: res,
-      });
-      toast.success("同步数据成功");
-    }
-  }, [state.currentCollection?.updated_at, dispatch]);
-
   const navigate = useNavigate();
 
   const Search = slots?.["search"];
@@ -172,8 +216,10 @@ export default function CollectionLayout<
           dispatch={dispatch} 
           state={state} 
           Search={Search} 
-          fetchCollection={fetchCollection}
-          onSync={handleSync}
+          onSyncFromCloud={handleSyncFromCloud}
+          onSyncToCloud={handleSyncToCloud}
+          isFetching={fetching}
+          isUploading={uploading}
         />
         <div className="lg:max-w-7xl mx-auto">
           <div className="relative w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">

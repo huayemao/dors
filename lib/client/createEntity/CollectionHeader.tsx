@@ -4,6 +4,7 @@ import {
   BaseDropdown,
   BaseDropdownItem,
   BaseRadio,
+  BaseButtonIcon,
 } from "@shuriken-ui/react";
 import {
   CopyIcon,
@@ -26,24 +27,28 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import c from "@/styles/createEntity.module.css";
 import { SlideDialog } from "@/components/Base/SlideDialog";
 
-interface CollectionHeaderProps<
-  EType extends BaseEntity,
-  CType extends BaseCollection
-> {
-  dispatch: EntityDispatch<EType, CType>;
+export type CollectionHeaderProps<EType extends BaseEntity, CType extends BaseCollection> = {
   state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
   Search?: FC<{
     state: EntityState<EType, CType>;
     dispatch: EntityDispatch<EType, CType>;
   }>;
-  fetchCollection?: (id: string) => Promise<CType | null>;
-  onSync?: (res: CType) => void;
-}
+  onSyncFromCloud: () => void;
+  onSyncToCloud: () => void;
+  isFetching: boolean;
+  isUploading: boolean;
+};
 
-export function CollectionHeader<
-  EType extends BaseEntity,
-  CType extends BaseCollection
->({ dispatch, state, Search, fetchCollection }: CollectionHeaderProps<EType, CType>) {
+export function CollectionHeader<EType extends BaseEntity, CType extends BaseCollection>({
+  state,
+  dispatch,
+  Search,
+  onSyncFromCloud,
+  onSyncToCloud,
+  isFetching,
+  isUploading,
+}: CollectionHeaderProps<EType, CType>) {
   const headerRef = useRef(null);
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
   const pinned = usePinned(headerRef, isMobile ? 24 : 20);
@@ -230,7 +235,13 @@ export function CollectionHeader<
           {!isSimple && Collections}
           <div className="flex items-center gap-2">
             {Search && <Search state={state} dispatch={dispatch} />}
-            <SyncButtons state={state} dispatch={dispatch} fetchCollection={fetchCollection} />
+            <SyncButtons
+              state={state}
+              onSyncFromCloud={onSyncFromCloud}
+              onSyncToCloud={onSyncToCloud}
+              isFetching={isFetching}
+              isUploading={isUploading}
+            />
           </div>
           <BaseButton
             size="sm"
@@ -246,14 +257,12 @@ export function CollectionHeader<
             <PlusIcon className="h-4 w-4 md:mr-2" />
             <span className="hidden md:inline-block">新建</span>
           </BaseButton>
-          <BaseButton
+          <BaseButtonIcon
             size="sm"
-            variant="outline"
             onClick={() => setSettingsOpen(true)}
-            className="xs:!p-1 xs:w-8 xs:h-8"
           >
             <SettingsIcon className="h-4 w-4" />
-          </BaseButton>
+          </BaseButtonIcon>
         </div>
       </div>
       <BaseButton
