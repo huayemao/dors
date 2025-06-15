@@ -1,5 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { BaseCard } from "@shuriken-ui/react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCards, EffectCoverflow, EffectCreative } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-cards';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/effect-creative';
 
 import {
   FC,
@@ -22,6 +28,7 @@ import { BaseCollection, BaseEntity } from "./types";
 import { fetchWithAuth } from "../utils/fetch";
 import { CollectionHeader } from "./CollectionHeader";
 import { Table } from "@/app/(content)/data-process/Table";
+import { StackCards } from "./components/StackCards";
 
 export default function CollectionLayout<
   EType extends BaseEntity,
@@ -29,6 +36,7 @@ export default function CollectionLayout<
     _entityList?: EType[];
     entityList?: EType[];
     updated_at?: string;
+    layout?: "masonry" | "stack" | "table";
   }
 >({
   slots,
@@ -50,11 +58,13 @@ export default function CollectionLayout<
   dispatch: EntityDispatch<EType, CType>;
   renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
   fetchCollection?: (id: string) => Promise<CType | null>;
-  layout?: "masonry" | "table";
+  layout?: "masonry" | "stack" | "table";
   getList?: (list: EType[]) => object[];
 }) {
   const { collectionId } = useParams();
   const outlet = useOutlet();
+  const swiperRef = useRef<any>(null);
+
   useEffect(() => {
     if (!collectionId) {
       return;
@@ -104,7 +114,7 @@ export default function CollectionLayout<
         <CollectionHeader dispatch={dispatch} state={state} Search={Search} />
         <div className="lg:max-w-7xl mx-auto">
           <div className="relative w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
-            {layout === "masonry" ? (
+            {(state.currentCollection?.layout || layout) === "masonry" ? (
               <div className="max-w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
                 {list.map((e, i, arr) => (
                   <div
@@ -125,15 +135,25 @@ export default function CollectionLayout<
                   </div>
                 ))}
               </div>
+            ) : (state.currentCollection?.layout || layout) === "stack" ? (
+              <StackCards
+                items={list}
+                currentIndex={state.currentIndex}
+                onIndexChange={(index) => {
+                  dispatch({
+                    type: "SET_CURRENT_INDEX",
+                    payload: index
+                  });
+                }}
+                renderItem={(entity) => renderEntity(entity, { preview: false })}
+                getItemId={(entity) => entity.id ?? JSON.stringify(entity)}
+              />
             ) : (
               <div className="max-w-full bg-white border shadow">
                 {list.length !== 0 && (
                   <Table
                     data={getList(list)}
                     canEdit
-                    // onRowClick={(e) => {
-                    //   navigate("./" + e.id);
-                    // }}
                     actions={[
                       {
                         title: "查看",

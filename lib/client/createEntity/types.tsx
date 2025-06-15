@@ -9,6 +9,8 @@ export interface BaseCollection {
   name: string;
   online: boolean;
   updated_at?: string;
+  description?: string
+  layout?: "masonry" | "stack" | "table";
 }
 
 interface DetailedFilter {
@@ -45,6 +47,7 @@ export type State<
   };
   fromLocalStorage: boolean;
   inMemory?: boolean;
+  currentIndex: number;
 };
 
 export type Action<
@@ -102,5 +105,6 @@ export type Action<
     payload: NonNullable<EntityType>;
   }
   | { type: "REMOVE_COLLECTION"; payload: CollectionType["id"] }
-  | { type: "CANCEL" };
+  | { type: "CANCEL" }
+  | { type: "SET_CURRENT_INDEX"; payload: number };
 

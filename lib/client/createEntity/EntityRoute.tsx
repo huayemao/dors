@@ -23,6 +23,8 @@ const fetchCollection = (id: string) =>
       name: obj.title,
       online: true,
       _entityList: JSON.parse(obj.content),
+      layout: obj.meta?.layout || "masonry",
+      updated_at: obj.updated_at
     }));
 
 type Props<EType extends BaseEntity, CType extends BaseCollection> = {

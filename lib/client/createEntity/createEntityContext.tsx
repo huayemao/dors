@@ -51,6 +51,7 @@ export const createEntityContext = <
     filterConfig: defaultFilterConfig || {},
     fromLocalStorage: true,
     inMemory,
+    currentIndex: 0,
   };
 
   function getShowingList(state: AppState): EntityType[] {

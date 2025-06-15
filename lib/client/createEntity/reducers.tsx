@@ -39,173 +39,78 @@ export const getReducer = <
   defaultEntity: EntityType
 ) => {
   type AppState = State<EntityType, CollectionType>;
+  type AppAction = Action<EntityType, CollectionType>;
 
-  const reducer: Reducer<AppState, Action<EntityType, CollectionType>> = (
-    state,
-    action
-  ): AppState => {
-    const { currentCollection } = state;
-
+  const reducer: Reducer<AppState, AppAction> = (state, action) => {
     switch (action.type) {
-      case "ANY": {
-        return Object.assign({}, state, action.payload);
-      }
-      case "SET_FILTERS": {
-        return Object.assign({}, state, {
+      case "ANY":
+        return { ...state, ...action.payload };
+      case "SET_FILTERS":
+        return {
+          ...state,
           filters: action.payload.filters,
           filterConfig: action.payload.filterConfig || state.filterConfig,
-        });
-      }
-      case "SET_MODAL_OPEN": {
-        return Object.assign({}, state, {
-          modalOpen: action.payload,
-        });
-      }
+        };
       case "SET_ENTITY_MODAL_MODE":
-        return Object.assign({}, state, {
-          entityModalMode: action.payload,
-        });
-      case "SET_CURRENT_COLLECTION": {
-        const collection = action.payload;
-        if (collection) {
-          const isUpdating =
-            collection.id &&
-            collection.updated_at &&
-            collection.id == state.currentCollection?.id &&
-            state.currentCollection?.updated_at &&
-            collection.updated_at != state.currentCollection?.updated_at;
-
-          if (isUpdating) {
-            const index = state.collectionList.findIndex(
-              (e) => e.id == collection.id
-            );
-            const newList = [...state.collectionList];
-            newList[index] = collection;
-            const patch = {
-              currentCollection: collection,
-              collectionList: newList,
-              entityList: collection._entityList,
-              fromLocalStorage: false,
-            };
-            return Object.assign({}, state, patch);
-          }
-
-          const isImporting =
-            collection.id &&
-            collection.id != defaultCollection.id &&
-            state.collectionList.every((item) => item.id != collection.id);
-
-          if (isImporting) {
-            const patch = {
-              currentCollection: collection,
-              collectionList: state.collectionList.concat(collection),
-              entityList: collection._entityList,
-              fromLocalStorage: false,
-            };
-            return Object.assign({}, state, patch);
-          }
-        }
-        return Object.assign({}, state, {
-          currentCollection: action.payload,
-        });
-      }
-
-      case "SET_CURRENT_ENTITY": {
-        return Object.assign({}, state, {
-          currentEntity: action.payload,
-        });
-      }
-
-      case "SET_ENTITY_LIST": {
-        return Object.assign({}, state, {
-          entityList: action.payload,
-          fromLocalStorage: false,
-        });
-      }
-      case "INIT_ENTITY_LIST": {
-        return Object.assign({}, state, {
-          fromLocalStorage: true,
-          entityList: action.payload,
-        });
-      }
-      case "CREATE_OR_UPDATE_COLLECTION": {
-        const { payload } = action;
-        const { collectionList, currentCollection } = state;
-        // isEditing
-        if (!!currentCollection) {
-          const newList = [...collectionList];
-          const targetItemIndex = collectionList?.findIndex(
-            (e) => e.id === currentCollection.id
-          );
-          newList[targetItemIndex] = payload;
-          return Object.assign({}, state, {
-            collectionList: newList,
-            currentCollection: payload,
-          });
-        } else {
-          const newList = collectionList
-            ? collectionList.concat(payload)
-            : [payload];
-          return Object.assign({}, state, {
-            collectionList: newList,
-            currentCollection: payload,
-          });
-        }
-      }
-      case "CREATE_OR_UPDATE_ENTITY": {
-        const { payload } = action;
-        const { entityList, currentEntity } = state;
-        const newList = updateOrCreateInList(payload, entityList);
-        return Object.assign({}, state, {
-          entityList: newList,
-          currentEntity: payload,
-          fromLocalStorage: false,
-        });
-      }
-      case "SET_COLLECTION_LIST":
-        return Object.assign({}, state, {
-          collectionList: action.payload,
-        });
+        return { ...state, entityModalMode: action.payload };
       case "INIT":
-        const maxSeq = state.entityList?.length
-          ? Math.max(...state.entityList?.map((e) => Number(e.seq)))
-          : -1;
-        return Object.assign({}, state, {
-          currentEntity: { ...defaultEntity, seq: maxSeq + 1 },
-        });
+        return {
+          ...state,
+          currentCollection: defaultCollection,
+          currentEntity: defaultEntity,
+        };
+      case "SET_CURRENT_COLLECTION":
+        return { ...state, currentCollection: action.payload };
+      case "SET_CURRENT_ENTITY":
+        return { ...state, currentEntity: action.payload };
+      case "INIT_ENTITY_LIST":
+        return { ...state, entityList: action.payload };
+      case "SET_ENTITY_LIST":
+        return { ...state, entityList: action.payload };
+      case "SET_COLLECTION_LIST":
+        return { ...state, collectionList: action.payload };
+      case "REMOVE_ENTITY":
+        return {
+          ...state,
+          entityList: state.entityList.filter((e) => e.id !== action.payload),
+        };
+      case "SET_MODAL_OPEN":
+        return { ...state, modalOpen: action.payload };
+      case "CREATE_OR_UPDATE_COLLECTION":
+        return {
+          ...state,
+          collectionList: state.collectionList.map((e) =>
+            e.id === action.payload.id ? action.payload : e
+          ),
+          currentCollection: action.payload,
+        };
+      case "CREATE_OR_UPDATE_ENTITY":
+        return {
+          ...state,
+          entityList: state.entityList.map((e) =>
+            e.id === action.payload.id ? action.payload : e
+          ),
+          currentEntity: action.payload,
+        };
+      case "REMOVE_COLLECTION":
+        return {
+          ...state,
+          collectionList: state.collectionList.filter(
+            (e) => e.id !== action.payload
+          ),
+        };
       case "CANCEL":
-        return Object.assign({}, state, {
+        return {
+          ...state,
           modalOpen: false,
           entityModalMode: "view",
-        });
-      case "REMOVE_ENTITY": {
-        const targetItemIndex = state.entityList?.findIndex((e) => e.id === action.payload);
-        const hasTarget = targetItemIndex != undefined && targetItemIndex != -1;
-        if (hasTarget) {
-          return Object.assign({}, state, {
-            entityList: state.entityList?.filter((e, i) => e.id != action.payload),
-          });
-        }
-        return state;
-      }
-      case "REMOVE_COLLECTION": {
-        const removeItem = (id) => {
-          const targetItemIndex = state.collectionList?.findIndex(
-            (e) => e.id === id
-          );
-          const hasTarget =
-            targetItemIndex != undefined && targetItemIndex != -1;
-          if (hasTarget) {
-            return Object.assign({}, state, {
-              collectionList: state.collectionList?.filter(
-                (e, i) => e.id != id
-              ),
-            });
-          }
-          return state;
+          currentEntity: defaultEntity,
         };
-        return removeItem(action.payload);
-      }
+      case "SET_CURRENT_INDEX":
+        return {
+          ...state,
+          currentIndex: action.payload,
+        };
       default:
         return state;
     }

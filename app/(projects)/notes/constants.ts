@@ -13,6 +13,7 @@ export type Note = typeof DEFAULT_NOTE & {
 export const DEFAULT_COLLECTION = {
   id: Date.now(),
   name: new Date().toLocaleDateString(),
-  online: false
+  online: false,
+  layout: "masonry" as "masonry" | "stack"
 };
 

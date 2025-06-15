@@ -120,6 +120,9 @@ export function SyncButtons<EType extends BaseEntity,
               const fd = new FormData();
               fd.append("id", state.currentCollection!.id + "");
               fd.append("content", JSON.stringify(state.entityList));
+              fd.append("meta", JSON.stringify({
+                layout: state.currentCollection?.layout || "masonry"
+              }));
 
               fetchWithAuth("/api/updatePost", {
                 method: "POST",
