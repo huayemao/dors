@@ -226,7 +226,7 @@ export default function CollectionLayout<
                   });
                 }}
                 renderItem={(entity) =>
-                  renderEntity(entity, { preview: false })
+                  renderEntity(entity, { preview: true })
                 }
                 getItemId={(entity) => entity.id ?? JSON.stringify(entity)}
               />

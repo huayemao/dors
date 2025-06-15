@@ -44,7 +44,6 @@ function Content({
     parseMDXClient(content)
       .then((res) => {
         // 这里的 type 是 function
-        // console.log(typeof res);
         setRes(res);
       })
       .finally(() => {
@@ -100,7 +99,7 @@ function Content({
         {typeof result == "function"
           ? React.Children.toArray(result({}).props.children[0]).slice(
             0,
-            preview ? 3 : undefined
+            preview ? 12 : undefined
           )
           : isValidElement(result) && preview
             ? extractPreview(result)
@@ -121,7 +120,7 @@ function Content({
     // console.log(result);
     if (result.type.toString() == React.Fragment.toString()) {
       const children = React.Children.toArray(result.props.children);
-      return children.slice(0, 3);
+      return children.slice(0, 12);
     }
 
     const isGallery = result.type.toString() == Gallery.toString();

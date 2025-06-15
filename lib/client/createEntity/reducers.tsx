@@ -211,6 +211,11 @@ export const getReducer = <
         };
         return removeItem(action.payload);
       }
+      case "SET_CURRENT_INDEX":
+        return {
+          ...state,
+          currentIndex: action.payload,
+      };
       default:
         return state;
     }
