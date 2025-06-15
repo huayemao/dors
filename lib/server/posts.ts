@@ -440,6 +440,7 @@ type PostPayload = {
   cover_image_url?: string;
   slug?: string;
   toc?: string[];
+  meta?: any;
 };
 
 type CreatePostPayload = Omit<PostPayload, "id">;
@@ -463,6 +464,7 @@ export async function updatePost(
     changePhoto,
     cover_image_url,
     toc,
+    meta,
   } = params;
 
   const postTagNames = post?.tags.map((e) => e?.name) as string[];
@@ -506,6 +508,7 @@ export async function updatePost(
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       created_at: created_at ? new Date(created_at as string) : undefined,
       toc: toc?.map(e => ({ id: Number(e) })) || undefined,
+      meta: meta || undefined,
       tags_posts_links: {},
       posts_category_links: categoryId
         ? {

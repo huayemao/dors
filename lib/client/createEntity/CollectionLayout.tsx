@@ -29,6 +29,7 @@ import { fetchWithAuth } from "../utils/fetch";
 import { CollectionHeader } from "./CollectionHeader";
 import { Table } from "@/app/(content)/data-process/Table";
 import { StackCards } from "./components/StackCards";
+import { toast } from "react-hot-toast";
 
 export default function CollectionLayout<
   EType extends BaseEntity,
@@ -102,6 +103,62 @@ export default function CollectionLayout<
     fetchCollection,
   ]);
 
+  // 自动同步逻辑
+  useEffect(() => {
+    let ignore = false;
+
+    if (state.currentCollection?.online && fetchCollection) {
+      const id = toast.loading("正在从云端获取数据", {
+        position: "bottom-left",
+      });
+      fetchCollection(String(state.currentCollection.id))?.then((e) => {
+        if (ignore) {
+          toast.dismiss(id);
+          return;
+        }
+        if (!e) return;
+        if (e.updated_at == state.currentCollection?.updated_at) {
+          toast.dismiss(id);
+          toast.success("数据已为最新", { position: "bottom-left" });
+          return;
+        }
+        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+        toast.dismiss(id);
+        if (answer) {
+          dispatch({
+            type: "SET_CURRENT_COLLECTION",
+            payload: e,
+          });
+          toast.success("同步数据成功");
+        }
+      });
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [
+    state.currentCollection?.id,
+    state.currentCollection?.online,
+    state.currentCollection?.updated_at,
+    fetchCollection,
+    dispatch,
+  ]);
+
+  const handleSync = useCallback((res: CType) => {
+    if (res.updated_at == state.currentCollection?.updated_at) {
+      toast.success("数据已为最新", { position: "bottom-left" });
+      return;
+    }
+    const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+    if (answer) {
+      dispatch({
+        type: "SET_CURRENT_COLLECTION",
+        payload: res,
+      });
+      toast.success("同步数据成功");
+    }
+  }, [state.currentCollection?.updated_at, dispatch]);
+
   const navigate = useNavigate();
 
   const Search = slots?.["search"];
@@ -111,7 +168,13 @@ export default function CollectionLayout<
   return (
     <>
       <div className="pt-3 relative">
-        <CollectionHeader dispatch={dispatch} state={state} Search={Search} />
+        <CollectionHeader 
+          dispatch={dispatch} 
+          state={state} 
+          Search={Search} 
+          fetchCollection={fetchCollection}
+          onSync={handleSync}
+        />
         <div className="lg:max-w-7xl mx-auto">
           <div className="relative w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
             {(state.currentCollection?.layout || layout) === "masonry" ? (

@@ -36,12 +36,14 @@ interface CollectionHeaderProps<
     state: EntityState<EType, CType>;
     dispatch: EntityDispatch<EType, CType>;
   }>;
+  fetchCollection?: (id: string) => Promise<CType | null>;
+  onSync?: (res: CType) => void;
 }
 
 export function CollectionHeader<
   EType extends BaseEntity,
   CType extends BaseCollection
->({ dispatch, state, Search }: CollectionHeaderProps<EType, CType>) {
+>({ dispatch, state, Search, fetchCollection }: CollectionHeaderProps<EType, CType>) {
   const headerRef = useRef(null);
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
   const pinned = usePinned(headerRef, isMobile ? 24 : 20);
@@ -226,10 +228,10 @@ export function CollectionHeader<
           "justify-around": !isSimple,
         })}>
           {!isSimple && Collections}
-          <div className="">
-            {Search && <Search dispatch={dispatch} state={state} />}
+          <div className="flex items-center gap-2">
+            {Search && <Search state={state} dispatch={dispatch} />}
+            <SyncButtons state={state} dispatch={dispatch} fetchCollection={fetchCollection} />
           </div>
-          <SyncButtons state={state} dispatch={dispatch} />
           <BaseButton
             size="sm"
             color="primary"

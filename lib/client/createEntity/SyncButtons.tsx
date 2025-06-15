@@ -12,84 +12,32 @@ export function SyncButtons<EType extends BaseEntity,
     entityList?: EType[];
     updated_at?: string;
   }>(
-    { state, dispatch }: { state: EntityState<EType, CType>; dispatch: EntityDispatch<EType, CType>; }) {
+    { state, dispatch, fetchCollection, onSync }: { 
+      state: EntityState<EType, CType>; 
+      dispatch: EntityDispatch<EType, CType>;
+      fetchCollection?: (id: string) => Promise<CType | null>;
+      onSync?: (res: CType) => void;
+    }) {
   const [fetching, setFetching] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const applyChange = useCallback(
-    (res: any) => {
-      dispatch({
-        type: "SET_CURRENT_COLLECTION",
-        payload: res,
-      });
-    },
-    [dispatch]
-  );
-
   const syncFromCloud = useCallback(
     (init?: RequestInit) => {
-      if (!state.currentCollection?.id) {
+      if (!state.currentCollection?.id || !fetchCollection) {
         return;
       }
       setFetching(true);
 
-      return fetchWithAuth("/api/getPost?id=" + state.currentCollection.id, init)
-        .then((e) => e.json())
-        .then((obj) => {
-          return {
-            ...obj,
-            id: obj.id,
-            name: obj.title,
-            online: true,
-            _entityList: JSON.parse(obj.content),
-          };
-        })
+      return fetchCollection(String(state.currentCollection.id))
         .finally(() => {
           setFetching(false);
         });
     },
-    [state.currentCollection?.id]
+    [state.currentCollection?.id, fetchCollection]
   );
-
-  useEffect(() => {
-    let ignore = false;
-
-    if (state.currentCollection?.online) {
-      const id = toast.loading("正在从云端获取数据", {
-        position: "bottom-left",
-      });
-      syncFromCloud()?.then((e) => {
-        if (ignore) {
-          toast.dismiss(id);
-          return;
-        }
-        // @ts-ignore
-        if (e.updated_at == state.currentCollection?.updated_at) {
-          toast.dismiss(id);
-          toast.success("数据已为最新", { position: "bottom-left" });
-          return;
-        }
-        const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
-        toast.dismiss(id);
-        if (answer) {
-          applyChange(e);
-          toast.success("同步数据成功");
-        }
-      });
-    }
-    return () => {
-      ignore = true;
-    };
-  }, [
-    applyChange,
-    state.currentCollection?.id,
-    syncFromCloud,
-    state.currentCollection?.online,
-  ]);
 
   return <BaseButtonGroup>
     {
-      // @ts-ignore
       state.currentCollection?.online && (
         <>
           <BaseButtonIcon
@@ -98,8 +46,8 @@ export function SyncButtons<EType extends BaseEntity,
             onClick={() => {
               syncFromCloud()
                 ?.then?.((res) => {
-                  applyChange(res);
-                  toast.success("同步数据成功");
+                  if (!res) return;
+                  onSync?.(res);
                 })
                 .catch((e) => {
                   toast("同步数据失败：" + e.message);
@@ -143,7 +91,6 @@ export function SyncButtons<EType extends BaseEntity,
                 .then((res) => {
                   dispatch({
                     type: "SET_CURRENT_COLLECTION",
-                    // 把最新的 collection 数据存下来，更新 updated_at 等
                     payload: res,
                   });
                   toast.success("数据上传成功");

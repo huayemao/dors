@@ -19,6 +19,7 @@ export function readPostFormData(formData: FormData) {
     ? (formData.getAll("toc") as string[])
     : undefined;
   const toc = tocRaw?.length == 1 && tocRaw[0].includes(',') ? tocRaw[0].split(',') : tocRaw;
+  const meta = formData.get("meta") as string | undefined;
 
   return {
     id,
@@ -34,6 +35,7 @@ export function readPostFormData(formData: FormData) {
     cover_image_url,
     type,
     slug,
-    toc
+    toc,
+    meta
   };
 }
