@@ -20,6 +20,28 @@ import React, { ReactElement } from "react";
 import { filterEmptyLines } from "./filterEmptyLines";
 import NavList from "./NavList";
 
+// Helper to generate unique heading ids
+const getHeading = (Tag: keyof JSX.IntrinsicElements) => {
+  const idMap = new Map<string, number>();
+  // eslint-disable-next-line react/display-name
+  return function Heading(props: any) {
+    let text = "";
+    React.Children.forEach(props.children, (child) => {
+      if (typeof child === "string") text += child;
+    });
+    let baseId = encodeURIComponent(text);
+    let id = baseId;
+    if (idMap.has(baseId)) {
+      const count = idMap.get(baseId)! + 1;
+      idMap.set(baseId, count);
+      id = `${baseId}-${count}`;
+    } else {
+      idMap.set(baseId, 1);
+    }
+    return <Tag id={id} {...props} />;
+  };
+};
+
 export const components = {
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
   QuestionList: (props) => <QuestionList {...props} />,
@@ -38,11 +60,11 @@ export const components = {
   ),
   Raw: (props) => <Raw {...props}></Raw>,
   Gallery,
-  h1: (props) => <h1 id={encodeURIComponent(props.children)} {...props}></h1>,
-  h2: (props) => <h2 id={encodeURIComponent(props.children)} {...props}></h2>,
-  h3: (props) => <h3 id={encodeURIComponent(props.children)} {...props}></h3>,
-  h4: (props) => <h4 id={encodeURIComponent(props.children)} {...props}></h4>,
-  h5: (props) => <h5 id={encodeURIComponent(props.children)} {...props}></h5>,
+  h1: getHeading("h1"),
+  h2: getHeading("h2"),
+  h3: getHeading("h3"),
+  h4: getHeading("h4"),
+  h5: getHeading("h5"),
   pre: Pre,
   Iframe: (props) => (
     <ClientOnly>
@@ -117,5 +139,5 @@ export const components = {
     //   </div>
     // );
   },
-  DictEntry:DictEntry
+  DictEntry: DictEntry,
 };

@@ -55,7 +55,7 @@ export default async function RootLayout({
             src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
           ></Script>
         </head>
-        <body className="min-h-screen flex flex-col w-screen">
+        <body className="min-h-screen flex flex-col w-screen overflow-x-hidden">
           {children}
           <AppToaster />
           <AppTip></AppTip>
