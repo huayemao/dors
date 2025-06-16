@@ -136,55 +136,62 @@ export default function CollectionLayout<
 
   useEffect(() => {
     let ignore = false;
-    if (!collectionId) {
+    if (!collectionId || collectionId == state.currentCollection?.id) {
       return;
     }
+    if (!state.collectionList) {
+      return;
+    }
+    let collection =
+      state.collectionList.find((e) => e.id == collectionId) || null;
 
-    if (collectionId != state.currentCollection?.id) {
-      if (!state.collectionList) {
-        return;
-      }
-      let collection =
-        state.collectionList.find((e) => e.id == collectionId) || null;
+    if (isNull(collection) && isNull(state.currentCollection)) {
+      return
+    }
 
-      dispatch({
-        type: "SET_CURRENT_COLLECTION",
-        payload: collection, // 作为 fallback
-      });
+    dispatch({
+      type: "SET_CURRENT_COLLECTION",
+      payload: collection, // 作为 fallback
+    });
 
-      if ((!collection || collection.online) && fetchCollection && !fetching) {
-        setFetching(true);
-        fetchCollection(String(collectionId))
-          .then((obj) => {
-            if (!obj) {
-              throw new Error("api 返回数据格式错误");
-            }
+    if ((!collection || collection.online) && fetchCollection && !fetching) {
+      setFetching(true);
+      fetchCollection(String(collectionId))
+        .then((obj) => {
+          if (!obj) {
+            throw new Error("api 返回数据格式错误");
+          }
 
-            if (
-              !isNull(obj.updated_at) &&
-              obj.updated_at === collection!.updated_at
-            ) {
-              toast.success("数据已为最新", { position: "bottom-left" });
-              console.log("最新");
-              return;
-            }
-
-            const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
-            if (answer) {
+          if (
+            !collection || !isNull(obj.updated_at) &&
+            obj.updated_at === collection.updated_at
+          ) {
+            if (!collection) {
               dispatch({
                 type: "SET_CURRENT_COLLECTION",
                 payload: obj,
               });
-              toast.success("同步数据成功");
             }
-          })
-          .catch((e) => {
-            toast.error("同步数据失败：" + e.message);
-          })
-          .finally(() => {
-            setFetching(false);
-          });
-      }
+            toast.success("数据已为最新", { position: "bottom-left" });
+            console.log("最新");
+            return;
+          }
+
+          const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
+          if (answer) {
+            dispatch({
+              type: "SET_CURRENT_COLLECTION",
+              payload: obj,
+            });
+            toast.success("同步数据成功");
+          }
+        })
+        .catch((e) => {
+          toast.error("同步数据失败：" + e.message);
+        })
+        .finally(() => {
+          setFetching(false);
+        });
     }
 
     return () => {
