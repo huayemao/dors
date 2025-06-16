@@ -80,9 +80,9 @@ export const Nav = ({
 
   useEffect(() => {
     if (mobileOpen) {
-      window.document.body.style.overflow = "hidden";
+      window.document.body.style.overflowY = "hidden";
     } else {
-      window.document.body.style.overflow = "auto";
+      window.document.body.style.overflowY = "auto";
     }
   }, [mobileOpen]);
 

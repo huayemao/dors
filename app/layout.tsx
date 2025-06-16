@@ -29,7 +29,7 @@ export default async function RootLayout({
 }) {
   return (
     <ShurikenUIProvider>
-      <html lang="zh-CN" className="overflow-x-hidden">
+      <html lang="zh-CN">
         <head>
           <meta
             name="msvalidate.01"
