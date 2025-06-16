@@ -25,7 +25,7 @@ function Gallery({
 }: ComponentProps<"div"> & { preview?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [mediaSizes, setMediaSizes] = useState<Record<string, ImageSize>>({});
-  
+
   // 判断媒体类型
   const getMediaType = (src: string): 'image' | 'video' => {
     const ext = src.split('.').pop()?.toLowerCase();
@@ -43,16 +43,16 @@ function Gallery({
     }
     return undefined;
   };
-  
+
   // 处理 children 是 p 标签的情况
   const getMediaItems = (children: any): MediaItem[] => {
     if (!children) return [];
-    
+
     // 如果是数组，递归处理每个子元素
     if (Array.isArray(children)) {
       return children.flatMap(getMediaItems);
     }
-    
+
     // 如果是对象（React 元素）
     if (typeof children === 'object') {
       // 如果是 p 标签，处理其子元素
@@ -69,7 +69,7 @@ function Gallery({
         }];
       }
     }
-    
+
     // 如果是字符串，尝试匹配 markdown 图片语法
     if (typeof children === 'string') {
       const matches = children.match(/!\[.*?\]\((.*?)\)/g);
@@ -86,7 +86,7 @@ function Gallery({
         }).filter(Boolean) as MediaItem[];
       }
     }
-    
+
     return [];
   };
 
@@ -110,7 +110,7 @@ function Gallery({
           };
         }
       });
-      
+
       if (Object.keys(sizes).length > 0) {
         setMediaSizes(sizes);
       }
@@ -120,13 +120,16 @@ function Gallery({
     const handleImageLoad = (e: Event) => {
       const img = e.target as HTMLImageElement;
       if (img.naturalWidth && img.naturalHeight) {
-        setMediaSizes(prev => ({
-          ...prev,
-          [img.src]: {
-            width: img.naturalWidth,
-            height: img.naturalHeight
-          }
-        }));
+        const targetSrc = mediaItems.find(e => img.src.endsWith(e.src))?.src;
+        if (targetSrc) {
+          setMediaSizes(prev => ({
+            ...prev,
+            [targetSrc]: {
+              width: img.naturalWidth,
+              height: img.naturalHeight
+            }
+          }));
+        }
       }
     };
 
@@ -148,7 +151,7 @@ function Gallery({
   }, []);
 
   return (
-    <div 
+    <div
       ref={ref}
       className={cn(
         "not-prose",
@@ -163,7 +166,7 @@ function Gallery({
       <LightBox gallery={ref.current!}></LightBox>
       {mediaItems.map((item, index) => {
         const size = item.size || mediaSizes[item.src] || { width: 1920, height: 1080 };
-        
+
         return (
           <a
             key={index}
@@ -179,7 +182,6 @@ function Gallery({
                 src={item.src}
                 className="w-full h-full object-cover"
                 muted
-                loop
                 playsInline
                 preload="metadata"
               />
