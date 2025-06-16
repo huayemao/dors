@@ -19,7 +19,7 @@ import { NoteModalTitle } from "./NoteModalTitle";
 import { BaseDropdownItem } from "@shuriken-ui/react";
 import { Archive, Copy, Edit2, LinkIcon } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
-import { copyTextToClipboard } from "@/lib/utils";
+import { cn, copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BASE_NAME, HIDDEN_TAGS } from "./constants";
@@ -141,11 +141,12 @@ export const NotesContainer = ({
         <NoteModalTitle note={e} filterTags={filterTags} />
       )}
       renderEntityModalActions={(e: Note) => <Actions e={e}></Actions>}
-      renderEntity={(e: Note, { preview }) => (
+      renderEntity={(e: Note, { preview, stackMode }) => (
         <NotewithActions
           key={e.id}
           data={e}
           preview={preview}
+          className={cn({ 'xs:max-h-[38vh] lg:h-[45vh] xs:h-[38vh]': stackMode })}
           filterTags={filterTags}
         ></NotewithActions>
       )}

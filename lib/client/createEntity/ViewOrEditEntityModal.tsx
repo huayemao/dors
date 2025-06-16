@@ -44,7 +44,7 @@ export default function ViewOrEditEntityModal<
     entity: EType,
     options: { preview: boolean }
   ) => ReactNode;
-  renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
+  renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => ReactNode;
   form: FC<PropsWithChildren>;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
@@ -84,7 +84,7 @@ export default function ViewOrEditEntityModal<
       dispatch({
         type: "ANY",
         payload: {
-          entityModalMode:'view',
+          entityModalMode: 'view',
           currentEntity: undefined,
         },
       });
@@ -93,16 +93,16 @@ export default function ViewOrEditEntityModal<
 
   const handleRemove = useCallback(() => {
     withConfirm(() => {
-      if(currentEntity.id)
-      dispatch({
-        type: "REMOVE_ENTITY",
-        payload: currentEntity.id,
-      });
+      if (currentEntity.id)
+        dispatch({
+          type: "REMOVE_ENTITY",
+          payload: currentEntity.id,
+        });
       close();
     })();
   }, [close, currentEntity?.id, dispatch]);
 
-  if(!currentEntity){
+  if (!currentEntity) {
     return <></>
   }
 

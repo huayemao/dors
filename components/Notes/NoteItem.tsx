@@ -28,10 +28,12 @@ export function NoteItem({
   data,
   filterTags,
   actions,
+  className
 }: {
   preview?;
   data: Note;
   filterTags?: (v: string[]) => void;
+  className?: string;
   actions: Record<
     string,
     {
@@ -75,13 +77,13 @@ export function NoteItem({
   const Container = useMemo(() => {
     return preview
       ? (props) => (
-          <BaseCard
-            rounded="md"
-            className="border-none relative break-inside-avoid"
-          >
-            {props.children}
-          </BaseCard>
-        )
+        <BaseCard
+          rounded="md"
+          className="border-none relative break-inside-avoid"
+        >
+          {props.children}
+        </BaseCard>
+      )
       : Fragment;
   }, [preview]);
 
@@ -91,7 +93,7 @@ export function NoteItem({
         ref={contentRef}
         className={cn("px-4 relative mx-auto w-full", {
           "lg:px-6 xs:max-h-72 xs:h-auto h-72  overflow-hidden": preview,
-        })}
+        }, className)}
       >
         <Prose
           className="mx-auto"

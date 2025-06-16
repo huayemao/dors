@@ -59,7 +59,7 @@ export default function CollectionLayout<
   >;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
-  renderEntity: (entity: EType, options: { preview: boolean }) => ReactNode;
+  renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => ReactNode;
   fetchCollection: (id: string) => Promise<CType | null>;
   syncToCloud: (
     collection: EntityState<any, any>["currentCollection"],
@@ -257,7 +257,7 @@ export default function CollectionLayout<
                     payload: index,
                   });
                 }}
-                renderItem={(entity) => renderEntity(entity, { preview: true })}
+                renderItem={(entity) => renderEntity(entity, { preview: true, stackMode: true })}
                 getItemId={(entity) => entity.id ?? JSON.stringify(entity)}
               />
             ) : (

@@ -25,12 +25,12 @@ export const StackCards = <T,>({
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-full max-h-[65vh] relative">
+    <div className="max-w-full lg:max-h-[68vh] overflow-hidden relative">
       <Swiper
         effect={'cards'}
         grabCursor={true}
         modules={[EffectCards]}
-        className="h-full w-fit max-w-full  lg:max-w-xl"
+        className="max-h-[60vh] !overflow-hidden w-fit max-w-full  lg:max-w-xl"
         cardsEffect={{
           perSlideOffset: 4,
           perSlideRotate: 2,
@@ -71,13 +71,13 @@ export const StackCards = <T,>({
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className="rounded absolute -bottom-12 left-4 right-4 flex gap-x-2 gap-y-3 justify-center p-4 flex-wrap z-10">
+      <div className="rounded mx-auto lg:max-w-xl flex gap-x-2 gap-y-3 justify-center p-4 flex-wrap ">
         {items.map((_, i) => (
           <button
             key={i}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
               i === currentIndex 
-                ? "bg-primary-500 w-8" 
+                ? "bg-primary-500 w-3 h-3 hover:bg-primary-300 active:bg-primary-500" 
                 : "bg-gray-200 hover:bg-gray-300"
             }`}
             onClick={() => {
