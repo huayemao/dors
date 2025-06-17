@@ -189,6 +189,7 @@ export const getReducer = <
             entityList: state.entityList?.filter(
               (e, i) => e.id != action.payload
             ),
+            shouldSyncToLocalStorage:true
           });
         }
         return state;
