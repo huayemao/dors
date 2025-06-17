@@ -90,14 +90,13 @@ export default function CollectionLayout<
           obj.updated_at === state.currentCollection!.updated_at
         ) {
           toast.success("数据已为最新", { position: "bottom-left" });
-          console.log("最新");
           return;
         }
 
         const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
         if (answer) {
           dispatch({
-            type: "SET_CURRENT_COLLECTION",
+            type: "CREATE_OR_UPDATE_COLLECTION",
             payload: obj,
           });
           toast.success("同步数据成功");
@@ -150,7 +149,7 @@ export default function CollectionLayout<
     }
 
     dispatch({
-      type: "SET_CURRENT_COLLECTION",
+      type: "INIT_CURRENT_COLLECTION",
       payload: collection, // 作为 fallback
     });
 
@@ -168,19 +167,18 @@ export default function CollectionLayout<
           ) {
             if (!collection) {
               dispatch({
-                type: "SET_CURRENT_COLLECTION",
+                type: "CREATE_OR_UPDATE_COLLECTION",
                 payload: obj,
               });
             }
             toast.success("数据已为最新", { position: "bottom-left" });
-            console.log("最新");
             return;
           }
 
           const answer = confirm("已拉取最新版本，是否覆盖本地版本？");
           if (answer) {
             dispatch({
-              type: "SET_CURRENT_COLLECTION",
+              type: "CREATE_OR_UPDATE_COLLECTION",
               payload: obj,
             });
             toast.success("同步数据成功");

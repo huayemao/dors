@@ -29,7 +29,7 @@ export default function CreateCollectionModal<
     state;
   const params = useParams();
   const isEditing = !!params.collectionId;
-
+  const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
       dispatch({ type: "SET_MODAL_OPEN", payload: true });
@@ -54,16 +54,23 @@ export default function CreateCollectionModal<
         payload: null,
       });
     }
-    return () => {};
+    return () => { };
   }, [collectionList, dispatch, isEditing, params.collectionId]);
 
   const handleRemove = () => {
     withConfirm(() => {
+      navigate("/")
       dispatch({
-        type: "REMOVE_COLLECTION",
-        payload: Number(params.collectionId),
+        type: "SET_ENTITY_LIST",
+        payload: [],
       });
-      close();
+      setTimeout(() => {
+        dispatch({
+          type: "REMOVE_COLLECTION",
+          payload: Number(params.collectionId),
+        });
+      },100)
+
     })();
   };
   return (
@@ -125,7 +132,7 @@ function CollectionForm<
         payload: null,
       });
     }
-    return () => {};
+    return () => { };
   }, [collectionList, dispatch, isEditing, params.collectionId]);
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = useCallback(

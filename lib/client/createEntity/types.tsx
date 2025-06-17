@@ -73,6 +73,10 @@ export type Action<
     type: "INIT";
   }
   | {
+    type: "INIT_CURRENT_COLLECTION";
+    payload: State<EntityType, CollectionType>["currentCollection"];
+  }
+  | {
     type: "SET_CURRENT_COLLECTION";
     payload: State<EntityType, CollectionType>["currentCollection"];
   }

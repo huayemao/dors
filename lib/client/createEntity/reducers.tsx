@@ -65,46 +65,12 @@ export const getReducer = <
         return Object.assign({}, state, {
           entityModalMode: action.payload,
         });
+      case "INIT_CURRENT_COLLECTION":
+        return Object.assign({}, state, {
+          currentCollection: action.payload,
+        });
+      // todo: 当只用于切换上下文时，不应该往本地存储写数据
       case "SET_CURRENT_COLLECTION": {
-        const collection = action.payload;
-        if (collection) {
-          const isUpdating =
-            collection.id &&
-            collection.updated_at &&
-            collection.id == state.currentCollection?.id &&
-            state.currentCollection?.updated_at &&
-            collection.updated_at != state.currentCollection?.updated_at;
-
-          if (isUpdating) {
-            const index = (state.collectionList ?? []).findIndex(
-              (e) => e.id == collection.id
-            );
-            const newList = [...(state.collectionList ?? [])];
-            newList[index] = collection;
-            const patch = {
-              currentCollection: collection,
-              collectionList: newList,
-              entityList: collection._entityList,
-              shouldSyncToLocalStorage: true,
-            };
-            return Object.assign({}, state, patch);
-          }
-
-          const isImporting =
-            collection.id &&
-            collection.id != defaultCollection.id &&
-            !state.collectionList?.map((e) => e.id).includes(collection.id);
-
-          if (isImporting) {
-            const patch = {
-              currentCollection: collection,
-              collectionList: (state.collectionList ?? []).concat(collection),
-              entityList: collection._entityList,
-              shouldSyncToLocalStorage: true,
-            };
-            return Object.assign({}, state, patch);
-          }
-        }
         return Object.assign({}, state, {
           currentCollection: action.payload,
         });
@@ -130,28 +96,24 @@ export const getReducer = <
       }
       case "CREATE_OR_UPDATE_COLLECTION": {
         const { payload } = action;
-        const { collectionList, currentCollection } = state;
-        // isEditing
-        if (!!currentCollection) {
-          const newList = [...(collectionList ?? [])];
-          const targetItemIndex = newList.findIndex(
-            (e) => e.id === currentCollection.id
-          );
-          if (targetItemIndex !== -1) {
-            newList[targetItemIndex] = payload;
-          }
+
+        const newList = updateOrCreateInList(payload, state.collectionList);
+        if (payload._entityList) {
+          // 如果 payload 中包含 _entityList，则更新 currentCollection 的 _entityList
+          // const eList = JSON.parse(JSON.stringify(payload._entityList)) || [];
 
           return Object.assign({}, state, {
             collectionList: newList,
             currentCollection: payload,
-          });
-        } else {
-          const newList = (collectionList ?? []).concat(payload);
-          return Object.assign({}, state, {
-            collectionList: newList,
-            currentCollection: payload,
-          });
+            entityList: payload._entityList,
+            shouldSyncToLocalStorage: true,
+          })
         }
+
+        return Object.assign({}, state, {
+          collectionList: newList,
+          currentCollection: payload,
+        });
       }
       case "CREATE_OR_UPDATE_ENTITY": {
         const { payload } = action;
@@ -189,7 +151,7 @@ export const getReducer = <
             entityList: state.entityList?.filter(
               (e, i) => e.id != action.payload
             ),
-            shouldSyncToLocalStorage:true
+            shouldSyncToLocalStorage: true
           });
         }
         return state;
@@ -203,6 +165,7 @@ export const getReducer = <
             targetItemIndex != undefined && targetItemIndex != -1;
           if (hasTarget) {
             return Object.assign({}, state, {
+              currentCollection:null,
               collectionList: state.collectionList?.filter(
                 (e, i) => e.id != id
               ),
@@ -216,7 +179,7 @@ export const getReducer = <
         return {
           ...state,
           currentIndex: action.payload,
-      };
+        };
       default:
         return state;
     }

@@ -19,7 +19,7 @@ import { getReducer } from "./reducers";
 
 export const createEntityContext = <
   EntityType extends BaseEntity,
-  CollectionType extends BaseCollection & { 
+  CollectionType extends BaseCollection & {
     _entityList?: EntityType[];
     type?: string;
   }
@@ -56,14 +56,17 @@ export const createEntityContext = <
 
   function getShowingList(state: AppState): EntityType[] {
     let list = state.entityList;
-    
+    if (!list) {
+      return [];
+    }
+
     // Apply filters
     for (const [key, filter] of Object.entries(state.filters)) {
       if (state.filterConfig.excludeIds) {
         list = list.filter((e) => !state.filterConfig.excludeIds?.includes(e.id));
       }
       if (typeof filter === "undefined") continue;
-      
+
       if (typeof filter === "string") {
         if (key === "all") {
           list = list.filter((e) => {
@@ -74,7 +77,7 @@ export const createEntityContext = <
           list = list.filter((e) => e[key].includes(filter));
         }
       }
-      
+
       if (Array.isArray(filter)) {
         list = list.filter((item) => {
           const itemValue = item[key];
@@ -86,7 +89,7 @@ export const createEntityContext = <
           return true;
         });
       }
-      
+
       if (typeof filter === "object" && "omit" in filter) {
         list = list.filter((item) => {
           const itemValue = item[key];
@@ -112,7 +115,7 @@ export const createEntityContext = <
 
   const reducer = getReducer(defaultCollection, defaultEntity);
   const EntityContext = createContext(initialState);
-  const EntityDispatchContext = createContext<Dispatch<Action<EntityType, CollectionType>>>(() => {});
+  const EntityDispatchContext = createContext<Dispatch<Action<EntityType, CollectionType>>>(() => { });
 
   const collectionListKey = key + "_collectionList";
 
@@ -138,7 +141,6 @@ export const createEntityContext = <
             type: "ANY",
             payload: {
               collectionList: list,
-              currentCollection: list[0],
             },
           });
         })
@@ -154,7 +156,7 @@ export const createEntityContext = <
       if (inMemory) {
         return;
       }
-      // todo: 把 EntityList 删掉
+      // todo: 刚读出来的 collectionList 不应该反向同步
       localforage.setItem(collectionListKey, state.collectionList);
     }, [state.collectionList]);
 
@@ -162,34 +164,22 @@ export const createEntityContext = <
       if (inMemory) {
         return;
       }
-      let ignore = false;
-
-      if (!state.currentCollection?.id) {
-        return;
+      if (!state.currentCollection || !state.currentCollection?.id) {
+        return
       }
-
-      // 有 _entityList 表示才获取的最新的
-      if (state.currentCollection?._entityList) {
-        const c = state.currentCollection;
-        delete c["_entityList"];
-        localforage.getItem(collectionListKey).then((res) => {
-          const newList = (res as CollectionType[] | undefined)?.length
-            ? (res as CollectionType[]).filter(
-                (e) => e.id != state.currentCollection?.id
-              )
-            : [];
-          localforage.setItem(collectionListKey, newList.concat(c));
-        });
-        return;
-      }
-
       setPending(true);
+
+      // 云端同步就不该再从这里 init 了
+      if (state.currentCollection._entityList) {
+        delete state.currentCollection._entityList;
+        setPending(false);
+        return;
+      }
+
       localforage
         .getItem(state.currentCollection.id + "")
         .then((res) => {
-          if (ignore) {
-            return;
-          }
+
           // 切换时重置状态
           dispatch({
             type: "SET_FILTERS",
@@ -210,12 +200,6 @@ export const createEntityContext = <
         .finally(() => {
           setPending(false);
         });
-
-      // cleanup 函数，忽略过时的 currentCollection fetch 的数据
-      // https://react.dev/learn/synchronizing-with-effects#fetching-data
-      return () => {
-        ignore = true;
-      };
     }, [state.collectionList, state.currentCollection]);
 
     // todo: 把这些 effects 拆下
@@ -224,13 +208,16 @@ export const createEntityContext = <
       if (inMemory) {
         return;
       }
+      let ignore = false
       saveEntities();
+      console.log(pending, state.shouldSyncToLocalStorage, state.currentCollection?.id, state.entityList);
 
       function saveEntities() {
-        if (!state.currentCollection?.id) {
+        if (!state.currentCollection?.id || ignore) {
           return;
         }
         if (!pending && state.shouldSyncToLocalStorage) {
+          console.log('saveEntities')
           // todo：起初读取值的时候不要反向同步
           localforage.setItem(
             state.currentCollection.id + "",
@@ -238,6 +225,9 @@ export const createEntityContext = <
           );
         }
       }
+      return () => {
+        // ignore = true;
+      };
     }, [pending, state.currentCollection?.id, state.entityList, state.shouldSyncToLocalStorage]);
 
     return (

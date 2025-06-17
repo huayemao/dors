@@ -291,6 +291,7 @@ async function getAllPosts(options: getPostOptions = {}) {
     select: {
       id: true,
       title: true,
+      meta: true,
       excerpt: true,
       cover_image: true,
       created_at: true,
