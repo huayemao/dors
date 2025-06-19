@@ -5,7 +5,6 @@ import {
   getPost,
   getPostBySlug,
   getPostIds,
-  getRecentPosts,
 } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";

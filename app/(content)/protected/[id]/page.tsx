@@ -1,5 +1,5 @@
 import Post from "@/components/Post";
-import { getPost, getPostIds, getRecentPosts } from "@/lib/server/posts";
+import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { notFound, redirect } from "next/navigation";
 
@@ -36,12 +36,12 @@ export default async function page({ params }) {
     return redirect("/notes/" + params.id);
   }
 
-  let posts = await getRecentPosts({ protected: true });
+  let posts = await getRelatedPosts(post);
 
   return (
     <main className="w-full">
       {/* @ts-ignore */}
-      <Post data={post} recentPosts={posts} />
+      <Post data={post} relatedPosts={posts} />
     </main>
   );
 }

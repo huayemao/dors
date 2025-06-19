@@ -1,4 +1,4 @@
-import { getPost, getRecentPosts } from "@/lib/server/posts";
+import { getPost, getRecentPosts, getRelatedPosts } from "@/lib/server/posts";
 import { cn } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import dynamic from "next/dynamic";
@@ -32,10 +32,10 @@ const isNoteCollection = (str: any) => {
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
-  recentPosts: Awaited<ReturnType<typeof getRecentPosts>>;
+  relatedPosts: Awaited<ReturnType<typeof getRelatedPosts>>;
 };
 
-export default async function Post({ data: post, recentPosts: posts }: Props) {
+export default async function Post({ data: post, relatedPosts: posts }: Props) {
   if (!post) {
     return null;
   }

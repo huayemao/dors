@@ -107,7 +107,7 @@ export function ActionTabs({ post, posts }) {
                 <div>{Actions}</div>
                 <hr className="my-6 border-t border-muted-200 dark:border-muted-800" />
                 <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
-                  最近文章
+                  相关内容
                 </h2>
                 <RecentPosts posts={posts} />
               </div>

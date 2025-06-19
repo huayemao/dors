@@ -1,6 +1,6 @@
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
-import { getPost, getPostIds, getRecentPosts } from "@/lib/server/posts";
+import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -87,12 +87,13 @@ export default async function page({ params }) {
     return redirect("/notes/" + params.id);
   }
 
-  let posts = await getRecentPosts({ protected: false });
+  // 获取关联文章
+  const posts = await getRelatedPosts(post, { limit: 5 });
 
   return (
     <main className="w-full">
       {/* @ts-ignore */}
-      <Post data={post} recentPosts={posts} />
+      <Post data={post} relatedPosts={posts} />
     </main>
   );
 }

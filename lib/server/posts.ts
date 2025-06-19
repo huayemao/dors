@@ -70,13 +70,7 @@ export const getPost = unstable_cache(async (id: number) => {
   const wordCount = getWordCount(html);
 
   // 如果是书籍类型，获取包含的文章
-  let posts: Array<{
-    id: number;
-    title: string | null;
-    updated_at: Date | null;
-    created_at: Date | null;
-    type: string;
-  }> = [];
+  let posts: any[] = [];
 
   if (res.type === "book" && res.toc) {
     const toc = res.toc as { id: number }[];
@@ -88,16 +82,21 @@ export const getPost = unstable_cache(async (id: number) => {
             in: tocIds
           }
         },
-        select: {
-          id: true,
-          title: true,
-          updated_at: true,
-          created_at: true,
-          type: true,
+        include: {
+          posts_category_links: {
+            include: {
+              categories: true,
+            },
+          },
+          tags_posts_links: {
+            include: {
+              tags: true,
+            },
+          },
         },
       });
 
-      posts = tocIds.map(id => posts.find(post => post.id === id)).filter(Boolean) as typeof posts;
+      posts = tocIds.map(id => posts.find(post => post.id === id)).filter(Boolean);
     }
   }
 
@@ -615,4 +614,184 @@ async function addTags(tags: string[], existedTags: tags[]) {
     })
   ).map((e) => e.id);
   return tagsIds;
+}
+
+export async function getRelatedPosts(
+  currentPost: Awaited<ReturnType<typeof getPost>>,
+  options: { limit?: number } = {}
+): Promise<any[]> {
+  const limit = options.limit || 5;
+  
+  if (!currentPost) {
+    return await getRecentPosts({ protected: false, perPage: limit });
+  }
+
+  // 如果是 book 类型，返回 book 中包含的文章
+  if (currentPost.type === "book" && currentPost.posts) {
+    return currentPost.posts.map((p: any) => ({
+      ...p,
+      url: p.cover_image?.src?.small || p.cover_image?.dataURLs?.small,
+      blurDataURL: p.cover_image?.dataURLs?.blur,
+      tags: p.tags_posts_links?.map((e: any) => e.tags) || [],
+    }));
+  }
+
+  // 获取当前文章的标签和分类
+  const currentTagIds = currentPost.tags?.map(tag => tag?.id).filter((id): id is number => id !== null && id !== undefined) || [];
+  const currentCategoryId = currentPost.posts_category_links?.[0]?.categories?.id;
+
+  let relatedPosts: any[] = [];
+
+  // 如果有标签，按标签匹配查询
+  if (currentTagIds.length > 0) {
+    // 查询所有有相同标签的文章
+    const postsWithTags = await prisma.posts.findMany({
+      where: {
+        AND: [
+          { protected: false },
+          { id: { not: currentPost.id } },
+          {
+            tags_posts_links: {
+              some: {
+                tag_id: { in: currentTagIds }
+              }
+            }
+          }
+        ]
+      },
+      include: {
+        posts_category_links: {
+          include: {
+            categories: true,
+          },
+        },
+        tags_posts_links: {
+          include: {
+            tags: true,
+          },
+        },
+      },
+      orderBy: {
+        updated_at: "desc",
+      },
+      take: limit * 3, // 获取更多结果用于排序
+    });
+
+    // 计算每个文章的匹配分数
+    const postsWithScores = postsWithTags.map(post => {
+      let score = 0;
+      
+      // 标签匹配分数：匹配的标签越多分数越高
+      const postTagIds = post.tags_posts_links?.map(link => link.tags?.id).filter((id): id is number => id !== null && id !== undefined) || [];
+      const tagMatches = currentTagIds.filter(id => postTagIds.includes(id));
+      score += tagMatches.length * 20; // 每个匹配标签加20分
+      
+      // 分类匹配分数
+      const postCategoryId = post.posts_category_links?.[0]?.categories?.id;
+      if (currentCategoryId && postCategoryId === currentCategoryId) {
+        score += 10; // 分类匹配加10分
+      }
+      
+      // 时间衰减分数（越新的文章分数越高）
+      const daysSinceUpdate = post.updated_at ? 
+        (Date.now() - new Date(post.updated_at).getTime()) / (1000 * 60 * 60 * 24) : 0;
+      score += Math.max(0, 15 - daysSinceUpdate * 0.2); // 每天衰减0.2分，最低0分
+      
+      return {
+        ...post,
+        tags: post.tags_posts_links?.map(link => link.tags) || [],
+        _relevanceScore: score
+      };
+    });
+
+    // 按相关性分数排序，取前limit个
+    relatedPosts = postsWithScores
+      .sort((a, b) => (b._relevanceScore || 0) - (a._relevanceScore || 0))
+      .slice(0, limit);
+  }
+  // 如果有分类且没有标签，按分类查询
+  else if (currentCategoryId) {
+    const postsWithCategory = await prisma.posts.findMany({
+      where: {
+        AND: [
+          { protected: false },
+          { id: { not: currentPost.id } },
+          {
+            posts_category_links: {
+              some: {
+                category_id: currentCategoryId
+              }
+            }
+          }
+        ]
+      },
+      include: {
+        posts_category_links: {
+          include: {
+            categories: true,
+          },
+        },
+        tags_posts_links: {
+          include: {
+            tags: true,
+          },
+        },
+      },
+      orderBy: {
+        updated_at: "desc",
+      },
+      take: limit,
+    });
+
+    relatedPosts = postsWithCategory.map(post => ({
+      ...post,
+      tags: post.tags_posts_links?.map(link => link.tags) || [],
+    }));
+  }
+
+  // 如果相关文章不足，补充最近文章
+  if (relatedPosts.length < limit) {
+    const recentPosts = await prisma.posts.findMany({
+      where: {
+        AND: [
+          { protected: false },
+          { id: { not: currentPost.id } }
+        ]
+      },
+      include: {
+        posts_category_links: {
+          include: {
+            categories: true,
+          },
+        },
+        tags_posts_links: {
+          include: {
+            tags: true,
+          },
+        },
+      },
+      orderBy: {
+        updated_at: "desc",
+      },
+      take: limit * 2,
+    });
+
+    const existingIds = new Set(relatedPosts.map(p => p.id));
+    const additionalPosts = recentPosts
+      .filter(p => !existingIds.has(p.id))
+      .map(post => ({
+        ...post,
+        tags: post.tags_posts_links?.map(link => link.tags) || [],
+      }))
+      .slice(0, limit - relatedPosts.length);
+    
+    relatedPosts.push(...additionalPosts);
+  }
+
+  // 处理图片URL
+  return relatedPosts.map(post => ({
+    ...post,
+    url: (post.cover_image as any)?.src?.small || (post.cover_image as any)?.dataURLs?.small,
+    blurDataURL: (post.cover_image as any)?.dataURLs?.blur,
+  }));
 }
