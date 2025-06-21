@@ -109,11 +109,6 @@ a {
   opacity: 0.9;
 }
 
-.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
-  font-size: 1.1rem;
-  @apply bg-primary-50/60 border-l-0 rounded drop-shadow-sm p-6 mt-4 leading-[1.4] text-slate-600 dark:bg-slate-800 dark:text-slate-100;
-}
-
 .not-prose {
   font-size: unset;
 }

@@ -33,25 +33,26 @@ module.exports = withShurikenUI({
 								"@apply dark:text-primary-400": {},
 							},
 							blockquote: {
-								quotes: `"“" "„"`,
+								position: "relative",
+								quotes: "none",
+								fontStyle:'normal',
+								fontFamily: "serif",
+								"@apply my-4 text-muted-700 bg-primary-50 dark:bg-slate-900 dark:text-slate-100 rounded shadow-sm p-4 pt-8 border-none": {},
+								"&::before": {
+									content: "''",
+									"@apply absolute block left-5 top-4 size-5": {},
+									backgroundImage: (() => {
+										const quoteColor = encodeURIComponent(theme("colors.primary.500"));
+										return `url('data:image/svg+xml;utf8,<svg width=\"27\" height=\"25\" viewBox=\"0 0 27 25\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.88086 13.6426V24.1538H0.174316V15.8555C0.174316 11.3626 0.710775 8.11035 1.78369 6.09863C3.19189 3.41634 5.42155 1.38786 8.47266 0.0131836L10.6855 3.53369C8.84147 4.30485 7.48356 5.46159 6.61182 7.00391C5.74007 8.5127 5.25391 10.7256 5.15332 13.6426H9.88086ZM25.4717 13.6426V24.1538H15.7651V15.8555C15.7651 11.3626 16.3016 8.11035 17.3745 6.09863C18.7827 3.41634 21.0124 1.38786 24.0635 0.0131836L26.2764 3.53369C24.4323 4.30485 23.0744 5.46159 22.2026 7.00391C21.3309 8.5127 20.8447 10.7256 20.7441 13.6426H25.4717Z\" fill=\"${quoteColor}\"/></svg>')`;
+									})(),
+									backgroundRepeat: "no-repeat",
+									backgroundSize: "contain",
+									opacity: "0.8",
+									pointerEvents: "none",
+								},
 							},
 							"blockquote p": {
 								position: "relative",
-								"&:first-of-type::before, &:last-of-type::after": {
-									color: theme("colors.primary[500]"),
-									fontSize: "3em",
-									fontFamily: "ui-serif",
-								},
-								"&:first-of-type::before": {
-									position: "absolute",
-									left: "-3rem",
-									top: "-2.5rem",
-								},
-								"&:last-of-type::after": {
-									position: "absolute",
-									right: "-1rem",
-									bottom: "-2.5rem",
-								},
 							},
 							"thead th code": {
 								color: theme("colors.primary[500]"),
