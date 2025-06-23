@@ -6,6 +6,14 @@ import Script from "next/script";
 import { AppTip } from "./AppTip";
 import { AppToaster } from "@/components/Base/AppToaster";
 
+import localFont from 'next/font/local'
+
+
+const LXGW_WenKai = localFont({
+  src: '../public/fonts/LXGWWenKai-Regular.woff2',
+  variable: '--font-LXGW-WenKai',
+})
+
 export const metadata: Metadata = {
   title: SITE_META.name + "——" + SITE_META.description,
   description: SITE_META.description + SITE_META.introduction,
@@ -29,7 +37,7 @@ export default async function RootLayout({
 }) {
   return (
     <ShurikenUIProvider>
-      <html lang="zh-CN">
+      <html lang="zh-CN" className={LXGW_WenKai.variable}>
         <head>
           <meta
             name="msvalidate.01"

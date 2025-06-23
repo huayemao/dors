@@ -92,7 +92,7 @@ export default async function Post({ data: post, relatedPosts: posts }: Props) {
                     </ClientOnly>
                   </div>
                 ) : (
-                  <Prose content={content} />
+                  <Prose className="font-LXGW_WenKai" content={content} />
                 )}
               </div>
             </div>
