@@ -20,6 +20,8 @@ const ASSETS = [
 importScripts("/version.js");
 const DYNAMIC_PATHS = [
   "/_next/static/chunks",
+  '/_next/static/media',
+  "/_next/static/css",
   "favicon.ico",
   "/herbal",
   "/navigation",
