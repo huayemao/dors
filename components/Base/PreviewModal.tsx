@@ -14,6 +14,7 @@ import "swiper/css/pagination";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Keyboard } from "swiper/modules";
+import { Images } from "lucide-react";
 
 interface PreviewModalProps {
   open: boolean;
@@ -136,7 +137,7 @@ export const PreviewModal = ({
           transition={{ duration: 0.3 }}
           className="flex h-full  items-center justify-center p-4 text-center  max-w-full"
         >
-          <Dialog.Panel className="flex-1  h-full w-full transform bg-white dark:bg-muted-800  text-left align-middle shadow-xl">
+          <Dialog.Panel className="flex-1  h-full w-full transform bg-white dark:bg-muted-900  text-left align-middle shadow-xl">
             <div className="overflow-y-auto slimscroll w-full h-full">
               <div className="mt-2 flex justify-center items-center min-h-full min-w-[95%] md:min-w-[75%] ">
                 {loading ? (
@@ -190,9 +191,7 @@ export const PreviewModal = ({
                 onClick={handleToggleSlidesMode}
                 tabIndex={0}
               >
-                <span role="img" aria-label="切换幻灯片">
-                  🖼️
-                </span>
+                <Images className="w-5 h-5" aria-label="切换幻灯片" />
               </BaseButtonIcon>
               <BaseButtonClose onClick={onClose} />
             </div>

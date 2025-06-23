@@ -37,7 +37,7 @@ module.exports = withShurikenUI({
 								quotes: "none",
 								fontStyle:'normal',
 								fontFamily: "var(--font-LXGW-WenKai), cursive, serif",
-								"@apply my-4 text-muted-900 bg-muted-50 dark:bg-muted-900 dark:text-muted-100 rounded  p-4 pt-8 border-none": {},
+								"@apply my-4 text-muted-900 bg-muted-50 dark:bg-muted-800 dark:text-muted-100 rounded  p-4 pt-8 border-none": {},
 								"&::before": {
 									content: "''",
 									"@apply absolute block left-5 top-4 size-5": {},
