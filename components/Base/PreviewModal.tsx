@@ -14,7 +14,8 @@ import "swiper/css/pagination";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Keyboard } from "swiper/modules";
-import { Images } from "lucide-react";
+import { Images, Camera, Album } from "lucide-react";
+import html2canvas from "html2canvas";
 
 interface PreviewModalProps {
   open: boolean;
@@ -61,10 +62,12 @@ export const PreviewModal = ({
   slidesMode: slidesModeProp = false,
 }: PreviewModalProps) => {
   const [slidesMode, setSlidesMode] = useState(slidesModeProp);
+  const [isScreenshotting, setIsScreenshotting] = useState(false);
   const [slidesHtml, setSlidesHtml] = useState<string[]>([]);
   const hiddenRef = useRef<HTMLDivElement>(null);
   const [containerTag, setContainerTag] = useState<string>("");
   const [containerProps, setContainerProps] = useState<Record<string, any>>({});
+  const swiperRef = useRef<any>(null);
 
   const handleToggleSlidesMode = () => {
     setSlidesMode((prev) => !prev);
@@ -116,6 +119,84 @@ export const PreviewModal = ({
     };
   }, [slidesMode, children]);
 
+  // 截图当前slide
+  const handleScreenshot = async () => {
+    if (!slidesMode || !swiperRef.current) return;
+
+    // 只截取slide内容部分
+    const el = document.querySelector(".swiper-slide-active") as HTMLDivElement;
+    if (!el) return;
+    const target = el;
+    // 截图
+    const canvas = await html2canvas(target, { useCORS: true, scale: 2 });
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const activeIndex = swiperRef.current.swiper.activeIndex;
+      a.download = `slide-${timestamp}-${activeIndex + 1}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    }, "image/png");
+  };
+
+  const handleScreenshotAll = async () => {
+    if (!slidesMode || !swiperRef.current || isScreenshotting) return;
+
+    setIsScreenshotting(true);
+    const swiper = swiperRef.current.swiper;
+    const totalSlides = slidesHtml.length;
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const originalIndex = swiper.activeIndex;
+
+    for (let i = 0; i < totalSlides; i++) {
+      await new Promise<void>((resolve) => {
+        // 如果已经是当前 slide，直接 resolve
+        if (swiper.activeIndex === i) {
+          resolve();
+          return;
+        }
+        swiper.on("slideChangeTransitionEnd", function onSlideChange() {
+          swiper.off("slideChangeTransitionEnd", onSlideChange);
+          resolve();
+        });
+        swiper.slideTo(i);
+      });
+
+      // 等待 DOM 更新
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const el = document.querySelector(
+        ".swiper-slide-active"
+      ) as HTMLDivElement;
+      if (!el) continue;
+
+      const canvas = await html2canvas(el, { useCORS: true, scale: 1.5 });
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/png")
+      );
+
+      if (!blob) continue;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `slide-${timestamp}-${i + 1}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    // 恢复到原来的 slide
+    swiper.slideTo(originalIndex);
+    setIsScreenshotting(false);
+  };
+
   return (
     <Dialog
       as={motion.div}
@@ -150,9 +231,10 @@ export const PreviewModal = ({
                     className="w-full"
                     keyboard
                     modules={[Keyboard]}
+                    ref={swiperRef}
                   >
                     {slidesHtml.map((html, idx) => (
-                      <SwiperSlide key={idx}>
+                      <SwiperSlide key={idx} className="bg-white dark:bg-muted-900">
                         {React.createElement(
                           containerTag,
                           {
@@ -185,6 +267,28 @@ export const PreviewModal = ({
               </div>
             </div>
             <div className="absolute right-4 top-4 flex items-center group space-x-2">
+              {slidesMode && (
+                <>
+                  <BaseButtonIcon
+                    className="transition-opacity opacity-0 group-hover:opacity-100 ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-muted-700 disabled:opacity-50"
+                    aria-label="截图当前Slide"
+                    onClick={handleScreenshot}
+                    tabIndex={0}
+                    disabled={isScreenshotting}
+                  >
+                    <Camera className="w-5 h-5" aria-label="截图" />
+                  </BaseButtonIcon>
+                  <BaseButtonIcon
+                    className="transition-opacity opacity-0 group-hover:opacity-100 ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-muted-700 disabled:opacity-50"
+                    aria-label="截图全部Slides"
+                    onClick={handleScreenshotAll}
+                    tabIndex={0}
+                    disabled={isScreenshotting}
+                  >
+                    <Album className="w-5 h-5" aria-label="截图全部" />
+                  </BaseButtonIcon>
+                </>
+              )}
               <BaseButtonIcon
                 className="transition-opacity opacity-0 group-hover:opacity-100 ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-muted-700"
                 aria-label="切换Slides模式"
