@@ -39,7 +39,6 @@ const STABLE_DYNAMIC_PATHS = [
   "https://i2.wp.com/",
   "https://i3.wp.com/",
   "twimg.com",
-  "sns-bak-v1.xhscdn.com",
 ];
 
 self.addEventListener("fetch", (e) => {
