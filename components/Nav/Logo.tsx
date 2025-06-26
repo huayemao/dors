@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { BaseCard } from "@shuriken-ui/react";
-import { AppWindow, Grid, LayoutDashboard, Grip } from "lucide-react";
+import { AppWindow, Grid, LayoutDashboard, Grip, Navigation } from "lucide-react";
 import { Popover } from "@headlessui/react";
 
 export default function Logo({
@@ -44,6 +44,13 @@ export default function Logo({
               >
                 <AppWindow className="w-5 h-5" />
                 <span>应用台</span>
+              </Link>
+              <Link
+                href={"/navigation"}
+                className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-muted-700 transition-colors duration-200 cursor-pointer"
+              >
+                <Navigation className="w-5 h-5" />
+                <span>导航页</span>
               </Link>
             </div>
           </BaseCard>
