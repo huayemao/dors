@@ -1,12 +1,8 @@
-import { PaginateOptions } from "@/lib/paginator";
-import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { getResourceItems } from "@/lib/server/resource";
 import { Application } from "@/components/Application";
 import { ClearCacheButton } from "@/components/ClearCacheButton";
 import { Metadata } from "next";
 
-type SearchParams = PaginateOptions;
-type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 1200;
 
@@ -19,10 +15,8 @@ export const metadata: Metadata = {
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export default async function Apps({
-    searchParams,
 }: {
-    searchParams: SearchParams;
-}) {
+    }) {
     const resourceItems = await getResourceItems();
 
     const apps = [
