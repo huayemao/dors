@@ -8,29 +8,34 @@ export default function manifest(): MetadataRoute.Manifest {
     description: SITE_META.description + "——" + SITE_META.introduction,
     start_url: "/apps",
     display: "standalone",
+    display_override: ["standalone"],
     background_color: "#fff",
-    theme_color: "#312e81",
+    theme_color: "#818cf8",
     "icons": [
       {
-        "src": "/img/icons/pwa-192x192.png",
+        src: "/favicon.svg",
+        sizes: "any",
+      },
+      {
+        "src": "/pwa-192x192.png",
         "sizes": "192x192",
         "type": "image/png",
         "purpose": "any"
       },
       {
-        "src": "/img/icons/pwa-512x512.png",
+        "src": "/pwa-512x512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "any"
       },
       {
-        "src": "/img/icons/pwa-maskable-192x192.png",
+        "src": "/pwa-maskable-192x192.png",
         "sizes": "192x192",
         "type": "image/png",
         "purpose": "maskable"
       },
       {
-        "src": "/img/icons/pwa-maskable-512x512.png",
+        "src": "/pwa-maskable-512x512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "maskable"
