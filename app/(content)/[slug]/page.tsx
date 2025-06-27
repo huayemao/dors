@@ -94,7 +94,7 @@ export default async function page({ params }) {
   return (
     <main className="w-full bg-white container mx-auto min-h-[100vh_-_168px] my-8 p-4 px-6 dark:bg-muted-800">
       {/* @ts-ignore */}
-      <Prose content={post.content} className="max-w-full" />
+      <Prose content={post.content} className="max-w-full font-LXGW_WenKai" />
       {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
       <div className="lg:grid-cols-4"></div>
     </main>

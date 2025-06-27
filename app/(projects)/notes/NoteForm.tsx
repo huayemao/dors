@@ -178,7 +178,7 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                           className="hidden"
                         ></textarea>
                         <BaseCard shadow="flat" className="w-full px-4 lg:py-6 lg:px-8 bg-white ">
-                          <Prose content={content} className="max-w-full"></Prose>
+                          <Prose content={content} className="max-w-full font-LXGW_WenKai"></Prose>
                         </BaseCard>
                       </>
                     )}

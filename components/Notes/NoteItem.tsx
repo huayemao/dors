@@ -96,7 +96,7 @@ export function NoteItem({
         }, className)}
       >
         <Prose
-          className="mx-auto"
+          className="mx-auto font-LXGW_WenKai"
           onLoadingChange={setLoading}
           key={data.id}
           content={data.content}

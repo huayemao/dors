@@ -67,7 +67,7 @@ export const Diary: FC<DiaryProps> = ({ data }) => {
             onLoadingChange={setLoading}
             key={data.id}
             content={data.content}
-            className={cn("prose-sm sm:prose-base pt-2", {
+            className={cn("prose-sm sm:prose-base pt-2 font-LXGW_WenKai", {
               "opacity-0": loading,
               "opacity-100": !loading
             })}
