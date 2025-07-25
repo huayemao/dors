@@ -178,19 +178,24 @@ import "katex/dist/katex.min.css";
 //   | "yaml"
 //   | "zenscript";
 
-function cache<R>(fn: () => Promise<R>) {
-  let promise: Promise<R> | undefined;
-  return async () => {
-    if (promise) {
-      return promise;
+// 支持参数的 cache，key 为 JSON.stringify(args)
+function cacheWithArgs<R, Args extends any[]>(fn: (...args: Args) => Promise<R>) {
+  const cache = new Map<string, Promise<R>>();
+  return async (...args: Args) => {
+    const key = JSON.stringify(args[0]); // 只缓存 langs
+    if (cache.has(key)) {
+      return cache.get(key)!;
     } else {
-      promise = fn();
+      const promise = fn(...args);
+      cache.set(key, promise);
       return promise;
     }
   };
 }
 
-async function loadWasmAndLangs() {
+async function loadWasmAndLangs(langs: (string | any)[] = [
+  "ts", "js", "jsx", "tsx", "mdx", "md", "json", "html", "css", "powershell", "bash", "java", "c", "cpp", "sql", "vue", "xml", "python", "toml", "yaml"
+]) {
   const responseWasm = await fetch("/shiki/onig.wasm");
   const wasmArrayBuffer = await responseWasm.arrayBuffer();
   await setWasm(wasmArrayBuffer);
@@ -198,29 +203,7 @@ async function loadWasmAndLangs() {
   const res = remarkShikiTwoslash({
     // @ts-ignore
     theme: nord,
-    
-    langs: [
-      "ts",
-      "js",
-      "jsx",
-      "tsx",
-      "mdx",
-      "md",
-      "json",
-      "html",
-      "css",
-      "powershell",
-      "bash",
-      "java",
-      "c",
-      "cpp",
-      "sql",
-      "vue",
-      "xml",
-      "python",
-      "toml",
-      "yaml" 
-    ],
+    langs: langs as any,
     paths: {
       languages: "/shiki/languages/",
     },
@@ -231,12 +214,31 @@ async function loadWasmAndLangs() {
   return h;
 }
 
-const initShiki = cache(loadWasmAndLangs);
+const initShiki = cacheWithArgs(loadWasmAndLangs);
+
+// 提取 mdx 代码块中的语言
+function extractLangsFromMDX(mdx: string): string[] {
+  const regex = /```([\w-]+)/g;
+  const langs = new Set<string>();
+  let match;
+  while ((match = regex.exec(mdx))) {
+    langs.add(match[1]);
+  }
+  return Array.from(langs);
+}
 
 export async function parseMDXClient(mdx: string) {
   let shikiTwoSlash: Awaited<ReturnType<typeof initShiki>> | null = null;
-  if (mdx?.includes(`\`\`\``)) {
-    shikiTwoSlash = await initShiki();
+  let langs: string[] = [];
+  if (mdx?.includes("```")) {
+    langs = extractLangsFromMDX(mdx);
+    console.log("Extracted langs from MDX:", langs);
+    if (langs.length === 0) {
+      langs = [
+        "ts", "js", "jsx", "tsx", "mdx", "md", "json", "html", "css", "powershell", "bash", "java", "c", "cpp", "sql", "vue", "xml", "python", "toml", "yaml"
+      ];
+    }
+    shikiTwoSlash = await initShiki(langs);
   }
 
   const remarkPlugins = [
