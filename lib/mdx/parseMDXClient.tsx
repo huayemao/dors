@@ -198,6 +198,7 @@ async function loadWasmAndLangs() {
   const res = remarkShikiTwoslash({
     // @ts-ignore
     theme: nord,
+    
     langs: [
       "ts",
       "js",
@@ -215,6 +216,10 @@ async function loadWasmAndLangs() {
       "cpp",
       "sql",
       "vue",
+      "xml",
+      "python",
+      "toml",
+      "yaml" 
     ],
     paths: {
       languages: "/shiki/languages/",
