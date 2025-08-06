@@ -8,6 +8,7 @@ export const SITE_META = {
     url: "https://huayemao.run",
     name: "花野猫",
   },
+  ICP: "滇ICP备2025063395号-1",
 };
 
 export const POSTS_COUNT_PER_PAGE = 9;
