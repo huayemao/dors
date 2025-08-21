@@ -26,7 +26,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="/video-splitter" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
-                  视频分割器
+                  秒切——秒切 - Web 视频分割工具
                 </a>
               </li>
               <li>
