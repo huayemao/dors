@@ -48,33 +48,34 @@ export default function Page({
       ? {
         h1: "秒切 - Web 视频分割工具",
         lead:
-          "按秒切割视频；本地浏览器内处理，无需上传，极速秒切，基于 FFmpeg WASM，移动端适配，隐私优先，文件始终留在你的设备中。",
-        leadShort: "本地处理·无需上传 · 隐私优先",
+          "按秒切割视频；支持快速模式和精确模式，本地浏览器内处理，无需上传，基于 FFmpeg WASM，移动端适配，隐私优先，文件始终留在你的设备中。",
+        leadShort: "双模式·本地处理·无需上传",
         howTitle: "使用指南",
         steps: [
           "点击\"选择视频文件\"，选择待分割视频（支持常见格式，如 MP4）；",
+          "选择分割模式：快速模式（快速但不精确）或精确模式（精确但耗时较长）；",
           "在\"分割时间（秒）\"输入框设置每段视频时长（默认 10 秒，可自定义）；",
-          "点击\"开始分割\"，等待处理完成后，下载切片后的视频文件。",
+          "点击\"开始分割\"，等待处理完成后，预览并下载切片后的视频文件。",
         ],
         features: [
           {
             icon: <Zap className="w-6 h-6" />,
-            title: "快速处理",
-            description: "基于 FFmpeg 优化，缩短加载与视频处理时间，本地处理不上传服务器。",
+            title: "智能处理",
+            description: "基于 FFmpeg 优化，支持快速和精确两种模式，本地处理不上传服务器。",
             bgColor: "bg-primary-100 dark:bg-primary-500",
             textColor: "text-primary-500 dark:text-white"
           },
           {
             icon: <Scissors className="w-6 h-6" />,
-            title: "精确分割",
-            description: "按时长精确分割视频，支持自定义秒数，帧级精度保证分割质量。",
+            title: "双模式分割",
+            description: "快速模式：快速分割，适合大部分场景；精确模式：帧级精度，适合专业需求。",
             bgColor: "bg-lime-100 dark:bg-lime-500",
             textColor: "text-lime-500 dark:text-white"
           },
           {
             icon: <FileVideo className="w-6 h-6" />,
             title: "即时预览",
-            description: "处理前预览视频，确保选择正确的文件，支持常见视频格式如 MP4。",
+            description: "处理前预览原视频，处理后预览所有分割片段，支持常见视频格式如 MP4。",
             bgColor: "bg-violet-100 dark:bg-violet-500",
             textColor: "text-violet-500 dark:text-white"
           },
@@ -90,33 +91,34 @@ export default function Page({
       : {
         h1: "Video Splitter",
         lead:
-          "A local, browser‑based video splitter — no install, no upload. Powered by FFmpeg WASM to slice by seconds. Privacy‑first and mobile‑friendly; files stay on your device.",
-        leadShort: "Client‑side · No upload · Privacy‑first",
+          "A local, browser‑based video splitter — no install, no upload. Choose between fast mode and precise mode, powered by FFmpeg WASM to slice by seconds. Privacy‑first and mobile‑friendly; files stay on your device.",
+        leadShort: "Dual Mode · Client‑side · No upload",
         howTitle: "How to use",
         steps: [
           "Click \"Choose video file\" to pick a video (common formats like MP4).",
+          "Choose split mode: Fast mode (quick but less precise) or Precise mode (exact but slower).",
           "Set segment length in seconds in \"Segment time (s)\" (default 10s).",
-          "Click \"Start splitting\" and download the generated segments when done.",
+          "Click \"Start splitting\" and preview/download the generated segments when done.",
         ],
         features: [
           {
             icon: <Zap className="w-6 h-6" />,
-            title: "Fast Processing",
-            description: "Powered by FFmpeg with optimized loading and execution, local processing with no server upload.",
+            title: "Smart Processing",
+            description: "Powered by FFmpeg with optimized loading and execution, supports both fast and precise modes, local processing with no server upload.",
             bgColor: "bg-primary-100 dark:bg-primary-500",
             textColor: "text-primary-500 dark:text-white"
           },
           {
             icon: <Scissors className="w-6 h-6" />,
-            title: "Precise Splitting",
-            description: "Split videos by exact time segments with customizable duration, frame-accurate precision.",
+            title: "Dual Mode Splitting",
+            description: "Fast mode: Quick splitting for most scenarios; Precise mode: Frame-accurate precision for professional needs.",
             bgColor: "bg-lime-100 dark:bg-lime-500",
             textColor: "text-lime-500 dark:text-white"
           },
           {
             icon: <FileVideo className="w-6 h-6" />,
             title: "Instant Preview",
-            description: "Preview your video before processing to ensure you're working with the right file format.",
+            description: "Preview original video before processing and all segments after processing, supporting common formats like MP4.",
             bgColor: "bg-violet-100 dark:bg-violet-500",
             textColor: "text-violet-500 dark:text-white"
           },
