@@ -11,7 +11,7 @@ export const SITE_META = {
   ICP: "滇ICP备2025063395号-1",
 };
 
-export const POSTS_COUNT_PER_PAGE = 9;
+export const POSTS_COUNT_PER_PAGE = 10;
 
 export interface SlideItem {
   image: string;

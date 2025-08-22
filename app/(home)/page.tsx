@@ -2,7 +2,12 @@ import { CatsAndTags } from "@/components/CatsAndTags";
 import { Posts } from "@/components/Tiles/Posts";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
-import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
+import {
+  getPageCount,
+  getPosts,
+  getProcessedPosts,
+  getRecentPosts,
+} from "@/lib/server/posts";
 import { BaseHeading, BaseIconBox } from "@shuriken-ui/react";
 import Icon from "@/components/Base/Icon";
 import Link from "next/link";
@@ -20,14 +25,7 @@ export default async function Home({
 }: {
   searchParams: SearchParams;
 }) {
-  const posts = await getProcessedPosts(
-    await getPosts({
-      ...searchParams,
-      protected: false,
-      type: "normal",
-    })
-  );
-
+  const posts = await getRecentPosts();
 
   const key = posts.map((e) => e.id).join();
 
@@ -43,13 +41,11 @@ export default async function Home({
       <div className="space-y-8">
         <div className="space-y-4">
           <BaseHeading size="3xl" className="text-center" as="h2">
-            文章列表
+            最近更新
           </BaseHeading>
-          <Posts data={posts} />
+          <Posts data={posts} mini />
         </div>
       </div>
     </Fragment>
   );
 }
-
-

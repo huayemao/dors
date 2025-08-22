@@ -417,7 +417,7 @@ export type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export async function getRecentPosts(options: getPostOptions = {}) {
   let posts = await getProcessedPosts(
-    await getPosts({ perPage: 5, ...options }),
+    await getPosts({ perPage: 5, protected: false, type: 'normal', ...options }),
     {
       imageSize: "small",
     }
@@ -621,7 +621,7 @@ export async function getRelatedPosts(
   options: { limit?: number } = {}
 ): Promise<any[]> {
   const limit = options.limit || 5;
-  
+
   if (!currentPost) {
     return await getRecentPosts({ protected: false, perPage: limit });
   }
@@ -680,23 +680,23 @@ export async function getRelatedPosts(
     // 计算每个文章的匹配分数
     const postsWithScores = postsWithTags.map(post => {
       let score = 0;
-      
+
       // 标签匹配分数：匹配的标签越多分数越高
       const postTagIds = post.tags_posts_links?.map(link => link.tags?.id).filter((id): id is number => id !== null && id !== undefined) || [];
       const tagMatches = currentTagIds.filter(id => postTagIds.includes(id));
       score += tagMatches.length * 20; // 每个匹配标签加20分
-      
+
       // 分类匹配分数
       const postCategoryId = post.posts_category_links?.[0]?.categories?.id;
       if (currentCategoryId && postCategoryId === currentCategoryId) {
         score += 10; // 分类匹配加10分
       }
-      
+
       // 时间衰减分数（越新的文章分数越高）
-      const daysSinceUpdate = post.updated_at ? 
+      const daysSinceUpdate = post.updated_at ?
         (Date.now() - new Date(post.updated_at).getTime()) / (1000 * 60 * 60 * 24) : 0;
       score += Math.max(0, 15 - daysSinceUpdate * 0.2); // 每天衰减0.2分，最低0分
-      
+
       return {
         ...post,
         tags: post.tags_posts_links?.map(link => link.tags) || [],
@@ -784,7 +784,7 @@ export async function getRelatedPosts(
         tags: post.tags_posts_links?.map(link => link.tags) || [],
       }))
       .slice(0, limit - relatedPosts.length);
-    
+
     relatedPosts.push(...additionalPosts);
   }
 

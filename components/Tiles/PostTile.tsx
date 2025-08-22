@@ -86,7 +86,7 @@ function PostTile({
             </div>
 
             {/* 内容区域 */}
-            <div className="flex-1 min-w-0 truncate flex flex-col justify-between">
+            <div className="flex-1 min-w-0 truncate">
               {/* 标题 */}
               <Link
                 href={"/posts/" + id}
