@@ -2,7 +2,7 @@ import { SITE_META } from "@/constants";
 
 export function Footer() {
   return (
-    <div className="relative z-20 bg-white dark:bg-muted-800 text-muted-500 mt-auto">
+    <footer className="relative z-20 bg-white dark:bg-muted-800 text-muted-500 mt-auto">
       <div className="relative w-full max-w-7xl px-5 py-24 mx-auto z-20">
         <div className="flex flex-col ptablet:flex-row ltablet:flex-row lg:flex-row gap-6 ptablet:gap-0 ltablet:gap-0 lg:gap-0 flex-wrap md:text-left text-center -mb-10 -mx-4">
           <div  className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left px-4">
@@ -43,7 +43,7 @@ export function Footer() {
           </div>
           <div className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 px-4">
             <h2 className="font-heading font-medium text-muted-800 dark:text-white tracking-widest text-sm mb-3">
-              分类
+              博客
             </h2>
             <ul className="font-sans list-none space-y-2 mb-10">
               <li>
@@ -106,6 +106,6 @@ export function Footer() {
         )}
       </div>
       </div>
-    </div>
+    </footer>
   );
 }
