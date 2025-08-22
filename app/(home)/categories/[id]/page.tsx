@@ -53,16 +53,22 @@ export default async function PostsByCategory({
     { imageSize: "small" }
   );
   return (
-    <>
-      <BaseHeading size="3xl" className="text-center" as="h2">
-        分类——{cat.name}
-      </BaseHeading>
-      <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
-        {/* @ts-ignore */}
-        {cat.meta?.description}
-      </p>
+    <div className="container">
+      <div>
+        <BaseHeading
+          as="h1"
+          size="3xl"
+          className="font-heading text-muted-900 dark:text-white"
+        >
+          {cat.name}
+        </BaseHeading>
+        <p className="mt-1 text-sm text-muted-600 dark:text-muted-400">
+          {/* @ts-ignore */}
+          {cat.meta?.description}
+        </p>
+      </div>
       <Posts mini data={posts} />
-    </>
+    </div>
   );
 }
 

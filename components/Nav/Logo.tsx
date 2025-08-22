@@ -26,7 +26,7 @@ export default function Logo({
           fill="none"
           viewBox="60 60 280 280"
           className="w-10 h-10 mr-4">
-          <defs xmlns="http://www.w3.org/2000/svg"><linearGradient gradientTransform="rotate(135, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="ffflux-gradient"><stop stopColor="hsl(300, 60%, 64%)" stop-opacity="1" offset="0%" /><stop stopColor="hsl(218, 68%, 57%)" stop-opacity="1" offset="100%" /></linearGradient><filter id="ffflux-filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <defs xmlns="http://www.w3.org/2000/svg"><linearGradient gradientTransform="rotate(135, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="ffflux-gradient"><stop stopColor="hsl(300, 60%, 64%)" stopOpacity="1" offset="0%" /><stop stopColor="hsl(218, 68%, 57%)" stop-opacity="1" offset="100%" /></linearGradient><filter id="ffflux-filter" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feTurbulence type="fractalNoise" baseFrequency="0.003 0.004" numOctaves="2" seed="284" stitchTiles="stitch" x="0%" y="0%" width="100%" height="100%" result="turbulence" />
             <feGaussianBlur stdDeviation="78 0" x="0%" y="0%" width="100%" height="100%" in="turbulence" edgeMode="duplicate" result="blur" />
             <feBlend mode="lighten" x="0%" y="0%" width="100%" height="100%" in="SourceGraphic" in2="blur" result="blend" />

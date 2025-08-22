@@ -29,7 +29,7 @@ export default async function MainLayout({
             <section className="w-full">
               <div className="w-full max-w-6xl mx-auto">
                 <div className="w-full">
-                  <div className="w-full h-full flex flex-col justify-between pt-16 px-6">
+                  <div className="w-full h-full flex flex-col justify-between pt-10 px-6">
                     <div className="w-full  my-4 space-y-12">
                       {children}
                     </div>

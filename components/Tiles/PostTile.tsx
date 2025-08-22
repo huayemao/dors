@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Category } from "../Category";
 import Tag from "../Tag";
+import { BaseTag } from "@shuriken-ui/react";
 
 type PostWithRelations = {
   id: number;
@@ -54,41 +55,83 @@ function PostTile({
       <li
         style={{ listStyle: "none" }}
         className={cn({
-          "bg-white p-2 rounded-lg border dark:bg-muted-800 dark:border-muted-700":
+          "bg-white p-3 rounded-lg border dark:bg-muted-800 dark:border-muted-700 hover:shadow-sm transition-shadow duration-200":
             rounded,
         })}
       >
-        <Link href={"/posts/" + id} className="flex items-center">
-          <div className="relative flex justify-start gap-2 w-full">
-            {typeof url == 'string' && (isDataURL(url) || !url.startsWith("/")) ? <img
-              className="h-12 w-12 mask mask-blob object-cover"
-              src={url}
-              alt={post?.title || "featured image"}
-              width="48"
-              height="48"
-            /> :
-              <Image
-                unoptimized={config.output === "export"}
-                className="h-12 w-12 mask mask-blob object-cover"
-                src={url}
-                alt={post.title || "Post image"}
-                width="48"
-                height="48"
-                blurDataURL={blurDataURL}
-              />}
-            <div className="truncate">
-              <h3
+        <div className="block w-full">
+          <div className="flex items-start gap-3 w-full">
+            {/* 图片区域 */}
+            <div className="flex-shrink-0">
+              {typeof url == "string" &&
+              (isDataURL(url) || !url.startsWith("/")) ? (
+                <img
+                  className="h-20 w-20 rounded-lg object-cover shadow"
+                  src={url}
+                  alt={post?.title || "featured image"}
+                  width="56"
+                  height="56"
+                />
+              ) : (
+                <Image
+                  unoptimized={config.output === "export"}
+                  className="h-20 w-20 rounded-lg object-cover shadow"
+                  src={url}
+                  alt={post.title || "Post image"}
+                  width="56"
+                  height="56"
+                  blurDataURL={blurDataURL}
+                />
+              )}
+            </div>
+
+            {/* 内容区域 */}
+            <div className="flex-1 min-w-0 truncate flex flex-col justify-between">
+              {/* 标题 */}
+              <Link
+                href={"/posts/" + id}
                 title={post.title as string}
-                className="truncate font-heading font-medium text-muted-800 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1"
+                className="truncate font-heading font-medium text-muted-600 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1"
               >
                 {post.title}
-              </h3>
-              <p className="font-sans text-sm text-muted-400">
-                {updatedOrcreatedAtText}
-              </p>
+              </Link>
+
+              {/* 时间和标签区域 */}
+              <div className="space-y-2">
+                {/* 时间 */}
+                <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
+                  {updatedOrcreatedAtText}
+                </p>
+
+                {/* 标签区域 */}
+                {tags?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.slice(0, 3).map(
+                      (t) =>
+                        t && (
+                          <a
+                            key={t.id}
+                            href={`/tags/${t.id}`}
+                            // className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted-100 dark:bg-muted-700 text-muted-600 dark:text-muted-300 hover:bg-muted-200 dark:hover:bg-muted-600 transition-colors duration-150"
+                          >
+                            <BaseTag size="sm" shadow="hover"  color="muted" variant="pastel">
+                               #{t.name}
+                            </BaseTag>
+                          </a>
+                        )
+                    )}
+                    {/* 显示更多标签的指示器 */}
+                    {tags.length > 3 && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted-50 dark:bg-muted-800 text-muted-500 dark:text-muted-400">
+                        +{tags.length - 3}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </Link>
+        </div>
       </li>
     );
   }
@@ -120,13 +163,16 @@ function PostTile({
                       )
                   )}
               </div>
-              {typeof url == 'string' && (isDataURL(url) || !url.startsWith("/")) ? <img
-                className="rounded-xl w-[348px] h-[208px] object-cover"
-                src={url}
-                alt={post?.title || "featured image"}
-                width="348"
-                height="208"
-              /> :
+              {typeof url == "string" &&
+              (isDataURL(url) || !url.startsWith("/")) ? (
+                <img
+                  className="rounded-xl w-[348px] h-[208px] object-cover"
+                  src={url}
+                  alt={post?.title || "featured image"}
+                  width="348"
+                  height="208"
+                />
+              ) : (
                 <Image
                   className="rounded-xl w-[348px] h-[208px] object-cover"
                   src={url}
@@ -138,7 +184,7 @@ function PostTile({
                   width="348"
                   height="208"
                 />
-              }
+              )}
             </div>
             <h3 className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6">
               {title}
