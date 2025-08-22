@@ -47,6 +47,7 @@ export default async function PostsByCategory({
     await getPosts({
       includeHiddenCategories: true,
       categoryId: Number(params.id),
+      type:"normal",
       perPage: 600,
       protected: false,
     }),

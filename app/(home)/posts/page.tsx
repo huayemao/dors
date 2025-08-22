@@ -42,7 +42,7 @@ export default async function Home({
         <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
           {SITE_META.introduction}
         </p>
-        <Posts data={posts} />
+        <Posts data={posts} mini/>
         <Suspense>
           <Pagination pageCount={pageCount}></Pagination>
         </Suspense>{" "}
