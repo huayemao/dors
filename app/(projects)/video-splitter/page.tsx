@@ -55,7 +55,7 @@ export default function Page({
           "点击\"选择视频文件\"，选择待分割视频（支持常见格式，如 MP4）；",
           "选择分割模式：快速模式（快速但不精确）或精确模式（精确但耗时较长）；",
           "在\"分割时间（秒）\"输入框设置每段视频时长（默认 10 秒，可自定义）；",
-          "点击\"开始分割\"，等待处理完成后，预览并下载切片后的视频文件。",
+          "点击\"开始分割\"，实时查看处理日志，完成后在弹窗中直接播放视频片段并下载。",
         ],
         features: [
           {
@@ -74,8 +74,8 @@ export default function Page({
           },
           {
             icon: <FileVideo className="w-6 h-6" />,
-            title: "即时预览",
-            description: "处理前预览原视频，处理后预览所有分割片段，支持常见视频格式如 MP4。",
+            title: "实时监控",
+            description: "实时查看FFmpeg处理日志，处理完成后在弹窗中直接播放所有分割片段，支持常见视频格式如 MP4。",
             bgColor: "bg-violet-100 dark:bg-violet-500",
             textColor: "text-violet-500 dark:text-white"
           },
@@ -98,7 +98,7 @@ export default function Page({
           "Click \"Choose video file\" to pick a video (common formats like MP4).",
           "Choose split mode: Fast mode (quick but less precise) or Precise mode (exact but slower).",
           "Set segment length in seconds in \"Segment time (s)\" (default 10s).",
-          "Click \"Start splitting\" and preview/download the generated segments when done.",
+          "Click \"Start splitting\" to view real-time logs, then play video segments directly in the results modal and download.",
         ],
         features: [
           {
@@ -117,8 +117,8 @@ export default function Page({
           },
           {
             icon: <FileVideo className="w-6 h-6" />,
-            title: "Instant Preview",
-            description: "Preview original video before processing and all segments after processing, supporting common formats like MP4.",
+            title: "Real-time Monitoring",
+            description: "View real-time FFmpeg processing logs and play all segments directly in a modal after completion, supporting common formats like MP4.",
             bgColor: "bg-violet-100 dark:bg-violet-500",
             textColor: "text-violet-500 dark:text-white"
           },

@@ -8,11 +8,12 @@ import {
   BaseProgress,
   BaseInput,
 } from "@shuriken-ui/react";
-import { FileVideo, FolderPlus, Loader, Trash, Play, Download, Eye } from "lucide-react";
+import { FileVideo, FolderPlus, Loader, Trash, Play, Download, Eye, Clock } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { cn } from "@/lib/utils";
 import { registerServiceWorker } from "@/lib/client/registerSW";
+import { Modal } from "@/components/Base/Modal";
 
 const i18n = {
   en: {
@@ -46,6 +47,11 @@ const i18n = {
     preciseMode: "Precise Mode",
     fastModeDesc: "Quick splitting, may not be exact",
     preciseModeDesc: "Exact splitting, takes longer",
+    processingLogs: "Processing Logs",
+    resultsTitle: "Split Results",
+    viewResults: "View Results",
+    splitComplete: "Split Complete",
+    originalVideoSplit: "Original video has been split into segments",
   },
   zh: {
     title: "视频分割助手",
@@ -78,6 +84,11 @@ const i18n = {
     preciseMode: "精确模式",
     fastModeDesc: "快速分割，可能不够精确",
     preciseModeDesc: "精确分割，耗时较长",
+    processingLogs: "处理日志",
+    resultsTitle: "分割结果",
+    viewResults: "查看结果",
+    splitComplete: "分割完成",
+    originalVideoSplit: "原视频已分割为片段",
   },
 };
 
@@ -87,6 +98,7 @@ interface Segment {
   name: string;
   url: string;
   blob: Blob;
+  duration: number;
 }
 
 const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
@@ -101,6 +113,8 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
   const [ffmpegLoading, setFfmpegLoading] = useState(true);
   const [ffmpegProgress, setFfmpegProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState<number>(0);
+  const [processingLogs, setProcessingLogs] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const ffmpegRef = useRef(new FFmpeg());
   const messageRef = useRef<HTMLDivElement | null>(null);
@@ -208,6 +222,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
     setProcessing(true);
     setProgress(0);
     setSegments([]);
+    setProcessingLogs([]);
 
     try {
       const ffmpeg = ffmpegRef.current;
@@ -234,6 +249,11 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
       const logHandler = (log: any) => {
         const logText = log.message || log;
         console.log('FFmpeg log:', logText);
+        
+        // Add log to processing logs
+        if (typeof logText === 'string') {
+          setProcessingLogs(prev => [...prev, logText]);
+        }
         
         // Extract frame information from logs
         if (typeof logText === 'string') {
@@ -305,17 +325,31 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
         file.name !== "input.mp4" && file.name.endsWith(".mp4")
       );
 
-      // Create segments with preview URLs
+      // Create segments with preview URLs and actual durations
       const newSegments: Segment[] = [];
       for (const outputFile of outputFiles) {
         const data = await ffmpeg.readFile(outputFile.name);
         const blob = new Blob([data], { type: "video/mp4" });
         const url = URL.createObjectURL(blob);
         
+        // Create a temporary video element to get actual duration
+        const tempVideo = document.createElement('video');
+        tempVideo.src = url;
+        tempVideo.preload = 'metadata';
+        
+        // Wait for metadata to load to get actual duration
+        await new Promise<void>((resolve) => {
+          tempVideo.onloadedmetadata = () => {
+            resolve();
+          };
+          tempVideo.load();
+        });
+        
         newSegments.push({
           name: outputFile.name,
           url,
-          blob
+          blob,
+          duration: tempVideo.duration || duration // Fallback to user-set duration if metadata fails
         });
       }
 
@@ -323,6 +357,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
       setProgress(100);
       
       toast.success(`${t.title}: ${selectedFile.name} split into ${newSegments.length} segments`);
+      setShowResults(true);
 
     } catch (error) {
       console.error(error);
@@ -564,18 +599,41 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
 
       {/* Processing Progress */}
       {processing && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Loader className="w-4 h-4 animate-spin" />
-            <span className="text-sm text-muted-600 dark:text-muted-400">
-              {t.processingProgress}
-            </span>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Loader className="w-4 h-4 animate-spin" />
+              <span className="text-sm text-muted-600 dark:text-muted-400">
+                {t.processingProgress}
+              </span>
+            </div>
+            <BaseProgress value={progress} max={100} />
           </div>
-          <BaseProgress value={progress} max={100} />
+          
+          {/* Processing Logs */}
+          {processingLogs.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-muted-700 dark:text-muted-300">
+                  {t.processingLogs}
+                </label>
+                <span className="text-xs text-muted-500 dark:text-muted-400">
+                  {processingLogs.length} {lang === "zh" ? "条日志" : "logs"}
+                </span>
+              </div>
+              <div className="max-h-32 overflow-y-auto bg-muted-50 dark:bg-muted-800 rounded-lg p-3 text-xs font-mono">
+                {processingLogs.map((log, index) => (
+                  <div key={index} className="text-muted-600 dark:text-muted-400 mb-1">
+                    {log}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Segments List */}
+      {/* Segments Summary */}
       {segments.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -596,65 +654,114 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
               <BaseButton
                 variant="outline"
                 size="sm"
-                onClick={downloadAllSegments}
+                onClick={() => setShowResults(true)}
               >
-                <Download className="w-4 h-4 me-2" />
-                {t.downloadAll}
+                <Eye className="w-4 h-4 me-2" />
+                {t.viewResults}
               </BaseButton>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {segments.map((segment, index) => (
-              <div
-                key={segment.name}
-                className={cn(
-                  "p-3 border rounded-lg cursor-pointer transition-all",
-                  currentSegment?.name === segment.name
-                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                    : "border-muted-200 dark:border-muted-700 hover:border-primary-300"
-                )}
-                onClick={() => previewSegment(segment)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-sm text-muted-800 dark:text-white">
-                    {segment.name}
-                  </span>
-                  <span className="text-xs text-muted-500 dark:text-muted-400">
-                    #{index + 1}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <BaseButton
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      previewSegment(segment);
-                    }}
-                  >
-                    <Eye className="w-3 h-3 me-1" />
-                    {lang === "zh" ? "预览" : "Preview"}
-                  </BaseButton>
-                  <BaseButton
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      downloadSegment(segment);
-                    }}
-                  >
-                    <Download className="w-3 h-3 me-1" />
-                    {t.downloadSegment}
-                  </BaseButton>
-                </div>
-              </div>
-            ))}
+          {/* Quick Preview */}
+          <div className="text-center p-4 bg-muted-50 dark:bg-muted-800 rounded-lg">
+            <p className="text-muted-600 dark:text-muted-400">
+              {lang === "zh" 
+                ? `已生成 ${segments.length} 个视频片段，点击"查看结果"按钮预览和下载`
+                : `${segments.length} video segments generated. Click "View Results" to preview and download`
+              }
+            </p>
           </div>
         </div>
       )}
 
       <div ref={messageRef}></div>
+      
+             {/* Results Modal */}
+       <Modal
+         open={showResults}
+         onClose={() => setShowResults(false)}
+         title={t.resultsTitle}
+         size="3xl"
+       >
+        <div className="space-y-6">
+          {/* Summary */}
+          <div className="text-center p-4 bg-muted-50 dark:bg-muted-800 rounded-lg">
+            <h3 className="text-lg font-semibold text-muted-800 dark:text-white mb-2">
+              {t.splitComplete}
+            </h3>
+            <p className="text-muted-600 dark:text-muted-400">
+              {lang === "zh" 
+                ? `原视频 "${selectedFile?.name}" 已分割为 ${segments.length} 个片段`
+                : `Original video "${selectedFile?.name}" has been split into ${segments.length} segments`
+              }
+            </p>
+          </div>
+
+                     {/* Segments Grid */}
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+             {segments.map((segment, index) => (
+               <div
+                 key={segment.name}
+                 className="border border-muted-200 dark:border-muted-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+               >
+                 {/* Video Player */}
+                 <div className="relative bg-muted-100 dark:bg-muted-800 aspect-video">
+                   <video
+                     src={segment.url}
+                     className="w-full h-full object-cover"
+                     preload="metadata"
+                     controls
+                     muted
+                   />
+                   <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                     #{index + 1}
+                   </div>
+                 </div>
+                 
+                 {/* Segment Info */}
+                 <div className="p-3 space-y-2">
+                   <div className="flex items-center justify-between">
+                     <span className="font-medium text-sm text-muted-800 dark:text-white truncate">
+                       {segment.name}
+                     </span>
+                   </div>
+                   
+                   <div className="flex items-center gap-2 text-xs text-muted-500 dark:text-muted-400">
+                     <Clock className="w-3 h-3" />
+                     <span>
+                       {lang === "zh" ? "时长" : "Duration"}: {Math.round(segment.duration)}s
+                     </span>
+                   </div>
+                   
+                   <div className="flex gap-2">
+                     <BaseButton
+                       variant="outline"
+                       size="sm"
+                       onClick={() => downloadSegment(segment)}
+                       className="flex-1"
+                     >
+                       <Download className="w-3 h-3 me-1" />
+                       {t.downloadSegment}
+                     </BaseButton>
+                   </div>
+                 </div>
+               </div>
+             ))}
+           </div>
+
+                     {/* Actions */}
+           <div className="flex justify-center pt-4 border-t border-muted-200 dark:border-muted-700">
+             <BaseButton
+               variant="solid"
+               color="primary"
+               onClick={downloadAllSegments}
+             >
+               <Download className="w-4 h-4 me-2" />
+               {t.downloadAll}
+             </BaseButton>
+           </div>
+        </div>
+      </Modal>
     </div>
   );
 };
