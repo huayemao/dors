@@ -23,6 +23,7 @@ export default async function Home({
     await getPosts({
       ...searchParams,
       protected: false,
+      type: "normal",
     })
   );
 
