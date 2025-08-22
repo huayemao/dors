@@ -43,27 +43,17 @@ export function Footer() {
           </div>
           <div className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 px-4">
             <h2 className="font-heading font-medium text-muted-800 dark:text-white tracking-widest text-sm mb-3">
-              博客
+              内容
             </h2>
             <ul className="font-sans list-none space-y-2 mb-10">
               <li>
-                <a href="/categories/5" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
-                  应试
+                <a href="/posts" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
+                  博客
                 </a>
               </li>
               <li>
-                <a href="/categories/9" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
-                  效率
-                </a>
-              </li>
-              <li>
-                <a href="/categories/1" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
-                  生活
-                </a>
-              </li>
-              <li>
-                <a href="/categories/11" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
-                  文艺
+                <a href="/books" className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500">
+                  知识库
                 </a>
               </li>
             </ul>

@@ -1,7 +1,6 @@
 import { getPosts } from "@/lib/server/posts";
 import BookTile from "./BookTile";
-import { BaseHeading } from "@shuriken-ui/react";
-import { useEffect, useState } from "react";
+
 
 export type BookSummary = {
   id: number;
@@ -20,10 +19,6 @@ export function Books({data}:{data:BookSummary[]}) {
   if (!data.length) return null;
 
   return (
-    <div className="space-y-4">
-      <BaseHeading size="3xl" className="text-center" as="h2">
-        果园（知识库）
-      </BaseHeading>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.map((book) => (
           <BookTile
@@ -36,6 +31,5 @@ export function Books({data}:{data:BookSummary[]}) {
           />
         ))}
       </div>
-    </div>
   );
 } 

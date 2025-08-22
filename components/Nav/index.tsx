@@ -97,16 +97,16 @@ export const Nav = ({
       href: "/",
     },
     {
-      title: "文章",
+      title: "博客",
       href: "/posts",
+    },
+    {
+      title: "知识库",
+      href: "/books",
     },
     {
       title: "工作台",
       href: "/apps",
-    },
-    {
-      title: "关于",
-      href: "/about",
     },
     {
       title: "集萃",
@@ -116,7 +116,10 @@ export const Nav = ({
       title: "友链",
       href: "/friends",
     },
-
+    {
+      title: "关于",
+      href: "/about",
+    },
   ];
   return (
     <>
