@@ -1,5 +1,5 @@
 "use client";
-import { BaseButton, BaseTabs } from "@shuriken-ui/react";
+import { BaseButton, BaseTabs } from "@glint-ui/react";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Code2, MessageSquareIcon, PenBox } from "lucide-react";
 import dynamic from "next/dynamic";

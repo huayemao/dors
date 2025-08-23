@@ -10,7 +10,7 @@ import {
   BaseParagraph,
   BaseTabSlider,
   BaseTag,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 
 import { useEntity, useEntityDispatch } from "@/contexts/notes";
 import {

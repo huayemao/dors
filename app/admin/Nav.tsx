@@ -2,7 +2,7 @@
 import { AdminMenu } from "@/components/Menu";
 import Logo from "@/components/Nav/Logo";
 import { cn } from "@/lib/utils";
-import { BaseThemeToggle } from "@shuriken-ui/react";
+import { BaseThemeToggle } from "@glint-ui/react";
 import { Dialog } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";

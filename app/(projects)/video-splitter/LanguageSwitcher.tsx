@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import { BaseSelect } from "@shuriken-ui/react";
+import { BaseSelect } from "@glint-ui/react";
 
 export default function LanguageSwitcher({ className }: { className?: string }) {
   const router = useRouter();

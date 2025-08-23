@@ -4,7 +4,7 @@ import {
   BaseDropdown,
   BaseDropdownItem,
   BaseInput,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { DOMAttributes, useCallback, useEffect, useReducer } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 

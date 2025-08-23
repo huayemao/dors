@@ -16,7 +16,7 @@ import localforage from "localforage";
 import toast from "react-hot-toast";
 import { NoteItem } from "./NoteItem";
 import { NoteModalTitle } from "./NoteModalTitle";
-import { BaseDropdownItem } from "@shuriken-ui/react";
+import { BaseDropdownItem } from "@glint-ui/react";
 import { Archive, Copy, Edit2, LinkIcon } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { cn, copyTextToClipboard } from "@/lib/utils";

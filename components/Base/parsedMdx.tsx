@@ -1,6 +1,6 @@
 "use client";
 import { parseMDXClient } from "@/lib/mdx/parseMDXClient";
-import { BaseButton, BasePlaceload } from "@shuriken-ui/react";
+import { BaseButton, BasePlaceload } from "@glint-ui/react";
 import { MDXContent } from "mdx/types";
 import {
   isValidElement,

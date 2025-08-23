@@ -1,6 +1,6 @@
 "use client";
 
-import { BaseCard, BasePlaceload } from "@shuriken-ui/react";
+import { BaseCard, BasePlaceload } from "@glint-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 import { cn } from "@/lib/utils";
 import { getDateStr } from "@/lib/utils";

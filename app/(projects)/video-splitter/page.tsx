@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import FeatureGrid from "@/components/FeatureGrid";
 import Steps from "./components/Steps";
 import { Zap, Scissors, FileVideo, Download } from "lucide-react";
-import { BaseHeading } from "@shuriken-ui/react";
+import { BaseHeading } from "@glint-ui/react";
 import { Nav } from "@/components/Nav";
 
 const VideoSplitter = dynamic(() => import("./VideoSplitter"), { ssr: false });

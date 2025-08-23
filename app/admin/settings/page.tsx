@@ -4,7 +4,7 @@ import { HiddenCatsForm } from "./HiddenCatsForm";
 import { NavItemsConfig } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
 import { Panel } from "@/components/Base/Panel";
-import { BaseButton, BaseInput, BaseTextarea } from "@shuriken-ui/react";
+import { BaseButton, BaseInput, BaseTextarea } from "@glint-ui/react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -71,7 +71,6 @@ export default async function AdminSettingsPage({ params, searchParams }) {
                 <input
                   className="hidden"
                   type="text"
-                  // @ts-ignore
                   name="key"
                   value={"nav_content_post_id"}
                 />

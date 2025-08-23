@@ -10,7 +10,7 @@ import {
   BaseInput,
   BaseList,
   BaseListItem,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { EntityContextProvider, useEntity, useEntityDispatch } from "./context";

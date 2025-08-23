@@ -2,7 +2,7 @@ import React, { lazy, memo, Suspense } from "react";
 import { LucideProps } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
-import { BasePlaceload } from "@shuriken-ui/react";
+import { BasePlaceload } from "@glint-ui/react";
 
 const fallback = <BasePlaceload className="w-full h-full" />;
 

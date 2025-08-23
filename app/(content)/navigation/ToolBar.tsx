@@ -1,5 +1,5 @@
 "use client";
-import { BaseButton } from "@shuriken-ui/react";
+import { BaseButton } from "@glint-ui/react";
 import React from "react";
 import toast from "react-hot-toast";
 

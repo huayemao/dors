@@ -7,7 +7,7 @@ import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/server/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
 import { getDateForDateTimeInput, isDataURL } from "@/lib/utils";
-import { BaseButton, BaseInput, BaseTextarea } from "@shuriken-ui/react";
+import { BaseButton, BaseInput, BaseTextarea } from "@glint-ui/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MouseEventHandler, useContext, useRef, useState } from "react";

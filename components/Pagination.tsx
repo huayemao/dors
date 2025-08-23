@@ -1,6 +1,6 @@
 "use client";
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
-import { BasePagination } from "@shuriken-ui/react";
+import { BasePagination } from "@glint-ui/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { memo, useCallback } from "react";
 

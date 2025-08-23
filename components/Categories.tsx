@@ -1,7 +1,7 @@
 "use client";
 import { Category } from "@/components/Category";
 import { CategoriesContext } from "@/contexts/categories";
-import { BaseCard, BaseHeading } from "@shuriken-ui/react";
+import { BaseCard, BaseHeading } from "@glint-ui/react";
 import { useSelectedLayoutSegments } from "next/navigation";
 import { useContext } from "react";
 

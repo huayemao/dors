@@ -1,4 +1,4 @@
-import { BaseTag } from "@shuriken-ui/react";
+import { BaseTag } from "@glint-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 import {

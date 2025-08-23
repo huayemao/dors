@@ -1,6 +1,6 @@
 import { Panel } from "@/components/Base/Panel";
 import { getPosts, getPageCount } from "@/lib/server/posts";
-import { BaseButtonAction } from "@shuriken-ui/react";
+import { BaseButtonAction } from "@glint-ui/react";
 import { PostsTable } from "./PostsTable";
 import { PaginateOptions } from "@/lib/paginator";
 import Pagination from "@/components/Pagination";

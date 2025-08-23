@@ -6,7 +6,7 @@ import {
   BaseInput,
   BaseSelect,
   BaseTabSlider,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { DOMAttributes, FC, PropsWithChildren, useMemo, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useEntity, useEntityDispatch } from "../../../contexts/notes";
@@ -99,7 +99,6 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                     label="序号"
                     type="number"
                     id="seq"
-                    // @ts-ignore
                     name="seq"
                     defaultValue={currentEntity?.seq}
                   />
@@ -112,7 +111,6 @@ export const NoteForm: FC<PropsWithChildren> = ({ children }) => {
                     size="sm"
                     type="number"
                     id="sortIndex"
-                    // @ts-ignore
                     name="sortIndex"
                     defaultValue={currentEntity?.sortIndex || 0}
                   />

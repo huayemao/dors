@@ -1,5 +1,5 @@
 "use client";
-import { BaseButton, BaseTextarea } from "@shuriken-ui/react";
+import { BaseButton, BaseTextarea } from "@glint-ui/react";
 import {
   FC,
   useCallback,

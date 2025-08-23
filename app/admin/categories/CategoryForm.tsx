@@ -1,6 +1,6 @@
 "use client";
 import { readFromClipboard } from "@/lib/utils";
-import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
+import { BaseButton, BaseInput, BaseSelect } from "@glint-ui/react";
 import { DOMAttributes, FC, PropsWithChildren, useMemo, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";

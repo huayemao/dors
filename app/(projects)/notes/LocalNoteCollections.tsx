@@ -1,7 +1,7 @@
 "use client";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEntity } from "../../../contexts/notes";
-import { BaseCard, BaseHeading, BaseTabs } from "@shuriken-ui/react";
+import { BaseCard, BaseHeading, BaseTabs } from "@glint-ui/react";
 import PostListItem from "@/components/PostListItem";
 import { ArrowRight, GalleryVertical } from "lucide-react";
 export default function LocalNoteCollections() {

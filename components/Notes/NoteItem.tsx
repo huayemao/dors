@@ -1,6 +1,6 @@
 "use client";
 import Prose from "@/components/Base/Prose";
-import { BaseCard, BaseTag, BaseButton } from "@shuriken-ui/react";
+import { BaseCard, BaseTag, BaseButton } from "@glint-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 
 import { cn, getDateStr } from "@/lib/utils";

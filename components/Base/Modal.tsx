@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
-import { BaseButtonClose } from "@shuriken-ui/react";
+import { BaseButtonClose } from "@glint-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const Modal = ({

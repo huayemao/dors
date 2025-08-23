@@ -15,7 +15,7 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard } from "@glint-ui/react";
 import React, { ReactElement } from "react";
 import { filterEmptyLines } from "./filterEmptyLines";
 import NavList from "./NavList";

@@ -1,6 +1,6 @@
 "use client";
 import { copyTextToClipboard, humanFileSize, withConfirm } from "@/lib/utils";
-import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
+import { BaseDropdown, BaseDropdownItem } from "@glint-ui/react";
 import { CopyIcon, FileIcon, ImageIcon, TrashIcon } from "lucide-react";
 import { getFilePath } from "@/lib/client/utils/getFilePath";
 import { FileItem } from "./FileList";

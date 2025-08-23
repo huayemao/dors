@@ -1,4 +1,4 @@
-import { BaseButtonGroup, BaseButtonIcon } from "@shuriken-ui/react";
+import { BaseButtonGroup, BaseButtonIcon } from "@glint-ui/react";
 import { ArrowDownToLineIcon, CloudUpload } from "lucide-react";
 import { EntityState, EntityDispatch } from "./createEntityContext";
 import { BaseEntity, BaseCollection } from "./types";

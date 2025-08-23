@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from "@/lib/utils";
-import { BaseButton } from "@shuriken-ui/react";
+import { BaseButton } from "@glint-ui/react";
 import { toast } from "react-hot-toast";
 
 interface Props {

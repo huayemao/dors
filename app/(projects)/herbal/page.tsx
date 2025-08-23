@@ -14,7 +14,7 @@ import {
   BaseInput,
   BaseParagraph,
   BaseTextarea,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { Settings2Icon } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";

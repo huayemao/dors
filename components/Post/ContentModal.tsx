@@ -1,7 +1,7 @@
 "use client";
 import { getCurrentSegmentContent } from "@/lib/utils";
 import { Dialog } from "@headlessui/react";
-import { BaseButtonIcon } from "@shuriken-ui/react";
+import { BaseButtonIcon } from "@glint-ui/react";
 import { EyeIcon } from "lucide-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { createPortal } from "react-dom";

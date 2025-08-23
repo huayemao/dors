@@ -1,4 +1,4 @@
-import { BaseButtonIcon, BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react"
+import { BaseButtonIcon, BaseDropdown, BaseDropdownItem } from "@glint-ui/react"
 import { Plus } from "lucide-react"
 import { EmojiPanel } from "../EmojiPanel";
 import { UploadPanel } from "./UploadPanel";

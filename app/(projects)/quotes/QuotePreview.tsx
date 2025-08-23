@@ -4,7 +4,7 @@ import { ClientOnly } from "@/components/ClientOnly";
 import { cn } from "@/lib/utils";
 import { QuoteIcon, Download, RotateCcw } from "lucide-react";
 import { useEntity } from "./context";
-import { BaseButtonClose, BaseRadio, BaseTabSlider } from "@shuriken-ui/react";
+import { BaseButtonClose, BaseRadio, BaseTabSlider } from "@glint-ui/react";
 import { useState, useEffect, useReducer } from "react";
 import html2canvas from "html2canvas";
 import { useHover } from "@uidotdev/usehooks";

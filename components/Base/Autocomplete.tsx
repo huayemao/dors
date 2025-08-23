@@ -11,7 +11,7 @@ import {
   BasePlaceload,
   BaseSnack,
   useNuiDefaultProperty,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import {
   forwardRef,
   useCallback,

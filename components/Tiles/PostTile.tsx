@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Category } from "../Category";
 import Tag from "../Tag";
-import { BaseTag } from "@shuriken-ui/react";
+import { BaseTag } from "@glint-ui/react";
 
 type PostWithRelations = {
   id: number;

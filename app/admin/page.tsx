@@ -1,4 +1,4 @@
-import { BaseButtonAction } from "@shuriken-ui/react";
+import { BaseButtonAction } from "@glint-ui/react";
 
 export default async function AdminPage({ params }) {
   return (

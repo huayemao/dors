@@ -1,4 +1,4 @@
-import { BaseButton } from "@shuriken-ui/react";
+import { BaseButton } from "@glint-ui/react";
 import { useCloseModal } from "../hooks/useCloseModal";
 
 export function FormFoot() {

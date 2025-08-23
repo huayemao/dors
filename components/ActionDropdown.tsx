@@ -1,4 +1,4 @@
-import { BaseButtonIcon, BaseDropdown } from "@shuriken-ui/react";
+import { BaseButtonIcon, BaseDropdown } from "@glint-ui/react";
 import { EllipsisIcon } from "lucide-react";
 
 export const ActionDropdown = ({ children }) => {

@@ -1,6 +1,6 @@
 import Prose from "@/components/Base/Prose";
 import prisma from "@/lib/prisma";
-import { BaseCard, BaseHeading } from "@shuriken-ui/react";
+import { BaseCard, BaseHeading } from "@glint-ui/react";
 import { unstable_cache } from "next/cache";
 import { cn } from "@/lib/utils";
 import parseMDX from "@/lib/mdx/parseMDX";

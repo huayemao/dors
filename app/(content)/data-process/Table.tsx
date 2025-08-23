@@ -1,7 +1,7 @@
 "use client";
 import { ActionDropdown } from "@/components/ActionDropdown";
 import { cn, isDataURL, isValidURL } from "@/lib/utils";
-import { BaseDropdown, BaseDropdownItem, BaseTag } from "@shuriken-ui/react";
+import { BaseDropdown, BaseDropdownItem, BaseTag } from "@glint-ui/react";
 import mime from "mime";
 import { useCallback, useEffect, useMemo } from "react";
 

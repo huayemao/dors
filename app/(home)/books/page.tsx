@@ -2,7 +2,7 @@ import { Books, BookSummary } from "@/components/Tiles/Books";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
-import { BaseHeading, BaseIconBox } from "@shuriken-ui/react";
+import { BaseHeading, BaseIconBox } from "@glint-ui/react";
 
 import { cache, Fragment, Suspense } from "react";
 

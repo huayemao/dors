@@ -2,7 +2,7 @@
 import Select from "@/components/Base/Select";
 import { type Question } from "@/lib/types/Question";
 import { readFromClipboard } from "@/lib/utils";
-import { BaseButton, BaseInput, BaseSelect } from "@shuriken-ui/react";
+import { BaseButton, BaseInput, BaseSelect } from "@glint-ui/react";
 import { DOMAttributes, FC, PropsWithChildren } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { DEFAULT_OPTIONS } from "./constants";

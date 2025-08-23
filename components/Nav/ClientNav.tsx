@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { NavigationItem } from "./NavigationItem";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Fragment } from "react";
-import { BaseInput, BaseThemeToggle } from "@shuriken-ui/react";
+import { BaseInput, BaseThemeToggle } from "@glint-ui/react";
 
 interface ClientNavContentProps {
   menuItems: any[];

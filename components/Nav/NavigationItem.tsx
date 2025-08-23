@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
+import { BaseDropdown, BaseDropdownItem } from "@glint-ui/react";
 import { LucideProps } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";

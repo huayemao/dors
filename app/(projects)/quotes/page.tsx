@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEntity } from "./context";
 import { registerServiceWorker } from "@/lib/client/registerSW";
-import { BaseButton, BaseCard, BaseHeading, BaseList } from "@shuriken-ui/react";
+import { BaseButton, BaseCard, BaseHeading, BaseList } from "@glint-ui/react";
 import PostListItem from "@/components/PostListItem";
 import { title } from "process";
 import { ArrowRight, GalleryVertical } from "lucide-react";

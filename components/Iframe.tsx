@@ -1,6 +1,6 @@
 "use client";
 
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard } from "@glint-ui/react";
 
 export default function Iframe({ html, className = '',...props }) {
   let iframe = window.document.createElement("iframe");

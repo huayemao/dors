@@ -5,7 +5,7 @@ import {
   BaseDropdownItem,
   BaseRadio,
   BaseButtonIcon,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import {
   CopyIcon,
   EditIcon,

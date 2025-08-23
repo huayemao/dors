@@ -1,5 +1,5 @@
 import Prose from "@/components/Base/Prose";
-import { BaseCard, BaseHeading } from "@shuriken-ui/react";
+import { BaseCard, BaseHeading } from "@glint-ui/react";
 import { notFound } from "next/navigation";
 import ToolBar from "./ToolBar";
 import { getNavContent, parsedNavigationPage } from "@/lib/server/navigation";

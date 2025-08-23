@@ -1,6 +1,6 @@
 "use client";
 
-import { BaseCard, BaseDropdown, BaseDropdownItem } from "@shuriken-ui/react";
+import { BaseCard, BaseDropdown, BaseDropdownItem } from "@glint-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 import { cn } from "@/lib/utils";
 import { FC, useCallback, useEffect, useRef, useState } from "react";

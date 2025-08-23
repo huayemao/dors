@@ -1,6 +1,6 @@
 "use client"
 
-import { BaseButton } from "@shuriken-ui/react";
+import { BaseButton } from "@glint-ui/react";
 
 export function RevalidateButton() {
   return (

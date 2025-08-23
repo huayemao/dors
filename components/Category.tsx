@@ -1,5 +1,5 @@
 "use client";
-import { BaseButton, BaseLink } from "@shuriken-ui/react";
+import { BaseButton, BaseLink } from "@glint-ui/react";
 import { useRouter } from "next/navigation";
 import Icon from "@/components/Base/Icon";
 

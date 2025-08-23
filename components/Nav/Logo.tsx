@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard } from "@glint-ui/react";
 import { AppWindow, Grid, LayoutDashboard, Grip, Navigation } from "lucide-react";
 import { Popover } from "@headlessui/react";
 

@@ -1,4 +1,4 @@
-import { BaseButtonAction, BaseCard } from "@shuriken-ui/react";
+import { BaseButtonAction, BaseCard } from "@glint-ui/react";
 import { SITE_META } from "@/constants";
 import { getDiaryPosts, processDiaryEntries } from "@/lib/server/diaries";
 import { ProcessedDiary } from "@/components/Diary/ProcessedDiary";

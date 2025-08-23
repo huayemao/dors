@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { BaseCard, BaseHeading, BaseTabs, BasePlaceload } from "@shuriken-ui/react";
+import { BaseCard, BaseHeading, BaseTabs, BasePlaceload } from "@glint-ui/react";
 import PostListItem from "@/components/PostListItem";
 import { ArrowRight, GalleryVertical } from "lucide-react";
 import { fetchWithAuth } from "@/lib/client/utils/fetch";

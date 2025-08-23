@@ -4,7 +4,7 @@ import {
   BaseButton,
   BaseButtonClose,
   BaseButtonIcon,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { useState, useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";

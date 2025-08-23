@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard } from "@glint-ui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards, EffectCoverflow, EffectCreative } from "swiper/modules";
 import "swiper/css";

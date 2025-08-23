@@ -10,7 +10,7 @@ import {
   BaseSnack,
   BaseTabs,
   BaseTextarea,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { DBContext } from "./DBContext";
 import ProfessionTable from "./ProfessionTable";

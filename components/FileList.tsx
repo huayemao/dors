@@ -9,7 +9,7 @@ import {
   BaseList,
   BaseListItem,
   BasePlaceload,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { CopyIcon, FileIcon, ImageIcon, TrashIcon } from "lucide-react";
 import { SITE_META } from "@/constants";
 import { Figure } from "@/components/Figure";

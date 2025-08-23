@@ -7,7 +7,7 @@ import {
   BaseButtonIcon,
   BaseProgress,
   BaseInput,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { FileVideo, FolderPlus, Loader, Trash, Play, Download, Eye, Clock } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";

@@ -1,6 +1,6 @@
 "use client";
 
-import { BaseButton } from "@shuriken-ui/react";
+import { BaseButton } from "@glint-ui/react";
 import { Share2 } from "lucide-react";
 
 export const ShareButton = ({ options }) => {

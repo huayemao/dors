@@ -1,5 +1,5 @@
 import { ClientOnly } from "@/components/ClientOnly";
-import { BaseButton, BaseCard } from "@shuriken-ui/react";
+import { BaseButton, BaseCard } from "@glint-ui/react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import React, { useEffect, useState } from "react";
 

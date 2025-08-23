@@ -10,7 +10,7 @@ module.exports = withShurikenUI({
 		"pages/**/*.{js,ts,jsx,tsx}",
 		"components/**/*.{js,jsx,ts,tsx}",
 		"lib/**/*.{js,jsx,tsx}",
-		"node_modules/@shuriken-ui/react/dist/**/*.js",
+		"node_modules/@glint-ui/react/dist/**/*.js",
 	],
 	darkMode: ["class"],
 	theme: {

@@ -1,6 +1,6 @@
 "use client";
 import { FC, PropsWithChildren, DOMAttributes, useState, ChangeEvent, FormEvent } from "react";
-import { BaseInput, BaseTextarea } from "@shuriken-ui/react";
+import { BaseInput, BaseTextarea } from "@glint-ui/react";
 import { useEntity, useEntityDispatch } from "./context";
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
 import { Quote } from "./constants";

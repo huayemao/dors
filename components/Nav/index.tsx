@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { BaseDropdown, BaseDropdownItem, BaseThemeToggle } from "@shuriken-ui/react";
+import { BaseDropdown, BaseDropdownItem, BaseThemeToggle } from "@glint-ui/react";
 import {
   GlobeLockIcon,
   HandshakeIcon,

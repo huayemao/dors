@@ -8,7 +8,7 @@ import {
   BaseIconBox,
   BaseList,
   BaseListItem,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { ArrowRight, MoveRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

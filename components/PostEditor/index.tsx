@@ -15,7 +15,7 @@ import {
   BaseDropdown,
   BaseDropdownItem,
   BaseSelect,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { Lock, Plus, Save, Settings, TimerReset } from "lucide-react";
 import {
   FormEventHandler,

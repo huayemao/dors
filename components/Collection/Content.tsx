@@ -28,7 +28,7 @@ import {
   BaseTag,
   BaseTextarea,
   IconCheckCircle,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { type Item } from "./CollectionEditor";
 import { Modal } from "../Base/Modal";
 import { components } from "@/lib/mdx/useComponents";

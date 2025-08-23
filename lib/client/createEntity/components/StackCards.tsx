@@ -1,7 +1,7 @@
 import { FC, useRef } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCards } from 'swiper/modules';
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard } from "@glint-ui/react";
 import { useNavigate } from "react-router-dom";
 import 'swiper/css';
 import 'swiper/css/effect-cards';

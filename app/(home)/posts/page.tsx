@@ -4,7 +4,7 @@ import { Posts } from "@/components/Tiles/Posts";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
-import { BaseHeading } from "@shuriken-ui/react";
+import { BaseHeading } from "@glint-ui/react";
 import { cache, Fragment, Suspense } from "react";
 
 type SearchParams = PaginateOptions;

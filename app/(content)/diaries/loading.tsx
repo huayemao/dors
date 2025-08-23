@@ -1,5 +1,5 @@
 import { SITE_META } from "@/constants";
-import { BaseCard, BasePlaceload } from "@shuriken-ui/react";
+import { BaseCard, BasePlaceload } from "@glint-ui/react";
 
 export default function DiariesLoading() {
   return (

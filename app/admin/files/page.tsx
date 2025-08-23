@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import mime from "mime";
-import { BaseCard, BasePagination, BasePlaceload } from "@shuriken-ui/react";
+import { BaseCard, BasePagination, BasePlaceload } from "@glint-ui/react";
 import { UploadForm } from "@/components/UploadForm";
 import LightBox from "@/components/Base/LightBox";
 import { ClientOnly } from "@/components/ClientOnly";

@@ -7,7 +7,7 @@ import {
   BaseButtonIcon,
   BaseDropdown,
   BaseDropdownItem,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import { ArrowLeftIcon, Edit2, Trash } from "lucide-react";
 import {
   FC,

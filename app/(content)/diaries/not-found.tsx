@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BaseCard } from "@shuriken-ui/react";
+import { BaseCard } from "@glint-ui/react";
 
 export default function DiaryNotFound() {
   return (

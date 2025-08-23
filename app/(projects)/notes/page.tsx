@@ -4,7 +4,7 @@ import {
   BaseCard,
   BaseHeading,
   BaseTabs,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import PostListItem from "@/components/PostListItem";
 import LocalNoteCollections from "./LocalNoteCollections";
 import CloudNoteCollections from "./CloudNoteCollections";

@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BaseCollection, BaseEntity } from "@/lib/client/createEntity/types";
 import { EntityDispatch, EntityState } from "@/lib/client/createEntity/createEntityContext";
 import { useParams } from "react-router-dom";
-import { BaseButtonClose } from "@shuriken-ui/react";
+import { BaseButtonClose } from "@glint-ui/react";
 import { PreviewModal } from "@/components/Base/PreviewModal";
 
 const DialogQuotePreview = <

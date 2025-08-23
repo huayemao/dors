@@ -13,11 +13,11 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
+    "@glint-ui/react": "^0.0.4",
     "@next/font": "^14.2.15",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",
     "@radix-ui/react-context-menu": "^2.2.2",
-    "@shuriken-ui/react": "^0.0.3",
     "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

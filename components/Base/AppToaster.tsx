@@ -1,5 +1,5 @@
 "use client";
-import { BaseMessage } from "@shuriken-ui/react";
+import { BaseMessage } from "@glint-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle, InfoIcon } from "lucide-react";
 import { ComponentProps } from "react";

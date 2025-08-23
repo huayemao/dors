@@ -1,4 +1,4 @@
-import { BaseButtonIcon, BaseIconBox, BaseInput } from "@shuriken-ui/react";
+import { BaseButtonIcon, BaseIconBox, BaseInput } from "@glint-ui/react";
 import { useEntity, useEntityDispatch } from "@/contexts/notes";
 import { FC, memo, useCallback, useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";

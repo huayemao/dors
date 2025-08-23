@@ -9,7 +9,7 @@ import {
 import { Nav } from "@/components/Nav/index";
 import Link from "next/link";
 import Image from "next/image";
-import { BaseHeading } from "@shuriken-ui/react";
+import { BaseHeading } from "@glint-ui/react";
 import DorsLogo from "@/public/img/dors_logo_cat_only.svg";
 
 export const metadata: Metadata = {

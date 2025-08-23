@@ -4,7 +4,7 @@ import { PreviewModal } from "../Base/PreviewModal";
 import { ActionTabs } from "./SideTabs";
 import { useState } from "react";
 import { useMediaQuery } from "@uidotdev/usehooks";
-import { BaseButtonIcon } from "@shuriken-ui/react";
+import { BaseButtonIcon } from "@glint-ui/react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
 import { AnimatePresence } from "framer-motion";
 interface Props extends React.HTMLAttributes<HTMLAnchorElement> {

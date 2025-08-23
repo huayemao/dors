@@ -1,4 +1,4 @@
-import { BaseButton, BaseInput } from "@shuriken-ui/react";
+import { BaseButton, BaseInput } from "@glint-ui/react";
 import { useHerbalContext, useHerbalDispatch } from "./context";
 import { FormEvent, useEffect, useState } from "react";
 import { HerbalApiService } from "./api";

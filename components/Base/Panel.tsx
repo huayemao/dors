@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { BaseCard, BaseHeading } from "@shuriken-ui/react";
+import { BaseCard, BaseHeading } from "@glint-ui/react";
 import { ComponentProps, FC, PropsWithChildren } from "react";
 
 export const Panel: FC<

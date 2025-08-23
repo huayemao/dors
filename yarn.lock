@@ -86,20 +86,35 @@
   resolved "https://registry.npmmirror.com/@ffmpeg/util/-/util-0.12.2.tgz#6bab9d8022a5bed9a6ff0933e5235b9b38698599"
   integrity sha512-ouyoW+4JB7WxjeZ2y6KpRvB+dLp7Cp4ro8z0HIVpZVCM7AwFlHa0c4R8Y/a4M3wMqATpYKhC7lSFHQ0T11MEDw==
 
-"@floating-ui/core@^1.5.3", "@floating-ui/core@^1.6.0":
+"@floating-ui/core@^1.5.3", "@floating-ui/core@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.7.3.tgz#462d722f001e23e46d86fd2bd0d21b7693ccb8b7"
+  integrity sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==
+  dependencies:
+    "@floating-ui/utils" "^0.2.10"
+
+"@floating-ui/core@^1.6.0":
   version "1.6.7"
   resolved "https://registry.npmmirror.com/@floating-ui/core/-/core-1.6.7.tgz#7602367795a390ff0662efd1c7ae8ca74e75fb12"
   integrity sha512-yDzVT/Lm101nQ5TCVeK65LtdN7Tj4Qpr9RTXJ2vPFLqtLxwOrpoxAHAJI8J3yYWUc40J0BDBheaitK5SJmno2g==
   dependencies:
     "@floating-ui/utils" "^0.2.7"
 
-"@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.5.4":
+"@floating-ui/dom@^1.0.0":
   version "1.6.10"
   resolved "https://registry.npmmirror.com/@floating-ui/dom/-/dom-1.6.10.tgz#b74c32f34a50336c86dcf1f1c845cf3a39e26d6f"
   integrity sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==
   dependencies:
     "@floating-ui/core" "^1.6.0"
     "@floating-ui/utils" "^0.2.7"
+
+"@floating-ui/dom@^1.5.4", "@floating-ui/dom@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.4.tgz#ee667549998745c9c3e3e84683b909c31d6c9a77"
+  integrity sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==
+  dependencies:
+    "@floating-ui/core" "^1.7.3"
+    "@floating-ui/utils" "^0.2.10"
 
 "@floating-ui/react-dom@^2.0.0":
   version "2.1.2"
@@ -108,30 +123,47 @@
   dependencies:
     "@floating-ui/dom" "^1.0.0"
 
-"@floating-ui/react-dom@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.npmmirror.com/@floating-ui/react-dom/-/react-dom-2.1.1.tgz#cca58b6b04fc92b4c39288252e285e0422291fb0"
-  integrity sha512-4h84MJt3CHrtG18mGsXuLCHMrug49d7DFkU0RMIyshRveBeyV2hmV/pDaF2Uxtu8kgq5r46llp5E5FQiR0K2Yg==
+"@floating-ui/react-dom@^2.1.2":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-2.1.6.tgz#189f681043c1400561f62972f461b93f01bf2231"
+  integrity sha512-4JX6rEatQEvlmgU80wZyq9RT96HZJa88q8hp0pBd+LrczeDI4o6uA2M+uvxngVHo4Ihr8uibXxH6+70zhAFrVw==
   dependencies:
-    "@floating-ui/dom" "^1.0.0"
+    "@floating-ui/dom" "^1.7.4"
 
 "@floating-ui/react@^0.26.5":
-  version "0.26.22"
-  resolved "https://registry.npmmirror.com/@floating-ui/react/-/react-0.26.22.tgz#b46f645f9cd19a591da706aed24608c23cdb89a2"
-  integrity sha512-LNv4azPt8SpT4WW7Kku5JNVjLk2GcS0bGGjFTAgqOONRFo9r/aaGHHPpdiIuQbB1t8shmWyWqTTUDmZ9fcNshg==
+  version "0.26.28"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react/-/react-0.26.28.tgz#93f44ebaeb02409312e9df9507e83aab4a8c0dc7"
+  integrity sha512-yORQuuAtVpiRjpMhdc0wJj06b9JFjrYF4qp96j++v2NBpbi6SEGF7donUJ3TMieerQ6qVkAv1tgr7L4r5roTqw==
   dependencies:
-    "@floating-ui/react-dom" "^2.1.1"
-    "@floating-ui/utils" "^0.2.7"
+    "@floating-ui/react-dom" "^2.1.2"
+    "@floating-ui/utils" "^0.2.8"
     tabbable "^6.0.0"
+
+"@floating-ui/utils@^0.2.10", "@floating-ui/utils@^0.2.8":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
+  integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
 "@floating-ui/utils@^0.2.7":
   version "0.2.7"
   resolved "https://registry.npmmirror.com/@floating-ui/utils/-/utils-0.2.7.tgz#d0ece53ce99ab5a8e37ebdfe5e32452a2bfc073e"
   integrity sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==
 
+"@glint-ui/react@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@glint-ui/react/-/react-0.0.4.tgz#fbf7d3b55864e39ecd433d93bab947eb24f3b7f3"
+  integrity sha512-eclUwX+QYQlNG+h30X0HEH57g3bxDHUCRjuFastgZXKqc/WnwxbvVKByMTf8N0PoCl3Yx+hfivIWObTPQ3WWAw==
+  dependencies:
+    "@headlessui-float/react" "^0.13.2"
+    "@headlessui/react" "^1.7.18"
+    "@iconify/react" "^4.1.1"
+    "@shuriken-ui/tailwind" "^3.1.1"
+    defu "^6.1.4"
+    use-debounce "^10.0.0"
+
 "@headlessui-float/react@^0.13.2":
   version "0.13.3"
-  resolved "https://registry.npmmirror.com/@headlessui-float/react/-/react-0.13.3.tgz#700ac6cfe56a264dcdc4c6486253dd7573b1b970"
+  resolved "https://registry.yarnpkg.com/@headlessui-float/react/-/react-0.13.3.tgz#700ac6cfe56a264dcdc4c6486253dd7573b1b970"
   integrity sha512-wApuiUu2zcuETftdEJupEUG3XP6AUpwNN+kb6rrBadMf/jpOt1rVBjurgL+peKSW9AfxpNT7uqlL4se6u/epqw==
   dependencies:
     "@floating-ui/core" "^1.5.3"
@@ -140,7 +172,7 @@
 
 "@headlessui/react@^1.7.18":
   version "1.7.19"
-  resolved "https://registry.npmmirror.com/@headlessui/react/-/react-1.7.19.tgz#91c78cf5fcb254f4a0ebe96936d48421caf75f40"
+  resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.7.19.tgz#91c78cf5fcb254f4a0ebe96936d48421caf75f40"
   integrity sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==
   dependencies:
     "@tanstack/react-virtual" "^3.0.0-beta.60"
@@ -167,14 +199,14 @@
 
 "@iconify/react@^4.1.1":
   version "4.1.1"
-  resolved "https://registry.npmmirror.com/@iconify/react/-/react-4.1.1.tgz#da1bf03cdca9427f07cf22cf5b63fa8f02db4722"
+  resolved "https://registry.yarnpkg.com/@iconify/react/-/react-4.1.1.tgz#da1bf03cdca9427f07cf22cf5b63fa8f02db4722"
   integrity sha512-jed14EjvKjee8mc0eoscGxlg7mSQRkwQG3iX3cPBCO7UlOjz0DtlvTqxqEcHUJGh+z1VJ31Yhu5B9PxfO0zbdg==
   dependencies:
     "@iconify/types" "^2.0.0"
 
 "@iconify/types@^2.0.0":
   version "2.0.0"
-  resolved "https://registry.npmmirror.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
+  resolved "https://registry.yarnpkg.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
   integrity sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==
 
 "@isaacs/cliui@^8.0.2":
@@ -596,18 +628,6 @@
   resolved "https://registry.npmmirror.com/@rushstack/eslint-patch/-/eslint-patch-1.10.4.tgz#427d5549943a9c6fce808e39ea64dbe60d4047f1"
   integrity sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==
 
-"@shuriken-ui/react@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.npmmirror.com/@shuriken-ui/react/-/react-0.0.3.tgz#065c230e39caf1da8ac307a814c87ce50c38904a"
-  integrity sha512-5LAKKl6Q08rloYumVENQ1Z1cAaS1SMAar6WTQfcGabmq80OG//KRR9Va9YgEvMmb6KHC2dslVKO4j8ANthb0wQ==
-  dependencies:
-    "@headlessui-float/react" "^0.13.2"
-    "@headlessui/react" "^1.7.18"
-    "@iconify/react" "^4.1.1"
-    "@shuriken-ui/tailwind" "^3.0.1"
-    defu "^6.1.4"
-    use-debounce "^10.0.0"
-
 "@shuriken-ui/tailwind@3.0.1":
   version "3.0.1"
   resolved "https://registry.npmmirror.com/@shuriken-ui/tailwind/-/tailwind-3.0.1.tgz#4ee34f644daa99cec8e42b7460da37d0aaa99a9d"
@@ -618,9 +638,9 @@
     defu "^6.1.4"
     tailwindcss "^3.4.1"
 
-"@shuriken-ui/tailwind@^3.0.1":
+"@shuriken-ui/tailwind@^3.1.1":
   version "3.1.3"
-  resolved "https://registry.npmmirror.com/@shuriken-ui/tailwind/-/tailwind-3.1.3.tgz#6a8b06c160552616c39fd2f4e2295c7c10155042"
+  resolved "https://registry.yarnpkg.com/@shuriken-ui/tailwind/-/tailwind-3.1.3.tgz#6a8b06c160552616c39fd2f4e2295c7c10155042"
   integrity sha512-joiX055iQc1JV/MFybosCvn+HjBUbcIrAYj2Slz1u/fjyW/MJnIpII7VXpRAE9zc+knrwxGGgIhntJ/VNLlSOQ==
   dependencies:
     "@tailwindcss/container-queries" "^0.1.1"
@@ -657,16 +677,16 @@
     postcss-selector-parser "6.0.10"
 
 "@tanstack/react-virtual@^3.0.0-beta.60":
-  version "3.10.1"
-  resolved "https://registry.npmmirror.com/@tanstack/react-virtual/-/react-virtual-3.10.1.tgz#e7b7dfc26b9b49db8f3099f29470a63a1cfc7044"
-  integrity sha512-h5kNeE+yQwspjl9E3sJ3UYQu/MuspNOBT5cVdc+NA0uU9B1XSkxbzp86teV3arMDVcQ4ESExqs4JyIirYAMcuA==
+  version "3.13.12"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.13.12.tgz#d372dc2783739cc04ec1a728ca8203937687a819"
+  integrity sha512-Gd13QdxPSukP8ZrkbgS2RwoZseTTbQPLnQEn7HY/rqtM+8Zt95f7xKC7N0EsKs7aoz0WzZ+fditZux+F8EzYxA==
   dependencies:
-    "@tanstack/virtual-core" "3.10.1"
+    "@tanstack/virtual-core" "3.13.12"
 
-"@tanstack/virtual-core@3.10.1":
-  version "3.10.1"
-  resolved "https://registry.npmmirror.com/@tanstack/virtual-core/-/virtual-core-3.10.1.tgz#a2312c6cfc6f0d8e3e9a93bb99f96552b82082af"
-  integrity sha512-JDi3wU1HIxuxx8BgD7Ix8IXlelCKdTJIh9c0qBs+QXHdix3mjMbkXI3wOq0TuCx1w1RGgzZue34QrM/NPdp/sw==
+"@tanstack/virtual-core@3.13.12":
+  version "3.13.12"
+  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.13.12.tgz#1dff176df9cc8f93c78c5e46bcea11079b397578"
+  integrity sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA==
 
 "@types/acorn@^4.0.0":
   version "4.0.6"
@@ -5938,7 +5958,7 @@ symbol@^0.2.1:
 
 tabbable@^6.0.0:
   version "6.2.0"
-  resolved "https://registry.npmmirror.com/tabbable/-/tabbable-6.2.0.tgz#732fb62bc0175cfcec257330be187dcfba1f3b97"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.2.0.tgz#732fb62bc0175cfcec257330be187dcfba1f3b97"
   integrity sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==
 
 tailwind-merge@^2.5.4:
@@ -6395,9 +6415,9 @@ use-composed-ref@^1.3.0:
   integrity sha512-GLMG0Jc/jiKov/3Ulid1wbv3r54K9HlMW29IWcDFPEqFkSO2nS0MuefWgMJpeHQ9YJeXDL3ZUF+P3jdXlZX/cQ==
 
 use-debounce@^10.0.0:
-  version "10.0.3"
-  resolved "https://registry.npmmirror.com/use-debounce/-/use-debounce-10.0.3.tgz#636094a37f7aa2bcc77b26b961481a0b571bf7ea"
-  integrity sha512-DxQSI9ZKso689WM1mjgGU3ozcxU1TJElBJ3X6S4SMzMNcm2lVH0AHmyXB+K7ewjz2BSUKJTDqTcwtSMRfB89dg==
+  version "10.0.5"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-10.0.5.tgz#dfad6efbab981a9cff6c7cd8678509d1bc21e34f"
+  integrity sha512-Q76E3lnIV+4YT9AHcrHEHYmAd9LKwUAbPXDm7FlqVGDHiSOhX3RDjT8dm0AxbJup6WgOb1YEcKyCr11kBJR5KQ==
 
 use-isomorphic-layout-effect@^1.1.1:
   version "1.1.2"

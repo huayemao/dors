@@ -3,7 +3,7 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { BaseButton, BaseProgress } from "@shuriken-ui/react";
+import { BaseButton, BaseProgress } from "@glint-ui/react";
 import {
   FileSpreadsheet,
   FolderPlus,

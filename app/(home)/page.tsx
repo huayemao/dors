@@ -14,7 +14,7 @@ import {
   BaseButtonAction,
   BaseHeading,
   BaseIconBox,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import Icon from "@/components/Base/Icon";
 import Link from "next/link";
 import { cache, Fragment, Suspense } from "react";

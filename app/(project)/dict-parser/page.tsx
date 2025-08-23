@@ -6,7 +6,7 @@ import DictEntry, {
 import Prose from "@/components/Base/Prose";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { BaseTabs,BaseButton,BaseTextarea } from "@shuriken-ui/react";
+import { BaseTabs,BaseButton,BaseTextarea } from "@glint-ui/react";
 import { Panel } from "@/components/Base/Panel";
 
 export default function DictParserPage() {

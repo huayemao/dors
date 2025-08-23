@@ -7,7 +7,7 @@ import {
   BaseCard,
   BaseHeading,
   BaseTag,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import Link from "next/link";
 
 export function Tags({ simple }: { simple: boolean }) {

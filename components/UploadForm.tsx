@@ -4,7 +4,7 @@ import {
   BaseInputFile,
   BaseProgress,
   useNinjaFilePreview,
-} from "@shuriken-ui/react";
+} from "@glint-ui/react";
 import {
   Attributes,
   ComponentProps,

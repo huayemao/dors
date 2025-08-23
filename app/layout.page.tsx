@@ -1,6 +1,6 @@
 import { SITE_META } from "@/constants";
 import "@/styles/globals.css";
-import { ShurikenUIProvider } from "@shuriken-ui/react";
+import { ShurikenUIProvider } from "@glint-ui/react";
 import { Metadata } from "next";
 import Script from "next/script";
 import { Toaster } from "react-hot-toast";
