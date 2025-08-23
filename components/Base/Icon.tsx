@@ -2,8 +2,9 @@ import React, { lazy, memo, Suspense } from "react";
 import { LucideProps } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
+import { BasePlaceload } from "@shuriken-ui/react";
 
-const fallback = <div style={{ background: "#ddd", width: 24, height: 24 }} />;
+const fallback = <BasePlaceload className="w-full h-full" />;
 
 interface IconProps extends Omit<LucideProps, "ref"> {
   name: keyof typeof dynamicIconImports;

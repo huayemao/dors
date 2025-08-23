@@ -62,6 +62,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "^18.15.10",
     "@types/react": "18.0.31",
+    "@types/swiper": "^6.0.0",
     "@types/wicg-file-system-access": "^2023.10.5",
     "@types/xlsx": "^0.0.36",
     "autoprefixer": "^10.4.14",
