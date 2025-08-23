@@ -1,3 +1,4 @@
+import { Footer } from "@/components/Footer";
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
 import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
@@ -91,9 +92,12 @@ export default async function page({ params }) {
   const posts = await getRelatedPosts(post, { limit: 5 });
 
   return (
-    <main className="w-full">
-      {/* @ts-ignore */}
-      <Post data={post} relatedPosts={posts} />
-    </main>
+    <>
+      <main className="w-full">
+        {/* @ts-ignore */}
+        <Post data={post} relatedPosts={posts} />
+      </main>
+      <Footer></Footer>
+    </>
   );
 }

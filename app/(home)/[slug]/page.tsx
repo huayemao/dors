@@ -1,11 +1,8 @@
 import Prose from "@/components/Base/Prose";
+import { Footer } from "@/components/Footer";
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
-import {
-  getPost,
-  getPostBySlug,
-  getPostIds,
-} from "@/lib/server/posts";
+import { getPost, getPostBySlug, getPostIds } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -92,11 +89,12 @@ export default async function page({ params }) {
   }
 
   return (
-    <main className="w-full bg-white container mx-auto min-h-[100vh_-_168px] my-8 p-4 px-6 dark:bg-muted-800">
-      {/* @ts-ignore */}
-      <Prose content={post.content} className="max-w-full font-LXGW_WenKai" />
+    <>
+      <section className="container mx-auto pt-16">
+        <Prose content={post.content} className="max-w-full" />
+      </section>
       {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
       <div className="lg:grid-cols-4"></div>
-    </main>
+    </>
   );
 }
