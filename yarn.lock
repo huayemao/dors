@@ -628,10 +628,10 @@
   resolved "https://registry.npmmirror.com/@rushstack/eslint-patch/-/eslint-patch-1.10.4.tgz#427d5549943a9c6fce808e39ea64dbe60d4047f1"
   integrity sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==
 
-"@shuriken-ui/tailwind@3.0.1":
-  version "3.0.1"
-  resolved "https://registry.npmmirror.com/@shuriken-ui/tailwind/-/tailwind-3.0.1.tgz#4ee34f644daa99cec8e42b7460da37d0aaa99a9d"
-  integrity sha512-U0lO197ZVl1TXrIyjzwP4CMevk0ShM1RbxJCYmk/rRgVep1EkdivUmcFzOAPds5VWoeBVLFHj5XewaywbX3NLQ==
+"@shuriken-ui/tailwind@3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@shuriken-ui/tailwind/-/tailwind-3.1.1.tgz#5822b86b4e08da1a4398e85fc268fe24c4a60da2"
+  integrity sha512-s4Df8MtWFGvDyIyeV1Zgic9JxlkvZW32HZWnxA+L60h2qTsyeln+51DXx3Mj0I9slta9ASCDtrlFHGed1UURvA==
   dependencies:
     "@tailwindcss/container-queries" "^0.1.1"
     "@tailwindcss/typography" "^0.5.10"
