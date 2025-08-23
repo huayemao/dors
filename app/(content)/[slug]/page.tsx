@@ -54,7 +54,7 @@ export async function generateMetadata({
     .filter((e) => !!e);
 
   return {
-    title: `${post.title} | ${SITE_META.name}`,
+    title: `${post.title} | ${SITE_META.name} ${SITE_META.description}`,
     description: abstract,
     abstract: abstract,
     keywords,
