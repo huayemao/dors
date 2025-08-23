@@ -8,7 +8,7 @@ import { BaseButtonClose, BaseRadio, BaseTabSlider } from "@glint-ui/react";
 import { useState, useEffect, useReducer } from "react";
 import html2canvas from "html2canvas";
 import { useHover } from "@uidotdev/usehooks";
-import { Dialog } from "@headlessui/react";
+import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 import { Quote } from "./constants";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -78,15 +78,15 @@ export default function QuotePreview() {
         onClose={() => setIsOpen(false)}
         className="relative z-50"
       >
-        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+        <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
         <div className="fixed inset-0 flex items-center justify-center">
-          <Dialog.Panel className="bg-white rounded p-6">
+          <DialogPanel className="bg-white rounded p-6">
             <QuoteControls
               exportState={exportState}
               dispatch={dispatch}
             ></QuoteControls>
             <BaseButtonClose onClick={() => setIsOpen(false)} />
-          </Dialog.Panel>
+          </DialogPanel>
         </div>
       </Dialog>
     </div>
