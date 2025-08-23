@@ -71,14 +71,14 @@ export default async function Home({
                 {/*Column*/}
                 <div className="w-full ltablet:w-1/2 lg:w-1/2 p-6">
                   {/*Content*/}
-                  <div className="relative w-full max-w-[500px] h-[420px] ltablet:h-80 lg:h-80 mx-auto">
+                  <div className="relative w-full max-w-[500px] h-[380px] ltablet:h-80 lg:h-80 mx-auto">
                     <div className="h-full w-full bg-primary-100 dark:bg-primary-500/20"></div>
                     <img
                       src="/img/digital_garden1.svg"
                       className="block absolute bottom-0 inset-x-0 mx-auto object-contain max-w-[320px]"
                       alt="Hero image"
-                      width="320"
-                      height="454"
+                      width="228"
+                      height="368"
                     ></img>
                     {/*Floating-card left*/}
                     {/* <div className="hidden md:block absolute -bottom-12 -left-12 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-xl p-6 shadow-xl shadow-muted-400/10 dark:shadow-muted-800/10">

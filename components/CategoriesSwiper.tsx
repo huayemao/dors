@@ -9,6 +9,7 @@ import Icon from "@/components/Base/Icon";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { BaseButtonIcon } from "@glint-ui/react";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 // 定义颜色数组，为每个分类分配不同的颜色
 const categoryColors = [
@@ -27,6 +28,8 @@ const categoryColors = [
 export function CategoriesSwiper() {
   const categories = useContext(CategoriesContext);
   const swiperRef = useRef<any>(null);
+  const isMobile = useMediaQuery("only screen and (max-width : 468px)");
+  const isTablet = useMediaQuery("only screen and (max-width : 768px)");
 
   // 过滤掉隐藏的分类
   const visibleCategories = categories.filter((cat) => !cat.hidden);
@@ -62,17 +65,18 @@ export function CategoriesSwiper() {
         <Swiper
           ref={swiperRef}
           modules={[Navigation]}
-          spaceBetween={10}
-          slidesPerView="auto"
+          spaceBetween={16}
+          effect={"slide"}
+          slidesPerView={isMobile ? 2 : isTablet ? 3 : 'auto'}
           loop={false}
-          centeredSlides={false}
           slideToClickedSlide={true}
+          grabCursor={true}
           navigation={{
             nextEl: ".custom-swiper-button-next",
             prevEl: ".custom-swiper-button-prev",
           }}
           className="categories-swiper"
-          style={{ paddingBottom: "40px" }}
+          style={{ paddingBottom: "40px", padding: '0 16px' }}
         >
           {visibleCategories.map((category, index) => {
             const colorClass = categoryColors[index % categoryColors.length];
