@@ -8,6 +8,7 @@ import "swiper/css";
 import Icon from "@/components/Base/Icon";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { BaseButtonIcon } from "@glint-ui/react";
 
 // 定义颜色数组，为每个分类分配不同的颜色
 const categoryColors = [
@@ -32,26 +33,30 @@ export function CategoriesSwiper() {
 
   return (
     <div className="w-full max-w-6xl mx-auto relative">
-      <div className="absolute right-0 -top-10">
+      <div className="absolute right-0 -top-10 flex gap-2">
         {/* 自定义导航按钮 */}
-        <button
-          className={`custom-swiper-button-prev group h-8 w-8 swiper-button-next rounded-full hover:bg-muted-100 dark:hover:bg-muted-700`}
+        <BaseButtonIcon
+          className={`custom-swiper-button-prev`}
           aria-label="Previous slide"
+          rounded="full"
+          size="sm"
         >
           <ArrowLeft
             name="arrow-left"
             className="text-muted-400 group-hover:text-primary-500 transition-colors duration-300 w-4 h-4"
           />
-        </button>
-        <button
-          className={`custom-swiper-button-next group h-8 w-8 swiper-button-next rounded-full hover:bg-muted-100 dark:hover:bg-muted-700`}
-          aria-label="Next slide"
+        </BaseButtonIcon>
+
+        <BaseButtonIcon
+          className="custom-swiper-button-next"
+          size="sm"
+          rounded="full"
         >
           <ArrowRight
             name="arrow-right"
             className="text-muted-400 group-hover:text-primary-500 transition-colors duration-300 w-4 h-4"
           />
-        </button>
+        </BaseButtonIcon>
       </div>
       <div>
         <Swiper

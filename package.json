@@ -13,7 +13,7 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
-    "@glint-ui/react": "^0.0.4",
+    "@glint-ui/react": "^0.0.5",
     "@next/font": "^14.2.15",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",

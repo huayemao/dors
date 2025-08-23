@@ -1,35 +1,40 @@
 "use client";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+
 import { BaseButton } from "@glint-ui/react";
 import Icon from "@/components/Base/Icon";
 import { useState } from "react";
+import { Float } from "@headlessui-float/react";
 
-export function PopoverButton() {
-  const [isOpen, setIsOpen] = useState(false);
-
+export function GuideButton() {
   return (
     <div className="relative">
-      <BaseButton
-        shadow="hover"
-        color="primary"
-        rounded="lg"
-        onClick={() => setIsOpen(true)}
-        size="lg"
-      >
-        开始探索
-      </BaseButton>
-
-      {isOpen && (
-        <div className="absolute top-0 right-0" onClick={() => setIsOpen(false)}>
-          <div
-            className="fixed lg:absolute top-0 lg:top-14 inset-x-0 lg:left-0 w-full lg:w-[320px] pt-2 lg:-translate-x-1/4 transition-all duration-300 z-50"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative w-full min-h-[50vh] lg:min-h-fit px-3 pb-3 pt-12 lg:p-3 rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 shadow-2xl shadow-muted-500/20 dark:shadow-muted-800/20">
+      <Popover>
+        <Float
+          placement="bottom-start"
+          offset={15}
+          shift={6}
+          flip={10}
+          arrow={5}
+          portal
+          enter="transition duration-200 ease-out"
+          enterFrom="opacity-0 -translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leave="transition duration-150 ease-in"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 -translate-y-1"
+        >
+          <PopoverButton>
+            <BaseButton shadow="hover" color="primary" rounded="lg" size="lg">
+              开始探索
+            </BaseButton>
+          </PopoverButton>
+          <PopoverPanel>
+            <div className="w-96 px-3 pb-3 pt-12 lg:p-3 rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 shadow-2xl shadow-muted-500/20 dark:shadow-muted-800/20">
               {/*Close button*/}
               <button
                 type="button"
                 className="absolute top-2 right-2 h-12 w-12 flex lg:hidden items-center justify-center text-muted-600 dark:text-muted-200"
-                onClick={() => setIsOpen(false)}
               >
                 <Icon
                   name="x"
@@ -101,9 +106,9 @@ export function PopoverButton() {
                 </a>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </PopoverPanel>
+        </Float>
+      </Popover>
     </div>
   );
 }

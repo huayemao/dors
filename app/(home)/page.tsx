@@ -18,7 +18,7 @@ import {
 import Icon from "@/components/Base/Icon";
 import Link from "next/link";
 import { cache, Fragment, Suspense } from "react";
-import { PopoverButton } from "@/components/Base/PopoverButton";
+import { GuideButton } from "@/components/Base/PopoverButton";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -55,7 +55,7 @@ export default async function Home({
                     </p>
 
                     <div className="flex items-center justify-center ltablet:justify-start lg:justify-start gap-x-2">
-                      <PopoverButton />
+                      <GuideButton />
                       <BaseButton
                         shadow="hover"
                         rounded="lg"
@@ -81,7 +81,7 @@ export default async function Home({
                       height="454"
                     ></img>
                     {/*Floating-card left*/}
-                    <div className="hidden md:block absolute -bottom-12 -left-12 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-xl p-6 shadow-xl shadow-muted-400/10 dark:shadow-muted-800/10">
+                    {/* <div className="hidden md:block absolute -bottom-12 -left-12 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-xl p-6 shadow-xl shadow-muted-400/10 dark:shadow-muted-800/10">
                       <div className="flex justify-between mb-4">
                         <h3 className="font-heading font-semibold text-muted-800 dark:text-muted-100">
                           Top 5%
@@ -91,7 +91,7 @@ export default async function Home({
                         </span>
                       </div>
                       <div className="flex justify-between items-center gap-4"></div>
-                    </div>
+                    </div> */}
 
                     {/*Floating-card right*/}
                     <div className="hidden md:block absolute -top-12 ptablet:-top-6 -right-24 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-xl p-5 shadow-xl shadow-muted-400/10 dark:shadow-muted-800/10">
