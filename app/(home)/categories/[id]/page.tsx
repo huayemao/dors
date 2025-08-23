@@ -47,15 +47,15 @@ export default async function PostsByCategory({
     await getPosts({
       includeHiddenCategories: true,
       categoryId: Number(params.id),
-      type:"normal",
+      type: "normal",
       perPage: 600,
       protected: false,
     }),
     { imageSize: "small" }
   );
   return (
-    <div className="container">
-      <div>
+    <section className="px-4 py-16 bg-muted-100 dark:bg-muted-800">
+      <div className="max-w-5xl mx-auto">
         <BaseHeading
           as="h1"
           size="3xl"
@@ -67,9 +67,9 @@ export default async function PostsByCategory({
           {/* @ts-ignore */}
           {cat.meta?.description}
         </p>
+        <Posts mini data={posts} />
       </div>
-      <Posts mini data={posts} />
-    </div>
+    </section>
   );
 }
 

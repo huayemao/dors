@@ -1,3 +1,4 @@
+import { CategoriesSwiper } from "@/components/CategoriesSwiper";
 import { CatsAndTags } from "@/components/CatsAndTags";
 import Pagination from "@/components/Pagination";
 import { Posts } from "@/components/Tiles/Posts";
@@ -31,22 +32,25 @@ export default async function Home({
   const pageCount = await getPageCount();
   return (
     <Fragment key={key}>
-      <section className="container mx-auto px-4">
-        <h1 className="font-heading leading-normal font-extrabold text-5xl md:text-5xl text-muted-700 dark:text-white text-center  mb-4">
-          {SITE_META.name + " " + SITE_META.description}
-        </h1>
-        <CatsAndTags simple></CatsAndTags>
-        <div className="space-y-4">
-          <BaseHeading size="3xl" className="text-center" as="h2">
-            博客
+      <section className="px-4 py-16 bg-muted-100 dark:bg-muted-800">
+        <div className="max-w-5xl mx-auto">
+          <BaseHeading
+            as="h1"
+            size="3xl"
+            className="font-heading text-muted-900 dark:text-white"
+          >
+            博客（花坛）
           </BaseHeading>
-          <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
+          <p className="mt-1 text-sm text-muted-600 dark:text-muted-400">
             {SITE_META.introduction}
           </p>
-          <Posts data={posts} mini />
-          <Suspense>
-            <Pagination pageCount={pageCount}></Pagination>
-          </Suspense>{" "}
+          <div className="space-y-4">
+            <CategoriesSwiper />
+            <Posts data={posts} mini />
+            <Suspense>
+              <Pagination pageCount={pageCount}></Pagination>
+            </Suspense>{" "}
+          </div>
         </div>
       </section>
     </Fragment>
