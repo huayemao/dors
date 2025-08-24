@@ -24,9 +24,7 @@ export default async function MainLayout({
       <CategoriesContextProvider Categories={categories}>
         <TagsContextProvider tags={tags}>
           <Nav resourceItems={resourceItems}></Nav>
-          <main className="flex-1">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </TagsContextProvider>
       </CategoriesContextProvider>

@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
+import { Cat } from "../types/Category";
 
 export const getAllCategories = unstable_cache(
   async (options?: { includeHidden?: boolean }) => {
@@ -14,13 +15,10 @@ export const getAllCategories = unstable_cache(
       });
     }
     const cats = await prisma.categories.findMany({
-      orderBy: {
-        updated_at: "desc",
-      },
       where,
     });
 
-    return cats.map((e) => ({ ...e, hidden: ids.includes(e.id) }));
+    return (cats.map((e) => ({ ...e, hidden: ids.includes(e.id) })) as Cat[]).sort((a, b) => (b.meta?.sortIndex || 0) - (a.meta?.sortIndex || 0));
   }
   , undefined, {
   tags: ['all_cats', 'cats']

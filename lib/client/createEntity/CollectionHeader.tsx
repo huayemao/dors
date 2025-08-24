@@ -27,7 +27,10 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import c from "@/styles/createEntity.module.css";
 import { SlideDialog } from "@/components/Base/SlideDialog";
 
-export type CollectionHeaderProps<EType extends BaseEntity, CType extends BaseCollection> = {
+export type CollectionHeaderProps<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+> = {
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
   Search?: FC<{
@@ -40,7 +43,10 @@ export type CollectionHeaderProps<EType extends BaseEntity, CType extends BaseCo
   isUploading: boolean;
 };
 
-export function CollectionHeader<EType extends BaseEntity, CType extends BaseCollection>({
+export function CollectionHeader<
+  EType extends BaseEntity,
+  CType extends BaseCollection
+>({
   state,
   dispatch,
   Search,
@@ -78,59 +84,61 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
     });
   }, [dispatch]);
 
+  const isSimple = !state.collectionList;
+
   const Collections = (
     <div className="top-4 left-0 right-0 w-fit mx-auto">
-      <BaseDropdown
-        fixed
-        classes={{
-          wrapper: "border-none bg-transparent " + c["collection-dropdown"],
-          content: "border-none bg-transparent",
-        }}
-        size={isMobile ? "md" : "lg"}
-        label={state.currentCollection?.name}
-        variant={isMobile ? "text" : pinned ? "button" : "text"}
-        headerLabel="合集"
-      >
-        {state.collectionList?.map((e) => (
-          <Link
-            state={{ __NA: {} }}
-            to={"/" + e.id}
-            key={e.id}
-            suppressHydrationWarning
-          >
-            <BaseDropdownItem
-              suppressHydrationWarning
-              end={
-                <EditIcon
-                  onClick={(ev) => {
-                    ev.preventDefault();
-                    navigate("/" + e.id + "/edit", {
-                      state: { __NA: {} },
-                    });
-                  }}
-                  className="h-4 w-4"
-                />
-              }
-              title={e.name}
-              text={"创建于 " + new Date(e.id).toLocaleDateString()}
-              rounded="sm"
-            />
-          </Link>
-        ))}
-        <BaseDropdownItem
-          color="primary"
-          classes={{ wrapper: "text-right " }}
-          onClick={() => navigate("/create")}
+      {!isSimple && (
+        <BaseDropdown
+          fixed
+          classes={{
+            wrapper: "border-none bg-transparent " + c["collection-dropdown"],
+            content: "border-none bg-transparent",
+          }}
+          size={isMobile ? "md" : "lg"}
+          label={state.currentCollection?.name}
+          variant={isMobile ? "text" : pinned ? "button" : "text"}
+          headerLabel="合集"
         >
-          <BaseIconBox color="primary">
-            <PlusIcon />
-          </BaseIconBox>
-        </BaseDropdownItem>
-      </BaseDropdown>
+          {state.collectionList?.map((e) => (
+            <Link
+              state={{ __NA: {} }}
+              to={"/" + e.id}
+              key={e.id}
+              suppressHydrationWarning
+            >
+              <BaseDropdownItem
+                suppressHydrationWarning
+                end={
+                  <EditIcon
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      navigate("/" + e.id + "/edit", {
+                        state: { __NA: {} },
+                      });
+                    }}
+                    className="h-4 w-4"
+                  />
+                }
+                title={e.name}
+                text={"创建于 " + new Date(e.id).toLocaleDateString()}
+                rounded="sm"
+              />
+            </Link>
+          ))}
+          <BaseDropdownItem
+            color="primary"
+            classes={{ wrapper: "text-right " }}
+            onClick={() => navigate("/create")}
+          >
+            <BaseIconBox color="primary">
+              <PlusIcon />
+            </BaseIconBox>
+          </BaseDropdownItem>
+        </BaseDropdown>
+      )}
     </div>
   );
-
-  const isSimple = state.collectionList && !state.collectionList.length;  
 
   const SettingsDialog = (
     <SlideDialog open={settingsOpen} onClose={() => setSettingsOpen(false)}>
@@ -142,7 +150,9 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
             <BaseRadio
               name="layout"
               value="masonry"
-              checked={(state.currentCollection?.layout || "masonry") === "masonry"}
+              checked={
+                (state.currentCollection?.layout || "masonry") === "masonry"
+              }
               onChange={() => {
                 dispatch({
                   type: "CREATE_OR_UPDATE_COLLECTION",
@@ -151,8 +161,8 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
                     layout: "masonry",
                     online: state.currentCollection!.online,
                     name: state.currentCollection!.name,
-                    id: state.currentCollection!.id
-                  }
+                    id: state.currentCollection!.id,
+                  },
                 });
               }}
               label="网格布局"
@@ -160,7 +170,9 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
             <BaseRadio
               name="layout"
               value="stack"
-              checked={(state.currentCollection?.layout || "masonry") === "stack"}
+              checked={
+                (state.currentCollection?.layout || "masonry") === "stack"
+              }
               onChange={() => {
                 dispatch({
                   type: "CREATE_OR_UPDATE_COLLECTION",
@@ -169,8 +181,8 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
                     layout: "stack",
                     online: state.currentCollection!.online,
                     name: state.currentCollection!.name,
-                    id: state.currentCollection!.id
-                  }
+                    id: state.currentCollection!.id,
+                  },
                 });
               }}
               label="堆叠布局"
@@ -178,7 +190,9 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
             <BaseRadio
               name="layout"
               value="table"
-              checked={(state.currentCollection?.layout || "masonry") === "table"}
+              checked={
+                (state.currentCollection?.layout || "masonry") === "table"
+              }
               onChange={() => {
                 dispatch({
                   type: "CREATE_OR_UPDATE_COLLECTION",
@@ -187,8 +201,8 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
                     layout: "table",
                     online: state.currentCollection!.online,
                     name: state.currentCollection!.name,
-                    id: state.currentCollection!.id
-                  }
+                    id: state.currentCollection!.id,
+                  },
                 });
               }}
               label="表格布局"
@@ -225,13 +239,15 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
         className={cn(
           "mx-auto  rounded top-4 z-10 rounded-t space-y-4 dark:bg-muted-800  transition-all duration-300 px-6 py-3",
           { " bg-white  shadow-lg": !isSimple && pinned },
-          { "w-fit sticky my-2 ": !isSimple },
+          { "w-fit sticky my-2 ": !isSimple }
         )}
       >
-        <div className={cn("flex items-center  gap-2 lg:gap-4 relative w-full ", {
-          "justify-end lg:max-w-7xl mx-auto ptablet:px-8": isSimple,
-          "justify-around": !isSimple,
-        })}>
+        <div
+          className={cn("flex items-center  gap-2 lg:gap-4 relative w-full ", {
+            "justify-end lg:max-w-7xl mx-auto ptablet:px-8": isSimple,
+            "justify-around": !isSimple,
+          })}
+        >
           {!isSimple && Collections}
           <div className="flex items-center gap-2">
             {Search && <Search state={state} dispatch={dispatch} />}
@@ -257,10 +273,7 @@ export function CollectionHeader<EType extends BaseEntity, CType extends BaseCol
             <PlusIcon className="h-4 w-4 md:mr-2" />
             <span className="hidden md:inline-block">新建</span>
           </BaseButton>
-          <BaseButtonIcon
-            size="sm"
-            onClick={() => setSettingsOpen(true)}
-          >
+          <BaseButtonIcon size="sm" onClick={() => setSettingsOpen(true)}>
             <SettingsIcon className="h-4 w-4" />
           </BaseButtonIcon>
         </div>

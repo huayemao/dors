@@ -11,8 +11,6 @@ import { pick } from "lodash";
 import toast from "react-hot-toast";
 import { ClientOnly } from "@/components/ClientOnly";
 
-
-
 export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
   const close = useCloseModal();
   const { currentEntity, entityList } = useEntity();
@@ -31,11 +29,12 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
     const obj = Object.fromEntries(formData.entries());
 
     const meta =
-      obj.description || obj.icon
+      obj.description || obj.icon || obj.sortIndex
         ? {
-          description: obj.description,
-          icon: obj.icon,
-        }
+            description: obj.description,
+            icon: obj.icon,
+            sortIndex: obj.sortIndex,
+          }
         : undefined;
 
     console.log(obj, isEditing, currentEntity);
@@ -43,7 +42,7 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
       ...currentEntity,
       id: isEditing ? currentEntity.id : Date.now(),
       // @ts-ignore
-      ...(obj as Omit<Note, "id", "description", "icon">),
+      ...(obj as Omit<Note, "id", "description", "icon", "sortIndex">),
       meta,
     };
 
@@ -91,14 +90,14 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const { description, icon } = currentEntity?.meta || {};
+  const { description, icon, sortIndex } = currentEntity?.meta || {};
 
   return (
     <form method="POST" onSubmit={handleSubmit}>
       <div className="ltablet:col-span-6 col-span-12 lg:col-span-7">
         <div className="relative w-full bg-white transition-all duration-300 rounded-md">
           <div className="lg:grid lg:grid-cols-12 p-4 md:p-8 gap-4">
-            <fieldset className="relative lg:col-span-7 ">
+            <fieldset className="relative lg:col-span-12">
               <div className="grid grid-cols-12 gap-4">
                 {isEditing && (
                   <div className="col-span-12 md:col-span-6 hidden">
@@ -127,17 +126,22 @@ export const CategoryForm: FC<PropsWithChildren> = ({ children }) => {
                     />
                   </div>
                 </div>
-                <div className="col-span-12 md:col-span-6">
-                  <div className="relative">
-                    <BaseInput
-                      key={icon}
-                      label="Icon"
-                      id="icon"
-                      // @ts-ignore
-                      name="icon"
-                      defaultValue={icon || ""}
-                    />
-                  </div>
+                <div className="relative col-span-12 md:col-span-6">
+                  <BaseInput
+                    key={icon}
+                    label="Icon"
+                    id="icon"
+                    name="icon"
+                    defaultValue={icon || ""}
+                  />
+                </div>
+                <div className="relative col-span-12 md:col-span-6">
+                  <BaseInput
+                    label="排序值"
+                    id="sortIndex"
+                    name="sortIndex"
+                    defaultValue={sortIndex || ""}
+                  />
                 </div>
               </div>
             </fieldset>

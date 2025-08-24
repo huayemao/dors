@@ -64,7 +64,7 @@ export function CategoriesSwiper() {
           modules={[Navigation]}
           spaceBetween={16}
           effect={"slide"}
-          slidesPerView={'auto'}
+          slidesPerView={"auto"}
           loop={false}
           slideToClickedSlide={true}
           grabCursor={true}
@@ -73,7 +73,7 @@ export function CategoriesSwiper() {
             prevEl: ".custom-swiper-button-prev",
           }}
           className="categories-swiper"
-          style={{ paddingBottom: "20px", padding: '24px 0' }}
+          style={{ paddingBottom: "20px", padding: "24px 0" }}
         >
           {visibleCategories.map((category, index) => {
             const colorClass = categoryColors[index % categoryColors.length];
@@ -83,7 +83,7 @@ export function CategoriesSwiper() {
             return (
               <SwiperSlide
                 key={category.id}
-                style={{ width: "auto", minWidth: "160px",padding: '0 4px' }}
+                style={{ width: "auto", minWidth: "160px", padding: "0 4px" }}
               >
                 <Link
                   href={`/categories/${category.id}`}
