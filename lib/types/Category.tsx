@@ -8,4 +8,5 @@ export type Cat = {
   created_by_id: number | null;
   updated_by_id: number | null;
   meta?: { icon: string; description: string; sortIndex?: number };
+  postCount?: number;
 };

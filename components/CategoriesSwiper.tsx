@@ -101,11 +101,7 @@ export function CategoriesSwiper() {
                       {category.name}
                     </h4>
                     <p className="font-sans text-xs text-muted-400 mt-1">
-                      {category.updated_at
-                        ? new Date(category.updated_at).toLocaleDateString(
-                            "zh-CN"
-                          )
-                        : "最近更新"}
+                      {category.postCount}
                     </p>
                   </div>
                 </Link>
