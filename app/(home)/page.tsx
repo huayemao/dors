@@ -74,9 +74,9 @@ export default async function Home({
                   <div className="relative w-full max-w-[500px] h-[380px] ltablet:h-80 lg:h-80 mx-auto">
                     <div className="h-full w-full bg-primary-100 dark:bg-primary-500/20"></div>
                     <img
-                      src="/img/digital_garden1.svg"
+                      src="/img/house_with_garden_color.svg"
                       className="block absolute bottom-0 inset-x-0 mx-auto object-contain max-w-[320px]"
-                      alt="Hero image"
+                      alt="house_with_garden_color emoji"
                       width="228"
                       height="368"
                     ></img>
