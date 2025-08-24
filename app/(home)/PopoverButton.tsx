@@ -15,7 +15,7 @@ export function GuideButton() {
           shift={6}
           flip={10}
           arrow={5}
-          portal
+          // portal
           enter="transition duration-200 ease-out"
           enterFrom="opacity-0 -translate-y-1"
           enterTo="opacity-100 translate-y-0"
@@ -23,29 +23,23 @@ export function GuideButton() {
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 -translate-y-1"
         >
-          <PopoverButton>
-            <BaseButton shadow="hover" color="primary" rounded="lg" size="lg">
-              开始探索
-            </BaseButton>
+          <PopoverButton
+            as={BaseButton}
+            shadow="hover"
+            color="primary"
+            rounded="lg"
+            size="lg"
+          >
+            开始探索
           </PopoverButton>
           <PopoverPanel>
-            <div className="w-96 px-3 pb-3 pt-12 lg:p-3 rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 shadow-2xl shadow-muted-500/20 dark:shadow-muted-800/20">
-              {/*Close button*/}
-              <button
-                type="button"
-                className="absolute top-2 right-2 h-12 w-12 flex lg:hidden items-center justify-center text-muted-600 dark:text-muted-200"
-              >
-                <Icon
-                  name="x"
-                  className="w-6 h-6 flex items-center justify-center text-lg"
-                />
-              </button>
+            <div className="w-80 md:w-96 p-3 lg:p-3 rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 shadow-2xl shadow-muted-500/20 dark:shadow-muted-800/20">
 
               {/*Grid*/}
               <div className="grid gap-1 text-left">
                 {/*Grid item*/}
                 <a
-                  href="/books"
+                  href="/posts"
                   className="relative flex gap-2 p-4 rounded-xl hover:bg-muted-100 dark:hover:bg-muted-900 z-10 transition-colors duration-300"
                 >
                   <div className="relative inline-flex items-center justify-center w-10 min-w-[2.5rem] h-10 bg-primary-100 dark:bg-primary-500 text-primary-500 dark:text-white mask mask-hexed">
@@ -65,7 +59,7 @@ export function GuideButton() {
                 </a>
                 {/*Grid item*/}
                 <a
-                  href="/posts"
+                  href="/books"
                   className="relative flex gap-2 p-4 rounded-xl hover:bg-muted-100 dark:hover:bg-muted-900 z-10 transition-colors duration-300"
                 >
                   <div className="relative inline-flex items-center justify-center w-10 min-w-[2.5rem] h-10 bg-primary-100 dark:bg-primary-500 text-primary-500 dark:text-white mask mask-hexed">
@@ -79,7 +73,8 @@ export function GuideButton() {
                       知识库
                     </h4>
                     <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                      数字花园之果园。将零散认知、实用技能、深度思考 “栽种” 成果树，经时间打磨褪去杂乱，留下扎实养分。
+                      数字花园之果园。将零散认知、实用技能、深度思考 “栽种”
+                      成果树，经时间打磨褪去杂乱，留下扎实养分。
                     </p>
                   </div>
                 </a>
@@ -99,7 +94,8 @@ export function GuideButton() {
                       导航页
                     </h4>
                     <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                      数字花园之小径。以清晰脉络串联每处精彩，消解寻觅的迷茫，指引访客避开信息 “杂草”。
+                      数字花园之小径。以清晰脉络串联每处精彩，消解寻觅的迷茫，指引访客避开信息
+                      “杂草”。
                     </p>
                   </div>
                 </a>

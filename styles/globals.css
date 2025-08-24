@@ -151,6 +151,12 @@ a {
   z-index: 50;
 }
 
+
+:focus:not(:focus-visible) {
+    outline: 0 !important;
+}
+
+
 .nui-listbox .nui-listbox-options {
   @apply max-h-96;
 }
