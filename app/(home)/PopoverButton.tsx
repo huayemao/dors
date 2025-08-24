@@ -3,7 +3,6 @@ import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
 import { BaseButton } from "@glint-ui/react";
 import Icon from "@/components/Base/Icon";
-import { useState } from "react";
 import { Float } from "@headlessui-float/react";
 
 export function GuideButton() {
@@ -46,7 +45,7 @@ export function GuideButton() {
               <div className="grid gap-1 text-left">
                 {/*Grid item*/}
                 <a
-                  href="/about.html"
+                  href="/books"
                   className="relative flex gap-2 p-4 rounded-xl hover:bg-muted-100 dark:hover:bg-muted-900 z-10 transition-colors duration-300"
                 >
                   <div className="relative inline-flex items-center justify-center w-10 min-w-[2.5rem] h-10 bg-primary-100 dark:bg-primary-500 text-primary-500 dark:text-white mask mask-hexed">
@@ -57,16 +56,16 @@ export function GuideButton() {
                   </div>
                   <div>
                     <h4 className="font-heading font-semibold text-sm text-muted-800 dark:text-white">
-                      关于我们
+                      博客
                     </h4>
                     <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                      了解更多关于我们的信息
+                      数字花园之花坛。将工具探索、读书浅思、好物寻觅化作朵朵花束，盛满即时灵感与生活细碎。
                     </p>
                   </div>
                 </a>
                 {/*Grid item*/}
                 <a
-                  href="/blog.html"
+                  href="/posts"
                   className="relative flex gap-2 p-4 rounded-xl hover:bg-muted-100 dark:hover:bg-muted-900 z-10 transition-colors duration-300"
                 >
                   <div className="relative inline-flex items-center justify-center w-10 min-w-[2.5rem] h-10 bg-primary-100 dark:bg-primary-500 text-primary-500 dark:text-white mask mask-hexed">
@@ -77,16 +76,16 @@ export function GuideButton() {
                   </div>
                   <div>
                     <h4 className="font-heading font-semibold text-sm text-muted-800 dark:text-white">
-                      博客
+                      知识库
                     </h4>
                     <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                      关注我们的最新动态
+                      数字花园之果园。将零散认知、实用技能、深度思考 “栽种” 成果树，经时间打磨褪去杂乱，留下扎实养分。
                     </p>
                   </div>
                 </a>
                 {/*Grid item*/}
                 <a
-                  href="/contact.html"
+                  href="/navigation"
                   className="relative flex gap-2 p-4 rounded-xl hover:bg-muted-100 dark:hover:bg-muted-900 z-10 transition-colors duration-300"
                 >
                   <div className="relative inline-flex items-center justify-center w-10 min-w-[2.5rem] h-10 bg-primary-100 dark:bg-primary-500 text-primary-500 dark:text-white mask mask-hexed">
@@ -97,10 +96,10 @@ export function GuideButton() {
                   </div>
                   <div>
                     <h4 className="font-heading font-semibold text-sm text-muted-800 dark:text-white">
-                      联系我们
+                      导航页
                     </h4>
                     <p className="font-sans text-xs text-muted-500 dark:text-muted-400">
-                      想要联系我们？就在这里
+                      数字花园之小径。以清晰脉络串联每处精彩，消解寻觅的迷茫，指引访客避开信息 “杂草”。
                     </p>
                   </div>
                 </a>

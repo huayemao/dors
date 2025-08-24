@@ -1,6 +1,4 @@
-import { CatsAndTags } from "@/components/CatsAndTags";
 import { CategoriesSwiper } from "@/components/CategoriesSwiper";
-import { Posts } from "@/components/Tiles/Posts";
 import { SITE_META } from "@/constants";
 import { PaginateOptions } from "@/lib/paginator";
 import {
@@ -18,7 +16,7 @@ import {
 import Icon from "@/components/Base/Icon";
 import Link from "next/link";
 import { cache, Fragment, Suspense } from "react";
-import { GuideButton } from "@/components/Base/PopoverButton";
+import { GuideButton } from "@/app/(home)/PopoverButton";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
