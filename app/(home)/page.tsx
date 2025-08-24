@@ -122,27 +122,23 @@ export default async function Home({
           </div>
         </div>
       </section>
-      <section>
-        <div className="bg-white  dark:bg-muted-900">
-          {/* 分类轮播导航 */}
-          <div className=" w-full max-w-5xl mx-auto  text-center space-y-4 py-6">
-            <div className="w-full max-w-2xl mx-auto text-center space-y-4 py-6">
-              {/*Badge*/}
-              <span className="inline-block font-sans text-xs py-1.5 px-3 m-1 rounded-lg bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-white">
-                花坛
-              </span>
-              <h2 className="font-heading font-bold text-4xl md:text-5xl text-muted-800 dark:text-white">
-                博客
-              </h2>
-              {/*Subtitle*/}
-              <p className="font-sans text-lg text-muted-500 dark:text-muted-400">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tum
-                Torquatus: Prorsus, inquit, assentior; Videmus igitur ut
-                conquiescere.
-              </p>
-            </div>
-            <CategoriesSwiper />
+      <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 overflow-hidden">
+        {/* 分类轮播导航 */}
+        <div className=" w-full max-w-5xl mx-auto  text-center space-y-4 py-6">
+          <div className="w-full max-w-2xl mx-auto text-center space-y-4 py-6">
+            {/*Badge*/}
+            <span className="inline-block font-sans text-xs py-1.5 px-3 m-1 rounded-lg bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-white">
+              花坛
+            </span>
+            <h2 className="font-heading font-bold text-4xl md:text-5xl text-muted-800 dark:text-white">
+              博客
+            </h2>
+            {/*Subtitle*/}
+            <p className="font-sans text-lg text-muted-500 dark:text-muted-400 text-balance">
+              作者以探索为锄、热爱为种，悉心打理的灵感小天地。在这里，既有技术与工具的实用锋芒，也不乏人文与生活的柔软温度。
+            </p>
           </div>
+          <CategoriesSwiper />
         </div>
       </section>
     </Fragment>
