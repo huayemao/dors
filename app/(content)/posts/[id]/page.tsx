@@ -1,3 +1,4 @@
+import Prose from "@/components/Base/Prose";
 import { Footer } from "@/components/Footer";
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
@@ -80,12 +81,26 @@ export default async function page({ params }) {
 
   const post = await getPost(id);
 
+  // todo: 这后面的其实都可以抽出来
+
   if (!post) {
     return notFound();
   }
 
   if (post.type.includes("collection")) {
     return redirect("/notes/" + params.id);
+  }
+
+  if (post.type == "page") {
+    return (
+      <>
+        <section className="container mx-auto pt-16 px-6">
+          <Prose content={post.content} className="max-w-full" />
+        </section>
+        {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
+        <div className="lg:grid-cols-4"></div>
+      </>
+    );
   }
 
   // 获取关联文章

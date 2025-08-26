@@ -69,9 +69,6 @@ export async function generateMetadata({
 }
 
 export default async function page({ params }) {
-  if (!params.slug) {
-    return;
-  }
 
   const slug = params.slug;
 

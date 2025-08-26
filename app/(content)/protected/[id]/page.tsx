@@ -1,3 +1,4 @@
+import Prose from "@/components/Base/Prose";
 import Post from "@/components/Post";
 import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
@@ -34,6 +35,18 @@ export default async function page({ params }) {
 
   if (post.type.includes("collection")) {
     return redirect("/notes/" + params.id);
+  }
+
+  if (post.type == "page") {
+    return (
+      <>
+        <section className="container mx-auto pt-16 px-6">
+          <Prose content={post.content} className="max-w-full" />
+        </section>
+        {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
+        <div className="lg:grid-cols-4"></div>
+      </>
+    );
   }
 
   let posts = await getRelatedPosts(post);
