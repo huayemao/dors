@@ -19,6 +19,8 @@ import { BaseCard } from "@glint-ui/react";
 import React, { ReactElement } from "react";
 import { filterEmptyLines } from "./filterEmptyLines";
 import NavList from "./NavList";
+import { Activity } from "lucide-react";
+import ActivityCard from "@/components/ActivityCard";
 
 // Helper to generate unique heading ids
 const getHeading = (Tag: keyof JSX.IntrinsicElements) => {
@@ -140,4 +142,5 @@ export const components = {
     // );
   },
   DictEntry: DictEntry,
+  ActivityCard
 };
