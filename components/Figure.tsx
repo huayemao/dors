@@ -14,6 +14,33 @@ interface FigureProps {
   alt?: string;
 }
 
+// 智能媒体类型检测函数
+function detectMediaType(src: string): string | null {
+  // 1. 尝试使用mime库检测完整URL
+  const mimeType = mime.getType(src);
+  if (mimeType) {
+    return mimeType;
+  }
+
+  // 2. 如果完整URL无法检测，尝试解析URL的path部分
+  try {
+    const url = new URL(src);
+    const pathname = url.pathname;
+    
+    // 如果pathname有扩展名，用mime库检测
+    if (pathname.includes('.')) {
+      const pathMimeType = mime.getType(pathname);
+      if (pathMimeType) {
+        return pathMimeType;
+      }
+    }
+  } catch (error) {
+    // URL解析失败，返回null
+  }
+
+  return null;
+}
+
 export function Figure({
   src,
   width,
@@ -25,7 +52,7 @@ export function Figure({
   ...props
 }: FigureProps) {
   const ref = useRef<HTMLAnchorElement>(null);
-  const mimetype = mime.getType(src);
+  const mimetype = detectMediaType(src);
 
   const Container = ({ children }: { children: React.ReactNode }) => (
     <a
