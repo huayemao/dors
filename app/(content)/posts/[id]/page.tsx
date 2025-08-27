@@ -59,9 +59,9 @@ export async function generateMetadata({
       description: abstract || "",
       images: [
         SITE_META.url +
-          "/_next/image?url=" +
-          encodeURIComponent((post.cover_image as any).src.large) +
-          "&w=640&q=60",
+        "/_next/image?url=" +
+        encodeURIComponent((post.cover_image as any).src.large) +
+        "&w=640&q=60",
         (post.cover_image as any)?.dataURLs?.small,
       ],
     },
@@ -81,24 +81,27 @@ export default async function page({ params }) {
 
   const post = await getPost(id);
 
-  // todo: 这后面的其实都可以抽出来
+  return await renderPost(post);
+}
 
+
+export async function renderPost(post: Awaited<ReturnType<typeof getPost>>) {
   if (!post) {
     return notFound();
   }
-
   if (post.type.includes("collection")) {
-    return redirect("/notes/" + params.id);
+    return redirect("/notes/" + post.id);
   }
 
   if (post.type == "page") {
     return (
       <>
-        <section className="container mx-auto pt-16 px-6">
+        <section className="container mx-auto py-16 px-6">
           <Prose content={post.content} className="max-w-full" />
         </section>
         {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
         <div className="lg:grid-cols-4"></div>
+        <Footer></Footer>
       </>
     );
   }
@@ -108,11 +111,12 @@ export default async function page({ params }) {
 
   return (
     <>
-      <main className="w-full">
+      <div className="w-full">
         {/* @ts-ignore */}
         <Post data={post} relatedPosts={posts} />
-      </main>
+      </div>
       <Footer></Footer>
     </>
   );
+
 }

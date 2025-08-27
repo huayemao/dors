@@ -87,7 +87,7 @@ export default async function page({ params }) {
 
   return (
     <>
-      <section className="container mx-auto pt-16 px-6">
+      <section className="container mx-auto py-16 px-6">
         <Prose content={post.content} className="max-w-full" />
       </section>
       {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}

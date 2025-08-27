@@ -648,7 +648,7 @@ export async function getRelatedPosts(
     const postsWithTags = await prisma.posts.findMany({
       where: {
         AND: [
-          { protected: false },
+          { protected: currentPost.protected, type: currentPost.type },
           { id: { not: currentPost.id } },
           {
             tags_posts_links: {
@@ -714,7 +714,7 @@ export async function getRelatedPosts(
     const postsWithCategory = await prisma.posts.findMany({
       where: {
         AND: [
-          { protected: false },
+          { protected: currentPost.protected, type: currentPost.type },
           { id: { not: currentPost.id } },
           {
             posts_category_links: {
@@ -754,7 +754,7 @@ export async function getRelatedPosts(
     const recentPosts = await prisma.posts.findMany({
       where: {
         AND: [
-          { protected: false },
+          { protected: currentPost.protected, type: currentPost.type },
           { id: { not: currentPost.id } }
         ]
       },
