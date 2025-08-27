@@ -1,21 +1,7 @@
-import Prose from "@/components/Base/Prose";
-import Post from "@/components/Post";
 import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
-import nextConfig from "@/next.config.mjs";
 import { notFound, redirect } from "next/navigation";
 import { renderPost } from "../../posts/[id]/page";
 
-export const revalidate = 300;
-
-export async function generateStaticParams() {
-  const posts = await getPostIds({ protected: true });
-  const allPostIds = posts.map((post) => ({
-    id: String(post.id),
-  }));
-  const params =
-    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 5);
-  return params;
-}
 
 export default async function page({ params }) {
   if (!params.id) {
