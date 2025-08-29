@@ -3,7 +3,7 @@ import { ClientOnly } from "@/components/ClientOnly";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Footer } from "@/components/Footer";
 import FeatureGrid from "@/components/FeatureGrid";
-import Steps from "./components/Steps";
+import { NumberedList } from "@/components/Base/NumberedList";
 import { Zap, Scissors, FileVideo, Download } from "lucide-react";
 import { BaseHeading } from "@glint-ui/react";
 import { Nav } from "@/components/Nav";
@@ -70,12 +70,6 @@ export default function Page({
           lead: "如果你觉得你的视频文件太大，或者太长，不利于传输，你可以用这个免费在线的网页工具把它分割成更小的文件。它可以将你的视频文件按秒分割，并保存为多个片段。你不需要安装软件，也不需要花费时间上传文件到服务器，直接在浏览器里完成分割。",
           leadShort: "免费网页版按秒分割视频工具·本地处理·无需上传",
           howTitle: "使用指南",
-          steps: [
-            '点击"选择视频文件"，选择待分割视频（支持常见格式，如 MP4）；',
-            "选择分割模式：快速模式（快速但不精确）或精确模式（精确但耗时较长）；",
-            '在"分割时间（秒）"输入框设置每段视频时长（默认 10 秒，可自定义）；',
-            '点击"开始分割"，实时查看处理日志，完成后在弹窗中直接播放视频片段并下载。',
-          ],
           features: [
             {
               icon: <Zap className="w-6 h-6" />,
@@ -116,12 +110,6 @@ export default function Page({
           lead: "A local, browser‑based video splitter — no install, no upload. Choose between fast mode and precise mode, powered by FFmpeg WASM to slice by seconds. Privacy‑first and mobile‑friendly; files stay on your device.",
           leadShort: "Dual Mode · Client‑side · No upload",
           howTitle: "How to use",
-          steps: [
-            'Click "Choose video file" to pick a video (common formats like MP4).',
-            "Choose split mode: Fast mode (quick but less precise) or Precise mode (exact but slower).",
-            'Set segment length in seconds in "Segment time (s)" (default 10s).',
-            'Click "Start splitting" to view real-time logs, then play video segments directly in the results modal and download.',
-          ],
           features: [
             {
               icon: <Zap className="w-6 h-6" />,
@@ -203,7 +191,51 @@ export default function Page({
                     >
                       {t.howTitle}
                     </BaseHeading>
-                    <Steps steps={t.steps} />
+                    <NumberedList
+                      items={lang === "zh" ? [
+                        {
+                          number: "01",
+                          title: "选择视频文件",
+                          description: `点击"选择视频文件"，选择待分割视频（支持常见格式，如 MP4）；`,
+                        },
+                        {
+                          number: "02",
+                          title: "设置分割参数",
+                          description: "选择分割模式：快速模式（快速但不精确）或精确模式（精确但耗时较长）；",
+                        },
+                        {
+                          number: "03",
+                          title: "设置分割时长",
+                          description: '在"分割时间（秒）"输入框设置每段视频时长（默认 10 秒，可自定义）；',
+                        },
+                        {
+                          number: "04",
+                          title: "开始分割处理",
+                          description: '点击"开始分割"，实时查看处理日志，完成后在弹窗中直接播放视频片段并下载。',
+                        },
+                      ] : [
+                        {
+                          number: "01",
+                          title: "Select Video File",
+                          description: "Click 'Choose video file' to select a video for splitting (supports common formats like MP4);",
+                        },
+                        {
+                          number: "02",
+                          title: "Set Split Parameters",
+                          description: "Choose split mode: Fast Mode (quick but less precise) or Precise Mode (precise but takes longer);",
+                        },
+                        {
+                          number: "03",
+                          title: "Set Segment Duration",
+                          description: 'Set the duration for each video segment in the "Segment time (seconds)" input (default 10 seconds, customizable);',
+                        },
+                        {
+                          number: "04",
+                          title: "Start Splitting Process",
+                          description: 'Click "Start splitting", monitor real-time processing logs, and play/download video segments directly in the modal when complete.',
+                        },
+                      ]}
+                    />
                   </div>
                 </div>
 

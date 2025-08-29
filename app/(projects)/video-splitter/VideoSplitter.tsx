@@ -16,6 +16,7 @@ import { registerServiceWorker } from "@/lib/client/registerSW";
 import { Modal } from "@/components/Base/Modal";
 import { BaseInputFileHeadless } from "@/components/Base/InputFileHeadless";
 
+
 const i18n = {
   en: {
     title: "Video Splitter",
@@ -53,6 +54,7 @@ const i18n = {
     viewResults: "View Results",
     splitComplete: "Split Complete",
     originalVideoSplit: "Original video has been split into segments",
+
   },
   zh: {
     title: "视频分割助手",
@@ -90,6 +92,7 @@ const i18n = {
     viewResults: "查看结果",
     splitComplete: "分割完成",
     originalVideoSplit: "原视频已分割为片段",
+
   },
 };
 
@@ -484,6 +487,8 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
         </div>
         <p className="text-muted-500 dark:text-muted-400">{t.lead}</p>
       </div>
+
+
 
       {/* FFmpeg Loading Progress */}
       {ffmpegLoading && (
