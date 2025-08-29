@@ -8,12 +8,13 @@ import {
   BaseProgress,
   BaseInput,
 } from "@glint-ui/react";
-import { FileVideo, FolderPlus, Loader, Trash, Play, Download, Eye, Clock } from "lucide-react";
+import { FileVideo, FolderPlus, Loader, Trash, Play, Download, Eye, Clock, Upload } from "lucide-react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { cn } from "@/lib/utils";
 import { registerServiceWorker } from "@/lib/client/registerSW";
 import { Modal } from "@/components/Base/Modal";
+import { BaseInputFileHeadless } from "@/components/Base/InputFileHeadless";
 
 const i18n = {
   en: {
@@ -115,67 +116,109 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
   const [videoDuration, setVideoDuration] = useState<number>(0);
   const [processingLogs, setProcessingLogs] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [isLoadingExample, setIsLoadingExample] = useState(false);
+  const [exampleVideoLoaded, setExampleVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const exampleVideoRef = useRef<HTMLVideoElement | null>(null);
   const ffmpegRef = useRef(new FFmpeg());
   const messageRef = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState(0);
   const [ffmpegLoaded, setFfmpegLoaded] = useState(false);
+  const fileInputRef = useRef<any>(null);
 
-  const handleFileSelect = async () => {
-    try {
-      const [fileHandle] = await (window as any).showOpenFilePicker({
-        types: [
-          {
-            description: t.filePickerDesc,
-            accept: { "video/*": [".mp4", ".mkv", ".avi"] },
-          },
-        ],
-      });
-      const file = await fileHandle.getFile();
+  const handleFileSelect = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
 
-      const videoUrl = URL.createObjectURL(file);
-      if (videoRef.current) {
-        videoRef.current.src = videoUrl;
-        videoRef.current.load();
-        
-        // Get video duration when metadata is loaded
-        videoRef.current.onloadedmetadata = () => {
-          if (videoRef.current) {
-            setVideoDuration(videoRef.current.duration);
-          }
-        };
+    const file = files[0];
+    if (!file.type.startsWith('video/')) {
+      toast.error(lang === "zh" ? "请选择视频文件" : "Please select a video file");
+      return;
+    }
+
+    await loadVideoFile(file);
+  };
+
+  const handleDragDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('video/')) {
+        await loadVideoFile(file);
+      } else {
+        toast.error(lang === "zh" ? "请选择视频文件" : "Please select a video file");
       }
-
-      setSelectedFile(file);
-      setSegments([]); // Reset segments when new file is selected
-    } catch (error) {
-      console.error(error);
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "video/*";
-      input.onchange = async (event) => {
-        const target = event.target as HTMLInputElement;
-        if (target.files && target.files.length > 0) {
-          const file = target.files[0];
-          const videoUrl = URL.createObjectURL(file);
-          if (videoRef.current) {
-            videoRef.current.src = videoUrl;
-            videoRef.current.load();
-            
-            // Get video duration when metadata is loaded
-            videoRef.current.onloadedmetadata = () => {
-              if (videoRef.current) {
-                setVideoDuration(videoRef.current.duration);
-              }
-            };
-          }
-          setSelectedFile(file);
-          setSegments([]); // Reset segments when new file is selected
-        }
-      };
-      input.click();
     }
   };
+
+  const loadVideoFile = async (file: File) => {
+    const videoUrl = URL.createObjectURL(file);
+    if (videoRef.current) {
+      videoRef.current.src = videoUrl;
+      videoRef.current.load();
+
+      // Get video duration when metadata is loaded
+      videoRef.current.onloadedmetadata = () => {
+        if (videoRef.current) {
+          setVideoDuration(videoRef.current.duration);
+        }
+      };
+    }
+
+    setSelectedFile(file);
+    setSegments([]); // Reset segments when new file is selected
+    setCurrentSegment(null);
+  };
+
+  const loadExampleVideo = async () => {
+    setIsLoadingExample(true);
+    try {
+      const response = await fetch('https://vjs.zencdn.net/v/oceans.mp4');
+      if (!response.ok) throw new Error('Failed to fetch example video');
+
+      const blob = await response.blob();
+      const file = new File([blob], 'oceans-example.mp4', { type: 'video/mp4' });
+
+      await loadVideoFile(file);
+      toast.success(lang === "zh" ? "示例视频加载成功" : "Example video loaded successfully");
+    } catch (error) {
+      console.error('Error loading example video:', error);
+      toast.error(lang === "zh" ? "示例视频加载失败" : "Failed to load example video");
+    } finally {
+      setIsLoadingExample(false);
+    }
+  };
+
+  const preloadExampleVideo = async () => {
+    try {
+      const response = await fetch('https://vjs.zencdn.net/v/oceans.mp4');
+      if (!response.ok) return;
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      
+      if (exampleVideoRef.current) {
+        exampleVideoRef.current.src = url;
+        exampleVideoRef.current.load();
+        exampleVideoRef.current.muted = true;
+        exampleVideoRef.current.loop = true;
+        exampleVideoRef.current.playbackRate = 0.5; // 慢速播放
+        exampleVideoRef.current.onloadedmetadata = () => {
+          setExampleVideoLoaded(true);
+          // 开始播放以预缓冲
+          exampleVideoRef.current?.play().catch(() => {
+            // 忽略自动播放失败
+          });
+        };
+      }
+    } catch (error) {
+      console.error('Error preloading example video:', error);
+    }
+  };
+
 
   const loadFFmpeg = async () => {
     const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
@@ -203,7 +246,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
 
       clearInterval(progressInterval);
       setFfmpegProgress(100);
-      
+
       setTimeout(() => {
         toast.success(t.ffmpegLoaded);
         setFfmpegLoaded(true);
@@ -226,7 +269,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
 
     try {
       const ffmpeg = ffmpegRef.current;
-      
+
       // Write input file
       setProgress(10);
       await ffmpeg.writeFile(
@@ -239,29 +282,29 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
       let currentProgress = 20;
       let frameCount = 0;
       let totalFrames = 0;
-      
+
       // Calculate total frames based on actual video duration
       if (videoDuration > 0) {
         totalFrames = Math.ceil(videoDuration * 30); // Assume 30fps
       }
-      
+
       // Listen to FFmpeg logs for progress
       const logHandler = (log: any) => {
         const logText = log.message || log;
         console.log('FFmpeg log:', logText);
-        
+
         // Add log to processing logs
         if (typeof logText === 'string') {
           setProcessingLogs(prev => [...prev, logText]);
         }
-        
+
         // Extract frame information from logs
         if (typeof logText === 'string') {
           // Look for frame progress like "frame= 1234 fps=..."
           const frameMatch = logText.match(/frame=\s*(\d+)/);
           if (frameMatch) {
             frameCount = parseInt(frameMatch[1]);
-            
+
             // Calculate progress based on frame count and total frames
             if (totalFrames > 0) {
               const frameProgress = Math.min((frameCount / totalFrames) * 50, 50); // 20% to 70%
@@ -274,7 +317,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
               setProgress(estimatedProgress);
             }
           }
-          
+
           // Look for completion indicators
           if (logText.includes('video:') && logText.includes('audio:')) {
             currentProgress = 75;
@@ -321,7 +364,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
 
       // Get output files
       const files = await ffmpeg.listDir(".");
-      const outputFiles = files.filter((file) => 
+      const outputFiles = files.filter((file) =>
         file.name !== "input.mp4" && file.name.endsWith(".mp4")
       );
 
@@ -331,12 +374,12 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
         const data = await ffmpeg.readFile(outputFile.name);
         const blob = new Blob([data], { type: "video/mp4" });
         const url = URL.createObjectURL(blob);
-        
+
         // Create a temporary video element to get actual duration
         const tempVideo = document.createElement('video');
         tempVideo.src = url;
         tempVideo.preload = 'metadata';
-        
+
         // Wait for metadata to load to get actual duration
         await new Promise<void>((resolve) => {
           tempVideo.onloadedmetadata = () => {
@@ -344,7 +387,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
           };
           tempVideo.load();
         });
-        
+
         newSegments.push({
           name: outputFile.name,
           url,
@@ -355,7 +398,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
 
       setSegments(newSegments);
       setProgress(100);
-      
+
       toast.success(`${t.title}: ${selectedFile.name} split into ${newSegments.length} segments`);
       setShowResults(true);
 
@@ -404,6 +447,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
 
   useEffect(() => {
     loadFFmpeg();
+    preloadExampleVideo(); // 预加载示例视频
     registerServiceWorker({
       onNeedRefresh(updateSW) {
         const res = confirm(t.newVersionPrompt);
@@ -422,6 +466,10 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
     if (videoRef.current) {
       videoRef.current.src = "";
       videoRef.current.load();
+    }
+    // Clear the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.remove();
     }
   };
 
@@ -450,57 +498,142 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
         </div>
       )}
 
+      {/* Video Upload Area with Drag & Drop */}
       <div className="space-y-4">
-        <div className="flex items-center gap-4">
-          <BaseButton
-            variant="solid"
-            color="primary"
-            onClick={handleFileSelect}
-            disabled={processing || !ffmpegLoaded}
-            className="flex items-center"
-            data-nui-tooltip={t.tooltipSelect}
-          >
-            <FolderPlus className="w-5 h-5 me-2" />
-            {ffmpegLoaded ? t.selectFile : t.ffmpegLoading}
-          </BaseButton>
-          {selectedFile && (
-            <BaseButtonIcon
-              data-nui-tooltip={t.tooltipDelete}
-              onClick={handleRemoveFile}
-              disabled={!selectedFile}
+        <BaseInputFileHeadless
+          ref={fileInputRef}
+          accept="video/*"
+          // @ts-ignore
+          onChange={handleFileSelect}
+          filterFileDropped={(file) => file.type.startsWith('video/')}
+          renderContent={({ open, drop, files }) => (
+            <div
+              className={cn(
+                "relative w-full min-h-72 max-h-96 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden transition-all duration-200 cursor-pointer group",
+                {
+                  "ring-2 ring-primary-500 ring-dashed bg-primary-50 dark:bg-primary-900/20": isDragOver,
+                  "hover:from-blue-100 hover:to-indigo-200 dark:hover:from-gray-700 dark:hover:to-gray-800": !isDragOver && !selectedFile,
+                }
+              )}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragOver(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                setIsDragOver(false);
+              }}
+              onDrop={handleDragDrop}
+              onClick={open}
             >
-              <Trash className="w-5 h-5" />
-            </BaseButtonIcon>
-          )}
-        </div>
-      </div>
+              {/* Video Player */}
+              <video
+                ref={videoRef}
+                controls
+                className={cn("w-full h-full object-contain", {
+                  hidden: !selectedFile,
+                })}
+              >
+                <source src="" type="video/mp4" />
+                {lang === "zh" ? "您的浏览器不支持视频标签。" : "Your browser does not support the video tag."}
+              </video>
 
-      {/* Video Preview */}
-      <div className="space-y-2">
-        <div className="flex justify-center">
-          <div className="relative w-full min-h-72 max-h-96 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-            <video
-              ref={videoRef}
-              controls
-              className={cn("w-full h-full object-contain", {
-                hidden: !selectedFile,
-              })}
-            >
-              <source src="" type="video/mp4" />
-              {lang === "zh" ? "您的浏览器不支持视频标签。" : "Your browser does not support the video tag."}
-            </video>
-            {!selectedFile && (
-              <div className="flex items-center justify-center h-full text-muted-500 dark:text-muted-400">
-                {t.chooseToPreview}
-              </div>
-            )}
-          </div>
-        </div>
-        
+              {/* Upload Interface */}
+              {!selectedFile && (
+                <div className="flex flex-col items-center justify-center h-full text-muted-500 dark:text-muted-400 p-6 relative">
+                  {/* Example Video in Corner */}
+                  {exampleVideoLoaded && (
+                    <div className="absolute top-4 right-4 w-24 h-16 rounded-lg overflow-hidden shadow-lg border-2 border-white/20">
+                      <video
+                        ref={exampleVideoRef}
+                        className="w-full h-full object-cover"
+                        muted
+                        loop
+                        playsInline
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-1 left-1 text-white text-xs font-medium">
+                        {lang === "zh" ? "示例" : "Demo"}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={cn(
+                    "w-20 h-20 rounded-full flex items-center justify-center mb-6 transition-all duration-200",
+                    {
+                      "bg-primary-100 text-primary-600 scale-110": isDragOver,
+                      "bg-white/80 text-primary-500 group-hover:bg-primary-100 group-hover:text-primary-600 group-hover:scale-105": !isDragOver,
+                    }
+                  )}>
+                    <Upload className="w-10 h-10" />
+                  </div>
+
+                  <div className="text-center space-y-3">
+                    <p className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                      {isDragOver
+                        ? (lang === "zh" ? "释放文件以上传" : "Drop file to upload")
+                        : t.chooseToPreview
+                      }
+                    </p>
+                    <p className="text-sm opacity-75 text-gray-600 dark:text-gray-400">
+                      {lang === "zh" ? "点击选择或拖拽视频文件到此处" : "Click to select or drag video file here"}
+                    </p>
+                  </div>
+
+                  {/* Example Video Button - Integrated with video */}
+                  <div className="mt-6 flex items-center gap-3">
+                    <BaseButton
+                      variant="solid"
+                      color="primary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        loadExampleVideo();
+                      }}
+                      disabled={isLoadingExample}
+                      className="flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                    >
+                      {isLoadingExample ? (
+                        <Loader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Play className="w-4 h-4" />
+                      )}
+                      {lang === "zh" ? "加载示例视频" : "Load Example Video"}
+                    </BaseButton>
+                    
+                    {exampleVideoLoaded && (
+                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                        {lang === "zh" ? "示例视频已预加载" : "Demo preloaded"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Remove File Button */}
+              {selectedFile && (
+                <div className="absolute top-2 right-2">
+                  <BaseButtonIcon
+                    data-nui-tooltip={t.tooltipDelete}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFile();
+                    }}
+                    className="bg-black/70 text-white hover:bg-black/90"
+                  >
+                    <Trash className="w-5 h-5" />
+                  </BaseButtonIcon>
+                </div>
+              )}
+            </div>
+          )}
+        />
+
         {/* Video Info */}
         {selectedFile && videoDuration > 0 && (
           <div className="text-center text-sm text-muted-600 dark:text-muted-400">
-            {t.videoDuration}: {Math.round(videoDuration)}s | 
+            {t.videoDuration}: {Math.round(videoDuration)}s |
             {t.estimatedSegments}: {Math.ceil(videoDuration / duration)}
           </div>
         )}
@@ -516,8 +649,8 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
           <div className="flex gap-3">
             <label className={cn(
               "flex items-center gap-2 cursor-pointer p-3 rounded-lg border-2 transition-all",
-              splitMode === "fast" 
-                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20" 
+              splitMode === "fast"
+                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
                 : "border-muted-200 dark:border-muted-700 hover:border-primary-300"
             )}>
               <input
@@ -539,8 +672,8 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
             </label>
             <label className={cn(
               "flex items-center gap-2 cursor-pointer p-3 rounded-lg border-2 transition-all",
-              splitMode === "precise" 
-                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20" 
+              splitMode === "precise"
+                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
                 : "border-muted-200 dark:border-muted-700 hover:border-primary-300"
             )}>
               <input
@@ -609,7 +742,7 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
             </div>
             <BaseProgress value={progress} max={100} />
           </div>
-          
+
           {/* Processing Logs */}
           {processingLogs.length > 0 && (
             <div className="space-y-2">
@@ -661,11 +794,11 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
               </BaseButton>
             </div>
           </div>
-          
+
           {/* Quick Preview */}
           <div className="text-center p-4 bg-muted-50 dark:bg-muted-800 rounded-lg">
             <p className="text-muted-600 dark:text-muted-400">
-              {lang === "zh" 
+              {lang === "zh"
                 ? `已生成 ${segments.length} 个视频片段，点击"查看结果"按钮预览和下载`
                 : `${segments.length} video segments generated. Click "View Results" to preview and download`
               }
@@ -675,14 +808,14 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
       )}
 
       <div ref={messageRef}></div>
-      
-             {/* Results Modal */}
-       <Modal
-         open={showResults}
-         onClose={() => setShowResults(false)}
-         title={t.resultsTitle}
-         size="3xl"
-       >
+
+      {/* Results Modal */}
+      <Modal
+        open={showResults}
+        onClose={() => setShowResults(false)}
+        title={t.resultsTitle}
+        size="3xl"
+      >
         <div className="space-y-6">
           {/* Summary */}
           <div className="text-center p-4 bg-muted-50 dark:bg-muted-800 rounded-lg">
@@ -690,76 +823,76 @@ const VideoSplitter = ({ lang = "en" }: { lang?: Lang }) => {
               {t.splitComplete}
             </h3>
             <p className="text-muted-600 dark:text-muted-400">
-              {lang === "zh" 
+              {lang === "zh"
                 ? `原视频 "${selectedFile?.name}" 已分割为 ${segments.length} 个片段`
                 : `Original video "${selectedFile?.name}" has been split into ${segments.length} segments`
               }
             </p>
           </div>
 
-                     {/* Segments Grid */}
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-             {segments.map((segment, index) => (
-               <div
-                 key={segment.name}
-                 className="border border-muted-200 dark:border-muted-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
-               >
-                 {/* Video Player */}
-                 <div className="relative bg-muted-100 dark:bg-muted-800 aspect-video">
-                   <video
-                     src={segment.url}
-                     className="w-full h-full object-cover"
-                     preload="metadata"
-                     controls
-                     muted
-                   />
-                   <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                     #{index + 1}
-                   </div>
-                 </div>
-                 
-                 {/* Segment Info */}
-                 <div className="p-3 space-y-2">
-                   <div className="flex items-center justify-between">
-                     <span className="font-medium text-sm text-muted-800 dark:text-white truncate">
-                       {segment.name}
-                     </span>
-                   </div>
-                   
-                   <div className="flex items-center gap-2 text-xs text-muted-500 dark:text-muted-400">
-                     <Clock className="w-3 h-3" />
-                     <span>
-                       {lang === "zh" ? "时长" : "Duration"}: {Math.round(segment.duration)}s
-                     </span>
-                   </div>
-                   
-                   <div className="flex gap-2">
-                     <BaseButton
-                       variant="outline"
-                       size="sm"
-                       onClick={() => downloadSegment(segment)}
-                       className="flex-1"
-                     >
-                       <Download className="w-3 h-3 me-1" />
-                       {t.downloadSegment}
-                     </BaseButton>
-                   </div>
-                 </div>
-               </div>
-             ))}
-           </div>
+          {/* Segments Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {segments.map((segment, index) => (
+              <div
+                key={segment.name}
+                className="border border-muted-200 dark:border-muted-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+              >
+                {/* Video Player */}
+                <div className="relative bg-muted-100 dark:bg-muted-800 aspect-video">
+                  <video
+                    src={segment.url}
+                    className="w-full h-full object-cover"
+                    preload="metadata"
+                    controls
+                    muted
+                  />
+                  <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                    #{index + 1}
+                  </div>
+                </div>
 
-                     {/* Actions */}
-           <div className="flex justify-center pt-4 border-t border-muted-200 dark:border-muted-700">
-             <BaseButton
-               variant="solid"
-               color="primary"
-               onClick={downloadAllSegments}
-             >
-               <Download className="w-4 h-4 me-2" />
-               {t.downloadAll}
-             </BaseButton>
-           </div>
+                {/* Segment Info */}
+                <div className="p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm text-muted-800 dark:text-white truncate">
+                      {segment.name}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-muted-500 dark:text-muted-400">
+                    <Clock className="w-3 h-3" />
+                    <span>
+                      {lang === "zh" ? "时长" : "Duration"}: {Math.round(segment.duration)}s
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <BaseButton
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadSegment(segment)}
+                      className="flex-1"
+                    >
+                      <Download className="w-3 h-3 me-1" />
+                      {t.downloadSegment}
+                    </BaseButton>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-center pt-4 border-t border-muted-200 dark:border-muted-700">
+            <BaseButton
+              variant="solid"
+              color="primary"
+              onClick={downloadAllSegments}
+            >
+              <Download className="w-4 h-4 me-2" />
+              {t.downloadAll}
+            </BaseButton>
+          </div>
         </div>
       </Modal>
     </div>
