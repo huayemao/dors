@@ -67,10 +67,10 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="/quotes"
+                  href="https://github.com/huayemao/flowkit"
                   className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
                 >
-                  影墨留香
+                  flowkit——极简个人一站式工作台
                 </a>
               </li>
               <li>
