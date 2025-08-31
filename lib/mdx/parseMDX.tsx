@@ -14,6 +14,7 @@ import { components } from "./useComponents";
 import { myRemarkPlugin } from "./myRemarkPlugin";
 import "katex/dist/katex.min.css";
 import { cache } from "react";
+import { PluggableList } from "unified";
 
 // Cache for MDX parsing results
 const mdxResultCache = new Map<string, any>();
@@ -43,7 +44,7 @@ async function parseMDX(
       }, MDX_TIMEOUT);
     });
 
-    const list = [
+    const list: PluggableList = [
       // myRemarkPlugin,
 
       //@ts-ignore
@@ -56,9 +57,7 @@ async function parseMDX(
     ];
 
     if (post.content?.includes("```")) {
-      //@ts-ignore
       list.unshift([
-        //@ts-ignore
         remarkShikiTwoslash,
         {
           theme,
@@ -76,9 +75,7 @@ async function parseMDX(
             allowDangerousHtml: true,
           },
           rehypePlugins: [
-            //@ts-ignore
             [rehypeRaw, { passThrough: nodeTypes }],
-            //@ts-ignore
             [rehypeKatex],
           ],
           remarkPlugins: list,
