@@ -69,8 +69,8 @@ function PostTile({
                   className="h-20 w-20 rounded-lg object-cover shadow"
                   src={url}
                   alt={post?.title || "featured image"}
-                  width="56"
-                  height="56"
+                  width="80"
+                  height="80"
                 />
               ) : (
                 <Image
@@ -78,8 +78,8 @@ function PostTile({
                   className="h-20 w-20 rounded-lg object-cover shadow"
                   src={url}
                   alt={post.title || "Post image"}
-                  width="56"
-                  height="56"
+                  width="80"
+                  height="80"
                   blurDataURL={blurDataURL}
                 />
               )}

@@ -7,7 +7,7 @@ export async function getSmallImage(imageBuffer: Buffer) {
   // 使用sharp库处理图片
   return await sharp(imageBuffer)
     .toFormat("jpeg") // 根据MIME类型设置输出格式
-    .resize(100, 100) // 设置缩略图的尺寸，例如100x100像素
+    .resize(120, 120) // 设置缩略图的尺寸，例如100x100像素
     .jpeg({ quality: 80 }) // 设置JPEG图片的质量，数值越低，图片质量越低
     .toBuffer()
     .then((buffer: Buffer) => {
