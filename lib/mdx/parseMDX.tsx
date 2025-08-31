@@ -11,7 +11,7 @@ const theme = require("shiki/themes/nord.json");
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import { components } from "./useComponents";
-import { myRemarkPlugin } from "./myRemarkPlugin";
+import { directiveAdapterPlugin } from "./directiveAdapterPlugin";
 import "katex/dist/katex.min.css";
 import { cache } from "react";
 import { PluggableList } from "unified";
@@ -52,9 +52,13 @@ async function parseMDX(
       //@ts-ignore
       remarkMath,
       remarkDirective,
-      myRemarkPlugin,
-      //@ts-ignore
+      directiveAdapterPlugin,
     ];
+
+    if(post.content?.includes(":::")) {
+      list.unshift(remarkDirective);
+      list.unshift(directiveAdapterPlugin);
+    }
 
     if (post.content?.includes("```")) {
       list.unshift([

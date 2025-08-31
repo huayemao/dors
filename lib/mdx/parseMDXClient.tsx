@@ -7,7 +7,7 @@ import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import * as runtime from "react/jsx-runtime";
 import { components } from "@/lib/mdx/useComponents";
-import { myRemarkPlugin } from "./myRemarkPlugin";
+import { directiveAdapterPlugin } from "./directiveAdapterPlugin";
 import { setWasm } from "shiki";
 import nord from "shiki/themes/nord.json";
 import "katex/dist/katex.min.css";
@@ -245,7 +245,7 @@ export async function parseMDXClient(mdx: string) {
     remarkGfm,
     remarkMath,
     remarkDirective,
-    myRemarkPlugin,
+    directiveAdapterPlugin,
   ];
 
   if (shikiTwoSlash) {

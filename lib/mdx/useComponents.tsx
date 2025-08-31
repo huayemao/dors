@@ -53,8 +53,8 @@ export const components = {
   Carousel: (props) => <Carousel {...props} />,
   DigitsHighlightButton: (props) => <DigitsHighlightButton {...props} />,
   DataList: (props) => <DataList {...props} />,
-  ToolBox: (props) => <ToolBox {...props} />,
-  Annotate: (props) => <Annotate {...props}></Annotate>,
+  ToolBox,
+  Annotate,
   Note: (props) => (
     <Annotate {...props} source={props.children}>
       {props.description}
@@ -98,49 +98,30 @@ export const components = {
     );
   },
   NavList: NavList,
-  // p: (props) => {
-  //   if (props.children) {
-  //     const arr = React.Children.toArray(props.children);
-  //     if (
-  //       arr.every((e) => {
-  //         const isEmpty = typeof e == "string" && !e.trim();
-  //         const ps = (e as ReactElement).props;
-  //         return isEmpty || ps?.href || ps?.src;
-  //       })
-  //     ) {
-  //       const filtered = filterEmptyLines(arr);
-
-  //       return (
-  //         <>
-  //           {React.Children.map(filtered, (child) => {
-  //             return React.cloneElement(child as ReactElement);
-  //           })}
-  //         </>
-  //       );
-  //     }
-  //   }
-  //   return <p {...props} suppressHydrationWarning></p>;
-  // },
   div: (props) => {
-    const { className, children, rest } = props;
-    if (!className.includes("note")) {
+    const { className, children, ...rest } = props;
+
+    if (!props["data-remark-directive"]) {
       return <div {...props} />;
     }
 
+    const colorMap = {
+      note: "default",
+      info: "info",
+      warning: "warning",
+      danger: "danger",
+    };
+
     return (
-      <BaseCard color="info" className="p-6 not-prose my-2">
+      <BaseCard
+        color={colorMap[props["data-remark-directive"]] || "default"}
+        className="p-6 my-2" 
+        shadow="flat"
+      >
         {children}
       </BaseCard>
     );
-    // return (
-    //   <div
-    //     className={cn("bg-info-100 my-2 rounded !text-info-600 p-4", className)}
-    //     {...rest}
-    //   >
-    //     {children}
-    //   </div>
-    // );
   },
   DictEntry: DictEntry,
-  ActivityCard
+  ActivityCard,
 };
