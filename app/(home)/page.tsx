@@ -17,6 +17,8 @@ import Icon from "@/components/Base/Icon";
 import Link from "next/link";
 import { cache, Fragment, Suspense } from "react";
 import { GuideButton } from "@/app/(home)/PopoverButton";
+import { Posts } from "@/components/Tiles/Posts";
+import { MoveRight, MoveRightIcon } from "lucide-react";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -122,7 +124,7 @@ export default async function Home({
       </section>
       <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 overflow-hidden">
         {/* 分类轮播导航 */}
-        <div className=" w-full max-w-5xl mx-auto  text-center space-y-4 py-6">
+        <div className=" w-full max-w-5xl mx-auto  space-y-4 py-6">
           <div className="w-full max-w-2xl mx-auto text-center space-y-4 py-6">
             {/*Badge*/}
             <span className="inline-block font-sans text-xs py-1.5 px-3 m-1 rounded-lg bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-white">
@@ -137,6 +139,34 @@ export default async function Home({
             </p>
           </div>
           <CategoriesSwiper />
+          <div className="w-full max-w-5xl mx-auto py-6">
+            <div className="grid ptablet:gap-8 ltablet:grid-cols-2 lg:grid-cols-2">
+              {/*Column*/}
+              <div className="w-full h-full flex flex-col gap-6 md:gap-0 justify-center">
+                <div className="space-y-4">
+                  {/*Title*/}
+                  <h2 className="font-heading font-bold text-4xl text-muted-800 dark:text-white">
+                    最近更新的文章
+                  </h2>
+                  {/*Subtitle*/}
+                  <p className="font-sans text-lg text-muted-500 dark:text-muted-400">
+                    最新的文章列表，涵盖技术、生活、读书等多个领域，分享作者的见解与经验。
+                  </p>
+                  {/*Link*/}
+                  <a href="#" className="group inline-flex items-center gap-4 text-primary-500 hover:text-primary-400 transition-colors duration-300">
+                    <span className="font-sans font-medium text-sm">
+                      查看全部文章
+                    </span>
+                    <MoveRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></MoveRightIcon>
+                  </a>
+                </div>
+              </div>
+              {/*Column*/}
+              <div className="bg-muted-100 dark:bg-muted-800 rounded-lg px-6 my-6">
+                <Posts data={posts} mini singlColumn />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </Fragment>

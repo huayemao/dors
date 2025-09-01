@@ -90,6 +90,14 @@ export function Footer() {
             <ul className="font-sans list-none space-y-2 mb-10">
               <li>
                 <a
+                  href="/rules-to-save-my-life"
+                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
+                >
+                  生活章程
+                </a>
+              </li>
+              <li>
+                <a
                   href="/aigc"
                   className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
                 >
