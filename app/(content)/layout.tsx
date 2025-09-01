@@ -17,7 +17,7 @@ export default async function ContentLayout({
     <CategoriesContextProvider Categories={categories}>
       <div className="z-0">
         <Nav resourceItems={resourceItems}></Nav>
-        <main className="pt-20 bg-muted-100 dark:bg-muted-900 min-h-screen">{children}</main>
+        <main className="min-h-screen">{children}</main>
       </div>
     </CategoriesContextProvider>
   );

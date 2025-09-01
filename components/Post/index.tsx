@@ -54,7 +54,7 @@ export default async function Post({ data: post, relatedPosts: posts }: Props) {
   const isFullWidth = isNotes || isCollection;
 
   return (
-    <div>
+    <>
       <PostHead
         post={{ ...post, excerpt }}
         avatar={{ alt: "花野猫", src: huayemao }}
@@ -107,6 +107,6 @@ export default async function Post({ data: post, relatedPosts: posts }: Props) {
         </div>
       </section>
       {!isCollection && !isNotes && <ContentModal></ContentModal>}
-    </div>
+    </>
   );
 }

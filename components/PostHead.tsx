@@ -24,7 +24,7 @@ interface Props {
 const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
   const cat = post!.posts_category_links![0].categories!;
   return (
-    <section className="w-full bg-muted-100 dark:bg-muted-900">
+    <section className="w-full bg-muted-100 dark:bg-muted-900 pt-16">
       <div className="w-full max-w-6xl mx-auto">
         <div className="py-14 px-4 relative">
           <div className="w-full mx-auto grid md:grid-cols-2 gap-2 ">

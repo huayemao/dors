@@ -15,7 +15,7 @@ import Raw from "@/components/Raw";
 import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
-import { BaseCard } from "@glint-ui/react";
+import { BaseButton, BaseCard } from "@glint-ui/react";
 import React, { ReactElement } from "react";
 import { filterEmptyLines } from "./filterEmptyLines";
 import NavList from "./NavList";
@@ -49,10 +49,11 @@ export const components = {
   QuestionList: (props) => <QuestionList {...props} />,
   Columns: (props) => <Columns {...props} />,
   PersonList: (props) => <PersonList {...props} />,
-  Word: (props) => <Word {...props} />,
-  Carousel: (props) => <Carousel {...props} />,
-  DigitsHighlightButton: (props) => <DigitsHighlightButton {...props} />,
-  DataList: (props) => <DataList {...props} />,
+  Word,
+  Carousel,
+  DigitsHighlightButton,
+  DataList,
+  BaseButton,
   ToolBox,
   Annotate,
   Note: (props) => (

@@ -96,8 +96,8 @@ export async function renderPost(post: Awaited<ReturnType<typeof getPost>>) {
   if (post.type == "page") {
     return (
       <>
-        <section className="container mx-auto py-16 px-6">
-          <Prose content={post.content} className="max-w-full" />
+        <section className="container mx-auto px-6">
+          <Prose content={post.content} className="max-w-full py-20" />
         </section>
         {/* 这里只是为了能在 mdx 中动态使用这个  class ... */}
         <div className="lg:grid-cols-4"></div>
@@ -111,10 +111,8 @@ export async function renderPost(post: Awaited<ReturnType<typeof getPost>>) {
 
   return (
     <>
-      <div className="w-full">
-        {/* @ts-ignore */}
-        <Post data={post} relatedPosts={posts} />
-      </div>
+      {/* @ts-ignore */}
+      <Post data={post} relatedPosts={posts} />
       <Footer></Footer>
     </>
   );

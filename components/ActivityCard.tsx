@@ -1,4 +1,5 @@
 import React from "react";
+import Prose from "./Base/Prose";
 
 export default function ActivityCard({
   href,
@@ -36,7 +37,10 @@ export default function ActivityCard({
             {title}
           </h2>
           <p className="font-sans text-muted-500 dark:text-muted-400 mt-4">
-            {description}
+            <Prose
+              className="mx-auto font-LXGW_WenKai"
+              content={description}
+            />
           </p>
           {/* Buttons */}
           <div className="flex items-center gap-4 mt-8">
