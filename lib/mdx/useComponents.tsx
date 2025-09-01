@@ -53,7 +53,9 @@ export const components = {
   Carousel,
   DigitsHighlightButton,
   DataList,
-  BaseButton,
+  BaseButton: ({ className, restProps }) => (
+    <BaseButton {...restProps} className={`not-prose ${className}`} />
+  ),
   ToolBox,
   Annotate,
   Note: (props) => (
@@ -116,7 +118,7 @@ export const components = {
     return (
       <BaseCard
         color={colorMap[props["data-remark-directive"]] || "default"}
-        className="p-6 my-2" 
+        className="p-6 my-2"
         shadow="flat"
       >
         {children}

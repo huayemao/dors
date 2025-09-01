@@ -19,6 +19,7 @@ import { cache, Fragment, Suspense } from "react";
 import { GuideButton } from "@/app/(home)/PopoverButton";
 import { Posts } from "@/components/Tiles/Posts";
 import { MoveRight, MoveRightIcon } from "lucide-react";
+import ActivityCard from "@/components/ActivityCard";
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -128,10 +129,10 @@ export default async function Home({
           <div className="w-full max-w-2xl mx-auto text-center space-y-4 py-6">
             {/*Badge*/}
             <span className="inline-block font-sans text-xs py-1.5 px-3 m-1 rounded-lg bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-white">
-              花坛
+              博客
             </span>
             <h2 className="font-heading font-bold text-4xl md:text-5xl text-muted-800 dark:text-white">
-              博客
+              花坛
             </h2>
             {/*Subtitle*/}
             <p className="font-sans text-lg text-muted-500 dark:text-muted-400 text-balance">
@@ -153,7 +154,10 @@ export default async function Home({
                     最新的文章列表，涵盖技术、生活、读书等多个领域，分享作者的见解与经验。
                   </p>
                   {/*Link*/}
-                  <a href="#" className="group inline-flex items-center gap-4 text-primary-500 hover:text-primary-400 transition-colors duration-300">
+                  <a
+                    href="/posts"
+                    className="group inline-flex items-center gap-4 text-primary-500 hover:text-primary-400 transition-colors duration-300"
+                  >
                     <span className="font-sans font-medium text-sm">
                       查看全部文章
                     </span>
@@ -167,6 +171,30 @@ export default async function Home({
               </div>
             </div>
           </div>
+        </div>
+      </section>
+      <section className="w-full py-12 px-4 bg-white dark:bg-muted-900 overflow-hidden">
+        <div className="w-full max-w-5xl mx-auto py-6">
+          <div className="w-full max-w-2xl mx-auto text-center space-y-4 py-6">
+            {/*Badge*/}
+            <span className="inline-block font-sans text-xs py-1.5 px-3 m-1 rounded-lg bg-primary-100 text-primary-500 dark:bg-primary-500 dark:text-white">
+              最常使用
+            </span>
+            <h2 className="font-heading font-bold text-4xl md:text-5xl text-muted-800 dark:text-white">
+              常青圃
+            </h2>
+            {/*Subtitle*/}
+            <p className="font-sans text-lg text-muted-500 dark:text-muted-400 text-balance">
+              无论季节更迭，这里永远孕育着最新的收获。
+            </p>
+          </div>
+          <ActivityCard
+            title="AI 绘图"
+            imgUrl="/_next/image?url=%2Fapi%2Ffiles%2F00134-4095103551.webp&w=1080&q=80"
+            description="AI 绘图实践与心得"
+            href="/posts/326"
+            actionName="开始探索"
+          ></ActivityCard>
         </div>
       </section>
     </Fragment>
