@@ -1,6 +1,6 @@
 "use client";
 import { BaseAutocomplete } from "@/components/Base/Autocomplete";
-import { getNavResourceItems } from "@/lib/getNavResourceItems";
+import { getNavResourceItems } from "@/lib/isomorphic/getNavResourceItems";
 import { NavigationItem } from "@/lib/types/NavItem";
 import { type Prisma } from "@prisma/client";
 import {

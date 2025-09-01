@@ -7,14 +7,14 @@ import {
   getProcessedPosts,
   getRecentPosts,
 } from "@/lib/server/posts";
+import { getActivityCards } from "@/lib/server/activityCards";
 import {
   BaseButton,
   BaseButtonAction,
   BaseHeading,
   BaseIconBox,
 } from "@glint-ui/react";
-import Icon from "@/components/Base/Icon";
-import Link from "next/link";
+
 import { cache, Fragment, Suspense } from "react";
 import { GuideButton } from "@/app/(home)/PopoverButton";
 import { Posts } from "@/components/Tiles/Posts";
@@ -34,6 +34,7 @@ export default async function Home({
   searchParams: SearchParams;
 }) {
   const posts = await getRecentPosts();
+  const activityCards = await getActivityCards();
 
   const key = posts.map((e) => e.id).join();
 
@@ -188,13 +189,19 @@ export default async function Home({
               无论季节更迭，这里永远孕育着最新的收获。
             </p>
           </div>
-          <ActivityCard
-            title="AI 绘图"
-            imgUrl="/_next/image?url=%2Fapi%2Ffiles%2F00134-4095103551.webp&w=1080&q=80"
-            description="AI 绘图实践与心得"
-            href="/posts/326"
-            actionName="开始探索"
-          ></ActivityCard>
+          {activityCards.length > 0 ? (
+            activityCards.map((card, index) => (
+              <ActivityCard
+                key={card.id}
+                title={card.title}
+                imgUrl={card.imgUrl || ''}
+                description={card.description}
+                href={card.href}
+                actionName={card.actionName}
+                info={card.info}
+              />
+            ))
+          ) : null}
         </div>
       </section>
     </Fragment>

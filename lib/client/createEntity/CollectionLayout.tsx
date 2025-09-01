@@ -259,7 +259,7 @@ export default function CollectionLayout<
                 getItemId={(entity) => entity.id ?? JSON.stringify(entity)}
               />
             ) : (
-              <div className="max-w-full bg-white border shadow">
+              <div className="max-w-full bg-white border shadow overflow-auto">
                 {list.length !== 0 && (
                   <Table
                     data={getList(list)}

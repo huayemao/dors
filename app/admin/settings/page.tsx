@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { HiddenCatsForm } from "./HiddenCatsForm";
 import { NavItemsConfig } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
+import { ActivityCardForm } from "./ActivityCardForm";
 import { Panel } from "@/components/Base/Panel";
 import { BaseButton, BaseInput, BaseTextarea } from "@glint-ui/react";
 import Link from "next/link";
@@ -21,6 +22,7 @@ export default async function AdminSettingsPage({ params, searchParams }) {
     { label: "缓存", value: "cache" },
     { label: "文章分类", value: "categories" },
     { label: "应用台", value: "navigation" },
+    { label: "ActivityCard", value: "activity-cards" },
     { label: "导航页内容", value: "nav-content" },
     { label: "原始数据", value: "raw-data" },
   ];
@@ -62,6 +64,12 @@ export default async function AdminSettingsPage({ params, searchParams }) {
           {activeTab === "navigation" && (
             <Panel title="应用台" className="max-w-full w-fit">
               <NavItemsConfig settings={settings}></NavItemsConfig>
+            </Panel>
+          )}
+          
+          {activeTab === "activity-cards" && (
+            <Panel title="ActivityCard 配置" className="max-w-full w-fit">
+              <ActivityCardForm settings={settings}></ActivityCardForm>
             </Panel>
           )}
           

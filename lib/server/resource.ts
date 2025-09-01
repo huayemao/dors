@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { getNavResourceItems } from '../getNavResourceItems';
+import { getNavResourceItems } from '../isomorphic/getNavResourceItems';
 import { unstable_cache } from 'next/cache';
 
 
