@@ -118,7 +118,7 @@ export const components = {
     return (
       <BaseCard
         color={colorMap[props["data-remark-directive"]] || "default"}
-        className="p-6 my-2"
+        className="p-6 py-4 my-2"
         shadow="flat"
       >
         {children}
