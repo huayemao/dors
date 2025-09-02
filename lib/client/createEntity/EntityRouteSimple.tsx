@@ -13,6 +13,7 @@ import { BaseCollection, BaseEntity } from "./types";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
 import { fetchWithAuth } from "../utils/fetch";
 import { toast } from "react-hot-toast";
+import { EntityConfigProvider } from "./EntityConfigProvider";
 
   const fetchCollection = (id: string) => {
     return fetchWithAuth("/api/getPost?id=" + id)
@@ -57,16 +58,24 @@ const syncToCloud = (
 };
 
 type Props<EType extends BaseEntity, CType extends BaseCollection> = {
-  slots?: ComponentProps<typeof CollectionLayout>["slots"];
-  layout?: ComponentProps<typeof CollectionLayout>["layout"];
-  getList?: ComponentProps<typeof CollectionLayout>["getList"];
+  slots?: any;
+  layout?: "masonry" | "stack" | "table";
+  getList?: (list: EType[]) => object[];
   basename: string;
   createForm: FC<PropsWithChildren>;
   updateForm: FC<PropsWithChildren>;
   RootPage?: FC<PropsWithChildren>;
   extraRoutes?: RouteObject[];
-  EntityPreviewPage?: FC
-} & Omit<ComponentProps<typeof ViewOrEditEntityModal>, "form">;
+  EntityPreviewPage?: FC<{
+    state: EntityState<EType, CType>;
+    dispatch: EntityDispatch<EType, CType>;
+  }>;
+  renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => React.ReactNode;
+  renderEntityModalTitle?: (entity: EType, options?: { preview: boolean }) => React.ReactNode;
+  renderEntityModalActions?: (entity: EType, options: { preview: boolean }) => React.ReactNode;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
+};
 
 export default function EntityRouteSimple<
   EType extends BaseEntity,
@@ -85,60 +94,63 @@ export default function EntityRouteSimple<
   slots,
   layout,
   getList,
+  extraRoutes = [],
 }: Props<EType, CType>) {
   const isView = state.entityModalMode == 'view'
+  
+  // 创建配置对象
+  const config = {
+    renderEntity,
+    renderEntityModalTitle,
+    renderEntityModalActions,
+    createForm,
+    updateForm,
+    layout,
+    getList,
+    slots,
+    basename,
+    extraRoutes,
+    RootPage,
+    EntityPreviewPage,
+    fetchCollection,
+    syncToCloud,
+  };
+
   const router = createBrowserRouter(
     [
       {
         path: "/",
-        element: RootPage ? <RootPage /> : <CollectionLayout
-          fetchCollection={fetchCollection}
-          syncToCloud={syncToCloud}
-          slots={slots}
-          layout={layout}
-          state={state}
-          dispatch={dispatch}
-          renderEntity={renderEntity}
-          getList={getList}
-        ></CollectionLayout>,
+        element: RootPage ? <RootPage /> : <CollectionLayout state={state} dispatch={dispatch} />,
         children: [
           ...addActionRoutes,
           {
             path: ":entityId",
-            element: EntityPreviewPage && isView ? <EntityPreviewPage /> : (
-              <ViewOrEditEntityModal
-                renderEntityModalTitle={renderEntityModalTitle}
-                renderEntityModalActions={renderEntityModalActions}
-                renderEntity={renderEntity}
-                state={state}
-                dispatch={dispatch}
-                form={createForm}
-              ></ViewOrEditEntityModal>
+            element: EntityPreviewPage && isView ? (
+              <EntityPreviewPage 
+                state={state as EntityState<EType, CType>}
+                dispatch={dispatch as EntityDispatch<EType, CType>}
+              />
+            ) : (
+              <ViewOrEditEntityModal state={state} dispatch={dispatch} form={createForm} />
             ),
           },
           {
             path: "create",
-            element: (
-              <CreateEntityModal
-                state={state}
-                dispatch={dispatch}
-                form={updateForm}
-              ></CreateEntityModal>
-            ),
+            element: <CreateEntityModal state={state} dispatch={dispatch} form={updateForm} />,
           },
           {
             path: "edit",
-            element: (
-              <CreateCollectionModal
-                state={state}
-                dispatch={dispatch}
-              ></CreateCollectionModal>
-            ),
+            element: <CreateCollectionModal state={state} dispatch={dispatch} />,
           },
         ],
       },
     ],
     { basename }
   );
-  return <RouterProvider router={router} />;
+  
+  return (
+    <EntityConfigProvider config={config}>
+      <RouterProvider router={router} />
+    </EntityConfigProvider>
+  );
 }

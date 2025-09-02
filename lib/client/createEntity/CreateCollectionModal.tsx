@@ -13,6 +13,7 @@ import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { Trash } from "lucide-react";
 import { withConfirm } from "@/lib/utils";
+import { BaseEntityComponentProps } from "./types/common";
 
 export default function CreateCollectionModal<
   EType extends BaseEntity,
@@ -20,10 +21,7 @@ export default function CreateCollectionModal<
 >({
   state,
   dispatch,
-}: {
-  state: EntityState<EType, CType>;
-  dispatch: EntityDispatch<EType, CType>;
-}) {
+}: BaseEntityComponentProps<EType, CType>) {
   const close = useCloseModal();
   const { currentCollection, collectionList, modalOpen, entityModalMode } =
     state;
@@ -105,10 +103,7 @@ function CollectionForm<
 >({
   state,
   dispatch,
-}: {
-  state: EntityState<EType, CType>;
-  dispatch: EntityDispatch<EType, CType>;
-}) {
+}: BaseEntityComponentProps<EType, CType>) {
   const close = useCloseModal();
   const params = useParams();
   const navigate = useNavigate();

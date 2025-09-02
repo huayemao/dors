@@ -14,6 +14,7 @@ import localforage from "localforage";
 import { addActionRoutes } from "@/components/PostEditor/AddAction";
 import { fetchWithAuth } from "../utils/fetch";
 import { toast } from "react-hot-toast";
+import { EntityConfigProvider } from "./EntityConfigProvider";
 
 
 
@@ -45,8 +46,8 @@ const syncToCloud = (
 };
 
 type Props<EType extends BaseEntity, CType extends BaseCollection> = {
-  slots?: ComponentProps<typeof CollectionLayout>["slots"];
-  layout?: ComponentProps<typeof CollectionLayout>["layout"];
+  slots?: any;
+  layout?: "masonry" | "stack" | "table";
   basename: string;
   createForm: FC<PropsWithChildren>;
   updateForm: FC<PropsWithChildren>;
@@ -56,7 +57,12 @@ type Props<EType extends BaseEntity, CType extends BaseCollection> = {
     state: EntityState<EType, CType>;
     dispatch: EntityDispatch<EType, CType>;
   }>;
-} & Omit<ComponentProps<typeof ViewOrEditEntityModal>, "form">;
+  renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => React.ReactNode;
+  renderEntityModalTitle?: (entity: EType, options?: { preview: boolean }) => React.ReactNode;
+  renderEntityModalActions?: (entity: EType, options: { preview: boolean }) => React.ReactNode;
+  state: EntityState<EType, CType>;
+  dispatch: EntityDispatch<EType, CType>;
+};
 
 export default function EntityRoute<
   EType extends BaseEntity,
@@ -94,6 +100,23 @@ export default function EntityRoute<
       });
   },[]);
 
+  // 创建配置对象
+  const config = {
+    renderEntity,
+    renderEntityModalTitle,
+    renderEntityModalActions,
+    createForm,
+    updateForm,
+    layout,
+    slots,
+    basename,
+    extraRoutes,
+    RootPage,
+    EntityPreviewPage,
+    fetchCollection,
+    syncToCloud,
+  };
+
   const router = createBrowserRouter(
     [
       {
@@ -102,26 +125,11 @@ export default function EntityRoute<
       },
       {
         path: "/create",
-        element: (
-          <CreateCollectionModal
-            state={state}
-            dispatch={dispatch}
-          ></CreateCollectionModal>
-        ),
+        element: <CreateCollectionModal state={state} dispatch={dispatch} />,
       },
       {
         path: ":collectionId",
-        element: (
-          <CollectionLayout
-            fetchCollection={fetchCollection}
-            syncToCloud={syncToCloud}
-            slots={slots}
-            layout={layout}
-            state={state}
-            dispatch={dispatch}
-            renderEntity={renderEntity}
-          ></CollectionLayout>
-        ),
+        element: <CollectionLayout state={state} dispatch={dispatch} />,
         children: [
           ...addActionRoutes,
           {
@@ -133,34 +141,16 @@ export default function EntityRoute<
                   dispatch={dispatch as EntityDispatch<EType, CType>}
                 />
               ) : (
-                <ViewOrEditEntityModal
-                  renderEntityModalTitle={renderEntityModalTitle}
-                  renderEntityModalActions={renderEntityModalActions}
-                  renderEntity={renderEntity}
-                  state={state}
-                  dispatch={dispatch}
-                  form={createForm}
-                ></ViewOrEditEntityModal>
+                <ViewOrEditEntityModal state={state} dispatch={dispatch} form={createForm} />
               ),
           },
           {
             path: "create",
-            element: (
-              <CreateEntityModal
-                state={state}
-                dispatch={dispatch}
-                form={updateForm}
-              ></CreateEntityModal>
-            ),
+            element: <CreateEntityModal state={state} dispatch={dispatch} form={updateForm} />,
           },
           {
             path: "edit",
-            element: (
-              <CreateCollectionModal
-                state={state}
-                dispatch={dispatch}
-              ></CreateCollectionModal>
-            ),
+            element: <CreateCollectionModal state={state} dispatch={dispatch} />,
           },
         ],
         ...extraRoutes,
@@ -168,5 +158,10 @@ export default function EntityRoute<
     ],
     { basename }
   );
-  return <RouterProvider router={router} />;
+  
+  return (
+    <EntityConfigProvider config={config}>
+      <RouterProvider router={router} />
+    </EntityConfigProvider>
+  );
 }

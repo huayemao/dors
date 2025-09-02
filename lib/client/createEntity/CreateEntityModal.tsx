@@ -5,6 +5,8 @@ import { EntityDispatch, EntityState } from "./createEntityContext";
 import { BaseCollection, BaseEntity } from "./types";
 import { useCloseModal } from "../hooks/useCloseModal";
 import { AddAction } from "@/components/PostEditor/AddAction";
+import { BaseEntityComponentProps } from "./types/common";
+import { useEntityConfig } from "./EntityConfigProvider";
 
 export default function CreateEntityModal<
   EType extends BaseEntity,
@@ -13,16 +15,12 @@ export default function CreateEntityModal<
   state,
   dispatch,
   form: Form,
-  renderEntityModalTitle = (e) => e.seq,
-}: {
-  state: EntityState<EType, CType>;
-  dispatch: EntityDispatch<EType, CType>;
+}: BaseEntityComponentProps<EType, CType> & {
   form: FC<PropsWithChildren>;
-  renderEntityModalTitle?: (
-    entity: EType,
-    options?: { preview: boolean }
-  ) => ReactNode;
 }) {
+  // 从 Context 中获取配置
+  const config = useEntityConfig<EType, CType>();
+  const { renderEntityModalTitle = (e) => e.seq } = config;
   const {
     currentCollection,
     collectionList,

@@ -31,6 +31,8 @@ import { Table } from "@/app/(content)/data-process/Table";
 import { StackCards } from "./components/StackCards";
 import { toast } from "react-hot-toast";
 import isNull from "lodash/isNull";
+import { BaseEntityComponentProps } from "./types/common";
+import { useEntityConfig } from "./EntityConfigProvider";
 
 export default function CollectionLayout<
   EType extends BaseEntity,
@@ -41,33 +43,19 @@ export default function CollectionLayout<
     layout?: "masonry" | "stack" | "table";
   }
 >({
-  slots,
-  renderEntity,
   state,
   dispatch,
-  fetchCollection,
-  syncToCloud,
-  layout = "masonry",
-  getList = (e) => e,
-}: {
-  slots?: Record<
-    "search",
-    FC<{
-      state: EntityState<EType, CType>;
-      dispatch: EntityDispatch<EType, CType>;
-    }>
-  >;
-  state: EntityState<EType, CType>;
-  dispatch: EntityDispatch<EType, CType>;
-  renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => ReactNode;
-  fetchCollection: (id: string) => Promise<CType | null>;
-  syncToCloud: (
-    collection: EntityState<any, any>["currentCollection"],
-    entityList: EntityState<any, any>["entityList"]
-  ) => Promise<any>;
-  layout?: "masonry" | "stack" | "table";
-  getList?: (list: EType[]) => object[];
-}) {
+}: BaseEntityComponentProps<EType, CType>) {
+  // 从 Context 中获取配置
+  const config = useEntityConfig<EType, CType>();
+  const {
+    renderEntity,
+    fetchCollection,
+    syncToCloud,
+    layout = "masonry",
+    getList = (e) => e,
+    slots,
+  } = config;
   const { collectionId } = useParams();
   const outlet = useOutlet();
   const [fetching, setFetching] = useState(false);

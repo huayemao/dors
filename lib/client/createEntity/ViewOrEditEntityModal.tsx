@@ -24,6 +24,8 @@ import { BaseCollection, BaseEntity } from "./types";
 import { AddAction } from "@/components/PostEditor/AddAction";
 import { useCloseModal } from "../hooks/useCloseModal";
 import { PreviewModal } from "@/components/Base/PreviewModal";
+import { BaseEntityComponentProps } from "./types/common";
+import { useEntityConfig } from "./EntityConfigProvider";
 
 export default function ViewOrEditEntityModal<
   EType extends BaseEntity,
@@ -32,23 +34,16 @@ export default function ViewOrEditEntityModal<
   state,
   dispatch,
   form: Form,
-  renderEntityModalTitle = (e) => e.seq,
-  renderEntityModalActions = () => <></>,
-  renderEntity,
-}: {
-  renderEntityModalTitle?: (
-    entity: EType,
-    options: { preview: boolean }
-  ) => ReactNode;
-  renderEntityModalActions?: (
-    entity: EType,
-    options: { preview: boolean }
-  ) => ReactNode;
-  renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => ReactNode;
+}: BaseEntityComponentProps<EType, CType> & {
   form: FC<PropsWithChildren>;
-  state: EntityState<EType, CType>;
-  dispatch: EntityDispatch<EType, CType>;
 }) {
+  // 从 Context 中获取配置
+  const config = useEntityConfig<EType, CType>();
+  const {
+    renderEntity,
+    renderEntityModalTitle = (e) => e.seq,
+    renderEntityModalActions = () => <></>,
+  } = config;
   const {
     entityModalMode,
     collectionList,
