@@ -8,6 +8,7 @@ export interface ActivityCardEntity {
   actionName: string;
   imgUrl?: string;
   info?: string;
+  href: string;
 }
 
 export const DEFAULT_ACTIVITY_CARD = {

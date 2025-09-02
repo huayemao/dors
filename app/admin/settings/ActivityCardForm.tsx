@@ -1,10 +1,13 @@
 "use client";
 import { BaseInput, BaseButton } from "@glint-ui/react";
-import { useEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useDebounce } from "@uidotdev/usehooks";
 import { EntityContextProvider, useEntity, useEntityDispatch, ActivityCardEntity } from "./activityCardContext";
 import EntityRouteSimple from "@/lib/client/createEntity/EntityRouteSimple";
 import { ClientOnly } from "@/components/ClientOnly";
 import { getActivityCardsFromSettingValue } from "@/lib/isomorphic/getActivityCards";
+import { simpleHash } from "./simpleHash";
+import toast from "react-hot-toast";
 
 
 // 使用从 context 导入的类型
@@ -15,15 +18,6 @@ interface ActivityCardFormProps {
     key: string;
     value: any;
   }[];
-}
-
-function simpleHash(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0; // 转换为32位整数
-  }
-  return hash;
 }
 
 export function ActivityCardForm({ settings }: ActivityCardFormProps) {
@@ -103,7 +97,7 @@ function Content({ settings }: ActivityCardFormProps) {
             value={JSON.stringify(v)}
           ></textarea>
         ))}
-        <BaseButton type="submit">提交</BaseButton>
+        <BaseButton type="submit" color="primary">提交</BaseButton>
       </form>
     </div>
   );
@@ -112,92 +106,127 @@ function Content({ settings }: ActivityCardFormProps) {
 const Form = () => {
   const state = useEntity();
   const dispatch = useEntityDispatch();
-  const ref = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState<Partial<ActivityCardConfig>>(() => ({
+    postId: state.currentEntity.postId || 0,
+    title: state.currentEntity.title || '',
+    description: state.currentEntity.description || '',
+    actionName: state.currentEntity.actionName || '开始探索',
+    imgUrl: state.currentEntity.imgUrl || '',
+    info: state.currentEntity.info || '',
+    href: state.currentEntity.href || ''
+  }));
 
-  const loadPostData = async (postId: number) => {
-    if (!postId) return;
+
+  useEffect(() => {
+    setFormData(
+      state.currentEntity
+    )
+  }, [state.currentEntity]);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // 使用 useDebounce hook 处理防抖逻辑
+  const debouncedPostId = useDebounce(formData.postId, 300);
+
+  const loadPostData = useCallback(async () => {
+    if (!formData.postId) return;
 
     try {
-      const response = await fetch(`/api/getPost?id=${postId}`);
+      const response = await fetch(`/api/getPost?id=${formData.postId}`);
       if (response.ok) {
         const post = await response.json();
+        if (!post) return;
 
-        // 更新表单中的字段
-        const titleInput = ref.current?.querySelector('#title') as HTMLInputElement;
-        const descriptionInput = ref.current?.querySelector('#description') as HTMLInputElement;
-        const imgUrlInput = ref.current?.querySelector('#imgUrl') as HTMLInputElement;
-
-        if (titleInput && !titleInput.value) titleInput.value = post.title || '';
-        if (descriptionInput && !descriptionInput.value) descriptionInput.value = post.excerpt || '';
-        if (imgUrlInput && !imgUrlInput.value) {
-          imgUrlInput.value = post.cover_image?.src?.large ||
+        // 更新表单状态
+        setFormData((prev) => ({
+          ...prev,
+          title: post.title || '',
+          description: post.excerpt || '',
+          href: post.slug ? `/${post.slug}` : post.id ? `/posts/${post.id}` : '',
+          imgUrl: post.cover_image?.src?.large ||
             post.cover_image?.dataURLs?.large ||
-            `/_next/image?url=${encodeURIComponent(post.cover_image?.src?.large || '')}&w=1080&q=80`;
-        }
+            `/_next/image?url=${encodeURIComponent(post.cover_image?.src?.large || '')}&w=1080&q=80`
+        }));
       }
     } catch (error) {
-      console.error('加载文章数据失败:', error);
+      toast.error('加载文章数据失败:', error);
     }
+  }, [formData.postId]);
+
+  // useEffect(() => {
+  //   if (debouncedPostId) {
+  //     loadPostData(debouncedPostId);
+  //   }
+  // }, [debouncedPostId])
+
+  const handleSubmit = () => {
+    dispatch({
+      type: "CREATE_OR_UPDATE_ENTITY",
+      payload: {
+        ...formData,
+        postId: parseInt(formData.postId?.toString() || '0') || 0,
+        id: state.currentEntity.id || simpleHash(`${formData.postId}-${formData.title}`),
+      } as ActivityCardConfig,
+    });
   };
 
   return (
     <>
-      <div ref={ref}>
-        <BaseInput
-          id="postId"
-          label="文章 ID"
-          type="number"
-          defaultValue={state.currentEntity.postId || ''}
-          onChange={(e: string) => {
-            const postId = parseInt(e) || 0;
-            if (postId) {
-              loadPostData(postId);
-            }
-          }}
-        />
+      <div>
+        <div className="grid grid-cols-2 gap-4">
+          <BaseInput
+            id="postId"
+            label="文章 ID"
+            type="number"
+            value={formData.postId || ''}
+            onChange={(e: string) => {
+              handleInputChange('postId', e);
+            }}
+          />
+          <div>
+            <BaseButton size="sm" variant="pastel" onClick={loadPostData} >加载文章数据</BaseButton>
+          </div>
+        </div>
         <BaseInput
           id="title"
           label="标题"
-          defaultValue={state.currentEntity.title || ''}
+          value={formData.title || ''}
+          onChange={(e: string) => handleInputChange('title', e)}
         />
         <BaseInput
           id="description"
           label="描述"
-          defaultValue={state.currentEntity.description || ''}
+          value={formData.description || ''}
+          onChange={(e: string) => handleInputChange('description', e)}
         />
         <BaseInput
           id="actionName"
           label="按钮文字"
-          defaultValue={state.currentEntity.actionName || '开始探索'}
+          value={formData.actionName || '开始探索'}
+          onChange={(e: string) => handleInputChange('actionName', e)}
         />
         <BaseInput
           id="imgUrl"
           label="图片 URL (可选)"
-          defaultValue={state.currentEntity.imgUrl || ''}
+          value={formData.imgUrl || ''}
+          onChange={(e: string) => handleInputChange('imgUrl', e)}
+        />
+        <BaseInput
+          id="href"
+          label="链接地址 (可选)"
+          value={formData.href || ''}
+          onChange={(e: string) => handleInputChange('href', e)}
         />
         <BaseInput
           id="info"
           label="额外信息 (可选)"
-          defaultValue={state.currentEntity.info || ''}
+          value={formData.info || ''}
+          onChange={(e: string) => handleInputChange('info', e)}
         />
       </div>
-      <BaseButton
-        onClick={() => {
-          const el = ref.current!;
-          const inputs = Array.from(el.querySelectorAll("input"));
-          const json = Object.fromEntries(
-            inputs.map((el) => [el.id, el.value])
-          );
-          dispatch({
-            type: "CREATE_OR_UPDATE_ENTITY",
-            payload: {
-              ...json,
-              postId: parseInt(json.postId) || 0,
-              id: state.currentEntity.id || simpleHash(`${json.postId}-${json.title}`),
-            } as ActivityCardConfig,
-          });
-        }}
-      >
+      <BaseButton onClick={handleSubmit}>
         确定
       </BaseButton>
     </>
