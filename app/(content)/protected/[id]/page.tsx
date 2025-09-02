@@ -1,6 +1,6 @@
 import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import { notFound, redirect } from "next/navigation";
-import { renderPost } from "../../posts/[id]/page";
+import { renderPost } from "../../posts/[id]/renderPost";
 
 
 export default async function page({ params }) {

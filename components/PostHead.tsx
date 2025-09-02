@@ -41,6 +41,8 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                 unoptimized={nextConfig.output === "export"}
                 className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px]  rounded-3xl"
                 src={url}
+                width={512}
+                height={373}
                 quality={url.toString().includes(SITE_META.url) ? 100 : 80}
                 blurDataURL={typeof url === "string" ? blurDataURL : undefined}
                 placeholder={(blurDataURL && "blur") || undefined}
