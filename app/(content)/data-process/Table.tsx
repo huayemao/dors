@@ -171,7 +171,7 @@ export function Table({
                   valign="middle"
                   className="border-t border-muted-200 py-4 px-3 font-sans font-normal dark:border-muted-800 text-sm text-muted-400"
                 >
-                  <BaseDropdown variant="context">
+                  <BaseDropdown variant="context" fixed>
                     {actions.map((e) => (
                       <BaseDropdownItem
                         onClick={(ev) => {

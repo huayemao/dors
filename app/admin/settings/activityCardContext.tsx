@@ -6,7 +6,7 @@ export interface ActivityCardEntity {
   title: string;
   description: string;
   actionName: string;
-  imgUrl?: string;
+  imgUrl: string;
   info?: string;
   href: string;
 }

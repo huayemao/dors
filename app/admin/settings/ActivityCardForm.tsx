@@ -8,6 +8,7 @@ import { ClientOnly } from "@/components/ClientOnly";
 import { getActivityCardsFromSettingValue } from "@/lib/isomorphic/getActivityCards";
 import { simpleHash } from "./simpleHash";
 import toast from "react-hot-toast";
+import ActivityCard from "@/components/ActivityCard";
 
 
 // 使用从 context 导入的类型
@@ -58,22 +59,7 @@ function Content({ settings }: ActivityCardFormProps) {
         key="activity-cards"
         renderEntityModalTitle={(e: ActivityCardConfig) => e.title || 'ActivityCard'}
         renderEntity={(e: ActivityCardConfig) => (
-          <div className="border border-muted-200 dark:border-muted-700 rounded-lg p-4">
-            <div className="flex items-center gap-4">
-              {e.imgUrl && (
-                <img
-                  src={e.imgUrl}
-                  alt={e.title}
-                  className="w-16 h-16 object-cover rounded"
-                />
-              )}
-              <div className="flex-1">
-                <h4 className="font-medium">{e.title}</h4>
-                <p className="text-sm text-muted-500">{e.description}</p>
-                <p className="text-xs text-muted-400">文章 ID: {e.postId}</p>
-              </div>
-            </div>
-          </div>
+          <div className="min-h-[65vh]"><ActivityCard {...e}></ActivityCard></div>
         )}
         state={state}
         dispatch={dispatch}
@@ -97,7 +83,9 @@ function Content({ settings }: ActivityCardFormProps) {
             value={JSON.stringify(v)}
           ></textarea>
         ))}
-        <BaseButton type="submit" color="primary">提交</BaseButton>
+        <div className="text-right">
+          <BaseButton type="submit" color="primary">提交</BaseButton>
+        </div>
       </form>
     </div>
   );
@@ -226,9 +214,11 @@ const Form = () => {
           onChange={(e: string) => handleInputChange('info', e)}
         />
       </div>
-      <BaseButton onClick={handleSubmit}>
-        确定
-      </BaseButton>
+      <div className="text-right mt-4">
+        <BaseButton color="primary" onClick={handleSubmit}>
+          确定
+        </BaseButton>
+      </div>
     </>
   );
 };

@@ -109,7 +109,9 @@ function Content({
             value={JSON.stringify(v)}
           ></textarea>
         ))}
-        <BaseButton type="submit">提交</BaseButton>
+        <div className="text-right">
+          <BaseButton type="submit" color="primary">提交</BaseButton>
+        </div>
       </form>
       {/* <BaseList>
         {value.map((e) => {
@@ -142,31 +144,34 @@ const Form = () => {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <>
-      {" "}
       <div ref={ref}>
         <BaseInput id="title" label="标题" defaultValue={state.currentEntity.title}></BaseInput>
         <BaseInput id="subtitle" label="副标题" defaultValue={state.currentEntity.subtitle}></BaseInput>
         <BaseInput id="url" label="链接" defaultValue={state.currentEntity.url}></BaseInput>
         <BaseInput id="iconName" label="icon 名称" defaultValue={state.currentEntity.iconName}></BaseInput>
       </div>
-      <BaseButton
-        onClick={() => {
-          const el = ref.current!;
-          const inputs = Array.from(el.querySelectorAll("input"));
-          const json = Object.fromEntries(
-            inputs.map((el) => [el.id, el.value])
-          );
-          dispatch({
-            type: "CREATE_OR_UPDATE_ENTITY",
-            payload: {
-              ...json,
-              id: simpleHash(json.url),
-            } as NavigationItem & { id: number },
-          });
-        }}
-      >
-        确定
-      </BaseButton>
+
+      <div className="text-right mt-4">
+        <BaseButton
+          color="primary"
+          onClick={() => {
+            const el = ref.current!;
+            const inputs = Array.from(el.querySelectorAll("input"));
+            const json = Object.fromEntries(
+              inputs.map((el) => [el.id, el.value])
+            );
+            dispatch({
+              type: "CREATE_OR_UPDATE_ENTITY",
+              payload: {
+                ...json,
+                id: simpleHash(json.url),
+              } as NavigationItem & { id: number },
+            });
+          }}
+        >
+          确定
+        </BaseButton>
+      </div>
     </>
   );
 };
