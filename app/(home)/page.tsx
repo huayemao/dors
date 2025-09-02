@@ -189,19 +189,21 @@ export default async function Home({
               无论季节更迭，这里永远孕育着最新的收获。
             </p>
           </div>
-          {activityCards.length > 0 ? (
-            activityCards.map((card, index) => (
-              <ActivityCard
-                key={card.id}
-                title={card.title}
-                imgUrl={card.imgUrl || ''}
-                description={card.description}
-                href={card.href}
-                actionName={card.actionName}
-                info={card.info}
-              />
-            ))
-          ) : null}
+          <div className="space-y-6 lg:pb-20">
+            {activityCards.length > 0 ? (
+              activityCards.map((card, index) => (
+                <ActivityCard
+                  key={card.id}
+                  title={card.title}
+                  imgUrl={card.imgUrl || ''}
+                  description={card.description}
+                  href={card.href}
+                  actionName={card.actionName}
+                  info={card.info}
+                />
+              ))
+            ) : null}
+          </div>
         </div>
       </section>
     </Fragment>

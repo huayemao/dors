@@ -30,7 +30,7 @@ export default function ActivityCard({
       </div>
 
       {/* Column */}
-      <div className="max-w-lg bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 md:max-w-2xl md:shadow-xl md:shadow-muted-400/10 dark:md:shadow-muted-800/10 md:absolute md:top-0 md:mt-48 ltablet:w-3/5 ltablet:left-0 ltablet:mt-20 ltablet:ml-20 lg:w-3/5 lg:left-0 lg:mt-20 lg:ml-20 xl:mt-24 xl:ml-12">
+      <div className="xs:w-full max-w-lg bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 md:max-w-2xl md:shadow-xl md:shadow-muted-400/10 dark:md:shadow-muted-800/10 md:absolute md:top-0 md:mt-48 ltablet:w-3/5 ltablet:left-0 ltablet:mt-20 ltablet:ml-20 lg:w-3/5 lg:left-0 lg:mt-20 lg:ml-20 xl:mt-24 xl:ml-12">
         {/* Content */}
         <div className="flex flex-col p-12 md:px-16">
           <h2 className="not-prose font-heading font-bold text-2xl ltablet:text-4xl lg:text-4xl text-muted-800 dark:text-white">
