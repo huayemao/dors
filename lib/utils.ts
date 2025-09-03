@@ -66,11 +66,13 @@ export function humanFileSize(size: number | bigint | string) {
     size = BigInt(size)
   }
 
-  if (typeof size == "bigint") {
-    size /= BigInt(8);
-  } else {
-    size /= 8;
-  }
+  // 移除不必要的除以8操作，文件大小已经是以字节为单位的
+  // if (typeof size == "bigint") {
+  //   size /= BigInt(8);
+  // } else {
+  //   size /= 8;
+  // }
+  
 
   while (size >= 1024) {
     if (typeof size == "bigint") {

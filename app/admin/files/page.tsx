@@ -22,6 +22,7 @@ export default async function UploadTest({ searchParams }) {
       name: true,
       size: true,
       mimeType: true,
+      createdAt: true, // 添加createdAt字段用于显示上传时间
     },
     orderBy: {
       createdAt: "desc",
