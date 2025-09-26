@@ -145,6 +145,15 @@ const nextConfig = {
       ],
     };
   },
+  async redirects() {
+    return [
+      {
+        source: "/video-splitter/:path*",
+        destination: "https://split-v.utities.online",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withPlaiceholder(nextConfig);
