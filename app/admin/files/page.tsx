@@ -54,7 +54,7 @@ export default async function AdminFilesPage({
         routerQueryKey={"page"}
         totalItems={totalItems}
         itemPerPage={PER_PAGE}
-        currentPage={searchParams.page}
+        currentPage={parseInt(searchParams.page || "1", 10)}
         maxLinksDisplayed={5}
         rounded="full"
       ></BasePagination>
@@ -63,7 +63,13 @@ export default async function AdminFilesPage({
 }
 
 async function addMimeTypes(
-  list: { id: number; name: string; displayName?: string; size: bigint | null; mimeType: string }[]
+  list: {
+    id: number;
+    name: string;
+    displayName?: string;
+    size: bigint | null;
+    mimeType: string;
+  }[]
 ) {
   const lackMTIds = list.filter((e) => !e.mimeType.trim());
   const res = list

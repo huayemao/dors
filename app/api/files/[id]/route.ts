@@ -23,6 +23,7 @@ export async function GET(
 
     const mimeType = mime.getType(file?.name || "");
 
+    // @ts-ignore
     const blob = new Blob([file!.data]);
     const stream = blob.stream();
 

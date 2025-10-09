@@ -16,6 +16,7 @@
     "@glint-ui/react": "^0.0.5",
     "@headlessui-float/react": "^0.15.1",
     "@headlessui/react": "^2.2.9",
+    "@iconify/react": "^6.0.2",
     "@next/font": "^14.2.15",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",
