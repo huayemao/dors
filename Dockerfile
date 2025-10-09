@@ -4,6 +4,8 @@ FROM node:20-alpine AS builder
 # 设置工作目录
 WORKDIR /app
 
+RUN npm install -g pnpm
+
 # 设置构建参数
 ARG DATABASE_URL
 ARG HTTP_BASIC_AUTH
@@ -15,25 +17,25 @@ ENV HTTP_BASIC_AUTH=$HTTP_BASIC_AUTH
 # 安装必要的系统依赖
 RUN apk add --no-cache openssl
 
-# 复制 package.json 和 yarn.lock
-COPY package.json yarn.lock ./
+# 复制 package.json 和 pnpm.lock
+COPY package.json pnpm-lock.yaml ./
 
-# 配置 yarn 镜像源
-RUN yarn config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" && \
-    yarn config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
-    yarn config set registry https://registry.npmmirror.com
+# 配置 pnpm 镜像源
+# RUN pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" && \
+#     pnpm config set sharp_binary_host "https://npmmirror.com/mirrors/sharp" && \
+#     pnpm config set registry https://registry.npmmirror.com
 
 # 安装依赖
-RUN yarn install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # 复制源代码
 COPY . .
 
 # 生成 Prisma 客户端
-RUN yarn db:generate
+RUN pnpm db:generate
 
 # 构建应用
-RUN yarn build
+RUN pnpm build
 
 # 运行阶段
 FROM node:20-alpine AS runner
