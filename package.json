@@ -14,6 +14,8 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@glint-ui/react": "^0.0.5",
+    "@headlessui-float/react": "^0.15.1",
+    "@headlessui/react": "^2.2.9",
     "@next/font": "^14.2.15",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",
