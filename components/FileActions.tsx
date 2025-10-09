@@ -1,11 +1,10 @@
-"use client";
 import { copyTextToClipboard, humanFileSize, withConfirm } from "@/lib/utils";
 import { BaseDropdown, BaseDropdownItem } from "@glint-ui/react";
-import { CopyIcon, FileIcon, ImageIcon, TrashIcon } from "lucide-react";
+import { CopyIcon, FileIcon, ImageIcon, TrashIcon, EditIcon } from "lucide-react";
 import { getFilePath } from "@/lib/client/utils/getFilePath";
 import { FileItem } from "./FileList";
 import toast from "react-hot-toast";
-export function FileActions({ e, admin }: { e: FileItem; admin: boolean }) {
+export function FileActions({ e, admin, onEdit }: { e: FileItem; admin: boolean; onEdit?: () => void }) {
   return (
     <BaseDropdown variant="context">
       <BaseDropdownItem
@@ -18,21 +17,29 @@ export function FileActions({ e, admin }: { e: FileItem; admin: boolean }) {
         }}
       ></BaseDropdownItem>
       {admin && (
-        <BaseDropdownItem
-          start={<TrashIcon className="w-5 h-5"></TrashIcon>}
-          title="删除文件"
-          onClick={withConfirm(() => {
-            fetch("/api/files/" + e.id, { method: "DELETE" })
-              .then((res) => {
-                if (res.status == 200) {
-                  toast.success("删除成功");
-                }
-              })
-              .catch((e) => {
-                toast.error("操作失败");
-              });
-          })}
-        ></BaseDropdownItem>
+        <>
+          <BaseDropdownItem
+            start={<EditIcon className="w-5 h-5"></EditIcon>}
+            title="修改文件名"
+            onClick={onEdit}
+          ></BaseDropdownItem>
+          <BaseDropdownItem
+            start={<TrashIcon className="w-5 h-5"></TrashIcon>}
+            title="删除文件"
+            onClick={withConfirm(() => {
+              fetch("/api/files/" + e.id, { method: "DELETE" })
+                .then((res) => {
+                  if (res.status == 200) {
+                    toast.success("删除成功");
+                    window.location.reload();
+                  }
+                })
+                .catch((e) => {
+                  toast.error("操作失败");
+                });
+            })}
+          ></BaseDropdownItem>
+        </>
       )}
     </BaseDropdown>
   );

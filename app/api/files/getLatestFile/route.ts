@@ -16,6 +16,7 @@ export async function GET(
       select: {
         id: true,
         name: true,
+        displayName: true,
         size: true,
         mimeType: true,
       },

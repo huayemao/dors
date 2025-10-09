@@ -1,0 +1,12 @@
+// 这是Prisma用于跟踪schema变更的原始文件
+// 它记录了迁移前的schema状态
+
+model File {
+  id           Int      @id @default(autoincrement())
+  name         String   // 存储文件名（hash）
+  data         Bytes
+  mimeType     String
+  size         BigInt?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+}

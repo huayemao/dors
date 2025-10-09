@@ -2,17 +2,9 @@ import { cn } from "@/lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { BaseButtonClose } from "@glint-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { forwardRef } from "react";
 
-export const Modal = ({
-  open,
-  onClose,
-  children,
-  title,
-  actions,
-  className,
-  size,
-  classes,
-}: {
+export const Modal = forwardRef<HTMLDivElement, {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -23,7 +15,16 @@ export const Modal = ({
   classes?: {
     wrapper?: string;
   };
-}) => {
+}>(function Modal({
+  open,
+  onClose,
+  children,
+  title,
+  actions,
+  className,
+  size,
+  classes,
+}, ref) {
   const dialogClasses = (() => {
     const classes: string[] = [];
 
@@ -59,13 +60,10 @@ export const Modal = ({
         classes?.wrapper
       )}
       open={open}
-      as={motion.div}
-      // initial={{ opacity: 0 }}
-      // animate={{ opacity: 1 }}
-      // exit={{ opacity: 0 }}
     >
       <div className="flex min-h-full items-center justify-center p-4 text-center">
         <Dialog.Panel
+          ref={ref}
           className={cn(
             "dark:bg-muted-800 w-full bg-white text-left align-middle shadow-xl rounded-md max-w-5xl",
             dialogClasses,
@@ -105,4 +103,6 @@ export const Modal = ({
       </div>
     </Dialog>
   );
-};
+});
+
+Modal.displayName = "Modal";

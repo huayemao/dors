@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import mime from "mime";
+import omit from "lodash/omit"
 
 export const revalidate = 7200;
 
@@ -38,6 +39,33 @@ export async function GET(
     return new Response(`error: ${error.message}`, {
       status: 400,
     });
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { displayName } = await request.json();
+
+    if (!displayName || displayName.trim() === "") {
+      return new Response("显示文件名不能为空", { status: 400 });
+    }
+
+    const fileId = parseInt(params.id);
+    const updatedFile = await prisma.file.update({
+      where: { id: fileId },
+      data: { displayName: displayName.trim() },
+    });
+
+
+    return new Response((omit(updatedFile, 'data')), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    return new Response(`更新失败: ${error.message}`, { status: 500 });
   }
 }
 

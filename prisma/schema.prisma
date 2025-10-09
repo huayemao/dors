@@ -587,11 +587,12 @@ model settings {
 }
 
 model File {
-  id        Int      @id @default(autoincrement())
-  name      String
-  data      Bytes
-  mimeType  String
-  size      BigInt?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id           Int      @id @default(autoincrement())
+  name         String   // 存储文件名（hash）
+  displayName  String   // 显示文件名（用户上传的原始文件名）
+  data         Bytes
+  mimeType     String
+  size         BigInt?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }

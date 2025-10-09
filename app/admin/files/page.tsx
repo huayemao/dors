@@ -2,15 +2,18 @@ import prisma from "@/lib/prisma";
 import mime from "mime";
 import { BaseCard, BasePagination, BasePlaceload } from "@glint-ui/react";
 import { UploadForm } from "@/components/UploadForm";
-import LightBox from "@/components/Base/LightBox";
 import { ClientOnly } from "@/components/ClientOnly";
 import { withPagination } from "@/lib/server/withPagination";
 import { FileList } from "@/components/FileList";
-import { Suspense } from "react";
+import { FileEditName } from "@/components/FileEditName";
 
 const PER_PAGE = 20;
 
-export default async function UploadTest({ searchParams }) {
+export default async function AdminFilesPage({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
   const getPaginatedFileList = withPagination(prisma.file.findMany, () => ({
     page: searchParams.page || 1,
     perPage: PER_PAGE,
@@ -20,6 +23,7 @@ export default async function UploadTest({ searchParams }) {
     select: {
       id: true,
       name: true,
+      displayName: true,
       size: true,
       mimeType: true,
       createdAt: true, // 添加createdAt字段用于显示上传时间
@@ -45,9 +49,6 @@ export default async function UploadTest({ searchParams }) {
           <UploadForm />
         </BaseCard>
       </div>
-      <ClientOnly>
-        <LightBox gallery=".nui-list"></LightBox>
-      </ClientOnly>
       <BasePagination
         classes={{ wrapper: "lg:col-span-2" }}
         routerQueryKey={"page"}
@@ -62,7 +63,7 @@ export default async function UploadTest({ searchParams }) {
 }
 
 async function addMimeTypes(
-  list: { id: number; name: string; size: bigint | null; mimeType: string }[]
+  list: { id: number; name: string; displayName?: string; size: bigint | null; mimeType: string }[]
 ) {
   const lackMTIds = list.filter((e) => !e.mimeType.trim());
   const res = list

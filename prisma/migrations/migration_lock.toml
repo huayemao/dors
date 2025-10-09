@@ -1,0 +1,9 @@
+# Migration lock file
+# This file is used to track which migrations have been applied to the database.
+# It should be committed to source control.
+
+provider = "mysql"
+
+[applied_migrations]
+init = "init"
+add_displayname_to_file = "add_displayname_to_file"
