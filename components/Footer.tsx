@@ -59,7 +59,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="/video-splitter"
+                  href="https://split-v.utities.online/"
                   className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
                 >
                   秒切——一键按秒分割视频
@@ -67,10 +67,18 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/huayemao/flowkit"
+                  href="https://uni.utities.online/"
                   className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
                 >
-                  flowkit——极简个人一站式工作台
+                  中国重点高校地理位置可视化网站
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://aparecium.huayemao.run/"
+                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
+                >
+                  中国行政区划数据查询平台
                 </a>
               </li>
               <li>
