@@ -21,6 +21,8 @@ import { GuideButton } from "@/app/(home)/PopoverButton";
 import { Posts } from "@/components/Tiles/Posts";
 import { MoveRight, MoveRightIcon } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
+import { BookSwiper } from "../../components/BookSwiper";
+
 
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
@@ -36,6 +38,7 @@ export default async function Home({
 }) {
   const posts = await getRecentPosts();
   const activityCards = await getActivityCards();
+  const books = await getPosts({ type: "book" });
 
   const key = posts.map((e) => e.id).join();
 
@@ -184,6 +187,36 @@ export default async function Home({
           ) : null}
         </div>
       </SectionContainer>
+      <SectionContainer
+        badge="知识库"
+        title="知识库"
+        subtitle="作者精心整理的知识体系，涵盖技术、工具、读书等多个领域。"
+      >
+        <div className="w-full max-w-7xl mx-auto py-6 relative">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="font-heading font-bold text-4xl text-muted-800 dark:text-white">
+                精选知识库
+              </h2>
+              <p className="font-sans text-lg text-muted-500 dark:text-muted-400">
+                探索作者的知识体系，获取有价值的信息和见解。
+              </p>
+            </div>
+            <a
+              href="/books"
+              className="group inline-flex items-center gap-4 text-primary-500 hover:text-primary-400 transition-colors duration-300"
+            >
+              <span className="font-sans font-medium text-sm">
+                查看全部知识库
+              </span>
+              <MoveRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></MoveRightIcon>
+            </a>
+          </div>
+          <BookSwiper books={books} />
+        </div>
+      </SectionContainer>
     </Fragment>
   );
 }
+
+

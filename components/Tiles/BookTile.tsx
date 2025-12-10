@@ -1,6 +1,5 @@
 import { SITE_META } from "@/constants";
 import { cn, getDateString, isDataURL } from "@/lib/utils";
-import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Category } from "../Category";
@@ -21,14 +20,14 @@ interface Props {
   tags?: Array<{ id: number; name: string | null } | null>;
 }
 
-export default function BookTile({ id, title, coverImage, posts, tags }: Props) {
+export function BookTile({ id, title, coverImage, posts, tags }: Props) {
   if (!title) return null;
 
   const url = coverImage?.src?.large || coverImage?.dataURLs?.small;
   const blurDataURL = coverImage?.dataURLs?.blur;
 
   return (
-    <hgroup className="relative">
+    <hgroup className="relative max-w-xs md:max-w-sm">
       <div className="h-full flex flex-col gap-3 p-6 md:gap-4 w-full rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 overflow-hidden">
         <Link href={"/posts/" + id} className="h-full items-start">
           <div className="relative w-full space-y-4">
@@ -46,7 +45,7 @@ export default function BookTile({ id, title, coverImage, posts, tags }: Props) 
                 )}
               </div>
               {typeof url == "string" &&
-              (isDataURL(url) || !url.startsWith("/")) ? (
+                (isDataURL(url) || !url.startsWith("/")) ? (
                 <img
                   className="rounded-xl w-[348px] h-[208px] object-cover"
                   src={url}
@@ -59,7 +58,7 @@ export default function BookTile({ id, title, coverImage, posts, tags }: Props) 
                   className="rounded-xl w-[348px] h-[208px] object-cover"
                   src={url}
                   placeholder={(blurDataURL && "blur") || undefined}
-                  unoptimized={config.output === "export"}
+                  unoptimized={url.startsWith("/api")}
                   blurDataURL={blurDataURL}
                   alt={title || SITE_META.name}
                   quality={url.toString().includes(SITE_META.url) ? 100 : 80}

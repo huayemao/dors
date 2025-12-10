@@ -2,11 +2,7 @@ import withPlaiceholder from "@plaiceholder/next";
 import { writeFileSync } from 'fs';
 // import webpack from 'next/dist/compiled/webpack/webpack-lib.js';
 import crypto from 'crypto';
-import path from "path";
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class RevisionPlugin {
   constructor(options = {}) {
@@ -21,7 +17,7 @@ class RevisionPlugin {
       console.log('Webpack build has started!');
       const compilationHash = crypto.createHash('sha1').update(this.options.buildId).digest('hex');
       // 将哈希值写入到文件中
-      writeFileSync(path.resolve(__dirname, 'public/version.js'), `const VERSION='${compilationHash}';`);
+      writeFileSync('public/version.js', `const VERSION='${compilationHash}';`);
       // 确保调用回调函数，以继续构建过程
       callback();
     });
