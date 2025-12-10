@@ -1,0 +1,7 @@
+# .pnpmrc
+# 强制提升隐式依赖到 node_modules 根目录
+shamefully-hoist=true
+# 禁用符号链接（Docker 中符号链接易失效，强制本地硬拷贝）
+link-workspace-packages=false
+# 自定义 store 目录（避免全局 store 隔离问题）
+store-dir=./.pnpm-store

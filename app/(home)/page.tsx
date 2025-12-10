@@ -199,7 +199,6 @@ export default async function Home({
                   description={card.description}
                   href={card.href}
                   actionName={card.actionName}
-                  info={card.info}
                 />
               ))
             ) : null}
