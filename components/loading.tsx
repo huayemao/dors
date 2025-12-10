@@ -5,7 +5,7 @@ export default function Loading({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed inset-0 flex items-center justify-center",
+        "h-full w-full min-h-[75vh] flex items-center justify-center", 
         className
       )}
     >
