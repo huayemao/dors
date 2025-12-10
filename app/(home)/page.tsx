@@ -54,10 +54,10 @@ export default async function Home({
                 <div className="w-full ltablet:w-1/2 lg:w-1/2 p-6">
                   <div className="max-w-md space-y-4 text-center mx-auto ltablet:text-left lg:text-left ltablet:mx-0 lg:mx-0">
                     <h1 className="font-heading font-bold text-5xl md:text-6xl text-muted-800 dark:text-white">
-                      {SITE_META.name} {SITE_META.description}
+                      {SITE_META.name}
                     </h1>
                     <p className="font-sans text-lg text-muted-500 dark:text-muted-400">
-                      {SITE_META.introduction}
+                      {SITE_META.description} —— {SITE_META.introduction}
                     </p>
 
                     <div className="flex items-center justify-center ltablet:justify-start lg:justify-start gap-x-2">

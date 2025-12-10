@@ -15,7 +15,10 @@ const LXGW_WenKai = localFont({
 })
 
 export const metadata: Metadata = {
-  title: SITE_META.name + "——" + SITE_META.description,
+  title: {
+    default: SITE_META.name,
+    template: '%s | ' + SITE_META.name,
+  },
   description: SITE_META.description + SITE_META.introduction,
   abstract: SITE_META.description + SITE_META.introduction,
   authors: SITE_META.author,

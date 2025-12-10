@@ -10,6 +10,12 @@ type SearchParams = PaginateOptions;
 
 export const revalidate = 1200;
 
+export const metadata = {
+  title: '知识库（果园）',
+  description: '果园便沉淀着花野猫先生在数字花园中耕耘的硕果。这里是知识收纳地，博主将零散认知、实用技能、深度思考 “栽种” 成果树，经时间打磨褪去杂乱，留下扎实养分。访客无需在信息中寻觅，抬手便能采摘解决问题、充盈认知的 “果实”。',
+  keywords: ['数字花园', '知识库', '知识管理', '知识分享','对抗浅薄'],
+};
+
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
 export default async function Home({
