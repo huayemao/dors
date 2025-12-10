@@ -17,6 +17,7 @@
     "@headlessui-float/react": "^0.15.1",
     "@headlessui/react": "^2.2.9",
     "@iconify/react": "^6.0.2",
+    "@mdx-js/mdx": "^3.1.1",
     "@next/font": "^14.2.15",
     "@plaiceholder/next": "^3.0.0",
     "@prisma/client": "^4.12.0",
@@ -64,6 +65,7 @@
   "devDependencies": {
     "@shuriken-ui/tailwind": "^3.1.1",
     "@tailwindcss/typography": "^0.5.9",
+    "@types/mdx": "^2.0.13",
     "@types/node": "^18.15.10",
     "@types/react": "18.0.31",
     "@types/swiper": "^6.0.0",
@@ -72,6 +74,7 @@
     "autoprefixer": "^10.4.14",
     "eslint": "^8.43.0",
     "eslint-config-next": "^13.4.6",
+    "mdx": "^0.3.1",
     "postcss": "^8.4.21",
     "prisma": "^4.12.0",
     "tailwindcss": "^3.3.3",

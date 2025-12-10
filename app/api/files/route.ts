@@ -42,7 +42,7 @@ export async function POST(request: Request) {
         let processedSize = item.size;
 
         // 检查是否为图片并进行压缩
-        if (processedMimeType.startsWith("image/") && processedMimeType !== "image/svg+xml") {
+        if (processedMimeType.startsWith("image/") && processedMimeType !== "image/svg+xml" && processedMimeType !== "image/gif") {
           try {
             const sharpInstance = sharp(buffer);
 

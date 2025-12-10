@@ -21,7 +21,7 @@ import {
   type ReactNode,
   type Ref,
 } from "react";
-import { useDebounce } from "use-debounce";
+import { useDebounce } from "@uidotdev/usehooks";
 
 type BaseAutocompleteProps<T = string> = {
   /**
@@ -477,7 +477,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
     [defaultDisplayValue, props.displayValue]
   );
 
-  const [debounced] = useDebounce(query, filterDebounce);
+  const debounced = useDebounce(query, filterDebounce);
 
   const pendingDebounce = query !== debounced;
 

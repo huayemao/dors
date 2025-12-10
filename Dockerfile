@@ -5,7 +5,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm
-
+RUN rm -rf /app/* /app/.??*
 # 设置构建参数
 ARG DATABASE_URL
 ARG HTTP_BASIC_AUTH
@@ -13,6 +13,7 @@ ARG HTTP_BASIC_AUTH
 # 设置环境变量
 ENV DATABASE_URL=$DATABASE_URL
 ENV HTTP_BASIC_AUTH=$HTTP_BASIC_AUTH
+ENV PNPM_CONFIG_NODE_LINKER="hoisted"
 
 # 安装必要的系统依赖
 RUN apk add --no-cache openssl
@@ -26,7 +27,7 @@ COPY package.json pnpm-lock.yaml ./
 #     pnpm config set registry https://registry.npmmirror.com
 
 # 安装依赖
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --shamefully-hoist --store-dir=./.pnpm-store
 
 # 复制源代码
 COPY . .
