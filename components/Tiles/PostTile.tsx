@@ -115,7 +115,7 @@ function PostTile({
                             // className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted-100 dark:bg-muted-700 text-muted-600 dark:text-muted-300 hover:bg-muted-200 dark:hover:bg-muted-600 transition-colors duration-150"
                           >
                             <BaseTag size="sm" shadow="hover"  color="muted" variant="pastel">
-                               #{t.name}
+                               {t.name}
                             </BaseTag>
                           </a>
                         )
