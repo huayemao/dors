@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request, response: Response) {
+export async function POST(request: Request) {
   const json = await request.json();
 
   const res = await prisma.categories.create({

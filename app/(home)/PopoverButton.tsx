@@ -1,20 +1,16 @@
 "use client";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
-import { BaseButton } from "@glint-ui/react";
+import { BaseButton, BaseFloat } from "@glint-ui/react";
 import Icon from "@/components/Base/Icon";
-import { Float } from "@headlessui-float/react";
 
 export function GuideButton() {
   return (
     <div className="relative">
       <Popover>
-        <Float
+        {/* <BaseFloat
           placement="bottom-start"
           offset={15}
-          shift={6}
-          flip={10}
-          arrow={5}
           // portal
           enter="transition duration-200 ease-out"
           enterFrom="opacity-0 -translate-y-1"
@@ -22,7 +18,7 @@ export function GuideButton() {
           leave="transition duration-150 ease-in"
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 -translate-y-1"
-        >
+        > */}
           <PopoverButton
             as={BaseButton}
             shadow="hover"
@@ -34,7 +30,6 @@ export function GuideButton() {
           </PopoverButton>
           <PopoverPanel>
             <div className="w-80 md:w-96 p-3 lg:p-3 rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 shadow-2xl shadow-muted-500/20 dark:shadow-muted-800/20">
-
               {/*Grid*/}
               <div className="grid gap-1 text-left">
                 {/*Grid item*/}
@@ -102,7 +97,7 @@ export function GuideButton() {
               </div>
             </div>
           </PopoverPanel>
-        </Float>
+        {/* </BaseFloat> */}
       </Popover>
     </div>
   );

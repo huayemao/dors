@@ -3,7 +3,7 @@ import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { getTagIds } from "@/lib/server/tags";
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 3600;

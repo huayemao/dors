@@ -2,7 +2,7 @@
 import React, { RefObject, useEffect, useLayoutEffect, useRef } from "react";
 import MagicGrid from "magic-grid";
 
-function useMagicGrid(selectorOrRef:  RefObject<HTMLElement> |string) {
+function useMagicGrid(selectorOrRef:  RefObject<HTMLElement | null> |string) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {

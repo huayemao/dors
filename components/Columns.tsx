@@ -9,10 +9,10 @@ function Columns({ children, noDivide, className }: PropsWithChildren<{ noDivide
       "!divide-x-0 gap-4": noDivide
     }, className)}>
       {arr
-        .filter((e) => typeof (e as ReactElement).type != "string" || (e as ReactElement).type != 'hr')
+        .filter((e) => typeof (e as ReactElement<any>).type != "string" || (e as ReactElement<any>).type != 'hr')
         .map((el) => (
           // eslint-disable-next-line react/jsx-key
-          <div className="flex-1 md:px-6">{el}</div>
+          (<div className="flex-1 md:px-6">{el}</div>)
         ))}
     </div>
   );

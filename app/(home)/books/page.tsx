@@ -6,7 +6,7 @@ import { BaseHeading, BaseIconBox } from "@glint-ui/react";
 
 import { cache, Fragment, Suspense } from "react";
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 
 export const revalidate = 1200;
 

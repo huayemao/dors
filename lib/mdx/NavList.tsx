@@ -9,14 +9,14 @@ import { usePathname } from "next/navigation";
 
 export default function NavList(props) {
   const arr = React.Children.toArray(props.children);
-  const ul = arr[0] as ReactElement;
+  const ul = arr[0] as ReactElement<any>;
   const lis = filterEmptyLines(React.Children.toArray(ul.props.children));
   const pathname = usePathname();
 
   return (
     <ul className={cn("not-prose", props.className)}>
-      {lis.map((li: ReactElement, i) => {
-        const a = React.Children.toArray(li.props.children)[0] as ReactElement;
+      {lis.map((li: ReactElement<any>, i) => {
+        const a = React.Children.toArray(li.props.children)[0] as ReactElement<any>;
         const title = React.Children.toArray(a.props.children)[0] as string;
         const href = a.props.href;
         const description = a.props.title;

@@ -1,5 +1,5 @@
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, type JSX } from "react";
 import { Modal } from "../Base/Modal";
 
 export function withModal<Props>(

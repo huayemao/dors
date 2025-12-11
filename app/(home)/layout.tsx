@@ -6,13 +6,13 @@ import { CategoriesContextProvider } from "@/contexts/categories";
 import { TagsContextProvider } from "@/contexts/tags";
 import { getResourceItems } from "@/lib/server/resource";
 
-export const revalidate = 36000;
+import type { ReactNode } from "react";
 
 export default async function MainLayout({
   children,
   params,
 }: {
-  children: JSX.Element;
+  children: ReactNode;
   params: any;
 }) {
   const categories = await getAllCategories({ includeHidden: true });

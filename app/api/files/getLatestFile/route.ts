@@ -1,11 +1,10 @@
 import prisma from "@/lib/prisma";
 import { withPagination } from "@/lib/server/withPagination";
 
-export const revalidate = 60 * 60;
+export const revalidate = 3600;
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: Request
 ) {
   try {
     const getPaginatedFileList = withPagination(prisma.file.findMany, () => ({

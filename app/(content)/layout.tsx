@@ -4,13 +4,12 @@ import { getAllCategories } from "@/lib/server/categories";
 import { getResourceItems } from "@/lib/server/resource";
 import { unstable_cache } from "next/cache";
 
+import type { ReactNode } from "react";
+
 export default async function ContentLayout({
   children,
   params,
-}: {
-  children: JSX.Element;
-  params: any;
-}) {
+}: { children: ReactNode; params: any }) {
   const resourceItems = await getResourceItems();
   const categories = await getAllCategories({ includeHidden: true });
   return (

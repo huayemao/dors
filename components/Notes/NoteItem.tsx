@@ -4,15 +4,7 @@ import { BaseCard, BaseTag, BaseButton } from "@glint-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 
 import { cn, getDateStr } from "@/lib/utils";
-import {
-  FC,
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FC, Fragment, useCallback, useEffect, useMemo, useRef, useState, type JSX } from "react";
 import {
   ContextMenu,
   ContextMenuContent,

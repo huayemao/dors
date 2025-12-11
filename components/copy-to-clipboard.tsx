@@ -7,7 +7,7 @@ export const CopyToClipboard = ({
   ...props
 }: {
   getValue: () => string
-} & ComponentProps<'button'>): ReactElement => {
+} & ComponentProps<'button'>): ReactElement<any> => {
   const [isCopied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -39,6 +39,6 @@ export const CopyToClipboard = ({
 
   return (
     /* @ts-ignore */
-      <IconToUse className="h-4 w-4" onClick={handleClick}  title="Copy code" tabIndex={0} {...props}></IconToUse>
-  )
+    <IconToUse className="h-4 w-4" onClick={handleClick}  title="Copy code" tabIndex={0} {...props}></IconToUse>
+  );
 }

@@ -1,8 +1,10 @@
 import withPlaiceholder from "@plaiceholder/next";
 import { writeFileSync } from 'fs';
+import path from "path";
 // import webpack from 'next/dist/compiled/webpack/webpack-lib.js';
 import crypto from 'crypto';
 
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 class RevisionPlugin {
   constructor(options = {}) {
@@ -28,7 +30,15 @@ class RevisionPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['next-mdx-remote'],
   output: 'standalone',
+  // Disable Turbopack and use webpack instead to maintain compatibility with custom webpack configuration
+  turbopack: {
+    // resolveAlias: {
+    //   react: path.resolve(__dirname, "./node_modules/react"),
+    //   "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
+    // }
+  },
   webpack(config, { buildId }) {
     config.resolve.fallback = { fs: false, child_process: false };
     config.plugins.push(new RevisionPlugin({ buildId }));
@@ -62,7 +72,7 @@ const nextConfig = {
     ]))
   },
   experimental: {
-    serverComponentsExternalPackages: ["prisma", "shiki", "vscode-oniguruma"],
+    serverExternalPackages: ["prisma", "shiki", 'vscode-oniguruma'],
   },
   basePath:
     process.env.OUTPUT_MODE === "export" && process.env.GITHUB_PAGE

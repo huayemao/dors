@@ -9,9 +9,9 @@ export const Pre = ({
   children,
   className,
   ...props
-}: ComponentProps<"pre">): ReactElement => {
+}: ComponentProps<"pre">): ReactElement<any> => {
   const preRef = useRef<HTMLPreElement | null>(null);
-  const arr = React.Children.toArray(children) as ReactElement[];
+  const arr = React.Children.toArray(children) as ReactElement<any>[];
   const lidEl = arr.filter((e) => e.props.className.includes("language-id"));
   const containerEl = arr.filter((e) =>
     e.props.className.includes("code-container")
@@ -20,7 +20,7 @@ export const Pre = ({
     <pre {...props} ref={preRef} className={cn("relative !pt-10 !overflow-x-hidden",c.shiki)}>
       <div className="absolute top-0 right-0 left-0 flex items-center justify-between w-full px-6 py-2 pr-4 bg-muted-700 text-muted-100">
         <span className="text-xs lowercase">
-          {lidEl ?? (lidEl as ReactElement).props.children}
+          {lidEl ?? (lidEl as ReactElement<any>).props.children}
         </span>
         <div className="flex items-center space-x-1">
           {

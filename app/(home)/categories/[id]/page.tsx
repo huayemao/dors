@@ -1,12 +1,10 @@
 import { Posts } from "@/components/Tiles/Posts";
 import { getAllCategories } from "@/lib/server/categories";
-import { PaginateOptions } from "@/lib/paginator";
 import { getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { Metadata } from "next";
 import { SITE_META } from "@/constants";
 import { BaseHeading } from "@glint-ui/react";
 
-type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export async function generateMetadata(

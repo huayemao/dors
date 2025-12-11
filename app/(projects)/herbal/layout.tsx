@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import "./herbal.css";
 
+import type { JSX } from "react";
+
 export const metadata: Metadata = {
     title: '文章格式处理工具',
     description: '云南省中药材大数据中心文章格式处理工具',

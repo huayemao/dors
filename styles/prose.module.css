@@ -1,12 +1,12 @@
-.content :global .code-container {
+.content :global(.code-container) {
   @apply overflow-x-auto nui-slimscroll;
 }
-.content :global .contains-task-list {
+.content :global(.contains-task-list) {
   margin-left: 0;
   list-style-type: none;
   padding: 0;
 }
 
-.content :global .contains-task-list input {
+.content :global(.contains-task-list input) {
   @apply my-0;
 }

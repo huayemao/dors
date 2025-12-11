@@ -6,7 +6,7 @@ import { PaginateOptions } from "@/lib/paginator";
 import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 
 export default async function PostsPage(
   props: {

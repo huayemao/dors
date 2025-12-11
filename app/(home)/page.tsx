@@ -24,7 +24,7 @@ import ActivityCard from "@/components/ActivityCard";
 import { BookSwiper } from "../../components/BookSwiper";
 
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 1200;

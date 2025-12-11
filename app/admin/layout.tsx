@@ -5,6 +5,8 @@ import { TagsContextProvider } from "@/contexts/tags";
 import { Nav } from "./Nav";
 import { ClientOnly } from "@/components/ClientOnly";
 
+import type { JSX } from "react";
+
 export default async function AdminLayout({
   children,
   params,

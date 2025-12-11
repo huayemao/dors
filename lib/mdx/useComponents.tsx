@@ -16,7 +16,7 @@ import Tag from "@/components/Tag";
 import ToolBox from "@/components/ToolBox";
 import Word from "@/components/Word";
 import { BaseButton, BaseCard } from "@glint-ui/react";
-import React, { ReactElement } from "react";
+import React, { ReactElement, type JSX } from "react";
 import { filterEmptyLines } from "./filterEmptyLines";
 import NavList from "./NavList";
 import { Activity } from "lucide-react";
@@ -79,10 +79,10 @@ export const components = {
   img: Figure,
   PlayList: (props) => {
     const arr = React.Children.toArray(props.children);
-    const ul = arr[0] as ReactElement;
+    const ul = arr[0] as ReactElement<any>;
     const lis = filterEmptyLines(React.Children.toArray(ul.props.children));
-    const data = lis.map((li: ReactElement) => {
-      const a = React.Children.toArray(li.props.children)[0] as ReactElement;
+    const data = lis.map((li: ReactElement<any>) => {
+      const a = React.Children.toArray(li.props.children)[0] as ReactElement<any>;
       const title = React.Children.toArray(a.props.children)[0] as string;
       const href = a.props.href;
       const description = a.props.title;

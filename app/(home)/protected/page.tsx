@@ -4,7 +4,7 @@ import { PaginateOptions } from "@/lib/paginator";
 import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { Fragment, Suspense } from "react";
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 120;

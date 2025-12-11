@@ -6,7 +6,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
-const theme = require("shiki/themes/nord.json");
+import theme from "shiki/themes/nord.json";
 
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
@@ -55,7 +55,7 @@ async function parseMDX(
       directiveAdapterPlugin,
     ];
 
-    if(post.content?.includes(":::")) {
+    if (post.content?.includes(":::")) {
       list.unshift(remarkDirective);
       list.unshift(directiveAdapterPlugin);
     }
@@ -73,8 +73,11 @@ async function parseMDX(
     const parsePromise = compileMDX({
       source: post?.content || "",
       components: { ...components, ...(options?.components || {}) },
+
       options: {
         mdxOptions: {
+          jsxImportSource: "react", // 强制使用项目的 React
+          // 显式指定 JSX 运行时路径（适配 Next.js 15）
           remarkRehypeOptions: {
             allowDangerousHtml: true,
           },

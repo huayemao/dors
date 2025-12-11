@@ -1,6 +1,6 @@
 import React, { Ref, RefObject, useEffect, useRef, useState } from "react";
 
-export function usePinned(ref: RefObject<HTMLElement>, top?: number) {
+export function usePinned(ref: RefObject<HTMLElement | null>, top?: number) {
   const [pinned, setPinned] = useState(false);
 
   useEffect(() => {

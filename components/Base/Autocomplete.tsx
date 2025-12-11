@@ -1,12 +1,12 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-useless-fragment */
 import { cn } from "@/lib/utils";
-import { Float } from "@headlessui-float/react";
 import { Combobox } from "@headlessui/react";
 import { Icon } from "@iconify/react";
 import {
   BaseAutocompleteItem,
   BaseButton,
+  BaseFloat,
   BaseInputHelpText,
   BasePlaceload,
   BaseSnack,
@@ -600,13 +600,13 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
       as="div"
       ref={ref}
     >
-      <Float
+      <BaseFloat
         composable
         leave="transition ease-in duration-100"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        onHide={() => setQuery("")}
-        flip={!multiple}
+        // onHide={() => setQuery("")}
+        // flip={!multiple}
         offset={5}
         strategy={fixed ? "fixed" : "absolute"}
         placement={placement}
@@ -644,7 +644,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
             </div>
           )}
         </>
-        <Float.Reference>
+        <BaseFloat.Reference>
           <div className="nui-autocomplete-outer">
             <Combobox.Input
               className={cn(
@@ -741,7 +741,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
               </div>
             )}
           </div>
-        </Float.Reference>
+        </BaseFloat.Reference>
 
         <>
           {error && typeof error === "string" && (
@@ -751,7 +751,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
           )}
         </>
 
-        <Float.Content className={cn(!fixed && "w-full")}>
+        <BaseFloat.Content className={cn(!fixed && "w-full")}>
           <Combobox.Options
             as="div"
             className={cn(
@@ -874,8 +874,8 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
               </>
             )}
           </Combobox.Options>
-        </Float.Content>
-      </Float>
+        </BaseFloat.Content>
+      </BaseFloat>
     </Combobox>
   );
 });

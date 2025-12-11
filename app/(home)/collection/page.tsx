@@ -15,7 +15,7 @@ import Link from "next/link";
 import { cache, Fragment, Suspense } from "react";
 import PostListItem from "@/components/PostListItem";
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 1200;

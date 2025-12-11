@@ -9,6 +9,9 @@ import { AppToaster } from "@/components/Base/AppToaster";
 import localFont from 'next/font/local'
 
 
+import type { JSX } from "react";
+
+
 const LXGW_WenKai = localFont({
   src: '../public/fonts/LXGWWenKai-Regular.woff2',
   variable: '--font-LXGW-WenKai',

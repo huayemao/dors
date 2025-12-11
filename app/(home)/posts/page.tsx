@@ -8,7 +8,7 @@ import { getPageCount, getPosts, getProcessedPosts } from "@/lib/server/posts";
 import { BaseHeading } from "@glint-ui/react";
 import { cache, Fragment, Suspense } from "react";
 
-type SearchParams = PaginateOptions;
+type SearchParams = Promise<PaginateOptions>;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 1200;

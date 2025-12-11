@@ -116,7 +116,7 @@ function Content({
     </>
   );
 
-  function extractPreview(result: ReactElement): React.ReactNode {
+  function extractPreview(result: ReactElement<any>): React.ReactNode {
     // console.log(result);
     if (result.type.toString() == React.Fragment.toString()) {
       const children = React.Children.toArray(result.props.children);
@@ -126,7 +126,7 @@ function Content({
     const isGallery = result.type.toString() == Gallery.toString();
     if (isGallery) {
       const { children: galleryChildren, ...props } = result.props;
-      const p = React.Children.toArray(galleryChildren)[0] as ReactElement;
+      const p = React.Children.toArray(galleryChildren)[0] as ReactElement<any>;
       const c = React.Children.toArray(p.props.children);
       const changedChildren = filterEmptyLines(c);
       const threshold = isMobile ? 4 : 9;
@@ -139,7 +139,7 @@ function Content({
             preview={true}
             className="grid grid-cols-2 md:grid-cols-3"
           >
-            {changedChildren.map((e: ReactElement, i) => ({
+            {changedChildren.map((e: ReactElement<any>, i) => ({
               ...e,
               props: { ...e.props, preview: true, className: cn({ 'hidden': i >= threshold }) },
             }))}

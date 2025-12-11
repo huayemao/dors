@@ -5,11 +5,11 @@
   opacity: 0.5;
 }
 .shiki div:global(.dim),
-.shiki div:glabl(.highlight) {
+.shiki div:global(.highlight) {
   margin: 0;
   padding: 0;
 }
-.shiki div:glabl(.highlight) {
+.shiki div:global(.highlight) {
   opacity: 1;
   background-color: #f1f8ff;
 }

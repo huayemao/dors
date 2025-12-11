@@ -1,8 +1,9 @@
-"use client"
+"use client";
 import clsx from "clsx";
 import { MoveLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { JSX } from "react";
 interface Props extends React.HTMLAttributes<HTMLAnchorElement> {
   children?: JSX.Element;
 }

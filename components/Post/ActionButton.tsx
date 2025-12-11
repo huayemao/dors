@@ -2,7 +2,7 @@
 import { Menu, MoveLeft } from "lucide-react";
 import { PreviewModal } from "../Base/PreviewModal";
 import { ActionTabs } from "./SideTabs";
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { BaseButtonIcon } from "@glint-ui/react";
 import withClientOnly from "@/lib/client/utils/withClientOnly";
