@@ -6,11 +6,26 @@ import Prose from "@/components/Base/Prose";
 import { Footer } from "@/components/Footer";
 import Post from "@/components/Post";
 
+const isNoteCollection = (str: any) => {
+  try {
+    if (typeof str != "string") {
+      return false;
+    }
+    const obj = JSON.parse(str);
+    if (obj[0].content) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
 export async function renderPost(post: Awaited<ReturnType<typeof getPost>>) {
   if (!post) {
     return notFound();
   }
-  if (post.type.includes("collection")) {
+  if (post.type.includes("collection") || isNoteCollection(post.content)) {
     return redirect("/notes/" + post.id);
   }
 
