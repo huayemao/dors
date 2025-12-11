@@ -8,11 +8,12 @@ import { Suspense } from "react";
 
 type SearchParams = PaginateOptions;
 
-export default async function PostsPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function PostsPage(
+  props: {
+    searchParams: Promise<SearchParams>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const posts = await getPosts({
     ...searchParams,
     includeHiddenCategories: true,

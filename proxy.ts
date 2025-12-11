@@ -4,7 +4,7 @@ import { isAuthenticated } from "./lib/server/isAuthenticated";
 
 
 // Step 1. HTTP Basic Auth Middleware for Challenge
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const basicAuthPathSuffixes = ["/api", "/admin", "/protected"];
   const whiteList = ["/api/files", "/api/getPost"];
 

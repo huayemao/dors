@@ -4,10 +4,8 @@ import omit from "lodash/omit"
 
 export const revalidate = 7200;
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const file = await prisma.file.findFirst({
       where: {
@@ -43,10 +41,8 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { displayName } = await request.json();
 
@@ -70,10 +66,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     await prisma.file.delete({ where: { id: Number(params.id) } });
     return new Response("ok", {

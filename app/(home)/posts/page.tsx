@@ -15,11 +15,12 @@ export const revalidate = 1200;
 
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function Home(
+  props: {
+    searchParams: Promise<SearchParams>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const posts = await getProcessedPosts(
     await getPosts({
       ...searchParams,

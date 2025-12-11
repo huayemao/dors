@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "db:generate": "prisma generate --schema=./prisma/schema.prisma",
     "db:pull": "prisma db pull --schema=./prisma/schema.prisma"
   },
@@ -36,12 +36,12 @@
     "lucide-react": "^0.456.0",
     "magic-grid": "^3.4.7",
     "mime": "^4.0.3",
-    "next": "^14.2.21",
+    "next": "16.0.8",
     "next-mdx-remote": "^5.0.0",
     "photoswipe": "^5.4.4",
     "plaiceholder": "^3.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.23.1",
     "react-textarea-autosize": "^8.5.3",
@@ -67,17 +67,22 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/mdx": "^2.0.13",
     "@types/node": "^18.15.10",
-    "@types/react": "18.0.31",
+    "@types/react": "19.2.7",
     "@types/swiper": "^6.0.0",
     "@types/wicg-file-system-access": "^2023.10.5",
     "@types/xlsx": "^0.0.36",
     "autoprefixer": "^10.4.14",
-    "eslint": "^8.43.0",
-    "eslint-config-next": "^13.4.6",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.8",
     "mdx": "^0.3.1",
     "postcss": "^8.4.21",
     "prisma": "^4.12.0",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.7"
+    }
   }
 }

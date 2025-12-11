@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 
 export const dynamic = 'force-dynamic'
 
-export default async function page({ params }) {
+export default async function page(props) {
+  const params = await props.params;
   if (!params.id || Number.isNaN(parseInt(params.id))) {
     return notFound();
   }

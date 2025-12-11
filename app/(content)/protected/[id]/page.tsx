@@ -3,7 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { renderPost } from "../../posts/[id]/renderPost";
 
 
-export default async function page({ params }) {
+export default async function page(props) {
+  const params = await props.params;
   if (!params.id) {
     return;
   }

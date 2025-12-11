@@ -9,11 +9,12 @@ import { BaseHeading } from "@glint-ui/react";
 type SearchParams = PaginateOptions;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ id: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   // read route params
 
   const cats = await getAllCategories({ includeHidden: true });
@@ -34,13 +35,14 @@ export async function generateMetadata({
 export const revalidate = 3600;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
-export default async function PostsByCategory({
-  params,
-}: {
-  params: {
-    id: string;
-  };
-}) {
+export default async function PostsByCategory(
+  props: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
+) {
+  const params = await props.params;
   const cats = await getAllCategories({ includeHidden: true });
   const cat = cats.find((e) => e.id == parseInt(params.id))!;
   const posts = await getProcessedPosts(

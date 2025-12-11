@@ -10,10 +10,11 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminSettingsPage({ params, searchParams }) {
+export default async function AdminSettingsPage(props) {
+  const searchParams = await props.searchParams;
   const cats = await getAllCategories({ includeHidden: true });
   const settings = await prisma.settings.findMany({});
-  
+
   // 从 URL 参数中获取当前活动的标签页，默认为 "cache"
   const activeTab = searchParams?.tab || "cache";
 

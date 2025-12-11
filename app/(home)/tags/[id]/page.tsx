@@ -9,15 +9,16 @@ type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 export const revalidate = 3600;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
-export default async function PostsByTag({
-  searchParams,
-  params,
-}: {
-  searchParams: SearchParams;
-  params: {
-    id: string;
-  };
-}) {
+export default async function PostsByTag(
+  props: {
+    searchParams: Promise<SearchParams>;
+    params: Promise<{
+      id: string;
+    }>;
+  }
+) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const posts = await getProcessedPosts(
     await getPosts({ perPage: 200, ...searchParams, tagId: Number(params.id) })
   );

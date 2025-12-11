@@ -5,11 +5,12 @@ import { ProcessedDiary } from "@/components/Diary/ProcessedDiary";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-export default async function DiariesPage({
-  searchParams,
-}: {
-  searchParams: { postId?: string };
-}) {
+export default async function DiariesPage(
+  props: {
+    searchParams: Promise<{ postId?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   // Get all diary posts with caching
   const posts = await getDiaryPosts();
 

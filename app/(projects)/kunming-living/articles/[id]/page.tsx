@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 const Content = dynamic(() => import("./content"), { ssr: false });
 export const revalidate = 300;
 
-export default async function Page({ params }) {
+export default async function Page(props) {
+  const params = await props.params;
   if (!params.id) {
     return;
   }

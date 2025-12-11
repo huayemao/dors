@@ -9,11 +9,12 @@ type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
 export const revalidate = 120;
 
-export default async function Protected({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function Protected(
+  props: {
+    searchParams: Promise<SearchParams>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const posts = await getProcessedPosts(
     await getPosts({
       ...searchParams,

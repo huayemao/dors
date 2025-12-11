@@ -9,11 +9,12 @@ import { FileEditName } from "@/components/FileEditName";
 
 const PER_PAGE = 20;
 
-export default async function AdminFilesPage({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
+export default async function AdminFilesPage(
+  props: {
+    searchParams: Promise<{ page?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const getPaginatedFileList = withPagination(prisma.file.findMany, () => ({
     page: searchParams.page || 1,
     perPage: PER_PAGE,

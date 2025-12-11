@@ -19,11 +19,12 @@ export async function generateStaticParams() {
   return params;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   // read route params
   const slug = params.slug;
   const post = await getPostBySlug(slug);
@@ -68,7 +69,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function page({ params }) {
+export default async function page(props) {
+  const params = await props.params;
 
   const slug = params.slug;
 
