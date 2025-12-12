@@ -1,5 +1,5 @@
 import { POSTS_COUNT_PER_PAGE } from "@/constants";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import prisma from "../prisma";
 import { getHiddenCategoryIds } from "@/lib/server/categories";
 
@@ -27,7 +27,7 @@ export async function revalidateHomePage(id: number) {
 
   if (firstPagePosts.some((e) => e.id === id)) {
     console.log("should revalidate home page");
-    revalidateTag('posts')
+    await updateTag('posts')
     revalidatePath("/(home)", "page");
     revalidatePath("/", "page");
   }

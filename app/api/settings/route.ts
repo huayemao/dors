@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         value: value,
       },
     });
-    revalidateTag('settings_' + key)
+    await updateTag('settings_' + key)
     return NextResponse.json(res);
   } catch (error) {
     if (error.code === "P2025") {

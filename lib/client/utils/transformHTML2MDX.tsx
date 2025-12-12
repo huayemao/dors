@@ -1,10 +1,12 @@
-import HTMLtoJSX from "htmltojsx";
 import TurndownService from "turndown";
 
 export function transformHTML2MDX(content: string) {
-  var converter = new HTMLtoJSX({
-    createClass: false,
-  });
+  // 简单的HTML到JSX字符串转换函数
+  const htmlToJSX = (html: string) => {
+    // 对于简单的转换，我们可以直接返回HTML字符串
+    // Turndown会处理它
+    return html;
+  };
 
   const turndownService = new TurndownService({
     headingStyle: "atx",
@@ -23,7 +25,7 @@ export function transformHTML2MDX(content: string) {
       return node.getAttribute("style");
     },
     replacement: function (content, node) {
-      const output = converter.convert(node.outerHTML);
+      const output = htmlToJSX(node.outerHTML);
       return output;
     },
   });

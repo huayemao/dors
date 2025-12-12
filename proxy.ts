@@ -5,25 +5,19 @@ import { isAuthenticated } from "./lib/server/isAuthenticated";
 
 // Step 1. HTTP Basic Auth Middleware for Challenge
 export function proxy(req: NextRequest) {
-  const basicAuthPathSuffixes = ["/api", "/admin", "/protected"];
   const whiteList = ["/api/files", "/api/getPost"];
-
   if (
-    basicAuthPathSuffixes.some((suffix) =>
-      req.nextUrl.pathname.startsWith(suffix)
-    )
+    !isAuthenticated(req) &&
+    !whiteList.some((e) => req.nextUrl.pathname.startsWith(e))
   ) {
-    if (
-      !isAuthenticated(req) &&
-      !whiteList.some((e) => req.nextUrl.pathname.startsWith(e))
-    ) {
-      return new NextResponse("Authentication required", {
-        status: 401,
-        headers: { "WWW-Authenticate": "Basic" },
-      });
-    }
+    return new NextResponse("Authentication required", {
+      status: 401,
+      headers: { "WWW-Authenticate": "Basic" },
+    });
   }
-
   return NextResponse.next();
 }
 
+export const config = {
+  matcher: ["/protected/:path*", "/api/:path*", "/admin/:path*", "/protected/:path*"],
+};
