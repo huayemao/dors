@@ -1,5 +1,5 @@
 import parseMDX from "@/lib/mdx/parseMDX";
-import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
+import { getPost, getPostIds, getRelatedPosts, getBookByPostId } from "@/lib/server/posts";
 import { notFound, redirect } from "next/navigation";
 
 import Prose from "@/components/Base/Prose";
@@ -46,11 +46,14 @@ export async function renderPost(post: Awaited<ReturnType<typeof getPost>>) {
 
   // 获取关联文章
   const posts = await getRelatedPosts(post, { limit: 5 });
+  
+  // 获取所属 book
+  const book = await getBookByPostId(post.id);
 
   return (
     <>
       {/* @ts-ignore */}
-      <Post data={post} relatedPosts={posts} />
+      <Post data={post} relatedPosts={posts} book={book} />
       <Footer></Footer>
     </>
   );

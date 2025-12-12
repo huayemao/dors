@@ -165,6 +165,24 @@ export const getPostIds = unstable_cache(async (params?: { protected?: boolean, 
   });
 });
 
+// 根据 post id 查询所属 book
+// book 是 type 为 'book' 的特殊 post，其 toc 字段中包含 target post id
+export const getBookByPostId = unstable_cache(async (postId: number) => {
+  // 查询所有 type 为 'book' 的 post
+  const books = await prisma.posts.findMany({
+    where: {
+      // type: "book",
+      toc: {
+        array_contains: {id:postId}
+      }
+    },
+
+  });
+
+
+  return books?.[0] || null;
+}, ['get_book_by_post_id'], { tags: ['posts'] });
+
 type PostType = "collection" | "normal" | "diary-collection" | "page" | "book"
 
 type getPostOptions = PaginateOptions & {
