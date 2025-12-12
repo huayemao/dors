@@ -23,7 +23,7 @@ export async function generateMetadata(
   const desc = cat?.meta?.description || "";
 
   return {
-    title: `${cat?.name} —— 分类 | ${SITE_META.name} ${SITE_META.description}`,
+    title: `${cat?.name} —— 分类`,
     description: desc,
     abstract: desc,
     keywords,
