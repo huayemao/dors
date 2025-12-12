@@ -203,18 +203,18 @@ type BaseAutocompleteProps<T = string> = {
    * The placement of the component via floating-ui.
    */
   placement?:
-  | "top"
-  | "top-start"
-  | "top-end"
-  | "right"
-  | "right-start"
-  | "right-end"
-  | "bottom"
-  | "bottom-start"
-  | "bottom-end"
-  | "left"
-  | "left-start"
-  | "left-end";
+    | "top"
+    | "top-start"
+    | "top-end"
+    | "right"
+    | "right-start"
+    | "right-end"
+    | "bottom"
+    | "bottom-start"
+    | "bottom-end"
+    | "left"
+    | "left-start"
+    | "left-end";
 
   /**
    * The properties to use for the value, label, sublabel, media, and icon of the options items.
@@ -423,7 +423,9 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
 
   function handleChange(value: T) {
     if (multiple) {
-      const newList = Array.from(new Set([...(autocompleteValue as T[]), value]));
+      const newList = Array.from(
+        new Set([...(autocompleteValue as T[]), value])
+      );
       props.onChange?.(newList);
       return;
     }
@@ -450,14 +452,17 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
         ) {
           let res = item[props.properties.label as unknown as string]
             .toLowerCase()
-            .includes(lower)
-          if (!res && props.properties?.sublabel &&
-            (props.properties.sublabel as unknown as string) in item) {
+            .includes(lower);
+          if (
+            !res &&
+            props.properties?.sublabel &&
+            (props.properties.sublabel as unknown as string) in item
+          ) {
             res = item[props.properties.sublabel as unknown as string]
               .toLowerCase()
               .includes(lower);
           }
-          return res
+          return res;
         }
       });
     },
@@ -516,7 +521,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
     // eslint-disable-next-line no-plusplus
     for (let i = values.length - 1; i >= 0; --i) {
       if (props.properties?.value) {
-        const valueKey = props.properties?.value
+        const valueKey = props.properties?.value;
         if (values[i][valueKey] === item[valueKey]) {
           values.splice(i, 1);
         }
@@ -600,6 +605,42 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
       as="div"
       ref={ref}
     >
+      <>
+        {label && !props.labelFloat && (
+          <Combobox.Label
+            className={cn("nui-autocomplete-label", classes?.label)}
+          >
+            {props.renderLabel?.({ query, filteredItems, pending, items }) ||
+              label}
+          </Combobox.Label>
+        )}
+
+        {multiple && (
+          <div className="nui-autocomplete-multiple">
+            {Array.isArray(autocompleteValue) &&
+              autocompleteValue.length > 0 && (
+                <ul className="nui-autocomplete-multiple-list h-full py-1 !flex-nowrap overflow-x-scroll w-full nui-slimscroll !my-0">
+                  {autocompleteValue.map((item) => (
+                    <li key={String(item)} className="flex-shrink-0">
+                      {props.renderAutocompleteMultipleListItem?.({
+                        item,
+                        displayValue: displayValueResolved(item),
+                        removeItem,
+                      }) || (
+                        <BaseSnack
+                          label={displayValueResolved(item)}
+                          color="muted"
+                          size="xs"
+                          onClick={() => removeItem(item)}
+                        ></BaseSnack>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+          </div>
+        )}
+      </>
       <BaseFloat
         composable
         leave="transition ease-in duration-100"
@@ -613,37 +654,6 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
         adaptiveWidth={fixed}
         zIndex={200}
       >
-        <>
-          {label && !props.labelFloat && (
-            <Combobox.Label
-              className={cn("nui-autocomplete-label", classes?.label)}
-            >
-              {props.renderLabel?.({ query, filteredItems, pending, items }) ||
-                label}
-            </Combobox.Label>
-          )}
-
-          {multiple && (
-            <div className="nui-autocomplete-multiple">
-              {Array.isArray(autocompleteValue) &&
-                autocompleteValue.length > 0 && (
-                  <ul className="nui-autocomplete-multiple-list h-full py-1 !flex-nowrap overflow-x-scroll w-full nui-slimscroll !my-0">
-                    {autocompleteValue.map((item) => (
-                      <li key={String(item)} className="flex-shrink-0">
-                        {props.renderAutocompleteMultipleListItem?.({
-                          item,
-                          displayValue: displayValueResolved(item),
-                          removeItem,
-                        }) || (
-                            <BaseSnack label={displayValueResolved(item)} color="muted" size="xs" onClick={() => removeItem(item)}></BaseSnack>
-                          )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-            </div>
-          )}
-        </>
         <BaseFloat.Reference>
           <div className="nui-autocomplete-outer">
             <Combobox.Input
@@ -720,8 +730,7 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                           open && "rotate-180"
                         )}
                       />
-                    )
-                    }
+                    )}
                   </>
                 )}
               </Combobox.Button>
@@ -742,21 +751,12 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
             )}
           </div>
         </BaseFloat.Reference>
-
-        <>
-          {error && typeof error === "string" && (
-            <BaseInputHelpText color="danger" className={cn(classes?.error)}>
-              {error}
-            </BaseInputHelpText>
-          )}
-        </>
-
         <BaseFloat.Content className={cn(!fixed && "w-full")}>
           <Combobox.Options
             as="div"
             className={cn(
               (filteredItems.length > 0 || allowCreate) &&
-              "nui-autocomplete-results"
+                "nui-autocomplete-results"
             )}
           >
             {filteredItems.length === 0 && pending ? (
@@ -767,10 +767,10 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                   pending,
                   items,
                 }) || (
-                    <span className="nui-autocomplete-results-placeholder-text text-sm">
-                      {i18n.pending}
-                    </span>
-                  )}
+                  <span className="nui-autocomplete-results-placeholder-text text-sm">
+                    {i18n.pending}
+                  </span>
+                )}
               </div>
             ) : filteredItems.length === 0 && !allowCreate ? (
               <div className="nui-autocomplete-results-placeholder">
@@ -780,10 +780,10 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                   pending,
                   items,
                 }) || (
-                    <span className="nui-autocomplete-results-placeholder-text text-sm">
-                      {i18n.empty}
-                    </span>
-                  )}
+                  <span className="nui-autocomplete-results-placeholder-text text-sm">
+                    {i18n.empty}
+                  </span>
+                )}
               </div>
             ) : (
               <>
@@ -819,21 +819,21 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                           active,
                           selected,
                         }) || (
-                            <BaseAutocompleteItem
-                              context={{ query }}
-                              rounded={props.rounded || rounded}
-                              item={
-                                props.properties
-                                  ? item
-                                  : ({
+                          <BaseAutocompleteItem
+                            context={{ query }}
+                            rounded={props.rounded || rounded}
+                            item={
+                              props.properties
+                                ? item
+                                : ({
                                     label: displayValueResolved(item),
                                   } as T)
-                              }
-                              active={active}
-                              selected={selected}
-                              properties={props.properties as any}
-                            />
-                          )}
+                            }
+                            active={active}
+                            selected={selected}
+                            properties={props.properties as any}
+                          />
+                        )}
                       </>
                     )}
                   </Combobox.Option>
@@ -850,12 +850,12 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
                           active,
                           selected,
                         }) || (
-                            <div className="w-full text-right p-2">
-                              <BaseButton color="primary" size="sm">
-                                Create {query}
-                              </BaseButton>
-                            </div>
-                          )}
+                          <div className="w-full text-right p-2">
+                            <BaseButton color="primary" size="sm">
+                              Create {query}
+                            </BaseButton>
+                          </div>
+                        )}
                       </>
                     )}
                   </Combobox.Option>
@@ -876,6 +876,13 @@ export const BaseAutocomplete = forwardRef(function BaseAutocomplete<
           </Combobox.Options>
         </BaseFloat.Content>
       </BaseFloat>
+      <>
+        {error && typeof error === "string" && (
+          <BaseInputHelpText color="danger" className={cn(classes?.error)}>
+            {error}
+          </BaseInputHelpText>
+        )}
+      </>
     </Combobox>
   );
 });
