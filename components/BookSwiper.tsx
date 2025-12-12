@@ -45,7 +45,7 @@ export function BookSwiper({ books }) {
         nextEl: ".custom-swiper-button-next",
       }}
       autoplay={{
-        delay: 3000,
+        delay: 6000,
         disableOnInteraction: false,
       }}
       className="py-6"
