@@ -1,4 +1,4 @@
-import { revalidatePath, updateTag } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
  
 export async function GET(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ revalidated: true, now: Date.now() })
   }
   if(tag) {
-    await updateTag(tag) 
+    await revalidateTag(tag,  { expire: 0 }) 
     return NextResponse.json({ revalidated: true, now: Date.now() })
   }
   return NextResponse.json({

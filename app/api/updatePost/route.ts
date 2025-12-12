@@ -1,6 +1,6 @@
 import { getPost, updatePost } from "@/lib/server/posts";
 import { revalidateHomePage } from "@/lib/server/retalidate";
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { readPostFormData } from "./readPostFormData";
 
@@ -75,10 +75,10 @@ export async function POST(request: Request) {
   });
 
   await revalidateHomePage(res.id);
-  await updateTag('posts')
+  await revalidateTag('posts',  { expire: 0 })
 
   if (post.type === "diary-collection") {
-    await updateTag("diary-posts");
+    await revalidateTag("diary-posts",  { expire: 0 });
   }
 
   if (post.protected) {

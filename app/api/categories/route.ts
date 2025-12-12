@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -9,6 +9,6 @@ export async function POST(request: Request) {
     data: json,
   });
 
-  await updateTag('cats')
+  await revalidateTag('cats', { expire: 0 })
   return NextResponse.json({ data: res });
 }
