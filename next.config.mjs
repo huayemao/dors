@@ -57,6 +57,7 @@ const nextConfig = {
       "pexels.com",
       "imghost.net",
       "svgshare.com",
+      "images.adsttc.com",
       "fms.news.cn",
       "project-management.info",
       "runestone.academy",

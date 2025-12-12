@@ -39,20 +39,25 @@ export default async function CollectionIndexPage(
   const key = posts.map((e) => e.id).join();
   return (
     <Fragment key={key}>
-      <h1 className="font-heading leading-normal font-extrabold text-5xl md:text-5xl text-muted-700 dark:text-white text-center  mb-4">
-        集萃
-      </h1>
-      <div className="gap-4 flex flex-col items-center">
-        <p className="text-center font-sans text-base md:text-lg text-muted-500 dark:text-muted-400">
-          {SITE_META.introduction}
-        </p>
-
-        <BaseList className="max-w-3xl bg-white dark:bg-muted-800 p-4 rounded-lg shadow-lg">
-          {posts.map((e, i) => (
-            <PostListItem key={e.id} post={e} />
-          ))}
-        </BaseList>
-      </div>
+      <section className="px-4 py-16 bg-muted-100 dark:bg-muted-800">
+        <div className="max-w-5xl mx-auto space-y-8">
+          <BaseHeading
+            as="h1"
+            size="3xl"
+            className="font-heading text-muted-900 dark:text-white"
+          >
+            集萃
+          </BaseHeading>
+          <p className="mt-1 text-sm text-muted-600 dark:text-muted-400">
+            {SITE_META.introduction}
+          </p>
+          <BaseList className="max-w-3xl bg-white dark:bg-muted-800 p-4 rounded-lg shadow-lg">
+            {posts.map((e, i) => (
+              <PostListItem key={e.id} post={e} />
+            ))}
+          </BaseList>
+        </div>
+      </section>
     </Fragment>
   );
 }
