@@ -1,10 +1,11 @@
 import parseMDX from "@/lib/mdx/parseMDX";
-import { getPost, getPostIds, getRelatedPosts, getBookByPostId } from "@/lib/server/posts";
+import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import { notFound, redirect } from "next/navigation";
 
 import Prose from "@/components/Base/Prose";
 import { Footer } from "@/components/Footer";
 import Post from "@/components/Post";
+import { getBooksByPostId } from "@/lib/server/service/book";
 
 const isNoteCollection = (str: any) => {
   try {
@@ -47,13 +48,13 @@ export async function renderPost(post: Awaited<ReturnType<typeof getPost>>) {
   // 获取关联文章
   const posts = await getRelatedPosts(post, { limit: 5 });
   
-  // 获取所属 book
-  const book = await getBookByPostId(post.id);
+  // 获取所属 books
+  const books = await getBooksByPostId(post.id);
 
   return (
     <>
       {/* @ts-ignore */}
-      <Post data={post} relatedPosts={posts} book={book} />
+      <Post data={post} relatedPosts={posts} books={books} />
       <Footer></Footer>
     </>
   );
