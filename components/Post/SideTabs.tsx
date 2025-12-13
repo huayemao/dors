@@ -36,6 +36,7 @@ export default function SideTabs({ post, posts }) {
 
   useEffect(() => {
     // 强制 portal 重新渲染，不晓得是否有更好的方法
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setKey((v) => v + 1);
   }, []);
 
@@ -104,6 +105,12 @@ export function ActionTabs({ post, posts }) {
           <>
             {activeValue === "actions" && (
               <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-muted-500 dark:text-muted-400 font-mono">
+                    {post.slug || post.id}
+                  </span>
+                  <CopyToClipboard getValue={() => post.slug || post.id} />
+                </div>
                 <div>{Actions}</div>
                 <hr className="my-6 border-t border-muted-200 dark:border-muted-800" />
                 <h2 className="font-heading text-muted-800 dark:text-white font-semibold text-xl mb-6">
