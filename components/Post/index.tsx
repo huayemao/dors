@@ -9,6 +9,7 @@ import parseMDX from "@/lib/mdx/parseMDX";
 import Prose from "../Base/Prose";
 import { ActionButton } from "./ActionButton";
 import Link from "next/link";
+import PostTile from "../Tiles/PostTile";
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
@@ -73,6 +74,31 @@ export default async function Post({ data: post, relatedPosts: posts, book }: Pr
                     {book.excerpt && (
                       <p className="mt-2 text-sm text-muted-600 dark:text-muted-400">{book.excerpt}</p>
                     )}
+                  </div>
+                )}
+                
+                {/* 渲染知识库目录 */}
+                {post.type === "book" && post.posts && post.posts.length > 0 && (
+                  <div className="mb-10 p-4 bg-muted-50 dark:bg-muted-800 rounded-lg border border-muted-200 dark:border-muted-700">
+                    <h3 className="text-xl font-medium text-muted-800 dark:text-white mb-4">知识库目录</h3>
+                    <ul className="space-y-3">
+                      {post.posts.map((item: any) => {
+                        /* @ts-ignore */
+                        const itemUrl = item.cover_image?.src?.small || item.cover_image?.dataURLs?.small;
+                        /* @ts-ignore */
+                        const itemBlurDataURL = item.cover_image?.dataURLs?.blur;
+                        return (
+                          <PostTile 
+                            key={item.id} 
+                            post={item} 
+                            url={itemUrl} 
+                            blurDataURL={itemBlurDataURL} 
+                            type="mini" 
+                            rounded={true} 
+                          />
+                        );
+                      })}
+                    </ul>
                   </div>
                 )}
                 
