@@ -1,4 +1,4 @@
-import { getPost, getRecentPosts, getRelatedPosts, getBookByPostId } from "@/lib/server/posts";
+import { getPost, getRecentPosts, getRelatedPosts,  } from "@/lib/server/posts";
 import { cn } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { BackButton } from "./BackButton";
@@ -10,14 +10,15 @@ import Prose from "../Base/Prose";
 import { ActionButton } from "./ActionButton";
 import Link from "next/link";
 import PostTile from "../Tiles/PostTile";
+import { getBooksByPostId } from "@/lib/server/service/book";
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
   relatedPosts: Awaited<ReturnType<typeof getRelatedPosts>>;
-  book?: Awaited<ReturnType<typeof getBookByPostId>>;
+  books?: Awaited<ReturnType<typeof getBooksByPostId>>;
 };
 
-export default async function Post({ data: post, relatedPosts: posts, book }: Props) {
+export default async function Post({ data: post, relatedPosts: posts, books }: Props) {
   if (!post) {
     return null;
   }
@@ -57,23 +58,29 @@ export default async function Post({ data: post, relatedPosts: posts, book }: Pr
                 </div>
                 
                 {/* 渲染 book 信息 */}
-                {book && (
+                {books && books.length > 0 && (
                   <div className="mb-10 p-4 bg-muted-100 dark:bg-muted-800 rounded-lg border border-muted-200 dark:border-muted-700">
-                    <div className="flex items-center gap-2 text-muted-600 dark:text-muted-400 mb-2">
+                    <div className="flex items-center gap-2 text-muted-600 dark:text-muted-400 mb-4">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M14.707 2.293a1 1 0 010 1.414l-10 10a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L4 10.586l8.293-8.293a1 1 0 011.414 0z" fillRule="evenodd" clipRule="evenodd"></path>
                       </svg>
                       <span className="text-sm">本文收录于以下知识库</span>
                     </div>
-                    <Link 
-                      href={`/posts/${book.id}`} 
-                      className="text-lg font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary transition-colors"
-                    >
-                      {book.title}
-                    </Link>
-                    {book.excerpt && (
-                      <p className="mt-2 text-sm text-muted-600 dark:text-muted-400">{book.excerpt}</p>
-                    )}
+                    <div className="space-y-4">
+                      {books.map((book) => (
+                        <div key={book.id} className="pb-3 border-b border-muted-200 dark:border-muted-700 last:border-0 last:pb-0">
+                          <Link 
+                            href={`/posts/${book.id}`} 
+                            className="text-lg font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary transition-colors"
+                          >
+                            {book.title}
+                          </Link>
+                          {book.excerpt && (
+                            <p className="mt-2 text-sm text-muted-600 dark:text-muted-400">{book.excerpt}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
                 
