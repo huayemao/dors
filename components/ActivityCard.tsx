@@ -21,7 +21,7 @@ export default function ActivityCard({
   return (
     <div className="bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-2xl overflow-hidden relative lg:flex lg:items-center shadow-2xl shadow-muted-400/10 dark:shadow-muted-800/10">
       {/* Content Section */}
-      <div className="w-full p-8 lg:p-16 lg:py-24 space-y-4">
+      <div className="w-full p-8 lg:p-16 space-y-4">
         <h2 className="font-heading font-extrabold text-3xl text-muted-800 dark:text-white sm:text-4xl">
           <span className="block">
             {title}

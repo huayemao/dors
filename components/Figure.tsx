@@ -26,9 +26,9 @@ function detectMediaType(src: string): string | null {
   try {
     const url = new URL(src);
     const pathname = url.pathname;
-    
+
     // 如果pathname有扩展名，用mime库检测
-    if (pathname.includes('.')) {
+    if (pathname.includes(".")) {
       const pathMimeType = mime.getType(pathname);
       if (pathMimeType) {
         return pathMimeType;
@@ -56,13 +56,24 @@ export function Figure({
 
   const Container = ({ children }: { children: React.ReactNode }) => (
     <a
-      suppressHydrationWarning
+      href={src}
       ref={ref}
-      className={cn("!no-underline block", className)}
+      data-pswp-src={src}
       data-pswp-width={width || 800}
       data-pswp-height={height || 600}
     >
-      {children}
+      <figure
+        suppressHydrationWarning
+        className={cn(
+          "!no-underline block",
+          {
+            "not-prose": preview,
+          },
+          className
+        )}
+      >
+        {children}
+      </figure>
     </a>
   );
 
@@ -72,10 +83,8 @@ export function Figure({
 
     const img = current.querySelector("img");
     const video = current.querySelector("video");
-    
+
     if (img) {
-      current.href = img.src || "";
-      
       if (img.complete && img.naturalWidth) {
         current.dataset.pswpWidth = String(img.naturalWidth);
         current.dataset.pswpHeight = String(img.naturalHeight);
@@ -88,9 +97,6 @@ export function Figure({
     }
 
     if (video) {
-      const source = video.querySelector('source');
-      current.href = source?.src || "";
-      
       video.onloadedmetadata = () => {
         current.dataset.pswpWidth = String(video.videoWidth);
         current.dataset.pswpHeight = String(video.videoHeight);
@@ -101,7 +107,8 @@ export function Figure({
   if (mimetype?.startsWith("video")) {
     return (
       <Container>
-        <video 
+        <video
+          src={src}
           preload="metadata"
           className={cn({
             "w-full h-auto": !preview,
@@ -114,6 +121,9 @@ export function Figure({
           <source src={src} type={mimetype} />
           Your browser does not support the video tag.
         </video>
+        {!ignoreCaption && alt && (
+          <figcaption suppressHydrationWarning>{alt}</figcaption>
+        )}
       </Container>
     );
   }
@@ -129,24 +139,23 @@ export function Figure({
 
   return (
     <Container>
-      <figure suppressHydrationWarning className={cn({ "not-prose": preview })}>
-        <img
-          loading="lazy"
-          className={cn({
-            "w-full h-auto": !preview,
-            "h-36 object-cover": preview,
-          })}
-          width={width || 800}
-          height={height || 600}
-          referrerPolicy="origin"
-          src={src}
-          alt={alt}
-          {...props}
-        />
-        {!ignoreCaption && alt && (
-          <figcaption suppressHydrationWarning>{alt}</figcaption>
-        )}
-      </figure>
+      <img
+        data-pswp-src={src}
+        loading="lazy"
+        className={cn({
+          "w-full h-auto": !preview,
+          "h-36 object-cover": preview,
+        })}
+        width={width || 800}
+        height={height || 600}
+        referrerPolicy="origin"
+        src={src}
+        alt={alt}
+        {...props}
+      />
+      {!ignoreCaption && alt && (
+        <figcaption suppressHydrationWarning>{alt}</figcaption>
+      )}
     </Container>
   );
 }

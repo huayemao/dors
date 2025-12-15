@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 const LightBox = ({
   gallery = "article",
-  childrenSelector = "a[data-pswp-width]",
+  childrenSelector = "a[data-pswp-src]",
 }: {
   gallery?: string | HTMLElement;
   childrenSelector?: string;
@@ -77,9 +77,9 @@ const LightBox = ({
 
     lightBox.on("itemData", (e) => {
       const element = e.itemData?.element!.cloneNode(true) as HTMLElement;
-      const isVideo = element.firstChild instanceof HTMLVideoElement;
+      const isVideo = element.querySelector("video") instanceof HTMLVideoElement;
       if (isVideo) {
-        const video = element.firstChild;
+        const video = element.querySelector("video")!;
         video.style.width = "100%";
         video.style.height = "100vh";
         video.style.objectFit = "contain";

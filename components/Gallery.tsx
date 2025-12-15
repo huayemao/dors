@@ -171,6 +171,7 @@ function Gallery({
           <a
             key={index}
             href={item.src}
+            data-pswp-src={item.src}
             data-pswp-width={size.width}
             data-pswp-height={size.height}
             target="_blank"
