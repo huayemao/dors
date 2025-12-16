@@ -107,7 +107,7 @@ export function ActionTabs({ post, posts }) {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm text-muted-500 dark:text-muted-400 font-mono">
-                    {post.slug || post.id}
+                    {post.slug ? "文章 Slug: " + post.slug : "文章 ID: " + post.id}
                   </span>
                   <CopyToClipboard getValue={() => post.slug || post.id} />
                 </div>

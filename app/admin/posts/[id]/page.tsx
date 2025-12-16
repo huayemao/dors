@@ -1,17 +1,23 @@
 import { ClientOnly } from "@/components/ClientOnly";
 import PostEditor from "@/components/PostEditor";
-import { getPost } from "@/lib/server/posts";
+import { getPost, getPostBySlug } from "@/lib/server/posts";
 import { notFound } from "next/navigation";
 
 export const dynamic = 'force-dynamic'
 
 export default async function page(props) {
   const params = await props.params;
-  if (!params.id || Number.isNaN(parseInt(params.id))) {
+  const idOrSlug = params.id;
+  if (!idOrSlug) {
     return notFound();
   }
 
-  const post = await getPost(parseInt(params.id as string));
+  let post;
+  if (!Number.isNaN(parseInt(idOrSlug))) {
+    post = await getPost(idOrSlug);
+  } else {
+    post = await getPostBySlug(idOrSlug);
+  }
 
   if (!post) {
     return notFound();

@@ -37,43 +37,26 @@ declare global {
   }
 }
 
-export const getPost = unstable_cache(async (id: number) => {
-  const res = await prisma.posts.findUnique({
-    where: {
-      id: id,
-    },
-    include: {
-      posts_category_links: {
-        include: {
-          categories: true,
-        },
-      },
-      tags_posts_links: {
-        include: {
-          tags: true,
-        },
-      },
-    },
-  }) as PostWithRelations | null;
-
-  if (!res) {
+// 抽取公共逻辑到 processPost 函数
+const processPost = async (post: PostWithRelations) => {
+  if (!post) {
     return null;
   }
 
   /* @ts-ignore */
-  if (!res.cover_image?.dataURLs) {
-    const cover_image = await randomlyUpdatePhoto(id);
-    res.cover_image = cover_image;
+  if (!post.cover_image?.dataURLs) {
+    const cover_image = await randomlyUpdatePhoto(post.id);
+    post.cover_image = cover_image;
   }
 
-  const html = await markdownToHtml(res.content);
+  const html = await markdownToHtml(post.content || '');
   const wordCount = getWordCount(html);
 
   // 如果是书籍类型，获取包含的文章
   let posts: any[] = [];
 
-  if (res.type === "book" && res.toc) {
-    const toc = res.toc as { id: number }[];
+  if (post.type === "book" && post.toc) {
+    const toc = post.toc as { id: number }[];
     if (toc.length > 0) {
       const tocIds = toc.map(item => item.id);
       posts = await prisma.posts.findMany({
@@ -96,21 +79,39 @@ export const getPost = unstable_cache(async (id: number) => {
         },
       });
 
-      posts = tocIds.map(id => posts.find(post => post.id === id)).filter(Boolean);
+      posts = tocIds.map(id => posts.find(p => p.id === id)).filter(Boolean);
     }
   }
 
   return {
-    ...res,
-    tags: res?.tags_posts_links.map((e) => e.tags),
+    ...post,
+    tags: post?.tags_posts_links.map((e) => e.tags),
     wordCount,
     posts,
   };
-},
-  ['get_post'], {
-  tags: ['posts']
-}
-);
+};
+
+export const getPost = unstable_cache(async (id: number) => {
+  const res = await prisma.posts.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      posts_category_links: {
+        include: {
+          categories: true,
+        },
+      },
+      tags_posts_links: {
+        include: {
+          tags: true,
+        },
+      },
+    },
+  }) as PostWithRelations | null;
+
+  return await processPost(res as PostWithRelations);
+}, ['get_post'], { tags: ['posts'] });
 
 export const getPostBySlug = unstable_cache(async (slug: string) => {
   const res = await prisma.posts.findFirst({
@@ -129,21 +130,10 @@ export const getPostBySlug = unstable_cache(async (slug: string) => {
         },
       },
     },
-  });
+  }) as PostWithRelations | null;
 
-  if (!res) {
-    return null;
-  }
-
-  return {
-    ...res,
-    tags: res?.tags_posts_links.map((e) => e.tags),
-  };
-},
-  ['get_post'], {
-  tags: ['posts']
-}
-);
+  return await processPost(res as PostWithRelations);
+}, ['get_post'], { tags: ['posts'] });
 
 export interface FindManyArgs {
   take?: number;
@@ -797,3 +787,4 @@ export async function getRelatedPosts(
     blurDataURL: (post.cover_image as any)?.dataURLs?.blur,
   }));
 }
+

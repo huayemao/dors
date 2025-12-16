@@ -1,6 +1,6 @@
 
 import { SITE_META } from "@/constants";
-import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
+import { getPost, getPostBySlug, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -25,15 +25,21 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const params = await props.params;
   // read route params
-  const id = params.id;
-  const post = await getPost(parseInt(id as string));
+  const idOrSlug = params.id;
+  let post;
+  
+  if (!Number.isNaN(parseInt(idOrSlug))) {
+    post = await getPost(parseInt(idOrSlug));
+  } else {
+    post = await getPostBySlug(idOrSlug);
+  }
 
   if (!post || !post.content) {
     return notFound();
   }
   // 写在这里是故意的，这里写了，page 中就需要写，而也能实现跳转
   if (post.protected) {
-    return redirect("/protected/" + id);
+    return redirect("/protected/" + idOrSlug);
   }
 
   const abstract = post.excerpt;
@@ -74,13 +80,18 @@ export default async function page(props) {
     return;
   }
 
-  const id = parseInt(params.id as string);
+  const idOrSlug = params.id;
+  let post;
 
-  if (Number.isNaN(id)) {
-    return notFound();
+  if (!Number.isNaN(parseInt(idOrSlug))) {
+    post = await getPost(parseInt(idOrSlug));
+  } else {
+    post = await getPostBySlug(idOrSlug);
   }
 
-  const post = await getPost(id);
+  if (!post) {
+    return notFound();
+  }
 
   return await renderPost(post);
 }
