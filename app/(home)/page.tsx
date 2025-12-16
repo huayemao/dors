@@ -12,6 +12,7 @@ import { getActivityCards } from "@/lib/server/activityCards";
 import {
   BaseButton,
   BaseButtonAction,
+  BaseCard,
   BaseHeading,
   BaseIconBox,
 } from "@glint-ui/react";
@@ -22,6 +23,8 @@ import { Posts } from "@/components/Tiles/Posts";
 import { MoveRight, MoveRightIcon } from "lucide-react";
 import ActivityCard from "@/components/ActivityCard";
 import { BookSwiper } from "../../components/BookSwiper";
+import Prose from "@/components/Base/Prose";
+import NavList from "@/lib/mdx/NavList";
 
 
 type SearchParams = Promise<PaginateOptions>;
@@ -78,49 +81,13 @@ export default async function Home({
                 <div className="w-full ltablet:w-1/2 lg:w-1/2 p-6">
                   {/*Content*/}
                   <div className="relative w-full max-w-[500px] h-[380px] ltablet:h-80 lg:h-80 mx-auto">
-                    <div className="h-full w-full bg-primary-100 dark:bg-primary-500/20"></div>
-                    <img
-                      src="/img/house_with_garden_color.svg"
-                      className="block absolute bottom-0 inset-x-0 mx-auto object-contain max-w-[320px]"
-                      alt="house_with_garden_color emoji"
-                      width="228"
-                      height="368"
-                    ></img>
-                    {/*Floating-card left*/}
-                    {/* <div className="hidden md:block absolute -bottom-12 -left-12 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-xl p-6 shadow-xl shadow-muted-400/10 dark:shadow-muted-800/10">
-                      <div className="flex justify-between mb-4">
-                        <h3 className="font-heading font-semibold text-muted-800 dark:text-muted-100">
-                          Top 5%
-                        </h3>
-                        <span className="font-sans text-sm text-muted-400">
-                          3 new
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center gap-4"></div>
-                    </div> */}
-
-                    {/*Floating-card right*/}
-                    <div className="hidden md:block absolute -top-12 ptablet:-top-6 -right-24 bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 rounded-xl p-5 shadow-xl shadow-muted-400/10 dark:shadow-muted-800/10">
-                      <div className="flex items-center gap-2 mb-2"></div>
-                      <p className="font-sans text-sm text-muted-400 max-w-[220px] leading-tight mb-2">
-                        随笔作为种子，博客作为花坛，知识库作为果园
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <img
-                          className="object-cover w-8 h-8 mask mask-blob"
-                          src="/img/huayemao.svg"
-                          alt="Avatar"
-                        />
-                        <div>
-                          <h5 className="font-heading font-semibold text-xs text-muted-800 dark:text-muted-100">
-                            花野猫
-                          </h5>
-                          <p className="font-sans text-xs text-muted-400">
-                            数字花园践行者
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <BaseCard className="p-6 h-full" shadow="flat">
+                      <Prose content={`
+                    ### 常用资源
+                    <NavList>
+                          + [国内互联网平台搜索页链接清单](/posts/414 "践行无头访问法")
+                          </NavList>`} />
+                    </BaseCard>
                   </div>
                 </div>
               </div>
