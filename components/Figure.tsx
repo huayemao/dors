@@ -58,19 +58,19 @@ export function Figure({
     <a
       href={src}
       ref={ref}
+      className={cn(
+        "!no-underline block",
+        {
+          "not-prose": preview,
+        },
+        className
+      )}
       data-pswp-src={src}
       data-pswp-width={width || 800}
       data-pswp-height={height || 600}
     >
       <figure
         suppressHydrationWarning
-        className={cn(
-          "!no-underline block",
-          {
-            "not-prose": preview,
-          },
-          className
-        )}
       >
         {children}
       </figure>

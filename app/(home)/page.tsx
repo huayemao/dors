@@ -85,7 +85,7 @@ export default async function Home({
                       <Prose content={`
                     ### 常用资源
                     <NavList>
-                          + [国内互联网平台搜索页链接清单](/posts/414 "践行无头访问法")
+                          + [国内互联网平台搜索页链接清单](/posts/414 "践行互联网无头访问法")
                           </NavList>`} />
                     </BaseCard>
                   </div>
