@@ -5,6 +5,7 @@ import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { renderPost } from "./renderPost";
+import { getPostByIdOrSlug } from "@/lib/server/service/post";
 
 export const revalidate = 36000;
 
@@ -26,13 +27,7 @@ export async function generateMetadata(
   const params = await props.params;
   // read route params
   const idOrSlug = params.id;
-  let post;
-  
-  if (!Number.isNaN(parseInt(idOrSlug))) {
-    post = await getPost(parseInt(idOrSlug));
-  } else {
-    post = await getPostBySlug(idOrSlug);
-  }
+  const post = await getPostByIdOrSlug(idOrSlug);
 
   if (!post || !post.content) {
     return notFound();
@@ -73,6 +68,8 @@ export async function generateMetadata(
     },
   };
 }
+
+
 
 export default async function page(props) {
   const params = await props.params;
