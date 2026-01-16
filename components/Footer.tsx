@@ -120,14 +120,6 @@ export function Footer() {
                   just have fun!
                 </a>
               </li>
-              <li>
-                <a
-                  href="/diaries"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  月度随记
-                </a>
-              </li>
             </ul>
           </div>
         </div>
