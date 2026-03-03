@@ -40,7 +40,7 @@ export default async function Apps({}: {}) {
   );
 
   return (
-    <section className="flex flex-col gap-4  bg-muted-100 dark:bg-muted-800 pt-16 h-screen">
+    <section className="flex flex-col gap-4  bg-muted-100 dark:bg-muted-800 pt-16 min-h-screen">
       <div className="p-8 container mx-auto min-h-96">
         <div className="flex justify-end ">
           <ClearCacheButton path="/apps" />
