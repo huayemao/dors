@@ -61,6 +61,14 @@ export const getTags = unstable_cache(async ({ protected: isProtected }: { prote
   );
 });
 
+export const getTagById = async (id: number) => {
+  return await prisma.tags.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
 // 只支持已创建的，如果有新增的，用单独的方法创建
 export const updatePostTags = async (
   post: Awaited<ReturnType<typeof getPost>>,
