@@ -4,7 +4,7 @@ import { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: SITE_META.name,
-    short_name: SITE_META.name,
+    short_name: SITE_META.short_name,
     description: SITE_META.description + "——" + SITE_META.introduction,
     start_url: "/apps",
     display: "standalone",
