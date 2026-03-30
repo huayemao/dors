@@ -32,7 +32,7 @@ export default async function PostsByTag(
   }
 
   return <Fragment >
-    <section className="px-4 py-16 bg-muted-100 dark:bg-muted-800">
+    <section className="px-4 py-16 min-h-screen bg-muted-100 dark:bg-muted-800">
       <div className="max-w-5xl mx-auto">
         <BaseHeading
           as="h1"
