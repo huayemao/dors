@@ -62,7 +62,7 @@ export async function generateMetadata(
         SITE_META.url +
         "/_next/image?url=" +
         encodeURIComponent((post.cover_image as any).src.large) +
-        "&w=640&q=60",
+        "&w=384&q=75",
         (post.cover_image as any)?.dataURLs?.small,
       ],
     },
