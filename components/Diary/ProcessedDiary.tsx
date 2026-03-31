@@ -86,7 +86,7 @@ export const ProcessedDiary: FC<ProcessedDiaryProps> = ({ data, postId }) => {
 
           {/* Gradient layer and expand/collapse button */}
           {!isExpanded && isOverflow && (
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-gray-900 dark:via-gray-900/80">
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-muted-800 dark:via-muted-800/80">
               <button
                 onClick={toggleExpand}
                 className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 hover:text-primary-600 transition-colors"

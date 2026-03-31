@@ -31,7 +31,7 @@ export default async function DiariesPage(
   const processedActivePost = await processDiaryEntries(activePost);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className=" px-4 py-16  bg-muted-50 dark:bg-black">
       {/* Mobile month selector */}
       <div className="lg:hidden mb-8">
         <BaseCard rounded="md">
@@ -56,9 +56,9 @@ export default async function DiariesPage(
         </BaseCard>
       </div>
 
-      <div className="lg:grid lg:grid-cols-5 gap-12">
+      <div className="lg:grid lg:grid-cols-5 gap-12 max-w-7xl container mx-auto">
         {/* Desktop month selector */}
-        <div className="hidden lg:block lg:col-span-2">
+        <div className="hidden lg:block lg:col-span-2 border-r px-6">
           <div className="sticky top-24">
             <div className="space-y-4">
               <h1 className="text-3xl font-semibold mb-2">{SITE_META.author.name}的日记归档</h1>
@@ -88,7 +88,7 @@ export default async function DiariesPage(
         </div>
 
         {/* Diary list - only show active post */}
-        <div className="lg:col-span-3 max-w-3xl">
+        <div className="lg:col-span-3 max-w-3xl ">
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6">{processedActivePost.title}</h2>
             <div className="space-y-4 md:space-y-6">
