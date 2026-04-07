@@ -261,6 +261,7 @@ export async function parseMDXClient(mdx: string) {
     },
     remarkRehypeOptions: {
       allowDangerousHtml: true,
+      footnoteLabel: '脚注',
     },
     rehypePlugins: [[rehypeRaw, { passThrough: nodeTypes }], [rehypeKatex]],
     remarkPlugins,

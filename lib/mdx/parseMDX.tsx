@@ -80,6 +80,7 @@ async function parseMDX(
           // 显式指定 JSX 运行时路径（适配 Next.js 15）
           remarkRehypeOptions: {
             allowDangerousHtml: true,
+            footnoteLabel: '脚注',
           },
           rehypePlugins: [
             [rehypeRaw, { passThrough: nodeTypes }],
