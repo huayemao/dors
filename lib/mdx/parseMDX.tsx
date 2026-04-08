@@ -2,6 +2,7 @@ import { nodeTypes, compile, run } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
+import withSlugs from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkShikiTwoslash from "remark-shiki-twoslash";
 import theme from "shiki/themes/nord.json";
@@ -72,6 +73,8 @@ async function parseMDX(
           rehypePlugins: [
             [rehypeRaw, { passThrough: nodeTypes }],
             [rehypeKatex],
+            
+            withSlugs,
             withToc,
             withTocExport,
           ],

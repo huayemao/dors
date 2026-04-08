@@ -65,11 +65,6 @@ export const components = {
   ),
   Raw: (props) => <Raw {...props}></Raw>,
   Gallery,
-  h1: getHeading("h1"),
-  h2: getHeading("h2"),
-  h3: getHeading("h3"),
-  h4: getHeading("h4"),
-  h5: getHeading("h5"),
   pre: Pre,
   Iframe: (props) => (
     <ClientOnly>

@@ -1,7 +1,7 @@
 "use client";
 import { Menu, MoveLeft } from "lucide-react";
 import { PreviewModal } from "../Base/PreviewModal";
-import { ActionTabs } from "./SideTabs";
+import { ActionTabs, SimpleAside } from "./SideTabs";
 import { useState, type JSX } from "react";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { BaseButtonIcon } from "@glint-ui/react";
@@ -11,10 +11,11 @@ interface Props extends React.HTMLAttributes<HTMLAnchorElement> {
   children?: JSX.Element;
   post;
   posts;
+  toc;
 }
 
 export const ActionButton = withClientOnly(
-  ({ post, posts, className }: Props) => {
+  ({ post, posts, toc, className }: Props) => {
     const isMobile = useMediaQuery("only screen and (max-width : 768px)");
     const [open, setOpen] = useState(false);
     const handleClick = () => {
@@ -26,11 +27,17 @@ export const ActionButton = withClientOnly(
           <Menu className="size-4 fill-current"></Menu>
         </BaseButtonIcon>
         <AnimatePresence>
-          <PreviewModal key={String(open)} open={open} onClose={() => setOpen(false)}>
-            <ActionTabs post={post} posts={posts}></ActionTabs>
+          <PreviewModal
+            key={String(open)}
+            open={open}
+            onClose={() => setOpen(false)}
+          >
+            <div className="mx-auto p-6">
+              <SimpleAside post={post} posts={posts} toc={toc}></SimpleAside>
+            </div>
           </PreviewModal>
         </AnimatePresence>
       </>
     ) : null;
-  }
+  },
 );

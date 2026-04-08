@@ -4,14 +4,15 @@ import huayemao from "@/public/img/huayemao.svg";
 import { BackButton } from "./BackButton";
 import { ClientOnly } from "../ClientOnly";
 import PostHead from "../PostHead";
-import SideTabs from "./SideTabs";
+import Aside from "./SideTabs";
+import RelatedContent from "./RelatedContent";
 import parseMDX from "@/lib/mdx/parseMDX";
 import Prose from "../Base/Prose";
 import { ActionButton } from "./ActionButton";
 import Link from "next/link";
 import PostTile from "../Tiles/PostTile";
 import { getBooksByPostId } from "@/lib/server/service/book";
-import type { Toc } from '@stefanprobst/rehype-extract-toc'
+import TOC from "./toc";
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
@@ -45,17 +46,17 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
         <div
           className={cn("w-full max-w-6xl mx-auto")}
         >
-          <div className="w-full flex flex-col ltablet:flex-row lg:flex-row gap-y-8">
+          <div className="w-full flex flex-col lg:flex-row gap-y-8">
             <div
               className={cn(
-                "w-full ptablet:w-3/4 ltablet:w-2/3 lg:w-3/4 ptablet:mx-auto ptablet:print:w-full",
+                "w-full md:w-2/3 lg:w-3/4   md:mx-auto md:print:w-full",
 
               )}
             >
               <div className="w-full md:px-10 text-xl text-muted-800 leading-normal">
                 <div className="flex justify-between w-full mb-5 print:hidden">
                   <BackButton />
-                  <ActionButton post={post} posts={posts} />
+                  <ActionButton post={post} posts={posts} toc={toc}/>
                 </div>
 
                 {/* 渲染 book 信息 */}
@@ -111,12 +112,14 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                 )}
 
                 <Prose className="font-LXGW_WenKai" content={content} />
+                {/* 移动端相关内容 */}
+                <div className="md:hidden mt-10">
+                  <RelatedContent posts={posts} />
+                </div>
               </div>
             </div>
-            <div className="w-full ptablet:w-3/4 ltablet:w-1/3 lg:w-1/4 ptablet:mx-auto print:hidden">
-              <ClientOnly>
-                <SideTabs post={post} posts={posts}></SideTabs>
-              </ClientOnly>
+            <div className="w-full md:w-1/3 lg:w-1/4   ptablet:mx-auto print:hidden">
+              <Aside post={post} posts={posts} toc={toc}></Aside>
             </div>
           </div>
         </div>
