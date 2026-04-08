@@ -34,31 +34,9 @@ export async function parsedNavigationPage(items: any[]) {
   const allContent = items
     .map(
       (e, i) =>
-        `\n<Container tags={"${e.tags}"} id={${e.id}} i={${i}}>\n${e.content}\n</Container>\n`
+        `\n<Container tags="${e.tags}" id="${e.id}" i="${i}">\n${e.content}\n</Container>\n`
     )
     .join("\n");
 
-  const content = (
-    await parseMDX(
-      { content: allContent },
-      {
-        components: {
-          Container: (props) => (
-            <BaseCard
-              key={props.id}
-              className={cn("my-4 p-4 max-w-lg md:max-w-sm  break-inside-avoid", {
-                "mt-0": props.i === 0,
-              })}
-            >
-              <BaseHeading as="h3" size="2xl">
-                {props.tags}
-              </BaseHeading>
-              {props.children}
-            </BaseCard>
-          ),
-        },
-      }
-    )
-  ).content;
-  return content;
+  return allContent;
 }

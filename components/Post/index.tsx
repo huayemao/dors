@@ -1,4 +1,4 @@
-import { getPost, getRecentPosts, getRelatedPosts,  } from "@/lib/server/posts";
+import { getPost, getRecentPosts, getRelatedPosts, } from "@/lib/server/posts";
 import { cn } from "@/lib/utils";
 import huayemao from "@/public/img/huayemao.svg";
 import { BackButton } from "./BackButton";
@@ -11,6 +11,7 @@ import { ActionButton } from "./ActionButton";
 import Link from "next/link";
 import PostTile from "../Tiles/PostTile";
 import { getBooksByPostId } from "@/lib/server/service/book";
+import type { Toc } from '@stefanprobst/rehype-extract-toc'
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
@@ -23,7 +24,7 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
     return null;
   }
 
-  const { content } = await parseMDX(post);
+  const { content, toc } = await parseMDX(post);
 
   /* @ts-ignore */
   const url = post.cover_image?.src?.large;
@@ -56,7 +57,7 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                   <BackButton />
                   <ActionButton post={post} posts={posts} />
                 </div>
-                
+
                 {/* 渲染 book 信息 */}
                 {books && books.length > 0 && (
                   <div className="mb-10 p-4 bg-muted-100 dark:bg-muted-800 rounded-lg border border-muted-200 dark:border-muted-700">
@@ -69,8 +70,8 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                     <div className="space-y-4">
                       {books.map((book) => (
                         <div key={book.id} className="pb-3 border-b border-muted-200 dark:border-muted-700 last:border-0 last:pb-0">
-                          <Link 
-                            href={`/posts/${book.id}`} 
+                          <Link
+                            href={`/posts/${book.id}`}
                             className="text-lg font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary transition-colors"
                           >
                             {book.title}
@@ -83,7 +84,7 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                     </div>
                   </div>
                 )}
-                
+
                 {/* 渲染知识库目录 */}
                 {post.type === "book" && post.posts && post.posts.length > 0 && (
                   <div className="mb-10 p-4 bg-muted-50 dark:bg-muted-800 rounded-lg border border-muted-200 dark:border-muted-700">
@@ -95,20 +96,20 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                         /* @ts-ignore */
                         const itemBlurDataURL = item.cover_image?.dataURLs?.blur;
                         return (
-                          <PostTile 
-                            key={item.id} 
-                            post={item} 
-                            url={itemUrl} 
-                            blurDataURL={itemBlurDataURL} 
-                            type="mini" 
-                            rounded={true} 
+                          <PostTile
+                            key={item.id}
+                            post={item}
+                            url={itemUrl}
+                            blurDataURL={itemBlurDataURL}
+                            type="mini"
+                            rounded={true}
                           />
                         );
                       })}
                     </ul>
                   </div>
                 )}
-                
+
                 <Prose className="font-LXGW_WenKai" content={content} />
               </div>
             </div>

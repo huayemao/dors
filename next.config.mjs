@@ -30,7 +30,6 @@ class RevisionPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['next-mdx-remote'],
   output: 'standalone',
   // Disable Turbopack and use webpack instead to maintain compatibility with custom webpack configuration
   turbopack: {

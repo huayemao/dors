@@ -44,6 +44,9 @@ importers:
       '@radix-ui/react-context-menu':
         specifier: ^2.2.2
         version: 2.2.16(@types/react-dom@18.3.7(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@stefanprobst/rehype-extract-toc':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@uidotdev/usehooks':
         specifier: ^2.4.1
         version: 2.4.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -92,9 +95,6 @@ importers:
       next:
         specifier: 16.0.10
         version: 16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-mdx-remote:
-        specifier: ^5.0.0
-        version: 5.0.0(@types/react@19.2.7)(react@19.2.3)
       photoswipe:
         specifier: ^5.4.4
         version: 5.4.4
@@ -1010,6 +1010,10 @@ packages:
   '@shuriken-ui/tailwind@3.1.3':
     resolution: {integrity: sha512-joiX055iQc1JV/MFybosCvn+HjBUbcIrAYj2Slz1u/fjyW/MJnIpII7VXpRAE9zc+knrwxGGgIhntJ/VNLlSOQ==}
 
+  '@stefanprobst/rehype-extract-toc@3.0.0':
+    resolution: {integrity: sha512-ZnmL6g8DydunVa2/Vk54PTPC+Ib096Xwvd/mqhK/mqsTh6jaiLZFAvM3FUsOiio0oeVpUDb1jbBPePfA9m/NRg==}
+    engines: {node: '>=18'}
+
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
@@ -1817,6 +1821,9 @@ packages:
   estree-util-to-js@2.0.0:
     resolution: {integrity: sha512-WDF+xj5rRWmD5tj6bIqRi6CkLIXbbNQUcxQHzGysQzvHmdYG2G7p/Tf0J0gpxGgkeMZNTIjT/AoSvC9Xehcgdg==}
 
+  estree-util-value-to-estree@3.5.0:
+    resolution: {integrity: sha512-aMV56R27Gv3QmfmF1MY12GWkGzzeAezAX+UplqHVASfjc9wNzI/X6hC0S9oxq61WT4aQesLGslWP9tKk6ghRZQ==}
+
   estree-util-visit@2.0.0:
     resolution: {integrity: sha512-m5KgiH85xAhhW8Wta0vShLcUvOsh3LLPI2YVwcbio1l7E09NTLL1EyMZFM1OyWowoH0skScNbhOPl4kcBgzTww==}
 
@@ -2028,6 +2035,9 @@ packages:
   hast-util-from-parse5@8.0.3:
     resolution: {integrity: sha512-3kxEVkEKt0zvcZ3hCRYI8rqrgwtlIOFMWkbclACvjlDw8Li9S2hk/d51OI0nr/gIpdMHNepwgOKqZ/sy0Clpyg==}
 
+  hast-util-heading-rank@3.0.0:
+    resolution: {integrity: sha512-EJKb8oMUXVHcWZTDepnr+WNbfnXKFNf9duMesmr4S8SXTJBJ9M4Yok08pu9vxdJwdlGRhVumk9mEhkEvKGifwA==}
+
   hast-util-is-element@3.0.0:
     resolution: {integrity: sha512-Val9mnv2IWpLbNPqc/pUem+a7Ipj2aHacCwgNfTiK0vJKl0LF+4Ba4+v1oPHFpf3bLYmreq0/l3Gud9S5OH42g==}
 
@@ -2051,6 +2061,9 @@ packages:
 
   hast-util-to-parse5@8.0.1:
     resolution: {integrity: sha512-MlWT6Pjt4CG9lFCjiz4BH7l9wmrMkfkJYCxFwKQic8+RTZgWPuWxwAfjJElsXkex7DJjfSJsQIt931ilUgmwdA==}
+
+  hast-util-to-string@3.0.1:
+    resolution: {integrity: sha512-XelQVTDWvqcl3axRfI0xSeoVKzyIFPwsAGSLIsKdJKQMXDYJS4WYrBNF/8J7RdhIcFI2BOHgAifggsvsxp/3+A==}
 
   hast-util-to-text@4.0.2:
     resolution: {integrity: sha512-KK6y/BN8lbaq654j7JgBydev7wuNMcID54lkRav1P0CaE1e47P72AWWPiGKXTJU271ooYzcvTAn/Zt0REnvc7A==}
@@ -2689,12 +2702,6 @@ packages:
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
-
-  next-mdx-remote@5.0.0:
-    resolution: {integrity: sha512-RNNbqRpK9/dcIFZs/esQhuLA8jANqlH694yqoDBK8hkVdJUndzzGmnPHa2nyi90N4Z9VmzuSWNRpr5ItT3M7xQ==}
-    engines: {node: '>=14', npm: '>=7'}
-    peerDependencies:
-      react: '>=16'
 
   next@16.0.10:
     resolution: {integrity: sha512-RtWh5PUgI+vxlV3HdR+IfWA1UUHu0+Ram/JBO4vWB54cVPentCD0e+lxyAYEsDTqGGMg7qpjhKh6dc6aW7W/sA==}
@@ -3461,9 +3468,6 @@ packages:
   unist-util-remove-position@5.0.0:
     resolution: {integrity: sha512-Hp5Kh3wLxv0PHj9m2yZhhLt58KzPtEYKQQ4yxfYFEO7EvHwzyDYnduhHnY1mDxoqr7VUwVuHXk9RXKIiYS1N8Q==}
 
-  unist-util-remove@3.1.1:
-    resolution: {integrity: sha512-kfCqZK5YVY5yEa89tvpl7KnBBHu2c6CzMkqHUrlOqaRgGOMp0sMvwWOVrbAtj03KhovQB7i96Gda72v/EFE0vw==}
-
   unist-util-stringify-position@3.0.3:
     resolution: {integrity: sha512-k5GzIBZ/QatR8N5X2y+drfpWG8IDBzdnVj6OInRNWm1oXrzydiaAT2OQiA8DPRRZyAKb9b6I2a6PxYklZD0gKg==}
 
@@ -3574,9 +3578,6 @@ packages:
 
   vfile-location@5.0.3:
     resolution: {integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg==}
-
-  vfile-matter@5.0.1:
-    resolution: {integrity: sha512-o6roP82AiX0XfkyTHyRCMXgHfltUNlXSEqCIS80f+mbAyiQBE2fxtDVMtseyytGx75sihiJFo/zR6r/4LTs2Cw==}
 
   vfile-message@3.1.4:
     resolution: {integrity: sha512-fa0Z6P8HUrQN4BZaX05SIVXic+7kE3b05PWAtPuYP9QLHsLKYR7/AlLW3NtOrpXRLeawpDLMsVkmk5DG0NXgWw==}
@@ -4445,6 +4446,14 @@ snapshots:
     transitivePeerDependencies:
       - tsx
       - yaml
+
+  '@stefanprobst/rehype-extract-toc@3.0.0':
+    dependencies:
+      estree-util-is-identifier-name: 3.0.0
+      estree-util-value-to-estree: 3.5.0
+      hast-util-heading-rank: 3.0.0
+      hast-util-to-string: 3.0.1
+      unist-util-visit: 5.0.0
 
   '@swc/helpers@0.5.15':
     dependencies:
@@ -5417,6 +5426,10 @@ snapshots:
       astring: 1.9.0
       source-map: 0.7.6
 
+  estree-util-value-to-estree@3.5.0:
+    dependencies:
+      '@types/estree': 1.0.8
+
   estree-util-visit@2.0.0:
     dependencies:
       '@types/estree-jsx': 1.0.5
@@ -5636,6 +5649,10 @@ snapshots:
       vfile-location: 5.0.3
       web-namespaces: 2.0.1
 
+  hast-util-heading-rank@3.0.0:
+    dependencies:
+      '@types/hast': 3.0.4
+
   hast-util-is-element@3.0.0:
     dependencies:
       '@types/hast': 3.0.4
@@ -5730,6 +5747,10 @@ snapshots:
       space-separated-tokens: 2.0.2
       web-namespaces: 2.0.1
       zwitch: 2.0.4
+
+  hast-util-to-string@3.0.1:
+    dependencies:
+      '@types/hast': 3.0.4
 
   hast-util-to-text@4.0.2:
     dependencies:
@@ -6755,19 +6776,6 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-mdx-remote@5.0.0(@types/react@19.2.7)(react@19.2.3):
-    dependencies:
-      '@babel/code-frame': 7.27.1
-      '@mdx-js/mdx': 3.1.1
-      '@mdx-js/react': 3.1.1(@types/react@19.2.7)(react@19.2.3)
-      react: 19.2.3
-      unist-util-remove: 3.1.1
-      vfile: 6.0.3
-      vfile-matter: 5.0.1
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-
   next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@next/env': 16.0.10
@@ -7768,12 +7776,6 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-visit: 5.0.0
 
-  unist-util-remove@3.1.1:
-    dependencies:
-      '@types/unist': 2.0.11
-      unist-util-is: 5.2.1
-      unist-util-visit-parents: 5.1.3
-
   unist-util-stringify-position@3.0.3:
     dependencies:
       '@types/unist': 2.0.11
@@ -7914,11 +7916,6 @@ snapshots:
       '@types/unist': 3.0.3
       vfile: 6.0.3
 
-  vfile-matter@5.0.1:
-    dependencies:
-      vfile: 6.0.3
-      yaml: 2.8.2
-
   vfile-message@3.1.4:
     dependencies:
       '@types/unist': 2.0.11
@@ -8010,7 +8007,8 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yaml@2.8.2: {}
+  yaml@2.8.2:
+    optional: true
 
   yocto-queue@0.1.0: {}
 

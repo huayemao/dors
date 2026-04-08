@@ -11,6 +11,8 @@ import { directiveAdapterPlugin } from "./directiveAdapterPlugin";
 import { setWasm } from "shiki";
 import nord from "shiki/themes/nord.json";
 import "katex/dist/katex.min.css";
+import { BaseCard, BaseHeading } from "@glint-ui/react";
+import { cn } from "@/lib/utils";
 
 // declare type Lang =
 //   | "abap"
@@ -253,11 +255,26 @@ export async function parseMDXClient(mdx: string) {
     remarkPlugins.unshift([shikiTwoSlash]);
   }
 
+  // Container component for navigation items
+  const Container = (props: any) => (
+    <BaseCard
+      key={props.id}
+      className={cn("my-4 p-4 max-w-lg md:max-w-sm  break-inside-avoid", {
+        "mt-0": props.i === "0",
+      })}
+    >
+      <BaseHeading as="h3" size="2xl">
+        {props.tags}
+      </BaseHeading>
+      {props.children}
+    </BaseCard>
+  );
+
   // @ts-ignore
   const res = await evaluate(mdx, {
     ...runtime,
     useMDXComponents: () => {
-      return components;
+      return { ...components, Container };
     },
     remarkRehypeOptions: {
       allowDangerousHtml: true,

@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { ClientOnly } from "../ClientOnly";
 import { forwardRef, Ref } from "react";
-
-const ErrorComp = ({ error }) => <div>出错了：{error.message}</div>;
+import { components } from "@/lib/mdx/useComponents";
+import { BaseCard, BaseHeading } from "@glint-ui/react";
 
 const Prose = forwardRef(function P(
   {
-    content,
+    content:MDXContent ,
     preview = false,
     className,
     onLoadingChange,
@@ -22,20 +22,33 @@ const Prose = forwardRef(function P(
   },
   ref: Ref<HTMLElement>
 ) {
+  // Container component for navigation items
+  const Container = (props: any) => (
+    <BaseCard
+      key={props.id}
+      className={cn("my-4 p-4 max-w-lg md:max-w-sm  break-inside-avoid", {
+        "mt-0": props.i === "0",
+      })}
+    >
+      <BaseHeading as="h3" size="2xl">
+        {props.tags}
+      </BaseHeading>
+      {props.children}
+    </BaseCard>
+  );
+
   return (
     <>
-      {typeof content == "string" ? (
-        // <ClientOnly>
-        //   <ErrorBoundary errorComponent={ErrorComp}>
-        <ParsedMdx 
-          className={className} 
-          preview={preview} 
-          content={content} 
-          onLoadingChange={onLoadingChange}
-        />
+      {typeof MDXContent == "string" ? (
+        <ClientOnly>
+          <ParsedMdx 
+            className={className} 
+            preview={preview} 
+            content={MDXContent} 
+            onLoadingChange={onLoadingChange}
+          />
+        </ClientOnly>
       ) : (
-        //   </ErrorBoundary>
-        // </ClientOnly>
         <>
           <article
             ref={ref}
@@ -45,7 +58,7 @@ const Prose = forwardRef(function P(
               className
             )}
           >
-            {content}
+            <MDXContent components={{ ...components, Container }} />
           </article>
           <LightBox />
         </>

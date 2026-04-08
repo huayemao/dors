@@ -1,7 +1,5 @@
-import { nodeTypes } from "@mdx-js/mdx";
-// import { serialize } from "next-mdx-remote/serialize";
-import { compileMDX } from "next-mdx-remote/rsc";
-//@ts-ignore
+import { nodeTypes, compile, run } from "@mdx-js/mdx";
+import * as runtime from "react/jsx-runtime";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
@@ -12,6 +10,8 @@ import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import { components } from "./useComponents";
 import { directiveAdapterPlugin } from "./directiveAdapterPlugin";
+import withToc from "@stefanprobst/rehype-extract-toc";
+import withTocExport from "@stefanprobst/rehype-extract-toc/mdx";
 import "katex/dist/katex.min.css";
 import { cache } from "react";
 import { PluggableList } from "unified";
@@ -36,13 +36,6 @@ async function parseMDX(
     if (mdxResultCache.has(cacheKey)) {
       return mdxResultCache.get(cacheKey);
     }
-
-    // Create a promise that will reject after the timeout
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(new Error("MDX parsing timed out"));
-      }, MDX_TIMEOUT);
-    });
 
     const list: PluggableList = [
       // myRemarkPlugin,
@@ -70,37 +63,43 @@ async function parseMDX(
       ]);
     }
     // Create the actual MDX parsing promise
-    const parsePromise = compileMDX({
-      source: post?.content || "",
-      components: { ...components, ...(options?.components || {}) },
-
-      options: {
-        mdxOptions: {
-          jsxImportSource: "react", // 强制使用项目的 React
-          // 显式指定 JSX 运行时路径（适配 Next.js 15）
-          remarkRehypeOptions: {
-            allowDangerousHtml: true,
-            footnoteLabel: '脚注',
-          },
+    const parsePromise = (async () => {
+      // Compile MDX to function body
+      const code = String(
+        await compile(post?.content || "", {
+          outputFormat: "function-body",
+          remarkPlugins: list,
           rehypePlugins: [
             [rehypeRaw, { passThrough: nodeTypes }],
             [rehypeKatex],
+            withToc,
+            withTocExport,
           ],
-          remarkPlugins: list,
-          format: "mdx",
-        },
-      },
-    });
+        })
+      );
+
+      // Run the compiled code
+      const { default: MDXContent, ...rest } = await run(code, {
+        ...runtime,
+        baseUrl: import.meta.url,
+      });
+
+      // Return result in a format compatible with the original
+      return {
+        content: MDXContent,
+        toc: rest.tableOfContents || [],
+        components: { ...components, ...(options?.components || {}) },
+      };
+    })();
 
     // Race the parsing against the timeout
-    const result = await Promise.race([parsePromise, timeoutPromise]);
+    const result = await parsePromise;
 
     // Cache the result
     mdxResultCache.set(cacheKey, result);
-
     return result;
   } catch (error) {
     console.error("MDX parsing error:", error);
-    return { content: post.content };
+    return { content: post.content, toc: [] };
   }
 }
