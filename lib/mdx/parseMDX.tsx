@@ -68,12 +68,15 @@ async function parseMDX(
       // Compile MDX to function body
       const code = String(
         await compile(post?.content || "", {
+          remarkRehypeOptions: {
+            allowDangerousHtml: true,
+            footnoteLabel: '脚注',
+          },
           outputFormat: "function-body",
           remarkPlugins: list,
           rehypePlugins: [
             [rehypeRaw, { passThrough: nodeTypes }],
             [rehypeKatex],
-            
             withSlugs,
             withToc,
             withTocExport,
@@ -95,7 +98,6 @@ async function parseMDX(
       };
     })();
 
-    // Race the parsing against the timeout
     const result = await parsePromise;
 
     // Cache the result
