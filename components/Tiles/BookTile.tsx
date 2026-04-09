@@ -2,7 +2,6 @@ import { SITE_META } from "@/constants";
 import { cn, getDateString, isDataURL } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Category } from "../Category";
 import Tag from "../Tag";
 
 type Post = {
@@ -18,13 +17,100 @@ interface Props {
   coverImage: any;
   posts: Post[];
   tags?: Array<{ id: number; name: string | null } | null>;
+  type?: "default" | "mini" | "normal";
+  rounded?: boolean;
 }
 
-export function BookTile({ id, title, coverImage, posts, tags }: Props) {
+export function BookTile({ id, title, coverImage, posts, tags, type = "default", rounded = false }: Props) {
   if (!title) return null;
 
   const url = coverImage?.src?.large || coverImage?.dataURLs?.small;
   const blurDataURL = coverImage?.dataURLs?.blur;
+
+  if (type === "mini") {
+    return (
+      <li
+        style={{ listStyle: "none" }}
+        className={cn({
+          "bg-white p-3 rounded-lg border dark:bg-muted-800 dark:border-muted-700 hover:shadow-sm transition-shadow duration-200":
+            rounded,
+        })}
+      >
+        <div className="block w-full">
+          <div className="flex items-start gap-3 w-full">
+            {/* 图片区域 */}
+            <div className="flex-shrink-0">
+              {typeof url == "string" &&
+                (isDataURL(url) || !url.startsWith("/")) ? (
+                <img
+                  className="h-20 w-20 rounded-lg object-cover shadow"
+                  src={url}
+                  alt={title || "featured image"}
+                  width="80"
+                  height="80"
+                />
+              ) : (
+                <Image
+                  className="h-20 w-20 rounded-lg object-cover shadow"
+                  src={url}
+                  placeholder={(blurDataURL && "blur") || undefined}
+                  unoptimized={url.startsWith("/api")}
+                  blurDataURL={blurDataURL}
+                  alt={title || SITE_META.name}
+                  quality={url.toString().includes(SITE_META.url) ? 100 : 80}
+                  width="80"
+                  height="80"
+                />
+              )}
+            </div>
+
+            {/* 内容区域 */}
+            <div className="flex-1 min-w-0 truncate">
+              {/* 标题 */}
+              <Link
+                href={"/posts/" + id}
+                title={title as string}
+                className="truncate font-heading font-medium text-muted-600 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1"
+              >
+                {title}
+              </Link>
+
+              {/* 时间和标签区域 */}
+              <div className="space-y-2">
+                {/* 标签区域 */}
+                {tags && tags?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.slice(0, 3).map(
+                      (t) =>
+                        t && (
+                          <a
+                            key={t.id}
+                            href={`/tags/${t.id}`}
+                          >
+                            <Tag
+                              className="shadow-xl shadow-primary-500/20"
+                              key={t.id}
+                              type="primary"
+                              text={t.name as string}
+                            />
+                          </a>
+                        )
+                    )}
+                    {/* 显示更多标签的指示器 */}
+                    {tags.length > 3 && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted-50 dark:bg-muted-800 text-muted-500 dark:text-muted-400">
+                        +{tags.length - 3}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    );
+  }
 
   return (
     <hgroup className="relative max-w-xs md:max-w-sm">

@@ -13,9 +13,18 @@ export const getBooksByPostId = unstable_cache(async (postId: number) => {
         array_contains: {id:postId}
       }
     },
-
+    include: {
+      tags_posts_links: {
+        include: {
+          tags: true,
+        }
+      },
+    }
   });
 
 
-  return books;
+  return books.map(book => ({
+    ...book,
+    tags: book.tags_posts_links.map(link => link.tags),
+  }));
 }, ['get_books_by_post_id'], { tags: ['posts'] });

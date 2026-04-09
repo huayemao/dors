@@ -13,6 +13,7 @@ import Link from "next/link";
 import PostTile from "../Tiles/PostTile";
 import { getBooksByPostId } from "@/lib/server/service/book";
 import TOC from "./toc";
+import { BookTile } from "../Tiles/BookTile";
 
 type Props = {
   data: Awaited<ReturnType<typeof getPost>>;
@@ -70,17 +71,7 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                     </div>
                     <div className="space-y-4">
                       {books.map((book) => (
-                        <div key={book.id} className="pb-3 border-b border-muted-200 dark:border-muted-700 last:border-0 last:pb-0">
-                          <Link
-                            href={`/posts/${book.id}`}
-                            className="text-lg font-medium text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary transition-colors"
-                          >
-                            {book.title}
-                          </Link>
-                          {book.excerpt && (
-                            <p className="mt-2 text-sm text-muted-600 dark:text-muted-400">{book.excerpt}</p>
-                          )}
-                        </div>
+                        <BookTile id={book.id} posts={[]} title={book.title} coverImage={book.cover_image} key={book.id}  tags={book.tags} type="mini" />
                       ))}
                     </div>
                   </div>
