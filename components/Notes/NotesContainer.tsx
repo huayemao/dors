@@ -21,10 +21,12 @@ import { Archive, Copy, Edit2, LinkIcon } from "lucide-react";
 import { copyToClipboard } from "@/lib/client/utils/copyToClipboard";
 import { cn, copyTextToClipboard } from "@/lib/utils";
 import { useFilter } from "./useFilter";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { BASE_NAME, HIDDEN_TAGS } from "./constants";
 import Search from "./Search";
 import { useCloseModal } from "@/lib/client/hooks/useCloseModal";
+import { BaseButton } from "@glint-ui/react";
+import { Home } from "lucide-react";
 
 export const useActions = (note: Note) => {
   const close = useCloseModal()
@@ -150,6 +152,14 @@ export const NotesContainer = ({
           filterTags={filterTags}
         ></NotewithActions>
       )}
+      collectionListHeader={
+        <Link
+          to={'/'}
+          className="mb-4"
+        >
+          <Home className="h-4 w-4" />
+        </Link>
+      }
       slots={{ search: Search }}
       state={state}
       dispatch={dispatch}

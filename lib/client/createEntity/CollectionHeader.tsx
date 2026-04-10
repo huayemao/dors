@@ -26,6 +26,7 @@ import { usePinned } from "../hooks/usePinned";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import c from "@/styles/createEntity.module.css";
 import { SlideDialog } from "@/components/Base/SlideDialog";
+import { Modal } from "@/components/Base/Modal";
 
 export type CollectionHeaderProps<
   EType extends BaseEntity,
@@ -41,6 +42,7 @@ export type CollectionHeaderProps<
   onSyncToCloud: () => void;
   isFetching: boolean;
   isUploading: boolean;
+  collectionListHeader?: React.ReactNode;
 };
 
 export function CollectionHeader<
@@ -54,12 +56,14 @@ export function CollectionHeader<
   onSyncToCloud,
   isFetching,
   isUploading,
+  collectionListHeader,
 }: CollectionHeaderProps<EType, CType>) {
   const headerRef = useRef(null);
   const isMobile = useMediaQuery("only screen and (max-width : 768px)");
   const pinned = usePinned(headerRef, isMobile ? 24 : 20);
   const navigate = useNavigate();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [collectionListOpen, setCollectionListOpen] = useState(false);
 
   const exportToClipBoard = useCallback(
     (e) => {
@@ -89,53 +93,68 @@ export function CollectionHeader<
   const Collections = (
     <div className="top-4 left-0 right-0 w-fit mx-auto">
       {!isSimple && (
-        <BaseDropdown
-          fixed
-          classes={{
-            wrapper: "border-none bg-transparent " + c["collection-dropdown"],
-            content: "border-none bg-transparent",
-          }}
-          size={isMobile ? "md" : "lg"}
-          label={state.currentCollection?.name}
-          variant={isMobile ? "text" : pinned ? "button" : "text"}
-          headerLabel="合集"
-        >
-          {state.collectionList?.map((e) => (
-            <Link
-              state={{ __NA: {} }}
-              to={"/" + e.id}
-              key={e.id}
-              suppressHydrationWarning
-            >
-              <BaseDropdownItem
-                suppressHydrationWarning
-                end={
-                  <EditIcon
-                    onClick={(ev) => {
-                      ev.preventDefault();
-                      navigate("/" + e.id + "/edit", {
-                        state: { __NA: {} },
-                      });
-                    }}
-                    className="h-4 w-4"
-                  />
-                }
-                title={e.name}
-                text={"创建于 " + new Date(e.id).toLocaleDateString()}
-                rounded="sm"
-              />
-            </Link>
-          ))}
-          <BaseDropdownItem
-            color="primary"
-            classes={{ wrapper: "text-right " }}
-            onClick={() => navigate("/create")}
+        <>
+          <BaseButton
+            size="sm"
+            onClick={() => setCollectionListOpen(true)}
+            className={cn("border-none bg-transparent " + c["collection-dropdown"])}
           >
-            <BaseIconBox color="primary">
-              <PlusIcon />
-            </BaseIconBox>
-          </BaseDropdownItem>
-        </BaseDropdown>
+            {state.currentCollection?.name}
+          </BaseButton>
+          <Modal
+            open={collectionListOpen}
+            onClose={() => setCollectionListOpen(false)}
+            title="合集列表"
+            size="lg"
+          >
+            <div className="space-y-4">
+              {collectionListHeader}
+              <div className="space-y-2 max-h-[70vh] overflow-y-auto">
+                {state.collectionList?.map((e) => (
+                  <Link
+                    state={{ __NA: {} }}
+                    to={"/" + e.id}
+                    key={e.id}
+                    suppressHydrationWarning
+                    className="block"
+                  >
+                    <div
+                      className="flex items-center justify-between p-3 border rounded-md hover:bg-muted-100 cursor-pointer"
+                      onClick={() => setCollectionListOpen(false)}
+                    >
+                      <div>
+                        <div className="font-medium">{e.name}</div>
+                        <div className="text-sm text-muted-600">创建于 {new Date(e.id).toLocaleDateString()}</div>
+                      </div>
+                      <EditIcon
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          setCollectionListOpen(false);
+                          navigate("/" + e.id + "/edit", {
+                            state: { __NA: {} },
+                          });
+                        }}
+                        className="h-4 w-4 text-muted-600 hover:text-primary cursor-pointer"
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="pt-4 border-t">
+                <BaseButton
+                  color="primary"
+                  onClick={() => {
+                    setCollectionListOpen(false);
+                    navigate("/create");
+                  }}
+                >
+                  <PlusIcon className="mr-2 size-4" />
+                  新建合集
+                </BaseButton>
+              </div>
+            </div>
+          </Modal>
+        </>
       )}
     </div>
   );

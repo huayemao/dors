@@ -60,6 +60,7 @@ type Props<EType extends BaseEntity, CType extends BaseCollection> = {
   renderEntity: (entity: EType, options: { preview: boolean, stackMode?: boolean }) => React.ReactNode;
   renderEntityModalTitle?: (entity: EType, options?: { preview: boolean }) => React.ReactNode;
   renderEntityModalActions?: (entity: EType, options: { preview: boolean }) => React.ReactNode;
+  collectionListHeader?: React.ReactNode;
   state: EntityState<EType, CType>;
   dispatch: EntityDispatch<EType, CType>;
 };
@@ -81,6 +82,7 @@ export default function EntityRoute<
   layout,
   extraRoutes = [],
   EntityPreviewPage,
+  collectionListHeader,
 }: Props<EType, CType>) {
   const isView = state.entityModalMode == "view";
 
@@ -115,6 +117,7 @@ export default function EntityRoute<
     EntityPreviewPage,
     fetchCollection,
     syncToCloud,
+    collectionListHeader,
   };
 
   const router = createBrowserRouter(

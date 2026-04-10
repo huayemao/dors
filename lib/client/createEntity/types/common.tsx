@@ -29,6 +29,7 @@ export interface RenderProps<EType extends BaseEntity> {
   renderEntity: RenderEntityFunction<EType>;
   renderEntityModalTitle?: RenderEntityModalTitleFunction<EType>;
   renderEntityModalActions?: RenderEntityModalActionsFunction<EType>;
+  collectionListHeader?: ReactNode;
 }
 
 // 表单相关的 Props

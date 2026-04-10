@@ -16,6 +16,7 @@ export interface EntityConfigContextValue<EType extends BaseEntity, CType extend
   renderEntity: RenderProps<EType>["renderEntity"];
   renderEntityModalTitle?: RenderProps<EType>["renderEntityModalTitle"];
   renderEntityModalActions?: RenderProps<EType>["renderEntityModalActions"];
+  collectionListHeader?: React.ReactNode;
   
   // 表单配置
   createForm: FormProps["createForm"];
@@ -74,6 +75,7 @@ export function extractConfigFromProps<EType extends BaseEntity, CType extends B
     renderEntity: props.renderEntity,
     renderEntityModalTitle: props.renderEntityModalTitle,
     renderEntityModalActions: props.renderEntityModalActions,
+    collectionListHeader: props.collectionListHeader,
     createForm: props.createForm,
     updateForm: props.updateForm,
     layout: props.layout,

@@ -55,6 +55,7 @@ export default function CollectionLayout<
     layout = "masonry",
     getList = (e) => e,
     slots,
+    collectionListHeader,
   } = config;
   const { collectionId } = useParams();
   const outlet = useOutlet();
@@ -209,6 +210,7 @@ export default function CollectionLayout<
           onSyncToCloud={handleSyncToCloud}
           isFetching={fetching}
           isUploading={uploading}
+          collectionListHeader={collectionListHeader}
         />
         <div className="lg:max-w-7xl mx-auto">
           <div className="relative w-full transition-all duration-300 rounded-md ptablet:p-8 p-6 lg:p-8 min-h-[60vh]">
