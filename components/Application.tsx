@@ -5,7 +5,7 @@ export const Application = ({ href, iconName, name }) => {
     return (
         <Link
             prefetch={
-                ["/protected", "/notes", "/admin"].some((e) => href.startsWith(e))
+                ["/protected", "/notes", "/admin", "/diaries"].some((e) => href.startsWith(e))
                     ? false
                     : undefined
             }
