@@ -99,7 +99,7 @@ export const useActions = (note: Note) => {
         stopPropagation: true,
       },
     };
-  }, [dispatch, navigate, params.entityId, note, state.entityList]);
+  }, [state.entityList, state.currentCollection?.id, state.currentEntity?.id, note, location.pathname, navigate, dispatch, params.entityId, close]);
 
   return res;
 };

@@ -1,6 +1,6 @@
 "use client";
 import Prose from "@/components/Base/Prose";
-import { BaseCard, BaseTag, BaseButton } from "@glint-ui/react";
+import { BaseCard, BaseTag, BaseButton, BaseTabs } from "@glint-ui/react";
 import { Note } from "@/app/(projects)/notes/constants";
 
 import { cn, getDateStr } from "@/lib/utils";
@@ -79,21 +79,76 @@ export function NoteItem({
       : Fragment;
   }, [preview]);
 
+  const splitContentByH2 = useMemo(() => {
+    if (!data.content) {
+      return [];
+    }
+    
+    const lines = data.content.split('\n');
+    const sections: { title: string; content: string; }[] = [];
+    let currentSection = { title: 'Main', content: '' };
+    
+    lines.forEach((line, index) => {
+      if (line.trim().startsWith('## ')) {
+        if (currentSection.content.trim() || index === 0) {
+          sections.push({ ...currentSection });
+        }
+        currentSection = {
+          title: line.trim().replace('## ', ''),
+          content: ''
+        };
+      } else {
+        currentSection.content += line + '\n';
+      }
+    });
+    
+    if (currentSection.content.trim() || sections.length === 0) {
+      sections.push(currentSection);
+    }
+    
+    return sections;
+  }, [data.content]);
+
+  const hasMultipleSections = splitContentByH2.length > 1;
+  const hasMainContent = splitContentByH2[0]?.content.trim() && splitContentByH2[0]?.title === 'Main';
+
   const Main = useMemo(
     () => (
       <div
         ref={contentRef}
         className={cn("px-4 relative mx-auto w-full", {
-          "lg:px-6 xs:max-h-72 xs:h-auto h-72  overflow-hidden": preview,
+          "min-h-64 lg:px-6 xs:max-h-72 xs:h-auto h-72  overflow-hidden": preview,
         }, className)}
       >
-        <Prose
-          className="mx-auto font-LXGW_WenKai"
-          onLoadingChange={setLoading}
-          key={data.id}
-          content={data.content}
-          preview={preview}
-        />
+        {(hasMultipleSections&&!preview) ? (
+          <BaseTabs defaultValue={splitContentByH2[0].title} tabs={splitContentByH2.map(section => ({ label: section.title, value: section.title }))}>
+            {(activeValue) => (
+              <>
+                {splitContentByH2.map((section) => (
+                  section.title === activeValue && (
+                    <div key={section.title}>
+                      <Prose
+                        className="mx-auto font-LXGW_WenKai"
+                        onLoadingChange={setLoading}
+                        key={data.id + section.title}
+                        content={section.content}
+                        preview={preview}
+                      />
+                    </div>
+                  )
+                ))}
+              </>
+            )}
+          </BaseTabs>
+        ) : (
+          <Prose
+            className="mx-auto font-LXGW_WenKai"
+            onLoadingChange={setLoading}
+            key={data.id}
+            content={data.content}
+            preview={preview}
+          />
+        )}
         {preview && isOverflow && (
           <>
             <div className="absolute -bottom-1 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-muted-800 dark:via-muted-800/80 via-white/80 to-transparent">
@@ -105,12 +160,13 @@ export function NoteItem({
         )}
       </div>
     ),
-    [data.content, data.id, preview, isOverflow]
+    [preview, className, hasMultipleSections, splitContentByH2, data.id, data.content, isOverflow]
   );
 
   return preview ? (
     <ContextMenu>
       <ContextMenuTrigger>
+        {/* eslint-disable-next-line react-hooks/static-components */}
         <Container>
           {Main}
           <div className=" m-2 p-2 ">
