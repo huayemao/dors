@@ -14,9 +14,7 @@ import { useRouter } from "next/navigation";
 dayjs.locale('zh-cn');
 
 interface ProcessedDiaryProps {
-  data: Note & {
-    parsedContent: React.ReactNode;
-  };
+  data: Note 
   postId: string | number;
 }
 
@@ -46,7 +44,7 @@ export const ProcessedDiary: FC<ProcessedDiaryProps> = ({ data, postId }) => {
     return () => {
       observer.disconnect();
     };
-  }, [data.parsedContent, checkOverflow]);
+  }, [data.content, checkOverflow]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -81,7 +79,7 @@ export const ProcessedDiary: FC<ProcessedDiaryProps> = ({ data, postId }) => {
             "max-h-72 lg:max-h-96 overflow-hidden": !isExpanded,
           })}
         >
-          <Prose content={data.parsedContent} className={cn("pt-2")}>
+          <Prose content={data.content} className={cn("pt-2")}>
           </Prose>
 
           {/* Gradient layer and expand/collapse button */}

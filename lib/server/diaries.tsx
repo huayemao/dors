@@ -55,13 +55,6 @@ export const getDiaryPosts = unstable_cache(
   { tags: ["diary-posts"] }
 );
 
-// Cache for MDX parsing results to avoid redundant processing
-const mdxCache = new Map<string, any>();
-
-// Define the type for processed notes
-type ProcessedNote = Note & {
-  parsedContent: any;
-};
 
 // Process diary entries with optimized MDX parsing
 export async function processDiaryEntries(post: Awaited<ReturnType<typeof getDiaryPosts>>[number]) {
@@ -72,47 +65,9 @@ export async function processDiaryEntries(post: Awaited<ReturnType<typeof getDia
     // Sort notes by id(createdTime) in descending order
     const sortedNotes = notes.sort((a, b) => b.id - a.id);
     
-    // Process notes in batches to avoid overwhelming the system
-    const BATCH_SIZE = 5; // Process 5 notes at a time
-    const processedNotes: ProcessedNote[] = [];
-    
-    for (let i = 0; i < sortedNotes.length; i += BATCH_SIZE) {
-      const batch = sortedNotes.slice(i, i + BATCH_SIZE);
-      
-      // Process each batch in parallel
-      const batchResults = await Promise.all(
-        batch.map(async (note) => {
-          // Generate a cache key based on note content and ID
-          const cacheKey = `${note.id}-${note.updatedAt}`;
-          
-          // Check if we have a cached result
-          if (mdxCache.has(cacheKey)) {
-            return {
-              ...note,
-              parsedContent: mdxCache.get(cacheKey)
-            };
-          }
-          
-          // Parse the MDX content
-          const parsedContent = await parseMDX({ content: note.content });
-          
-          // Cache the result
-          mdxCache.set(cacheKey, parsedContent.content);
-          
-          return {
-            ...note,
-            parsedContent: parsedContent.content
-          };
-        })
-      );
-      
-      // Add batch results to the processed notes
-      processedNotes.push(...batchResults);
-    }
-    
     return {
       ...post,
-      processedNotes
+      processedNotes:sortedNotes
     };
   } catch (e) {
     console.error("Failed to process diary post:", e);
