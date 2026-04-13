@@ -15,7 +15,7 @@ import {
   useState,
 } from "react";
 import { BaseInputFileHeadless } from "./Base/InputFileHeadless";
-import { CloudIcon, SlashIcon, UploadIcon, XIcon } from "lucide-react";
+import { CloudIcon, CloudUpload, SlashIcon, UploadIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 import { Icon, IconProps } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
@@ -194,12 +194,8 @@ export function UploadForm(props: Props) {
                                     alt="Image preview"
                                   />
                                 ) : (
-                                  <Image
-                                    height={56}
-                                    width={56}
-                                    className="h-14 w-14 rounded-xl object-cover object-center"
-                                    src="https://tairo.cssninja.io/img/avatars/placeholder-file.png"
-                                    alt="Image preview"
+                                  <CloudUpload
+                                    className="h-8 w-8 rounded-xl object-cover object-center"
                                   />
                                 )}
                               </div>

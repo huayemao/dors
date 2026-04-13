@@ -72,6 +72,7 @@ const nextConfig = {
     ]))
   },
   experimental: {
+    proxyClientMaxBodySize:'20mb',
     serverExternalPackages: ["prisma", "shiki", 'vscode-oniguruma'],
   },
   basePath:
