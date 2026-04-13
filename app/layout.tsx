@@ -6,16 +6,7 @@ import Script from "next/script";
 import { AppTip } from "./AppTip";
 import { AppToaster } from "@/components/Base/AppToaster";
 
-import localFont from 'next/font/local'
-
-
 import type { JSX } from "react";
-
-
-const LXGW_WenKai = localFont({
-  src: '../public/fonts/LXGWWenKai-Regular.woff2',
-  variable: '--font-LXGW-WenKai',
-})
 
 export const metadata: Metadata = {
   title: {
@@ -43,8 +34,17 @@ export default async function RootLayout({
 }) {
   return (
     <ShurikenUIProvider>
-      <html lang="zh-CN" className={LXGW_WenKai.variable}>
+      <html lang="zh-CN">
         <head>
+          <link rel="preconnect" href="https://fonts.loli.net" crossOrigin="" />
+          <link href="https://fonts.loli.net/css2?family=LXGW+WenKai:wght@400;700&display=swap" rel="stylesheet" />
+          <style>
+            {`
+              :root {
+                --font-LXGW-WenKai: 'LXGW WenKai', cursive, serif;
+              }
+            `}
+          </style>
           <meta
             name="msvalidate.01"
             content="367ED36ACEB18DEFBDC5FD0CE17B995B"
@@ -57,7 +57,7 @@ export default async function RootLayout({
             margin-top: .6cm;
             margin-bottom: .6cm;
           }
-  
+
           @page:first {
             size:800px 600px;
             margin-top:0;
