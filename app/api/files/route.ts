@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import mime from "mime";
 import sharp from "sharp";
 import crypto from "crypto";
+import { getStorageManager } from "@/lib/storage/manager";
 
 export const maxDuration = 25;
 
@@ -69,13 +70,22 @@ export async function POST(request: Request) {
           (mime.getExtension(processedMimeType) || "");
         const hashedName = `${fileHash}${fileExtension ? "." + fileExtension : ""}`;
 
+        const storageManager = getStorageManager();
+        const metadata = await storageManager.saveFile({
+          buffer: processedBuffer,
+          fileName: hashedName,
+          mimeType: processedMimeType,
+          size: processedSize,
+        });
+
         const file = await prisma.file.create({
           data: {
             name: hashedName,
             displayName: originalName,
-            data: processedBuffer,
             mimeType: processedMimeType,
             size: BigInt(processedSize),
+            provider: metadata.provider,
+            data: metadata.provider === 'database' ? processedBuffer : undefined,
           },
         });
 

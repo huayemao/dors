@@ -590,9 +590,10 @@ model File {
   id           Int      @id @default(autoincrement())
   name         String   // 存储文件名（hash）
   displayName  String   // 显示文件名（用户上传的原始文件名）
-  data         Bytes
+  data         Bytes?   // 二进制数据（仅 database provider 使用）
   mimeType     String
   size         BigInt?
+  provider     String   @default("database") // 存储提供者：database 或 pocketbase
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now()) @updatedAt
 }

@@ -2,6 +2,7 @@ import { Console } from "console";
 import { getPlaiceholder } from "plaiceholder";
 import sharp from "sharp";
 import prisma from "../prisma";
+import { getStorageManager } from "../storage/manager";
 
 export async function getSmallImage(imageBuffer: Buffer) {
   // 使用sharp库处理图片
@@ -30,7 +31,15 @@ export async function getImageBuffer(url: any) {
       },
     });
     if (file) {
-      return Buffer.from(await file.data);
+      if (file.provider === 'pocketbase') {
+        const storageManager = getStorageManager();
+        const buffer = await storageManager.getFile(file.name, 'pocketbase');
+        if (buffer) {
+          return buffer;
+        }
+      } else {
+        return Buffer.from(file.data || []);
+      }
     }
   }
   return await fetch(url).then(async (res) => {

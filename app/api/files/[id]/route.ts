@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import mime from "mime";
 import omit from "lodash/omit"
+import { getStorageManager } from "@/lib/storage/manager";
 
 export const revalidate = 7200;
 
@@ -14,15 +15,28 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     });
 
     if (!file) {
-      new Response(null, {
+      return new Response(null, {
         status: 404,
       });
     }
 
     const mimeType = mime.getType(file?.name || "");
+    const storageManager = getStorageManager();
 
-    // @ts-ignore
-    const blob = new Blob([file!.data]);
+    let buffer: Buffer;
+    if (file.provider === 'pocketbase') {
+      const fileBuffer = await storageManager.getFile(file.name, 'pocketbase');
+      if (!fileBuffer) {
+        return new Response(null, {
+          status: 404,
+        });
+      }
+      buffer = fileBuffer;
+    } else {
+      buffer = Buffer.from(file.data || []);
+    }
+
+    const blob = new Blob([buffer as any]);
     const stream = blob.stream();
 
     return new Response(stream, {
@@ -32,7 +46,6 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         "content-length": String(blob.size),
         "Content-Type": mimeType as string,
       },
-      // status: 200,
     });
   } catch (error) {
     return new Response(`error: ${error.message}`, {
@@ -69,7 +82,24 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
 export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
-    await prisma.file.delete({ where: { id: Number(params.id) } });
+    const fileId = parseInt(params.id);
+    const file = await prisma.file.findUnique({
+      where: { id: fileId },
+    });
+
+    if (!file) {
+      return new Response("File not found", {
+        status: 404,
+      });
+    }
+
+    const storageManager = getStorageManager();
+
+    if (file.provider === 'pocketbase') {
+      await storageManager.deleteFile(file.name, 'pocketbase');
+    }
+
+    await prisma.file.delete({ where: { id: fileId } });
     return new Response("ok", {
       status: 200,
     });
