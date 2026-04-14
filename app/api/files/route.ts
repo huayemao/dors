@@ -1,8 +1,4 @@
-import prisma from "@/lib/prisma";
-import mime from "mime";
-import sharp from "sharp";
-import crypto from "crypto";
-import { getStorageManager } from "@/lib/storage/manager";
+import { processFileUpload } from "@/lib/upload";
 
 export const maxDuration = 25;
 
@@ -31,69 +27,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const files = (await request.formData()).getAll("files");
-    const markdown: string[] = [];
-
-    for (const item of files) {
-      if (item instanceof File) {
-        const originalName = item.name;
-        const buffer = Buffer.from(await item.arrayBuffer());
-        let processedBuffer = buffer;
-        let processedMimeType = mime.getType(originalName) || "unknown";
-        let processedSize = item.size;
-
-        // 检查是否为图片并进行压缩
-        if (processedMimeType.startsWith("image/") && processedMimeType !== "image/svg+xml" && processedMimeType !== "image/gif") {
-          try {
-            const sharpInstance = sharp(buffer);
-
-            // 转换为webp格式，90%质量
-            processedBuffer = Buffer.from(await sharpInstance
-              .webp({ quality: 90 })
-              .toBuffer());
-
-            processedMimeType = "image/webp";
-            processedSize = processedBuffer.length;
-          } catch (error) {
-            console.warn("图像压缩失败，使用原文件:", error);
-            // 如果压缩失败，使用原文件
-            processedBuffer = buffer;
-          }
-        }
-
-        // 生成hash文件名
-        const fileHash = crypto.createHash("sha256")
-          .update(originalName + Date.now())
-          .digest("hex")
-          .substring(0, 16);
-        const fileExtension = processedMimeType === "image/webp" ? "webp" :
-          (mime.getExtension(processedMimeType) || "");
-        const hashedName = `${fileHash}${fileExtension ? "." + fileExtension : ""}`;
-
-        const storageManager = getStorageManager();
-        const metadata = await storageManager.saveFile({
-          buffer: processedBuffer,
-          fileName: hashedName,
-          mimeType: processedMimeType,
-          size: processedSize,
-        });
-
-        const file = await prisma.file.create({
-          data: {
-            name: hashedName,
-            displayName: originalName,
-            mimeType: processedMimeType,
-            size: BigInt(processedSize),
-            provider: metadata.provider,
-            data: metadata.provider === 'database' ? processedBuffer : undefined,
-          },
-        });
-
-        const url = encodeURI(`/api/files/${file.name}`);
-        const markdownText = `![${file.displayName}](${url})`;
-        markdown.push(markdownText);
-      }
-    }
+    const files = (await request.formData()).getAll("files") as File[];
+    const uploadedFiles = await processFileUpload(files);
+    const markdown = uploadedFiles.map(file => file.markdown);
 
     return new Response(markdown.join("\n"), {
       status: 200,

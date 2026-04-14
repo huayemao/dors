@@ -97,7 +97,7 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
     share_target: {
-      action: "/api/files",
+      action: "/api/files/upload",
       // @ts-ignore
       method: "POST",
       enctype: "multipart/form-data",

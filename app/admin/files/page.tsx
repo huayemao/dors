@@ -7,17 +7,21 @@ import { withPagination } from "@/lib/server/withPagination";
 import { FileList } from "@/components/FileList";
 import { FileEditName } from "@/components/FileEditName";
 import { FileSearch } from "@/components/FileSearch";
+import { FileUploadComplete } from "@/components/FileUploadComplete";
+import { Modal } from "@/components/Base/Modal";
+import { FileUploadModal } from "@/components/FileUploadModal";
 
 const PER_PAGE = 20;
 
 export default async function AdminFilesPage(
   props: {
-    searchParams: Promise<{ page?: string; search?: string }>;
+    searchParams: Promise<{ page?: string; search?: string; uploaded?: string }>;
   }
 ) {
   const searchParams = await props.searchParams;
   const searchTerm = searchParams.search || "";
-  
+  const uploadedFileNames = searchParams.uploaded?.split(",").filter(Boolean) || [];
+
   const getPaginatedFileList = withPagination(prisma.file.findMany, () => ({
     page: searchParams.page || 1,
     perPage: PER_PAGE,
@@ -25,11 +29,11 @@ export default async function AdminFilesPage(
 
   const whereClause = searchTerm
     ? {
-        OR: [
-          { name: { contains: searchTerm } },
-          { displayName: { contains: searchTerm } },
-        ],
-      }
+      OR: [
+        { name: { contains: searchTerm } },
+        { displayName: { contains: searchTerm } },
+      ],
+    }
     : undefined;
 
   const list = await getPaginatedFileList({
@@ -51,6 +55,25 @@ export default async function AdminFilesPage(
     where: whereClause,
   });
 
+  // 获取上传的文件信息
+  let uploadedFiles: any[] = [];
+  if (uploadedFileNames.length > 0) {
+    uploadedFiles = await prisma.file.findMany({
+      where: {
+        name: {
+          in: uploadedFileNames,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        displayName: true,
+        size: true,
+        mimeType: true,
+      },
+    });
+  }
+
   await addMimeTypes(list);
 
   return (
@@ -65,6 +88,11 @@ export default async function AdminFilesPage(
         <BaseCard shadow="flat" className="p-4">
           <UploadForm />
         </BaseCard>
+        {uploadedFiles.length > 0 && (
+          <ClientOnly>
+            <FileUploadModal files={uploadedFiles} />
+          </ClientOnly>
+        )}
       </div>
       <BasePagination
         classes={{ wrapper: "lg:col-span-2" }}

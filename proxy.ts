@@ -6,9 +6,9 @@ import { isAuthenticated } from "./lib/server/isAuthenticated";
 // Step 1. HTTP Basic Auth Middleware for Challenge
 export function proxy(req: NextRequest) {
   const whiteList = ["/api/files", "/api/getPost"];
+  const isCreateFile = req.nextUrl.pathname.includes("/api/files") && req.method === "POST";
   if (
-    !isAuthenticated(req) &&
-    !whiteList.some((e) => req.nextUrl.pathname.startsWith(e))
+    !isAuthenticated(req) && (!whiteList.some((e) => req.nextUrl.pathname.startsWith(e)) || isCreateFile)
   ) {
     return new NextResponse("Authentication required", {
       status: 401,
