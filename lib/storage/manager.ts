@@ -50,6 +50,11 @@ export class StorageManager {
     return provider.getFile(fileName);
   }
 
+  async getFileStream(fileName: string, providerType?: StorageProviderType): Promise<ReadableStream<Uint8Array> | null> {
+    const provider = this.getProvider(providerType);
+    return provider.getFileStream(fileName);
+  }
+
   async deleteFile(fileName: string, providerType?: StorageProviderType): Promise<boolean> {
     const provider = this.getProvider(providerType);
     return provider.deleteFile(fileName);

@@ -70,6 +70,33 @@ export class PocketBaseStorageProvider implements FileStorageProvider {
     }
   }
 
+  async getFileStream(fileName: string): Promise<ReadableStream<Uint8Array> | null> {
+    await this.ensureAuthenticated();
+
+    try {
+      const records = await this.pb.collection(this.collectionName).getList(1, 1, {
+        filter: `name = "${fileName}"`,
+      });
+
+      if (records.items.length === 0) {
+        return null;
+      }
+
+      const record = records.items[0];
+      const fileUrl = this.pb.files.getUrl(record, record.file);
+
+      const response = await fetch(fileUrl);
+      if (!response.ok) {
+        return null;
+      }
+
+      return response.body;
+    } catch (error) {
+      console.error('Error fetching file stream from PocketBase:', error);
+      return null;
+    }
+  }
+
   async deleteFile(fileName: string): Promise<boolean> {
     await this.ensureAuthenticated();
 

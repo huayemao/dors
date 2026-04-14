@@ -1,6 +1,7 @@
 export interface FileStorageProvider {
   saveFile(fileData: FileData): Promise<FileMetadata>;
   getFile(fileName: string): Promise<Buffer | null>;
+  getFileStream(fileName: string): Promise<ReadableStream<Uint8Array> | null>;
   deleteFile(fileName: string): Promise<boolean>;
   fileExists(fileName: string): Promise<boolean>;
 }

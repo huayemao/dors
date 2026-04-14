@@ -36,6 +36,22 @@ export class DatabaseStorageProvider implements FileStorageProvider {
     return Buffer.from(file.data || []);
   }
 
+  async getFileStream(fileName: string): Promise<ReadableStream<Uint8Array> | null> {
+    const file = await prisma.file.findFirst({
+      where: {
+        name: fileName,
+      },
+    });
+
+    if (!file) {
+      return null;
+    }
+
+    const buffer = Buffer.from(file.data || []);
+    const blob = new Blob([buffer]);
+    return blob.stream();
+  }
+
   async deleteFile(fileName: string): Promise<boolean> {
     try {
       const file = await prisma.file.findFirst({

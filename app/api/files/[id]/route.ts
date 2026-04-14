@@ -23,27 +23,23 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     const mimeType = mime.getType(file?.name || "");
     const storageManager = getStorageManager();
 
-    let buffer: Buffer;
-    if (file.provider === 'pocketbase') {
-      const fileBuffer = await storageManager.getFile(file.name, 'pocketbase');
-      if (!fileBuffer) {
-        return new Response(null, {
-          status: 404,
-        });
-      }
-      buffer = fileBuffer;
-    } else {
-      buffer = Buffer.from(file.data || []);
+    // 使用新的 getFileStream 方法获取文件流
+    const fileStream = await storageManager.getFileStream(file.name, file.provider as any);
+    if (!fileStream) {
+      return new Response(null, {
+        status: 404,
+      });
     }
 
-    const blob = new Blob([buffer as any]);
-    const stream = blob.stream();
+    console.log(file.provider);
+    // 对于数据库存储，需要计算文件大小
+    const contentLength = String(file.size || 0);
 
-    return new Response(stream, {
+    return new Response(fileStream, {
       headers: {
         "accept-ranges": "bytes",
         "Access-Control-Allow-Origin": "*",
-        "content-length": String(blob.size),
+        "content-length": contentLength,
         "Content-Type": mimeType as string,
       },
     });
