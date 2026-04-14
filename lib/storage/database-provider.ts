@@ -36,7 +36,7 @@ export class DatabaseStorageProvider implements FileStorageProvider {
     return Buffer.from(file.data || []);
   }
 
-  async getFileStream(fileName: string): Promise<ReadableStream<Uint8Array> | null> {
+  async getFileStream(fileName: string, isThumbnail?: boolean): Promise<ReadableStream<Uint8Array> | null> {
     const file = await prisma.file.findFirst({
       where: {
         name: fileName,
@@ -48,7 +48,25 @@ export class DatabaseStorageProvider implements FileStorageProvider {
     }
 
     const buffer = Buffer.from(file.data || []);
-    const blob = new Blob([buffer]);
+    
+    // 对于缩略图，生成100x100的缩略图
+    if (isThumbnail && file.mimeType?.startsWith('image/')) {
+      try {
+        const sharp = await import('sharp');
+        const resizedBuffer = await sharp.default(buffer)
+          .resize(100, 100, { fit: 'cover' })
+          .toBuffer();
+        const blob = new Blob([resizedBuffer.buffer as ArrayBuffer]);
+        return blob.stream();
+      } catch (error) {
+        console.error('Error generating thumbnail:', error);
+        // 生成缩略图失败，返回原图
+        const blob = new Blob([buffer.buffer]);
+        return blob.stream();
+      }
+    }
+
+    const blob = new Blob([buffer.buffer]);
     return blob.stream();
   }
 

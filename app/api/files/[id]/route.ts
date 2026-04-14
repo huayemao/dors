@@ -7,6 +7,9 @@ export const revalidate = 7200;
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
+  const url = new URL(request.url);
+  const isThumbnail = url.searchParams.get('thumbnail') === 'true';
+  
   try {
     const file = await prisma.file.findFirst({
       where: {
@@ -23,17 +26,16 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     const mimeType = mime.getType(file?.name || "");
     const storageManager = getStorageManager();
 
-    // 使用新的 getFileStream 方法获取文件流
-    const fileStream = await storageManager.getFileStream(file.name, file.provider as any);
+    // 使用新的 getFileStream 方法获取文件流，支持缩略图
+    const fileStream = await storageManager.getFileStream(file.name, file.provider as any, isThumbnail);
     if (!fileStream) {
       return new Response(null, {
         status: 404,
       });
     }
 
-    console.log(file.provider);
     // 对于数据库存储，需要计算文件大小
-    const contentLength = String(file.size || 0);
+    const contentLength = isThumbnail ? '100x100' : String(file.size || 0);
 
     return new Response(fileStream, {
       headers: {

@@ -70,12 +70,13 @@ export class PocketBaseStorageProvider implements FileStorageProvider {
     }
   }
 
-  async getFileStream(fileName: string): Promise<ReadableStream<Uint8Array> | null> {
+  async getFileStream(fileName: string, isThumbnail?: boolean): Promise<ReadableStream<Uint8Array> | null> {
     await this.ensureAuthenticated();
 
     try {
       const records = await this.pb.collection(this.collectionName).getList(1, 1, {
         filter: `name = "${fileName}"`,
+        $autoCancel: false,
       });
 
       if (records.items.length === 0) {
@@ -83,7 +84,10 @@ export class PocketBaseStorageProvider implements FileStorageProvider {
       }
 
       const record = records.items[0];
-      const fileUrl = this.pb.files.getUrl(record, record.file);
+      // 对于缩略图，添加查询参数
+      const fileUrl = isThumbnail
+        ? this.pb.files.getUrl(record, record.file, { thumb: '100x100' })
+        : this.pb.files.getUrl(record, record.file);
 
       const response = await fetch(fileUrl);
       if (!response.ok) {

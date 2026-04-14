@@ -185,53 +185,44 @@ function Content({
                 </ClientOnly>
               }
             >
-              <BaseDropdown
-                variant="text"
-                renderButton={() => (
-                  <BaseIconBox
-                    mask="blob"
-                    color="success"
-                    rounded="none"
-                    variant="pastel"
-                    size="md"
+              {e.mimeType.startsWith("image") ? (
+                <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0">
+                  <a
+                    href={encodeURI(`${SITE_META.url}/api/files/${e.name}`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    {e.mimeType.startsWith("image") ? (
-                      // @ts-ignore
-                      <ImageIcon
-                        strokeWidth={1}
-                        className="h-6 w-6"
-                      ></ImageIcon>
-                    ) : (
-                      <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
-                    )}
-                  </BaseIconBox>
-                )}
-              >
-                <div>
-                  <Figure
-                    ignoreCaption
-                    alt={e.name}
-                    src={encodeURI(`${SITE_META.url}/api/files/${e.name}`)}
-                  />
+                    <img
+                      src={encodeURI(`${SITE_META.url}/api/files/${e.name}?thumbnail=true`)}
+                      alt={e.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </a>
                 </div>
-              </BaseDropdown>
-              {/* <Popover  className="relative">
-                    <Popover.Button>
-                        <div className="flex items-center w-10 h-10">
-                            {e.mimeType.startsWith("image") ? (
-                                // @ts-ignore
-                                <ImageIcon strokeWidth={1} className="h-6 w-6"></ImageIcon>
-                            ) : (
-                                <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
-                            )}
-                        </div>
-                    </Popover.Button>
-                    <Popover.Panel className="absolute z-10">
-                        <BaseCard shadow="flat" className="w-64 h-48 grid grid-cols-2">
-                            <Figure loading="lazy" ignoreCaption width={40} height={40} alt={e.name} src={encodeURI(`${SITE_META.url}/api/files/${e.name}`)} />
-                        </BaseCard>
-                    </Popover.Panel>
-                </Popover> */}
+              ) : (
+                <BaseDropdown
+                  variant="text"
+                  renderButton={() => (
+                    <BaseIconBox
+                      mask="blob"
+                      color="success"
+                      rounded="none"
+                      variant="pastel"
+                      size="md"
+                    >
+                      <FileIcon strokeWidth={1} className="h-6 w-6"></FileIcon>
+                    </BaseIconBox>
+                  )}
+                >
+                  <div>
+                    <Figure
+                      ignoreCaption
+                      alt={e.name}
+                      src={encodeURI(`${SITE_META.url}/api/files/${e.name}`)}
+                    />
+                  </div>
+                </BaseDropdown>
+              )}
             </BaseListItem>
           );
         })}
