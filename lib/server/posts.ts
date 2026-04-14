@@ -166,6 +166,7 @@ type getPostOptions = PaginateOptions & {
   protected?: boolean;
   includeHiddenCategories?: boolean;
   type?: PostType;
+  search?: string;
 };
 
 export const getPosts = unstable_cache(async (options: getPostOptions = { type: 'normal' }) => {
@@ -361,6 +362,16 @@ async function getWhereInput(options: getPostOptions) {
           },
         },
       },
+    });
+  }
+
+  if (options.search) {
+    whereInput.push({
+      OR: [
+        { title: { contains: options.search} },
+        { content: { contains: options.search} },
+        { excerpt: { contains: options.search} },
+      ],
     });
   }
 

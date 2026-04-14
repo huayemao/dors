@@ -5,12 +5,13 @@ import { PostsTable } from "./PostsTable";
 import { PaginateOptions } from "@/lib/paginator";
 import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
+import { PostSearch } from "@/components/PostSearch";
 
-type SearchParams = Promise<PaginateOptions>;
+type SearchParams = Promise<PaginateOptions & { search?: string }>;
 
 export default async function PostsPage(
   props: {
-    searchParams: Promise<SearchParams>;
+    searchParams: SearchParams;
   }
 ) {
   const searchParams = await props.searchParams;
@@ -18,7 +19,10 @@ export default async function PostsPage(
     ...searchParams,
     includeHiddenCategories: true,
   });
-  const pageCount = await getPageCount({ includeHiddenCategories: true });
+  const pageCount = await getPageCount({
+    ...searchParams,
+    includeHiddenCategories: true,
+  });
 
   return (
     <div className="space-y-4">
@@ -27,6 +31,7 @@ export default async function PostsPage(
         <BaseButtonAction href={"/admin/posts/create"}>创建文章</BaseButtonAction>
       </div>
       <Panel title="文章列表" className="max-w-full">
+        <PostSearch />
         <PostsTable posts={posts}></PostsTable>
         <div className="mt-4">
           <Suspense>

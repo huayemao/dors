@@ -21,6 +21,9 @@ export function Table({
   boldCols?: number[];
 }) {
   const tableData = useMemo(() => {
+    if (!data.length) {
+      return { headers: [], rows: [] };
+    }
     const headers = Object.keys(data[0]);
     const rows = data;
     return { headers, rows };
