@@ -28,11 +28,13 @@ export function SearchInput({
   }, [onChange]);
 
   useEffect(() => {
-    setLocalValue(value);
+      setLocalValue(value);
   }, [value]);
 
   useEffect(() => {
-    onChangeRef.current(debouncedValue);
+    if (debouncedValue !== value) {
+      onChangeRef.current(debouncedValue);
+    }
   }, [debouncedValue]);
 
   const handleClear = () => {
