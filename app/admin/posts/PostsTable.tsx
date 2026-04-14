@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 export function PostsTable({ posts }: { posts }) {
   const router = useRouter();
   return (
-    <div className="rounded shadow shadow-primary-100">
+    <div className="rounded shadow shadow-primary-100 overflow-x-auto">
       <ClientOnly>
         <Table
           actions={[
