@@ -6,19 +6,31 @@ import { ClientOnly } from "@/components/ClientOnly";
 import { withPagination } from "@/lib/server/withPagination";
 import { FileList } from "@/components/FileList";
 import { FileEditName } from "@/components/FileEditName";
+import { FileSearch } from "@/components/FileSearch";
 
 const PER_PAGE = 20;
 
 export default async function AdminFilesPage(
   props: {
-    searchParams: Promise<{ page?: string }>;
+    searchParams: Promise<{ page?: string; search?: string }>;
   }
 ) {
   const searchParams = await props.searchParams;
+  const searchTerm = searchParams.search || "";
+  
   const getPaginatedFileList = withPagination(prisma.file.findMany, () => ({
     page: searchParams.page || 1,
     perPage: PER_PAGE,
   }));
+
+  const whereClause = searchTerm
+    ? {
+        OR: [
+          { name: { contains: searchTerm } },
+          { displayName: { contains: searchTerm } },
+        ],
+      }
+    : undefined;
 
   const list = await getPaginatedFileList({
     select: {
@@ -27,14 +39,17 @@ export default async function AdminFilesPage(
       displayName: true,
       size: true,
       mimeType: true,
-      createdAt: true, // 添加createdAt字段用于显示上传时间
+      createdAt: true,
     },
     orderBy: {
       createdAt: "desc",
     },
+    where: whereClause,
   });
 
-  const totalItems = await prisma.file.count();
+  const totalItems = await prisma.file.count({
+    where: whereClause,
+  });
 
   await addMimeTypes(list);
 
@@ -43,6 +58,7 @@ export default async function AdminFilesPage(
       <div className="grid lg:grid-cols-2 py-4 gap-4">
         <BaseCard shadow="flat" className="p-4">
           <ClientOnly>
+            <FileSearch />
             <FileList admin list={list}></FileList>
           </ClientOnly>
         </BaseCard>

@@ -7,10 +7,10 @@ import {
   BaseCard,
   BaseHeading,
   BaseTag,
-  BaseInput,
 } from "@glint-ui/react";
 import Link from "next/link";
-import { Search, X, ChevronDown, ChevronUp, Hash } from "lucide-react";
+import { ChevronDown, ChevronUp, Hash } from "lucide-react";
+import { SearchInput } from "@/components/SearchInput";
 
 export function Tags({ simple }: { simple: boolean }) {
   const tags = useContext(TagsContext);
@@ -63,24 +63,11 @@ export function Tags({ simple }: { simple: boolean }) {
 
   return (
     <div className="space-y-6">
-      {/* 搜索框 */}
-      <div className="relative">
-        <BaseInput
-          placeholder="搜索标签..."
-          value={searchTerm}
-          onChange={(v: string) => setSearchTerm(v)}
-          className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm"
-        />
-        {searchTerm && (
-          <BaseButton
-            size="sm"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 rounded-full hover:bg-gray-100 transition-colors"
-            onClick={() => setSearchTerm("")}
-          >
-            <X className="h-4 w-4 text-gray-500" />
-          </BaseButton>
-        )}
-      </div>
+      <SearchInput
+        value={searchTerm}
+        onChange={(v: string) => setSearchTerm(v)}
+        placeholder="搜索标签..."
+      />
 
       {/* 搜索结果 */}
       {searchTerm && (
