@@ -35,6 +35,7 @@ export const FilePreview = ({ file, ...props }) => {
 export function UploadForm(props: Props) {
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState<"idle" | "uploading" | "uploaded">("idle");
+  const [uploadOriginal, setUploadOriginal] = useState(false);
   const upload = useCallback((files: FileList) => {
     const xhr = new XMLHttpRequest();
     xhr.timeout = 400000; // 40 seconds
@@ -78,6 +79,7 @@ export function UploadForm(props: Props) {
     for (const file of Array.from(files)) {
       fileData.append("files", file);
     }
+    fileData.append("uploadOriginal", uploadOriginal.toString());
     xhr.addEventListener("load", (ev) => {
       toast("上传完成");
       setStage('uploaded')
@@ -90,7 +92,7 @@ export function UploadForm(props: Props) {
 
     // Note that the event listener must be set before sending (as it is a preflighted request)
     xhr.send(fileData);
-  }, []);
+  }, [uploadOriginal]);
   return (
     <form
       action="/api/files"
@@ -234,6 +236,24 @@ export function UploadForm(props: Props) {
                         </li>
                       ))}
                     </ul>
+                    {/* 上传原图选项，只对图片文件显示 */}
+                    {Array.from(files).some(file => file.type.startsWith("image")) && (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id="uploadOriginal"
+                          checked={uploadOriginal}
+                          onChange={(e) => setUploadOriginal(e.target.checked)}
+                          className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                        />
+                        <label
+                          htmlFor="uploadOriginal"
+                          className="text-muted-700 dark:text-muted-200 text-sm"
+                        >
+                          上传原图（默认压缩）
+                        </label>
+                      </div>
+                    )}
                     <div className="ms-auto w-full px-4 transition-opacity duration-300 opacity-100">
                       <BaseProgress
                         value={progress}

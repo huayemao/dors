@@ -27,8 +27,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const files = (await request.formData()).getAll("files") as File[];
-    const uploadedFiles = await processFileUpload(files);
+    const formData = await request.formData();
+    const files = formData.getAll("files") as File[];
+    const uploadOriginal = formData.get("uploadOriginal") === "true";
+    const uploadedFiles = await processFileUpload(files, uploadOriginal);
     const markdown = uploadedFiles.map(file => file.markdown);
 
     return new Response(markdown.join("\n"), {

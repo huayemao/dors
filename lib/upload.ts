@@ -13,7 +13,7 @@ export interface UploadedFile {
   markdown: string;
 }
 
-export async function processFileUpload(files: File[]): Promise<UploadedFile[]> {
+export async function processFileUpload(files: File[], uploadOriginal?: boolean): Promise<UploadedFile[]> {
   const uploadedFiles: UploadedFile[] = [];
 
   for (const item of files) {
@@ -25,21 +25,36 @@ export async function processFileUpload(files: File[]): Promise<UploadedFile[]> 
       let processedSize = item.size;
 
       // 检查是否为图片并进行压缩
-      if (processedMimeType.startsWith("image/") && processedMimeType !== "image/svg+xml" && processedMimeType !== "image/gif") {
-        try {
-          const sharpInstance = sharp(buffer);
+      if (processedMimeType.startsWith("image/") && processedMimeType !== "image/svg+xml" && processedMimeType !== "image/gif" && !uploadOriginal) {
+        // 300KB 以下的图片不压缩
+        if (item.size > 300 * 1024) {
+          try {
+            let sharpInstance = sharp(buffer);
 
-          // 转换为webp格式，90%质量
-          processedBuffer = Buffer.from(await sharpInstance
-            .webp({ quality: 90 })
-            .toBuffer());
+            // 获取图片信息
+            const metadata = await sharpInstance.metadata();
+            
+            // 控制图片像素大小，宽不超过 3200px
+            if (metadata.width && metadata.width > 3200) {
+              sharpInstance = sharpInstance.resize({
+                width: 3200,
+                fit: 'inside',
+                withoutEnlargement: true
+              });
+            }
 
-          processedMimeType = "image/webp";
-          processedSize = processedBuffer.length;
-        } catch (error) {
-          console.warn("图像压缩失败，使用原文件:", error);
-          // 如果压缩失败，使用原文件
-          processedBuffer = buffer;
+            // 转换为webp格式，90%质量
+            processedBuffer = Buffer.from(await sharpInstance
+              .webp({ quality: 90 })
+              .toBuffer());
+
+            processedMimeType = "image/webp";
+            processedSize = processedBuffer.length;
+          } catch (error) {
+            console.warn("图像压缩失败，使用原文件:", error);
+            // 如果压缩失败，使用原文件
+            processedBuffer = buffer;
+          }
         }
       }
 
