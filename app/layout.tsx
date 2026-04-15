@@ -1,12 +1,18 @@
 import { SITE_META } from "@/constants";
 import "@/styles/globals.css";
 import { ShurikenUIProvider } from "@glint-ui/react";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { AppTip } from "./AppTip";
 import { AppToaster } from "@/components/Base/AppToaster";
 
 import type { JSX } from "react";
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover', // 你要的 viewport-fit=cover
+}
 
 export const metadata: Metadata = {
   title: {
