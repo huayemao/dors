@@ -42,12 +42,14 @@ export default async function RootLayout({
     <ShurikenUIProvider>
       <html lang="zh-CN">
         <head>
-          <link rel="preconnect" href="https://fonts.loli.net" crossOrigin="" />
-          <link href="https://fonts.loli.net/css2?family=LXGW+WenKai:wght@400;700&display=swap" rel="stylesheet" />
+          <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
           <style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/satouriko/LxgwWenKai_Webfonts@v1.101/dist/LXGWWenKai-Regular.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/satouriko/LxgwWenKai_Webfonts@v1.101/dist/LXGWWenKai-Bold.css" />
+
             {`
               :root {
-                --font-LXGW-WenKai: 'LXGW WenKai', cursive, serif;
+                --font-LXGW-WenKai: LXGWWenKai, sans-serif;
               }
             `}
           </style>
