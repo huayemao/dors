@@ -72,7 +72,7 @@ const nextConfig = {
     ]))
   },
   experimental: {
-    proxyClientMaxBodySize:'20mb',
+    proxyClientMaxBodySize: '20mb',
     serverExternalPackages: ["prisma", "shiki", 'vscode-oniguruma'],
   },
   basePath:
@@ -161,6 +161,7 @@ const nextConfig = {
       },
     ];
   },
+
 };
 
 export default withPlaiceholder(nextConfig);

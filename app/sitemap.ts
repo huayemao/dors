@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const baseUrl = 'https://huayemao.run';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
@@ -58,91 +59,91 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // 基础页面
         const basePages: MetadataRoute.Sitemap = [
             {
-                url: '/',
+                url: `${baseUrl}/`,
                 lastModified: now,
                 changeFrequency: 'daily',
                 priority: 1,
             },
             {
-                url: '/about',
+                url: `${baseUrl}/about`,
                 lastModified: now,
                 changeFrequency: 'monthly',
                 priority: 0.8,
             },
             {
-                url: '/apps',
+                url: `${baseUrl}/apps`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/books',
+                url: `${baseUrl}/books`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/collection',
+                url: `${baseUrl}/collection`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/posts',
+                url: `${baseUrl}/posts`,
                 lastModified: now,
                 changeFrequency: 'daily',
                 priority: 0.9,
             },
             {
-                url: '/categories',
+                url: `${baseUrl}/categories`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/tags',
+                url: `${baseUrl}/tags`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/notes',
+                url: `${baseUrl}/notes`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/quotes',
+                url: `${baseUrl}/quotes`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/qas',
+                url: `${baseUrl}/qas`,
                 lastModified: now,
                 changeFrequency: 'weekly',
                 priority: 0.8,
             },
             {
-                url: '/excel-renamer',
+                url: `${baseUrl}/excel-renamer`,
                 lastModified: now,
                 changeFrequency: 'monthly',
                 priority: 0.8,
             },
             {
-                url: '/video-splitter',
+                url: `${baseUrl}/video-splitter`,
                 lastModified: now,
                 changeFrequency: 'monthly',
                 priority: 0.8,
             },
             {
-                url: '/dict-parser',
+                url: `${baseUrl}/dict-parser`,
                 lastModified: now,
                 changeFrequency: 'monthly',
                 priority: 0.8,
             },
             {
-                url: '/kunming-living',
+                url: `${baseUrl}/kunming-living`,
                 lastModified: now,
                 changeFrequency: 'monthly',
                 priority: 0.8,
@@ -151,14 +152,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         // 文章页面
         const postPages: MetadataRoute.Sitemap = publicPosts.filter(p => !p.slug).map(post => ({
-            url: `/posts/${post.id}`,
+            url: `${baseUrl}/posts/${post.id}`,
             lastModified: post.updated_at || post.published_at || now,
             changeFrequency: 'monthly' as const,
             priority: 0.9,
         })).concat(publicPosts
             .filter(post => post.slug)
             .map(post => ({
-                url: `/${post.slug}`,
+                url: `${baseUrl}/${post.slug}`,
                 lastModified: post.updated_at || post.published_at || now,
                 changeFrequency: 'monthly' as const,
                 priority: 0.9,
@@ -168,7 +169,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const categoryPages: MetadataRoute.Sitemap = categories
             .filter(category => category.name)
             .map(category => ({
-                url: `/categories/${encodeURIComponent(category.id!)}`,
+                url: `${baseUrl}/categories/${encodeURIComponent(category.id!)}`,
                 lastModified: category.updated_at || category.published_at || now,
                 changeFrequency: 'weekly' as const,
                 priority: 0.8,
@@ -178,7 +179,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const tagPages: MetadataRoute.Sitemap = tags
             .filter(tag => tag.name)
             .map(tag => ({
-                url: `/tags/${tag.id}`,
+                url: `${baseUrl}/tags/${tag.id}`,
                 lastModified: tag.updated_at || tag.published_at || now,
                 changeFrequency: 'weekly' as const,
                 priority: 0.8,
@@ -197,7 +198,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // 如果出错，至少返回基础页面
         return [
             {
-                url: '/',
+                url: `${baseUrl}/`,
                 lastModified: new Date().toISOString(),
                 changeFrequency: 'daily',
                 priority: 1,
