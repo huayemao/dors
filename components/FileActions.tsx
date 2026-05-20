@@ -1,10 +1,10 @@
 import { copyTextToClipboard, humanFileSize, withConfirm } from "@/lib/utils";
 import { BaseDropdown, BaseDropdownItem } from "@glint-ui/react";
-import { CopyIcon, FileIcon, ImageIcon, TrashIcon, EditIcon } from "lucide-react";
+import { CopyIcon, FileIcon, ImageIcon, TrashIcon, EditIcon, UploadIcon } from "lucide-react";
 import { getFilePath } from "@/lib/client/utils/getFilePath";
 import { FileItem } from "./FileList";
 import toast from "react-hot-toast";
-export function FileActions({ e, admin, onEdit }: { e: FileItem; admin: boolean; onEdit?: () => void }) {
+export function FileActions({ e, admin, onEdit, onReupload }: { e: FileItem; admin: boolean; onEdit?: () => void; onReupload?: () => void }) {
   return (
     <BaseDropdown variant="context">
       <BaseDropdownItem
@@ -22,6 +22,11 @@ export function FileActions({ e, admin, onEdit }: { e: FileItem; admin: boolean;
             start={<EditIcon className="w-5 h-5"></EditIcon>}
             title="修改文件名"
             onClick={onEdit}
+          ></BaseDropdownItem>
+          <BaseDropdownItem
+            start={<UploadIcon className="w-5 h-5"></UploadIcon>}
+            title="重新上传文件"
+            onClick={onReupload}
           ></BaseDropdownItem>
           <BaseDropdownItem
             start={<TrashIcon className="w-5 h-5"></TrashIcon>}

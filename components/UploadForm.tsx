@@ -21,7 +21,10 @@ import { Icon, IconProps } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 import { copyTextToClipboard } from "@/lib/utils";
 
-type Props = DOMAttributes<HTMLFormElement>;
+type Props = DOMAttributes<HTMLFormElement> & {
+  reuploadFileId?: number;
+  onSuccess?: () => void;
+};
 const Iconify: FC<IconProps> = (props) => {
   return <Icon {...props} />;
 };
@@ -33,21 +36,13 @@ export const FilePreview = ({ file, ...props }) => {
 };
 
 export function UploadForm(props: Props) {
+  const { reuploadFileId, onSuccess, ...rest } = props;
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState<"idle" | "uploading" | "uploaded">("idle");
   const [uploadOriginal, setUploadOriginal] = useState(false);
   const upload = useCallback((files: FileList) => {
     const xhr = new XMLHttpRequest();
     xhr.timeout = 400000; // 40 seconds
-
-    // Link abort button
-    // abortButton.addEventListener(
-    //   "click",
-    //   () => {
-    //     xhr.abort();
-    //   },
-    //   { once: true }
-    // );
 
     // When the upload starts, we display the progress bar
     xhr.upload.addEventListener("loadstart", (event) => {
@@ -61,81 +56,81 @@ export function UploadForm(props: Props) {
       setProgress(value);
     });
 
-    // When the upload is finished, we hide the progress bar.
-    xhr.upload.addEventListener("loadend", (event) => {});
-
-    // In case of an error, an abort, or a timeout, we hide the progress bar
-    // Note that these events can be listened to on the xhr object too
-    // function errorAction(event) {
-    //   progressBar.classList.remove("visible");
-    //   log.textContent = `Upload failed: ${event.type}`;
-    // }
-    // xhr.upload.addEventListener("error", errorAction);
-    // xhr.upload.addEventListener("abort", errorAction);
-    // xhr.upload.addEventListener("timeout", errorAction);
-
     // Build the payload
     const fileData = new FormData();
-    for (const file of Array.from(files)) {
-      fileData.append("files", file);
+    if (reuploadFileId) {
+      // 重新上传模式：只上传一个文件
+      fileData.append("file", files[0]);
+    } else {
+      // 正常上传模式
+      for (const file of Array.from(files)) {
+        fileData.append("files", file);
+      }
+      fileData.append("uploadOriginal", uploadOriginal.toString());
     }
-    fileData.append("uploadOriginal", uploadOriginal.toString());
+    
     xhr.addEventListener("load", (ev) => {
-      toast("上传完成");
-      setStage('uploaded')
-      copyTextToClipboard(xhr.responseText);
+      toast(reuploadFileId ? "文件已更新" : "上传完成");
+      setStage('uploaded');
+      if (!reuploadFileId) {
+        copyTextToClipboard(xhr.responseText);
+      }
+      if (onSuccess) {
+        setTimeout(() => onSuccess(), 1500);
+      }
     });
 
-    // Theoretically, event listeners could be set after the open() call
-    // but browsers are buggy here
-    xhr.open("POST", "/api/files", true);
+    // 重新上传使用 PUT，正常上传使用 POST
+    const url = reuploadFileId ? `/api/files/${reuploadFileId}` : "/api/files";
+    xhr.open(reuploadFileId ? "PUT" : "POST", url, true);
 
-    // Note that the event listener must be set before sending (as it is a preflighted request)
     xhr.send(fileData);
-  }, [uploadOriginal]);
+  }, [uploadOriginal, reuploadFileId, onSuccess]);
   return (
     <form
       action="/api/files"
       encType="multipart/form-data"
       method="POST"
       className="rounded bg-white p-8 mx-auto space-y-4"
-      {...props}
+      {...rest}
     >
       <div className="max-w-xl">
         <BaseInputFileHeadless
-          id="files"
-          multiple
+          id={reuploadFileId ? "reupload-file" : "files"}
+          multiple={!reuploadFileId}
           renderContent={({ open, remove, drop, files, el }) => (
             <Fragment>
-              <div className="mb-4 flex items-center gap-2">
-                <button
-                  type="button"
-                  className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                  // @ts-ignore
-                  tooltip="Select files"
-                  onClick={open}
-                >
-                  <Iconify icon="lucide:plus" className="h-4 w-4" />
+              {!reuploadFileId && (
+                <div className="mb-4 flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
+                    // @ts-ignore
+                    tooltip="Select files"
+                    onClick={open}
+                  >
+                    <Iconify icon="lucide:plus" className="h-4 w-4" />
 
-                  <span className="sr-only">Select files</span>
-                </button>
+                    <span className="sr-only">Select files</span>
+                  </button>
 
-                <button
-                  type="button"
-                  disabled={stage=='uploading'}
-                  className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                  data-nui-tooltip="开始上传"
-                  onClick={() => {
-                    if (files) {
-                      upload(files);
-                    }
-                  }}
-                >
-                  <Iconify icon="lucide:arrow-up" className="h-4 w-4" />
+                  <button
+                    type="button"
+                    disabled={stage=='uploading'}
+                    className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
+                    data-nui-tooltip="开始上传"
+                    onClick={() => {
+                      if (files) {
+                        upload(files);
+                      }
+                    }}
+                  >
+                    <Iconify icon="lucide:arrow-up" className="h-4 w-4" />
 
-                  <span className="sr-only">开始上传</span>
-                </button>
-              </div>
+                    <span className="sr-only">开始上传</span>
+                  </button>
+                </div>
+              )}
               <div
                 onDragEnter={(e) => {
                   e.preventDefault();

@@ -15,6 +15,7 @@ import { SITE_META } from "@/constants";
 import { Figure } from "@/components/Figure";
 import { FileActions } from "./FileActions";
 import { FileEditName } from "./FileEditName";
+import { FileReuploadModal } from "./FileReuploadModal";
 import { ClientOnly } from "./ClientOnly";
 import { Suspense, use, useState } from "react";
 import React from "react";
@@ -49,14 +50,24 @@ function Content({
 }) {
   const [editingFile, setEditingFile] = useState<FileItem | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [reuploadingFile, setReuploadingFile] = useState<FileItem | null>(null);
+  const [isReuploadModalOpen, setIsReuploadModalOpen] = useState(false);
 
   // `use` 函数期望传入一个 Promise，而当前传入的是一个函数，这里直接使用 `use` 处理 `filesPromise`
   const fileItems = list;
 
   const handleEdit = (file: FileItem) => {
-    console.log(1999);
     setEditingFile(file);
     setIsEditModalOpen(true);
+  };
+
+  const handleReupload = (file: FileItem) => {
+    setReuploadingFile(file);
+    setIsReuploadModalOpen(true);
+  };
+
+  const handleRefresh = () => {
+    window.location.reload();
   };
 
   // const handleUpdate = (fileId: number, newName: string) => {
@@ -181,7 +192,12 @@ function Content({
               )}
               end={
                 <ClientOnly>
-                  <FileActions e={e} admin={admin} />
+                  <FileActions 
+                    e={e} 
+                    admin={admin} 
+                    onEdit={() => handleEdit(e)}
+                    onReupload={() => handleReupload(e)}
+                  />
                 </ClientOnly>
               }
             >
@@ -227,6 +243,39 @@ function Content({
           );
         })}
       </BaseList>
+      <AnimatePresence>
+        {isEditModalOpen && editingFile && (
+          <Modal
+            open={isEditModalOpen}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setEditingFile(null);
+            }}
+            title="修改文件名"
+            size="md"
+          >
+            <FileEditName
+              file={editingFile}
+              onUpdate={() => {
+                setIsEditModalOpen(false);
+                setEditingFile(null);
+                handleRefresh();
+              }}
+            />
+          </Modal>
+        )}
+        {isReuploadModalOpen && reuploadingFile && (
+          <FileReuploadModal
+            file={reuploadingFile}
+            open={isReuploadModalOpen}
+            onClose={() => {
+              setIsReuploadModalOpen(false);
+              setReuploadingFile(null);
+            }}
+            onSuccess={handleRefresh}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

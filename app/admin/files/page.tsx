@@ -12,6 +12,7 @@ import { Modal } from "@/components/Base/Modal";
 import { FileUploadModal } from "@/components/FileUploadModal";
 
 const PER_PAGE = 20;
+const FILES_TAG = "files";
 
 export default async function AdminFilesPage(
   props: {
