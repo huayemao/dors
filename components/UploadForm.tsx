@@ -98,6 +98,7 @@ export function UploadForm(props: Props) {
         <BaseInputFileHeadless
           id={reuploadFileId ? "reupload-file" : "files"}
           multiple={!reuploadFileId}
+          accept="*"
           renderContent={({ open, remove, drop, files, el }) => (
             <Fragment>
               {!reuploadFileId && (

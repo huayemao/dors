@@ -105,7 +105,7 @@ export default function manifest(): MetadataRoute.Manifest {
         // @ts-ignore
         files: {
           name: "files",
-          accept: ["image/*"],
+          accept: ["*"],
         },
       },
     },
