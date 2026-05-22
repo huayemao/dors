@@ -68,7 +68,7 @@ export function UploadForm(props: Props) {
       }
       fileData.append("uploadOriginal", uploadOriginal.toString());
     }
-    
+
     xhr.addEventListener("load", (ev) => {
       toast(reuploadFileId ? "文件已更新" : "上传完成");
       setStage('uploaded');
@@ -101,37 +101,35 @@ export function UploadForm(props: Props) {
           accept="*"
           renderContent={({ open, remove, drop, files, el }) => (
             <Fragment>
-              {!reuploadFileId && (
-                <div className="mb-4 flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                    // @ts-ignore
-                    tooltip="Select files"
-                    onClick={open}
-                  >
-                    <Iconify icon="lucide:plus" className="h-4 w-4" />
+              <div className="mb-4 flex items-center gap-2">
+                <button
+                  type="button"
+                  className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
+                  // @ts-ignore
+                  tooltip="Select files"
+                  onClick={open}
+                >
+                  <Iconify icon="lucide:plus" className="h-4 w-4" />
 
-                    <span className="sr-only">Select files</span>
-                  </button>
+                  <span className="sr-only">Select files</span>
+                </button>
 
-                  <button
-                    type="button"
-                    disabled={stage=='uploading'}
-                    className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
-                    data-nui-tooltip="开始上传"
-                    onClick={() => {
-                      if (files) {
-                        upload(files);
-                      }
-                    }}
-                  >
-                    <Iconify icon="lucide:arrow-up" className="h-4 w-4" />
+                <button
+                  type="button"
+                  disabled={stage == 'uploading'}
+                  className="nui-focus border-muted-200 hover:border-primary-500 text-muted-700 dark:text-muted-200 hover:text-primary-600 dark:border-muted-700 dark:bg-muted-800 dark:hover:border-primary-500 dark:hover:text-primary-600 relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-white transition-colors duration-300"
+                  data-nui-tooltip="开始上传"
+                  onClick={() => {
+                    if (files) {
+                      upload(files);
+                    }
+                  }}
+                >
+                  <Iconify icon="lucide:arrow-up" className="h-4 w-4" />
 
-                    <span className="sr-only">开始上传</span>
-                  </button>
-                </div>
-              )}
+                  <span className="sr-only">开始上传</span>
+                </button>
+              </div>
               <div
                 onDragEnter={(e) => {
                   e.preventDefault();
