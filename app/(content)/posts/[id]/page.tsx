@@ -51,6 +51,9 @@ export async function generateMetadata(
     .concat(headers)
     .filter((e) => !!e);
 
+  const coverImageUrl = (post.cover_image as any)?.src?.large || '/img/sprout.svg';
+  const smallImage = (post.cover_image as any)?.dataURLs?.small;
+
   return {
     title: `${post.title}`,
     description: abstract,
@@ -61,10 +64,10 @@ export async function generateMetadata(
       images: [
         SITE_META.url +
         "/_next/image?url=" +
-        encodeURIComponent((post.cover_image as any).src.large) +
+        encodeURIComponent(coverImageUrl) +
         "&w=384&q=75",
-        (post.cover_image as any)?.dataURLs?.small,
-      ],
+        smallImage,
+      ].filter(Boolean),
     },
   };
 }

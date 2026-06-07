@@ -45,8 +45,12 @@ const processPost = async (post: PostWithRelations) => {
 
   /* @ts-ignore */
   if (!post.cover_image?.dataURLs) {
-    const cover_image = await randomlyUpdatePhoto(post.id);
-    post.cover_image = cover_image;
+    try {
+      const cover_image = await randomlyUpdatePhoto(post.id);
+      post.cover_image = cover_image;
+    } catch (error) {
+      console.error('Failed to update cover photo:', error);
+    }
   }
 
   const html = await markdownToHtml(post.content || '');
@@ -240,10 +244,34 @@ async function randomlyUpdatePhoto(id: number) {
 }
 
 export async function buildRandomCoverImage() {
-  const imageData = await getPexelImages(1);
-  // imageData.photos 有可能为空数组
-  const imageJson = imageData.photos[0] as PexelsPhoto;
-  return { ...imageJson, ...(await buildCoverImage(imageJson.src.large)) };
+  try {
+    const imageData = await getPexelImages(1);
+    // imageData.photos 有可能为空数组
+    const imageJson = imageData?.photos?.[0] as PexelsPhoto;
+    
+    if (imageJson && imageJson.src?.large) {
+      return { ...imageJson, ...(await buildCoverImage(imageJson.src.large)) };
+    }
+  } catch (error) {
+    console.error('Failed to fetch Pexels image:', error);
+  }
+  
+  return await buildDefaultCoverImage();
+}
+
+async function buildDefaultCoverImage() {
+  const defaultImageUrl = '/img/sprout.svg';
+  const buffer = await getImageBuffer(`${process.env.NEXT_PUBLIC_URL || ''}${defaultImageUrl}`);
+  
+  return {
+    src: {
+      large: defaultImageUrl,
+    },
+    dataURLs: {
+      blur: await getBlurImage(buffer),
+      small: await getSmallImage(buffer),
+    },
+  };
 }
 
 export async function getFeaturedPostIds() {
