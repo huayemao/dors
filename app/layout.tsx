@@ -76,6 +76,7 @@ export default async function RootLayout({
             id="tencentShare"
             src="https://qzonestyle.gtimg.cn/qzone/qzact/common/share/share.js"
           ></Script>
+          <Script defer src="https://mserver.white-noise.online:5443/script.js" data-website-id="aaca54ff-4fdb-4797-b920-fe744890ce1b"></Script>
         </head>
         <body className="min-h-screen flex flex-col w-screen overflow-x-hidden">
           {children}
