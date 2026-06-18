@@ -63,8 +63,8 @@ const CoverImageSetting = ({
   editTime,
 }: {
   originalPhoto:
-    | PexelsPhoto
-    | { dataURLs: { large: string }; alt?: string; src: { large: string } };
+  | PexelsPhoto
+  | { dataURLs: { large: string }; alt?: string; src: { large: string } };
   postId: string;
   editTime: string;
 }) => {
@@ -74,12 +74,12 @@ const CoverImageSetting = ({
   return (
     <>
       <form>
-        {typeof photo.src?.large == "string" &&
-        (isDataURL(photo.src?.large) ||
-          !(
-            photo.src?.large.startsWith("/") ||
-            photo.src?.large.startsWith("https://images.pexels.com/")
-          )) ? (
+        {photo && typeof photo.src?.large == "string" &&
+          (isDataURL(photo.src?.large) ||
+            !(
+              photo.src?.large.startsWith("/") ||
+              photo.src?.large.startsWith("https://images.pexels.com/")
+            )) ? (
           <img
             className="w-full"
             src={photo.src?.large}
