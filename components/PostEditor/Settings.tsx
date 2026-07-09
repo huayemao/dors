@@ -62,30 +62,35 @@ const CoverImageSetting = ({
   postId,
   editTime,
 }: {
-  originalPhoto:
-  | PexelsPhoto
-  | { dataURLs: { large: string }; alt?: string; src: { large: string } };
+  originalPhoto?:
+    | PexelsPhoto
+    | { dataURLs: { large: string }; alt?: string; src: { large: string } }
+    | undefined;
   postId: string;
   editTime: string;
 }) => {
-  const [photo, setPhoto] = useState(originalPhoto);
+  const [photo, setPhoto] = useState<
+    | PexelsPhoto
+    | { dataURLs: { large: string }; alt?: string; src: { large: string } }
+    | undefined
+  >(originalPhoto);
   const [loading, setLoading] = useState(false);
 
   return (
     <>
       <form>
         {photo && typeof photo.src?.large == "string" &&
-          (isDataURL(photo.src?.large) ||
-            !(
-              photo.src?.large.startsWith("/") ||
-              photo.src?.large.startsWith("https://images.pexels.com/")
-            )) ? (
+        (isDataURL(photo.src?.large) ||
+          !(
+            photo.src?.large.startsWith("/") ||
+            photo.src?.large.startsWith("https://images.pexels.com/")
+          )) ? (
           <img
             className="w-full"
             src={photo.src?.large}
             alt={photo.alt || "featured image"}
           />
-        ) : (
+        ) : photo ? (
           <Image
             width={288}
             height={162}
@@ -93,7 +98,7 @@ const CoverImageSetting = ({
             alt={photo.alt || ""}
             src={photo.src?.large || ""}
           />
-        )}
+        ) : null}
         <div className="text-right mt-2">
           <BaseButton
             loading={loading}
@@ -129,7 +134,7 @@ const CoverImageSetting = ({
         </div>
         <BaseInput
           type="url"
-          defaultValue={photo.src.large}
+          defaultValue={photo?.src?.large || ""}
           id="cover_image_url"
           // @ts-ignore
           name="cover_image_url"
