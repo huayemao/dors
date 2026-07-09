@@ -254,24 +254,15 @@ export async function buildRandomCoverImage() {
     }
   } catch (error) {
     console.error('Failed to fetch Pexels image:', error);
+    return await buildDefaultCoverImage();
   }
   
   return await buildDefaultCoverImage();
 }
 
 async function buildDefaultCoverImage() {
-  const defaultImageUrl = '/img/sprout.svg';
-  const buffer = await getImageBuffer(`${process.env.NEXT_PUBLIC_URL || ''}${defaultImageUrl}`);
-  
-  return {
-    src: {
-      large: defaultImageUrl,
-    },
-    dataURLs: {
-      blur: await getBlurImage(buffer),
-      small: await getSmallImage(buffer),
-    },
-  };
+  const defaultImageUrl = 'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg';
+  return await buildCoverImage(defaultImageUrl);
 }
 
 export async function getFeaturedPostIds() {
