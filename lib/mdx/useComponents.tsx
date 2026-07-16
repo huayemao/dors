@@ -45,6 +45,11 @@ const getHeading = (Tag: keyof JSX.IntrinsicElements) => {
 };
 
 export const components = {
+  table: (props) => (
+    <div className="overflow-x-auto">
+      <table {...props} />
+    </div>
+  ),
   Tag: (props) => <Tag type="primary" text={props.children}></Tag>,
   QuestionList: (props) => <QuestionList {...props} />,
   Columns: (props) => <Columns {...props} />,

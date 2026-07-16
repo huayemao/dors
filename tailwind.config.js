@@ -72,10 +72,17 @@ module.exports = withShurikenUI({
 								breakInside: "avoid",
 							},
 							table: {
+								borderCollapse: "collapse",
+								width: "100%",
 								"@media (max-width: 576px)": {
-									// 如果 table 设置成 display:block 来产生滚动条会导致内容无法自动扩展到全宽
+									fontSize: "0.875rem",
 									td: {
-										wordBreak: "break-all",
+										wordBreak: "break-word",
+										padding: "0.25rem 0.5rem",
+										minWidth: "80px",
+									},
+									th: {
+										padding: "0.25rem 0.5rem",
 									},
 								},
 							},
@@ -84,18 +91,6 @@ module.exports = withShurikenUI({
 								figcaption: { textAlign: "center" },
 								img: {
 									marginBottom: 0,
-								},
-							},
-							tr: {
-								th: {
-									"&:first-child": {
-										whiteSpace: "nowrap",
-									},
-								},
-								td: {
-									"&:first-child": {
-										whiteSpace: "nowrap",
-									},
 								},
 							},
 						},

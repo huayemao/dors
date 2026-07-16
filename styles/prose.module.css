@@ -3,9 +3,13 @@
 }
 
 .content :global(.katex-display) {
-  @apply overflow-x-visible overflow-y-hidden py-2;
-  white-space: pre-wrap;
-  word-break: break-all;
+  @apply overflow-x-auto overflow-y-hidden py-2;
+}
+
+@media (max-width: 640px) {
+  .content :global(.katex) {
+    font-size: 0.85em;
+  }
 }
 
 .content :global(.contains-task-list) {
