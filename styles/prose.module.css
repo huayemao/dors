@@ -1,6 +1,13 @@
 .content :global(.code-container) {
   @apply overflow-x-auto nui-slimscroll;
 }
+
+.content :global(.katex-display) {
+  @apply overflow-x-visible overflow-y-hidden py-2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 .content :global(.contains-task-list) {
   margin-left: 0;
   list-style-type: none;
