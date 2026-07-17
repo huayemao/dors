@@ -19,9 +19,10 @@ interface Props {
   tags?: Array<{ id: number; name: string | null } | null>;
   type?: "default" | "mini" | "normal";
   rounded?: boolean;
+  excerpt?: string | null;
 }
 
-export function BookTile({ id, title, coverImage, posts, tags, type = "default", rounded = false }: Props) {
+export function BookTile({ id, title, coverImage, posts, tags, type = "default", rounded = false, excerpt }: Props) {
   if (!title) return null;
 
   const url = coverImage?.src?.large || coverImage?.dataURLs?.small;
@@ -65,46 +66,49 @@ export function BookTile({ id, title, coverImage, posts, tags, type = "default",
             </div>
 
             {/* 内容区域 */}
-            <div className="flex-1 min-w-0 truncate">
+            <div className="flex-1 min-w-0 flex flex-col">
               {/* 标题 */}
               <Link
                 href={"/posts/" + id}
                 title={title as string}
-                className="truncate font-heading font-medium text-muted-600 dark:text-muted-50 leading-snug overflow-hidden text-ellipsis max-w-3/4 line-clamp-2 mb-1"
+                className="font-heading font-medium text-muted-800 dark:text-white leading-snug line-clamp-2 mb-2 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
               >
                 {title}
               </Link>
 
-              {/* 时间和标签区域 */}
-              <div className="space-y-2">
-                {/* 标签区域 */}
-                {tags && tags?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {tags.slice(0, 3).map(
-                      (t) =>
-                        t && (
-                          <a
+              {/* excerpt 区域 */}
+              {excerpt && (
+                <p className="text-xs text-muted-500 dark:text-muted-400 leading-relaxed line-clamp-2 mb-2">
+                  {excerpt}
+                </p>
+              )}
+
+              {/* 标签区域 */}
+              {tags && tags?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-auto">
+                  {tags.slice(0, 3).map(
+                    (t) =>
+                      t && (
+                        <a
+                          key={t.id}
+                          href={`/tags/${t.id}`}
+                        >
+                          <Tag
+                            className="shadow-xl shadow-primary-500/20"
                             key={t.id}
-                            href={`/tags/${t.id}`}
-                          >
-                            <Tag
-                              className="shadow-xl shadow-primary-500/20"
-                              key={t.id}
-                              type="primary"
-                              text={t.name as string}
-                            />
-                          </a>
-                        )
-                    )}
-                    {/* 显示更多标签的指示器 */}
-                    {tags.length > 3 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted-50 dark:bg-muted-800 text-muted-500 dark:text-muted-400">
-                        +{tags.length - 3}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
+                            type="primary"
+                            text={t.name as string}
+                          />
+                        </a>
+                      )
+                  )}
+                  {tags.length > 3 && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted-50 dark:bg-muted-800 text-muted-500 dark:text-muted-400">
+                      +{tags.length - 3}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -62,16 +62,26 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
 
                 {/* 渲染 book 信息 */}
                 {books && books.length > 0 && (
-                  <div className="mb-10 p-4 bg-muted-100 dark:bg-muted-800 rounded-lg border border-muted-200 dark:border-muted-700">
-                    <div className="flex items-center gap-2 text-muted-600 dark:text-muted-400 mb-4">
+                  <div className="mb-8 p-5 bg-gradient-to-br from-muted-50 to-muted-100 dark:from-muted-800 dark:to-muted-900 rounded-xl border border-muted-200 dark:border-muted-700 shadow-sm">
+                    <div className="flex items-center gap-2.5 text-muted-600 dark:text-muted-400 mb-4">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M14.707 2.293a1 1 0 010 1.414l-10 10a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L4 10.586l8.293-8.293a1 1 0 011.414 0z" fillRule="evenodd" clipRule="evenodd"></path>
                       </svg>
-                      <span className="text-sm">本文收录于以下知识库</span>
+                      <span className="text-sm font-medium">本文收录于以下知识库</span>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {books.map((book) => (
-                        <BookTile id={book.id} posts={[]} title={book.title} coverImage={book.cover_image} key={book.id}  tags={book.tags} type="mini" />
+                        <BookTile 
+                          id={book.id} 
+                          posts={[]} 
+                          title={book.title} 
+                          coverImage={book.cover_image} 
+                          key={book.id}  
+                          tags={book.tags} 
+                          type="mini" 
+                          excerpt={book.excerpt}
+                          rounded
+                        />
                       ))}
                     </div>
                   </div>
