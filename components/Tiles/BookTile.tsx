@@ -118,7 +118,7 @@ export function BookTile({ id, title, coverImage, posts, tags, type = "default",
 
   return (
     <hgroup className="relative max-w-xs md:max-w-sm">
-      <div className="h-full flex flex-col gap-3 p-6 md:gap-4 w-full rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 overflow-hidden">
+      <div className="flex flex-col gap-3 p-6 md:gap-4 w-full rounded-2xl bg-white dark:bg-muted-800 border border-muted-200 dark:border-muted-700 overflow-hidden">
         <Link href={"/posts/" + id} className="h-full items-start">
           <div className="relative w-full space-y-4">
             <div className="relative">
@@ -162,23 +162,35 @@ export function BookTile({ id, title, coverImage, posts, tags, type = "default",
             </h3>
           </div>
         </Link>
-        <ul className="w-full space-y-2">
-          {posts.map((post) => (
-            <li key={post.id} className="">
+        {posts.length > 0 && (
+          <>
+            <ul className="w-full space-y-2">
+              {posts.slice(0, 5).map((post) => (
+                <li key={post.id}>
+                  <Link
+                    href={"/posts/" + post.id}
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <span className="text-sm text-muted-600 dark:text-muted-400 truncate flex-1">
+                      {post.title}
+                    </span>
+                    <span className="text-xs text-muted-400 whitespace-nowrap">
+                      {post.updated_at ? getDateString(post.updated_at) : ""}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            {posts.length > 5 && (
               <Link
-                href={"/posts/" + post.id}
-                className="flex items-center justify-between gap-2"
+                href={"/posts/" + id}
+                className="inline-flex items-center gap-1 text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
               >
-                <span className="text-sm text-muted-600 dark:text-muted-400 truncate flex-1">
-                  {post.title}
-                </span>
-                <span className="text-xs text-muted-400 whitespace-nowrap">
-                  {post.updated_at ? getDateString(post.updated_at) : ""}
-                </span>
+                查看全部 {posts.length} 篇 →
               </Link>
-            </li>
-          ))}
-        </ul>
+            )}
+          </>
+        )}
       </div>
     </hgroup>
   );
