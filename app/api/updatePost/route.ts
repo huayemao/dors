@@ -52,6 +52,18 @@ export async function POST(request: Request) {
     );
   }
 
+  let parsedMeta: any = undefined;
+  if (meta) {
+    try {
+      parsedMeta = JSON.parse(meta);
+    } catch {
+      return new NextResponse(
+        JSON.stringify({ success: false, error: "Invalid JSON format in meta field" }),
+        { status: 400 }
+      );
+    }
+  }
+
   const res = await updatePost(post, {
     tags,
     id: id!,
@@ -71,7 +83,7 @@ export async function POST(request: Request) {
     categoryId: category_id,
     cover_image_url,
     toc,
-    meta: meta ? JSON.parse(meta) : undefined
+    meta: parsedMeta,
   });
 
   await revalidateHomePage(res.id);

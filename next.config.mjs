@@ -51,6 +51,7 @@ const nextConfig = {
   images: {
     unoptimized: process.env.OUTPUT_MODE === "export",
     dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       "huayemao.run",
       "pexels.com",
@@ -84,7 +85,7 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
   async headers() {
     return [
       {

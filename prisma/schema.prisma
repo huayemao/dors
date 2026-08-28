@@ -565,6 +565,8 @@ model posts {
 
   @@index([created_by_id], map: "posts_created_by_id_fk")
   @@index([updated_by_id], map: "posts_updated_by_id_fk")
+  @@index([type, protected, updated_at], map: "posts_type_protected_updated_idx")
+  @@index([protected, updated_at], map: "posts_protected_updated_idx")
 }
 
 model posts_category_links {

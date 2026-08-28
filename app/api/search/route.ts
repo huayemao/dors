@@ -2,6 +2,7 @@
 
 import { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
+import { isAuthenticated } from '@/lib/server/isAuthenticated';
 
 // Types
 interface PostResult {
@@ -34,9 +35,11 @@ export async function POST(request: NextRequest): Promise<Response> {
             tags: [],
         };
 
-        // Search Posts
+        // Search Posts (filter out protected posts unless authenticated)
+        const isAuth = isAuthenticated(request);
         results.posts = await prisma.posts.findMany({
             where: {
+                ...(isAuth ? {} : { protected: false }),
                 OR: [
                     { title: { contains: q } },
                     { content: { contains: q } },

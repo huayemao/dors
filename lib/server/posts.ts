@@ -45,12 +45,10 @@ const processPost = async (post: PostWithRelations) => {
 
   /* @ts-ignore */
   if (!post.cover_image?.dataURLs) {
-    try {
-      const cover_image = await randomlyUpdatePhoto(post.id);
-      post.cover_image = cover_image;
-    } catch (error) {
-      console.error('Failed to update cover photo:', error);
-    }
+    // Schedule photo update in background without blocking response
+    randomlyUpdatePhoto(post.id).catch((error) => {
+      console.error('Failed to update cover photo in background:', error);
+    });
   }
 
   const html = await markdownToHtml(post.content || '');
@@ -176,45 +174,65 @@ type getPostOptions = PaginateOptions & {
 export const getPosts = unstable_cache(async (options: getPostOptions = { type: 'normal' }) => {
   const posts = await getAllPosts(options);
 
-  // 如果是书籍类型，获取每本书包含的文章
+  // 如果是书籍类型，批量获取包含的文章 (解决 N+1 查询瓶颈)
   if (options.type === 'book') {
-    const postsWithBooks = await Promise.all(
-      posts.map(async (post) => {
-        const toc = (post as any).toc as { id: number }[] | undefined;
-        let containedPosts: Array<{
-          id: number;
-          title: string | null;
-          updated_at: Date | null;
-        }> = [];
+    const allTocIdsSet = new Set<number>();
+    posts.forEach((post) => {
+      const toc = (post as any).toc as { id: number }[] | undefined;
+      if (Array.isArray(toc)) {
+        toc.forEach((item) => {
+          if (item?.id) allTocIdsSet.add(item.id);
+        });
+      }
+    });
 
-        if (toc) {
-          const tocIds = toc.map(item => item.id)
+    const allTocIds = Array.from(allTocIdsSet);
+    let fetchedPosts: Array<{
+      id: number;
+      title: string | null;
+      updated_at: Date | null;
+    }> = [];
 
-          containedPosts = await prisma.posts.findMany({
-            where: {
-              id: {
-                in: tocIds
-              }
-            },
-            select: {
-              id: true,
-              title: true,
-              updated_at: true,
-            },
-            orderBy: {
-              created_at: 'asc'
-            }
-          });
-          containedPosts = tocIds.map(id => containedPosts.find(post => post.id === id)).filter(Boolean) as typeof posts;
-        }
-        return {
-          ...post,
-          posts: containedPosts,
-          tags: post.tags_posts_links.map((e) => e.tags),
-        };
-      })
-    );
-    return postsWithBooks;
+    if (allTocIds.length > 0) {
+      fetchedPosts = await prisma.posts.findMany({
+        where: {
+          id: {
+            in: allTocIds,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          updated_at: true,
+        },
+        orderBy: {
+          created_at: 'asc',
+        },
+      });
+    }
+
+    const postsMap = new Map(fetchedPosts.map((p) => [p.id, p]));
+
+    return posts.map((post) => {
+      const toc = (post as any).toc as { id: number }[] | undefined;
+      let containedPosts: Array<{
+        id: number;
+        title: string | null;
+        updated_at: Date | null;
+      }> = [];
+
+      if (Array.isArray(toc)) {
+        containedPosts = toc
+          .map((item) => postsMap.get(item.id))
+          .filter((p): p is NonNullable<typeof p> => Boolean(p));
+      }
+
+      return {
+        ...post,
+        posts: containedPosts,
+        tags: post.tags_posts_links.map((e) => e.tags),
+      };
+    });
   }
 
   return posts.map((e) => {
@@ -364,9 +382,7 @@ async function getWhereInput(options: getPostOptions) {
   if (options.unCategorized) {
     whereInput.push({
       posts_category_links: {
-        none: {
-          id: undefined,
-        },
+        none: {},
       },
     });
   }

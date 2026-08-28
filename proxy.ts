@@ -2,22 +2,31 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "./lib/server/isAuthenticated";
 
-
-// Step 1. HTTP Basic Auth Middleware for Challenge
 export function proxy(req: NextRequest) {
-  const whiteList = ["/api/files", "/api/getPost"];
-  const isCreateFile = req.nextUrl.pathname.includes("/api/files") && req.method === "POST";
-  if (
-    !isAuthenticated(req) && (!whiteList.some((e) => req.nextUrl.pathname.startsWith(e)) || isCreateFile)
-  ) {
+  const pathname = req.nextUrl.pathname;
+  const method = req.method;
+
+  // Check if route is explicitly public read-only
+  const isPublicGetPost = pathname === "/api/getPost" && method === "POST";
+  const isPublicSearch = pathname === "/api/search" && method === "POST";
+  const isPublicFileRead =
+    (pathname.startsWith("/api/files/") || pathname === "/api/files") &&
+    method === "GET" &&
+    !pathname.startsWith("/api/files/migrate");
+
+  const isPublicRoute = isPublicGetPost || isPublicSearch || isPublicFileRead;
+
+  if (!isPublicRoute && !isAuthenticated(req)) {
     return new NextResponse("Authentication required", {
       status: 401,
       headers: { "WWW-Authenticate": "Basic" },
     });
   }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/protected/:path*", "/api/:path*", "/admin/:path*", "/protected/:path*","/diaries/:path*"],
+  matcher: ["/protected/:path*", "/api/:path*", "/admin/:path*", "/diaries/:path*"],
 };
+
