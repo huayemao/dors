@@ -1,0 +1,34 @@
+import { POSTS_COUNT_PER_PAGE } from "@/constants";
+import { revalidatePath, revalidateTag } from "next/cache";
+import prisma from "@/lib/prisma";
+import { getHiddenCategoryIds } from "../services/categories";
+
+export async function revalidateHomePage(id: number) {
+  const ids = await getHiddenCategoryIds();
+  const firstPagePosts = await prisma.posts.findMany({
+    select: {
+      id: true,
+    },
+    where: {
+      protected: false,
+      posts_category_links: {
+        none: {
+          category_id: {
+            in: ids,
+          },
+        },
+      },
+    },
+    take: POSTS_COUNT_PER_PAGE,
+    orderBy: {
+      updated_at: "desc",
+    },
+  });
+
+  if (firstPagePosts.some((e) => e.id === id)) {
+    console.log("should revalidate home page");
+    await revalidateTag('posts', { expire: 0 });
+    revalidatePath("/(home)", "page");
+    revalidatePath("/", "page");
+  }
+}
