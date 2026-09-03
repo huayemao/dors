@@ -55,7 +55,7 @@ export class PocketBaseStorageProvider implements FileStorageProvider {
       }
 
       const record = records.items[0];
-      const fileUrl = this.pb.files.getUrl(record, record.file);
+      const fileUrl = this.pb.files.getURL(record, record.file);
 
       const response = await fetch(fileUrl);
       if (!response.ok) {
@@ -86,8 +86,8 @@ export class PocketBaseStorageProvider implements FileStorageProvider {
       const record = records.items[0];
       // 对于缩略图，添加查询参数
       const fileUrl = isThumbnail
-        ? this.pb.files.getUrl(record, record.file, { thumb: '100x100' })
-        : this.pb.files.getUrl(record, record.file);
+        ? this.pb.files.getURL(record, record.file, { thumb: '100x100' })
+        : this.pb.files.getURL(record, record.file);
 
       const response = await fetch(fileUrl);
       if (!response.ok) {
