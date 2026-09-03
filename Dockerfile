@@ -1,5 +1,5 @@
 # 构建阶段
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -13,13 +13,13 @@ ARG HTTP_BASIC_AUTH
 # 设置环境变量
 ENV DATABASE_URL=$DATABASE_URL
 ENV HTTP_BASIC_AUTH=$HTTP_BASIC_AUTH
+ENV CI=true
 ENV PNPM_CONFIG_NODE_LINKER="hoisted"
-
 # 安装必要的系统依赖
 RUN apk add --no-cache openssl
 
 # 复制 package.json 和 pnpm.lock
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # 配置 pnpm 镜像源
 # RUN pnpm config set sharp_libvips_binary_host "https://npmmirror.com/mirrors/sharp-libvips" && \
@@ -27,7 +27,7 @@ COPY package.json pnpm-lock.yaml ./
 #     pnpm config set registry https://registry.npmmirror.com
 
 # 安装依赖
-RUN pnpm install --frozen-lockfile --shamefully-hoist --store-dir=./.pnpm-store
+RUN pnpm install --frozen-lockfile --shamefully-hoist
 
 # 复制源代码
 COPY . .
@@ -39,7 +39,7 @@ RUN pnpm db:generate
 RUN pnpm build
 
 # 运行阶段
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
