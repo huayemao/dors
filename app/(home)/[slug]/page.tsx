@@ -10,11 +10,10 @@ import { notFound, redirect } from "next/navigation";
 import { isBuildPhase } from "@/lib/prisma";
 
 export const revalidate = 36000;
-export const dynamicParams = false;
 
 export async function generateStaticParams() {
   if (isBuildPhase) {
-    return [{ slug: "placeholder" }];
+    return [];
   }
   const posts = await getPostIds({ protected: false, type: "page" });
   const allPostIds = posts.map((post) => ({
@@ -33,9 +32,6 @@ export async function generateMetadata(
   const params = await props.params;
   // read route params
   const slug = params.slug;
-  if (!slug || slug === "placeholder") {
-    return notFound();
-  }
   const post = await getPostBySlug(slug);
 
   if (!post || !post.content) {
@@ -83,7 +79,7 @@ export default async function page(props) {
 
   const slug = params.slug;
 
-  if (!slug || slug === "placeholder") {
+  if (!slug) {
     return notFound();
   }
 

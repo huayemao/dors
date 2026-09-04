@@ -8,8 +8,6 @@ import { Fragment } from "react/jsx-runtime";
 type SearchParams = Promise<PaginateOptions>;
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-import { isBuildPhase } from "@/lib/prisma";
-
 export const revalidate = 3600;
 //https://beta.nextjs.org/docs/data-fetching/fetching#segment-cache-configuration
 
@@ -22,7 +20,7 @@ export default async function PostsByTag(
   }
 ) {
   const params = await props.params;
-  const searchParams = process.env.OUTPUT_MODE === "export" ? {} as any : (await props.searchParams);
+  const searchParams = await props.searchParams;
   const posts = await getProcessedPosts(
     await getPosts({ perPage: 200, ...searchParams, tagId: Number(params.id) })
   );
@@ -30,7 +28,7 @@ export default async function PostsByTag(
   const tag = await getTagById(Number(params.id));
   
   if (!tag) {
-    return notFound();
+    throw new Error("Tag not found");
   }
 
   return <Fragment >
@@ -54,13 +52,11 @@ export default async function PostsByTag(
   </Fragment>;
 }
 
-import { notFound } from "next/navigation";
-
-export const dynamicParams = false;
+import { isBuildPhase } from "@/lib/prisma";
 
 export async function generateStaticParams() {
   if (isBuildPhase) {
-    return [{ id: "1" }];
+    return [];
   }
   const tags = (await getTagIds()).slice(0, 5);
   const params = tags.map((tag) => ({

@@ -3,18 +3,9 @@ import { getFeaturedPostIds, getPost, getRecentPosts, getRelatedPosts } from "@/
 
 export default async function About() {
   const postIds = await getFeaturedPostIds();
-  const post = postIds && postIds.length > 0 ? await getPost(postIds[0]) : null;
-  const posts = post ? await getRelatedPosts(post) : [];
 
-  if (!post) {
-    return (
-      <main className="w-full bg-white dark:bg-muted-900 min-h-screen">
-        <div className="container mx-auto py-16 px-6 text-center text-muted-600 dark:text-muted-400">
-          关于
-        </div>
-      </main>
-    );
-  }
+  const post = await getPost(postIds[0]);
+  const posts = await getRelatedPosts(post);
 
   return (
     <main className="w-full bg-white dark:bg-muted-900">

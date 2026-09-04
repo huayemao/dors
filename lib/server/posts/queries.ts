@@ -8,7 +8,7 @@ import { PostWithRelations, getPostOptions, PostType } from "./types";
 import { randomlyUpdatePhoto } from "./cover-image";
 
 const processPost = async (post: PostWithRelations | null) => {
-  if (!post || !post.id || !Array.isArray(post.tags_posts_links)) {
+  if (!post) {
     return null;
   }
 

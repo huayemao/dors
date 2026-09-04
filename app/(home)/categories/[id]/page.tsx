@@ -7,21 +7,18 @@ import { BaseHeading } from "@glint-ui/react";
 
 type Posts = Awaited<ReturnType<typeof getProcessedPosts>>;
 
-import { isBuildPhase } from "@/lib/prisma";
-
 export async function generateMetadata(
   props: {
     params: Promise<{ id: string }>;
   }
 ): Promise<Metadata> {
   const params = await props.params;
-  const cats = await getAllCategories({ includeHidden: true });
-  const cat = cats.find((e) => e.id == parseInt(params.id));
-  if (!cat) {
-    return notFound();
-  }
+  // read route params
 
-  const keywords = [cat.name || ""];
+  const cats = await getAllCategories({ includeHidden: true });
+  const cat = cats.find((e) => e.id == parseInt(params.id))!;
+
+  const keywords = [cat.name!];
   // @ts-ignore
   const desc = cat?.meta?.description || "";
 
@@ -45,10 +42,7 @@ export default async function PostsByCategory(
 ) {
   const params = await props.params;
   const cats = await getAllCategories({ includeHidden: true });
-  const cat = cats.find((e) => e.id == parseInt(params.id));
-  if (!cat) {
-    return notFound();
-  }
+  const cat = cats.find((e) => e.id == parseInt(params.id))!;
   const posts = await getProcessedPosts(
     await getPosts({
       includeHiddenCategories: true,
@@ -79,13 +73,11 @@ export default async function PostsByCategory(
   );
 }
 
-import { notFound } from "next/navigation";
-
-export const dynamicParams = false;
+import { isBuildPhase } from "@/lib/prisma";
 
 export async function generateStaticParams() {
   if (isBuildPhase) {
-    return [{ id: "1" }];
+    return [];
   }
   const cats = await getAllCategories();
   const params = cats.map((cat) => ({

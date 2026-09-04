@@ -14,7 +14,7 @@ export default async function Protected(
     searchParams: Promise<SearchParams>;
   }
 ) {
-  const searchParams = process.env.OUTPUT_MODE === "export" ? {} as any : (await props.searchParams);
+  const searchParams = await props.searchParams;
   const posts = await getProcessedPosts(
     await getPosts({
       ...searchParams,

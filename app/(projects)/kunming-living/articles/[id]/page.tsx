@@ -1,16 +1,14 @@
-import Content from "./content";
+"use client"
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-export const revalidate = 300;
-export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  return [{ id: "placeholder" }];
-}
+const Content = dynamic(() => import("./content"), { ssr: false });
+export const revalidate = 300;
 
 export default async function Page(props) {
   const params = await props.params;
-  if (!params.id || params.id === "placeholder") {
-    return notFound();
+  if (!params.id) {
+    return;
   }
 
   const id = params.id as string;
