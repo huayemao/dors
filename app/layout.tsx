@@ -8,7 +8,6 @@ import { AppToaster } from "@/components/Base/AppToaster";
 
 import type { JSX } from "react";
 
-export const dynamic = "force-dynamic";
 
 export const viewport: Viewport = {
   width: 'device-width',

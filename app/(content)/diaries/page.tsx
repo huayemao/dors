@@ -10,7 +10,7 @@ export default async function DiariesPage(
     searchParams: Promise<{ postId?: string }>;
   }
 ) {
-  const searchParams = await props.searchParams;
+  const searchParams = process.env.OUTPUT_MODE === "export" ? {} as any : (await props.searchParams);
   // Get all diary posts with caching
   const posts = await getDiaryPosts();
 

@@ -27,7 +27,7 @@ export default async function CollectionIndexPage(
     searchParams: Promise<SearchParams>;
   }
 ) {
-  const searchParams = await props.searchParams;
+  const searchParams = process.env.OUTPUT_MODE === "export" ? {} as any : (await props.searchParams);
   const posts = await getProcessedPosts(
     await getPosts({
       ...searchParams,

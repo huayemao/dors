@@ -10,10 +10,11 @@ import { getPostByIdOrSlug } from "@/lib/server/service/post";
 import { isBuildPhase } from "@/lib/prisma";
 
 export const revalidate = 36000;
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   if (isBuildPhase) {
-    return [];
+    return [{ id: "placeholder" }];
   }
   const posts = await getPostIds({ protected: false });
   const allPostIds = posts.map((post) => ({
@@ -32,9 +33,12 @@ export async function generateMetadata(
   const params = await props.params;
   // read route params
   const idOrSlug = params.id;
+  if (!idOrSlug || idOrSlug === "placeholder") {
+    return notFound();
+  }
   const post = await getPostByIdOrSlug(idOrSlug);
 
-  if (!post || !post.content) {
+  if (!post || !post.id || !post.content || idOrSlug === "placeholder") {
     return notFound();
   }
   // 写在这里是故意的，这里写了，page 中就需要写，而也能实现跳转
@@ -86,6 +90,9 @@ export default async function page(props) {
   }
 
   const idOrSlug = params.id;
+  if (!idOrSlug || idOrSlug === "placeholder") {
+    return notFound();
+  }
   let post;
 
   if (!Number.isNaN(parseInt(idOrSlug))) {
@@ -94,7 +101,7 @@ export default async function page(props) {
     post = await getPostBySlug(idOrSlug);
   }
 
-  if (!post) {
+  if (!post || !post.id || !post.content || idOrSlug === "placeholder") {
     return notFound();
   }
 

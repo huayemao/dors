@@ -2,6 +2,12 @@ import { getPost, getPostIds, getRelatedPosts } from "@/lib/server/posts";
 import { notFound, redirect } from "next/navigation";
 import { renderPost } from "../../posts/[id]/renderPost";
 
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  return [{ id: "placeholder" }];
+}
+
 
 export default async function page(props) {
   const params = await props.params;

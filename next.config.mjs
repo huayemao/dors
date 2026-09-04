@@ -30,7 +30,7 @@ class RevisionPlugin {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: process.env.OUTPUT_MODE === "export" ? "export" : "standalone",
   // Disable Turbopack and use webpack instead to maintain compatibility with custom webpack configuration
   turbopack: {
     // resolveAlias: {
