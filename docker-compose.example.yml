@@ -1,0 +1,45 @@
+version: '3.8'
+name: dors-stack
+
+services:
+  # 应用 dors
+  dors:
+    image: ghcr.io/huayemao/dors:latest
+    container_name: dors
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - HTTP_BASIC_AUTH=huayemao:wahaha123
+      - DATABASE_URL=mysql://user:password@host:3306/dbname
+      - POCKETBASE_URL=http://pocketbase:8090
+      - POCKETBASE_EMAIL=your-email@example.com
+      - POCKETBASE_PASSWORD=your-password!
+      - POCKETBASE_COLLECTION_NAME=files
+      - DEFAULT_STORAGE_PROVIDER=pocketbase
+      - NODE_ENV=production
+    depends_on:
+      - pocketbase
+
+  # PocketBase 数据库
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: pocketbase
+    restart: always
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./pb_data:/pb_data
+      - ./pb_migrations:/pb_migrations
+
+  # 自动更新镜像 Watchtower
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # 每 5 分钟检查一次更新
+    command: --interval 300 --cleanup
