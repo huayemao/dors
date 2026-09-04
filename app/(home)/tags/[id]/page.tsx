@@ -52,7 +52,12 @@ export default async function PostsByTag(
   </Fragment>;
 }
 
+import { isBuildPhase } from "@/lib/prisma";
+
 export async function generateStaticParams() {
+  if (isBuildPhase) {
+    return [];
+  }
   const tags = (await getTagIds()).slice(0, 5);
   const params = tags.map((tag) => ({
     id: String(tag.id),

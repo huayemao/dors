@@ -73,7 +73,12 @@ export default async function PostsByCategory(
   );
 }
 
+import { isBuildPhase } from "@/lib/prisma";
+
 export async function generateStaticParams() {
+  if (isBuildPhase) {
+    return [];
+  }
   const cats = await getAllCategories();
   const params = cats.map((cat) => ({
     id: String(cat.id),

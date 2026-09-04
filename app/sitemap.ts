@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
+
 const baseUrl = 'https://huayemao.run';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -204,7 +205,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 priority: 1,
             },
         ];
-    } finally {
-        await prisma.$disconnect();
     }
 }

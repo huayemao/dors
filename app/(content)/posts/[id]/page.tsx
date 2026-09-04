@@ -7,9 +7,14 @@ import { notFound, redirect } from "next/navigation";
 import { renderPost } from "./renderPost";
 import { getPostByIdOrSlug } from "@/lib/server/service/post";
 
+import { isBuildPhase } from "@/lib/prisma";
+
 export const revalidate = 36000;
 
 export async function generateStaticParams() {
+  if (isBuildPhase) {
+    return [];
+  }
   const posts = await getPostIds({ protected: false });
   const allPostIds = posts.map((post) => ({
     id: String(post.id),

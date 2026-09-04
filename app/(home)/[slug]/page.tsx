@@ -7,9 +7,14 @@ import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
+import { isBuildPhase } from "@/lib/prisma";
+
 export const revalidate = 36000;
 
 export async function generateStaticParams() {
+  if (isBuildPhase) {
+    return [];
+  }
   const posts = await getPostIds({ protected: false, type: "page" });
   const allPostIds = posts.map((post) => ({
     id: String(post.id),

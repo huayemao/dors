@@ -10,7 +10,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  DATABASE_URL: ${{secrets.DATABASE_URL}}
   HTTP_BASIC_AUTH: ${{secrets.HTTP_BASIC_AUTH}}
 jobs:
   build-and-push:
@@ -45,5 +44,4 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ github.repository }}:latest
           build-args: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
             HTTP_BASIC_AUTH=${{ secrets.HTTP_BASIC_AUTH }} 

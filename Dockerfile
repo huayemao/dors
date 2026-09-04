@@ -7,11 +7,9 @@ WORKDIR /app
 RUN npm install -g pnpm
 RUN rm -rf /app/* /app/.??*
 # 设置构建参数
-ARG DATABASE_URL
 ARG HTTP_BASIC_AUTH
 
 # 设置环境变量
-ENV DATABASE_URL=$DATABASE_URL
 ENV HTTP_BASIC_AUTH=$HTTP_BASIC_AUTH
 ENV CI=true
 ENV PNPM_CONFIG_NODE_LINKER="hoisted"

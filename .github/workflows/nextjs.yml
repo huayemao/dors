@@ -79,7 +79,6 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
           OUTPUT_MODE: export
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
           HTTP_BASIC_AUTH: casual
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
