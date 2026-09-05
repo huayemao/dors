@@ -28,6 +28,11 @@ export function AdminMenu() {
       iconName: "File",
     },
     {
+      title: "页脚设置",
+      href: "/admin/footer",
+      iconName: "PanelBottom",
+    },
+    {
       title: "设置",
       href: "/admin/settings",
       iconName: "Settings",

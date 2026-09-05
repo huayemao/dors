@@ -4,6 +4,7 @@ import { HiddenCatsForm } from "./HiddenCatsForm";
 import { NavItemsConfig } from "./ResourceForm";
 import { RevalidateButton } from "./RevalidateButton";
 import { ActivityCardForm } from "./ActivityCardForm";
+import { FooterForm } from "./FooterForm";
 import { Panel } from "@/components/Base/Panel";
 import { BaseButton, BaseInput, BaseTextarea } from "@glint-ui/react";
 import Link from "next/link";
@@ -24,6 +25,7 @@ export default async function AdminSettingsPage(props) {
     { label: "文章分类", value: "categories" },
     { label: "应用台", value: "navigation" },
     { label: "ActivityCard", value: "activity-cards" },
+    { label: "页脚设置", value: "footer" },
     { label: "导航页内容", value: "nav-content" },
     { label: "原始数据", value: "raw-data" },
   ];
@@ -71,6 +73,12 @@ export default async function AdminSettingsPage(props) {
           {activeTab === "activity-cards" && (
             <Panel title="ActivityCard 配置" className="max-w-full w-fit">
               <ActivityCardForm settings={settings}></ActivityCardForm>
+            </Panel>
+          )}
+
+          {activeTab === "footer" && (
+            <Panel title="页脚配置" className="max-w-full">
+              <FooterForm settings={settings}></FooterForm>
             </Panel>
           )}
           

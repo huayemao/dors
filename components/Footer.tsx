@@ -1,6 +1,14 @@
 import { SITE_META } from "@/constants";
+import { getFooterConfig, FooterConfig } from "@/lib/server/services/settings";
 
-export function Footer() {
+export async function Footer({
+  config: initialConfig,
+}: {
+  config?: FooterConfig;
+} = {}) {
+  const config = initialConfig || (await getFooterConfig());
+  const { brandDescription, columns } = config;
+
   return (
     <footer className="group relative bg-muted-50 dark:bg-muted-800 text-muted-600 body-font overflow-hidden">
       <div className="relative w-full max-w-7xl px-5 py-24 mx-auto ">
@@ -16,112 +24,43 @@ export function Footer() {
               />
               <span className="font-heading font-bold text-2xl">Dors</span>
             </a>
-            <p className="font-sans text-sm w-full max-w-xs mx-auto md:max-w-[220px] md:mx-0 mt-2 text-muted-500 dark:text-muted-400">
-              Dors
-              是花野猫开发为知识工作者打造的数字花园应用，包含的博客、个人记事本、及其他实用功能。
-            </p>
+            {brandDescription && (
+              <p className="font-sans text-sm w-full max-w-xs mx-auto md:max-w-[220px] md:mx-0 mt-2 text-muted-500 dark:text-muted-400">
+                {brandDescription}
+              </p>
+            )}
           </div>
-          <div className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 px-4">
-            <h2 className="font-heading font-semibold text-muted-800 dark:text-white tracking-widest text-sm mb-3">
-              花园
-            </h2>
-            <ul className="font-sans list-none space-y-2 mb-10">
-              <li>
-                <a
-                  href="/posts"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  花坛——博客
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/books"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  果园——知识库
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 px-4">
-            <h2 className="font-heading font-semibold text-muted-800 dark:text-white tracking-widest text-sm mb-3">
-              工坊——作者开发的实用工具
-            </h2>
-            <ul className="font-sans list-none space-y-2 mb-10">
-              <li>
-                <a
-                  href="/notes"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  小记
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://split-v.utities.online/"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  秒切——一键按秒分割视频
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://uni.utities.online/"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  中国重点高校地理位置可视化网站
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://aparecium.huayemao.run/"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  中国行政区划数据查询平台
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/excel-renamer"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  excel 重命名工具
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 px-4">
-            <h2 className="font-heading font-semibold text-muted-800 dark:text-white tracking-widest text-sm mb-3">
-              misc
-            </h2>
-            <ul className="font-sans list-none space-y-2 mb-10">
-              <li>
-                <a
-                  href="/rules-to-save-my-life"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  生活章程
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/aigc"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  画廊
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/just-have-fun"
-                  className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
-                >
-                  just have fun!
-                </a>
-              </li>
-            </ul>
-          </div>
+
+          {columns.map((col, idx) => (
+            <div
+              key={col.id || col.title || idx}
+              className="w-full ptablet:w-1/2 ltablet:w-1/4 lg:w-1/4 px-4"
+            >
+              <h2 className="font-heading font-semibold text-muted-800 dark:text-white tracking-widest text-sm mb-3">
+                {col.title}
+              </h2>
+              <ul className="font-sans list-none space-y-2 mb-10">
+                {col.links?.map((link, lIdx) => {
+                  const isExternal =
+                    link.href?.startsWith("http://") ||
+                    link.href?.startsWith("https://");
+                  return (
+                    <li key={link.id || link.href || lIdx}>
+                      <a
+                        href={link.href}
+                        className="text-muted-600 dark:text-muted-400 hover:text-primary-500 dark:hover:text-primary-500"
+                        {...(isExternal
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                      >
+                        {link.title}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
       <div className="relative border-t bg-muted-100 dark:bg-muted-900">
@@ -157,3 +96,4 @@ export function Footer() {
     </footer>
   );
 }
+
