@@ -24,16 +24,29 @@ export async function getPexelImages(
     "design",
   ];
   const query = keywordArr[Math.floor(Math.random() * keywordArr.length)];
-  return await fetch(
-    `https://api.pexels.com/v1/search?query=${query}&per_page=${length}&page=${Math.floor(Math.random() * (888 / length)) + 1
-    }&orientation=landscape`,
-    {
+  const page = Math.floor(Math.random() * (888 / length)) + 1;
+  const url = `https://api.pexels.com/v1/search?query=${query}&per_page=${length}&page=${page}&orientation=landscape`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
       headers: {
         Authorization:
           "VIIq3y6ksXWUCdBRN7xROuRE7t6FXcX34DXyiqjnsxOzuIakYACK402j",
       },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Pexels API error: ${res.status} ${res.statusText}`);
     }
-  ).then((res) => res.json());
+
+    return await res.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export async function markdownToHtml(markdown) {

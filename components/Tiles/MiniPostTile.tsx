@@ -1,5 +1,6 @@
 import { cn, getDateString } from "@/lib/utils";
 import Link from "next/link";
+import { CoverImage } from "../CoverImage";
 
 export function MiniPostTile({
   post,
@@ -27,12 +28,13 @@ export function MiniPostTile({
     >
       <Link href={"/posts/" + id} className="flex items-center">
         <div className="relative flex justify-start gap-2 w-full">
-          <img
-            className="h-12 w-12 mask mask-blob object-cover"
+          <CoverImage
             src={url}
+            blurDataURL={blurDataURL}
             alt={post.title || "Post image"}
-            width="48"
-            height="48"
+            width={48}
+            height={48}
+            className="h-12 w-12 mask mask-blob object-cover"
           />
           <div className="">
             <h3

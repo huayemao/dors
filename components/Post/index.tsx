@@ -29,7 +29,7 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
   const { content, toc } = await parseMDX(post);
 
   /* @ts-ignore */
-  const url = post.cover_image?.src?.large;
+  const url = post.cover_image?.src?.large || '/img/covers/cover-1.svg';
   /* @ts-ignore */
   const blurDataURL = post.cover_image?.dataURLs?.blur;
 
@@ -94,7 +94,7 @@ export default async function Post({ data: post, relatedPosts: posts, books }: P
                     <ul className="space-y-3">
                       {post.posts.map((item: any) => {
                         /* @ts-ignore */
-                        const itemUrl = item.cover_image?.src?.small || item.cover_image?.dataURLs?.small;
+                        const itemUrl = item.cover_image?.src?.small || item.cover_image?.dataURLs?.small || item.cover_image?.src?.large || '/img/covers/cover-1.svg';
                         /* @ts-ignore */
                         const itemBlurDataURL = item.cover_image?.dataURLs?.blur;
                         return (

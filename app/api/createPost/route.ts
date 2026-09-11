@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     category_id: categoryId,
     tags,
     type,
-    toc
+    toc,
+    cover_image_url,
   } = readPostFormData(formData);
 
   const post = await createPost({
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
     title,
     categoryId,
     tags,
+    cover_image_url,
     isProtected: protectedStr
       ? protectedStr === "on"
         ? true

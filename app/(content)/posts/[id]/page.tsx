@@ -1,7 +1,6 @@
 
 import { SITE_META } from "@/constants";
 import { getPost, getPostBySlug, getPostIds, getRelatedPosts } from "@/lib/server/posts";
-import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { renderPost } from "./renderPost";
@@ -20,7 +19,7 @@ export async function generateStaticParams() {
     id: String(post.id),
   }));
   const params =
-    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 8);
+    process.env.OUTPUT_MODE === "export" ? allPostIds : allPostIds.slice(0, 8);
   return params;
 }
 

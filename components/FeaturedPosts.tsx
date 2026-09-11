@@ -3,7 +3,6 @@ import { type Posts } from "@/lib/server/posts";
 import { ImageSrc } from "@/lib/types/Image";
 import { getDateString, isDataURL } from "@/lib/utils";
 import photo1 from "@/public/img/about/1.jpg";
-import config from "next.config.mjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -48,7 +47,7 @@ const Hero = ({
           height={356}
         /> :
           <Image
-            unoptimized={config.output === "export"}
+            unoptimized={process.env.OUTPUT_MODE === "export"}
             className="block h-full w-full object-cover rounded-xl "
             /* @ts-ignore */
             src={imageSrc}

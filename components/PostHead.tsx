@@ -1,11 +1,10 @@
-import { SITE_META } from "@/constants";
 import { getPost } from "@/lib/server/posts";
-import { getDateString, isDataURL } from "@/lib/utils";
-import nextConfig from "@/next.config.mjs";
-import Image, { ImageProps } from "next/image";
+import { getDateString } from "@/lib/utils";
+import { ImageProps } from "next/image";
 import Link from "next/link";
 import { Category } from "./Category";
 import Tag from "./Tag";
+import { CoverImage } from "./CoverImage";
 
 type Avatar = {
   alt: string;
@@ -22,33 +21,23 @@ interface Props {
 }
 
 const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
-  const cat = post!.posts_category_links![0].categories!;
+  const cat = post?.posts_category_links?.[0]?.categories;
+
   return (
     <section className="w-full bg-muted-100 dark:bg-muted-900 pt-16">
       <div className="w-full max-w-6xl mx-auto">
         <div className="py-14 px-4 relative">
           <div className="w-full mx-auto grid md:grid-cols-2 gap-2 ">
             <div className="bg-cover bg-center w-full mb-5 md:mb-0 ptablet:px-5 ltablet:px-4">
-              {/* todo: 图片的齿唇其实需要优化 */}
-              {typeof url == 'string' && (isDataURL(url) || !url.startsWith("/")) ? <img
-                className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px]  rounded-3xl"
-                src={url}
+              <CoverImage
+                src={typeof url === "string" ? url : undefined}
+                blurDataURL={blurDataURL}
                 alt={post?.title || "featured image"}
                 width={512}
                 height={373}
-              /> : <Image
-                alt={post?.title || "featured image"}
-                unoptimized={nextConfig.output === "export"}
-                className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px]  rounded-3xl"
-                src={url}
-                width={512}
-                height={373}
-                quality={url.toString().includes(SITE_META.url) ? 100 : 80}
-                blurDataURL={typeof url === "string" ? blurDataURL : undefined}
-                placeholder={(blurDataURL && "blur") || undefined}
+                priority
+                className="max-w-full h-auto lg:max-w-lg mx-auto object-cover md:w-[512px] md:h-[373px] rounded-3xl"
               />
-              }
-
             </div>
 
             <div className="h-full flex items-center ptablet:px-4 ltablet:px-6 break-words justify-center">
@@ -73,15 +62,16 @@ const PostHead = ({ post, url, avatar, blurDataURL }: Props) => {
                   {post?.excerpt}
                 </p>
                 <div className="flex items-center justify-start w-full relative">
-                  <div className="print:invisible">
-                    <Category
-                      href={`/categories/${cat.id}`}
-                      name={cat.name as string}
-                      key={cat.id}
-                      iconName={(cat.meta as { icon: string }).icon}
-                    />
-                    {/* <p className="font-sans text-sm text-muted-400"></p> */}
-                  </div>
+                  {cat && (
+                    <div className="print:invisible">
+                      <Category
+                        href={`/categories/${cat.id}`}
+                        name={cat.name as string}
+                        key={cat.id}
+                        iconName={(cat.meta as { icon: string })?.icon}
+                      />
+                    </div>
+                  )}
                   <div className="block ml-auto font-sans text-sm text-muted-400 text-right">
                     <div>
                       {post?.updated_at

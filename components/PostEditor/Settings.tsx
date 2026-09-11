@@ -6,12 +6,12 @@ import { PostContext } from "@/contexts/post";
 import { TagsContext } from "@/contexts/tags";
 import { getPost } from "@/lib/server/posts";
 import { PexelsPhoto } from "@/lib/types/PexelsPhoto";
-import { getDateForDateTimeInput, isDataURL } from "@/lib/utils";
+import { getDateForDateTimeInput } from "@/lib/utils";
 import { BaseButton, BaseInput, BaseTextarea } from "@glint-ui/react";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MouseEventHandler, useContext, useRef, useState } from "react";
 import { Panel } from "@/components/Base/Panel";
+import { CoverImage } from "@/components/CoverImage";
 
 export const dynamic = "force-dynamic";
 
@@ -79,26 +79,15 @@ const CoverImageSetting = ({
   return (
     <>
       <form>
-        {photo && typeof photo.src?.large == "string" &&
-        (isDataURL(photo.src?.large) ||
-          !(
-            photo.src?.large.startsWith("/") ||
-            photo.src?.large.startsWith("https://images.pexels.com/")
-          )) ? (
-          <img
-            className="w-full"
-            src={photo.src?.large}
+        {photo && (
+          <CoverImage
+            src={photo}
             alt={photo.alt || "featured image"}
-          />
-        ) : photo ? (
-          <Image
             width={288}
             height={162}
-            className="w-full"
-            alt={photo.alt || ""}
-            src={photo.src?.large || ""}
+            className="w-full h-auto rounded-lg object-cover"
           />
-        ) : null}
+        )}
         <div className="text-right mt-2">
           <BaseButton
             loading={loading}

@@ -3,7 +3,6 @@ import { Footer } from "@/components/Footer";
 import Post from "@/components/Post";
 import { SITE_META } from "@/constants";
 import { getPost, getPostBySlug, getPostIds } from "@/lib/server/posts";
-import nextConfig from "@/next.config.mjs";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
@@ -20,7 +19,7 @@ export async function generateStaticParams() {
     id: String(post.id),
   }));
   const params =
-    nextConfig.output === "export" ? allPostIds : allPostIds.slice(0, 8);
+    process.env.OUTPUT_MODE === "export" ? allPostIds : allPostIds.slice(0, 8);
   return params;
 }
 
@@ -56,6 +55,9 @@ export async function generateMetadata(
     .concat(headers)
     .filter((e) => !!e);
 
+  const coverImageUrl = (post.cover_image as any)?.src?.large || '/img/covers/cover-1.svg';
+  const smallImage = (post.cover_image as any)?.dataURLs?.small;
+
   return {
     title: `${post.title}`,
     description: abstract,
@@ -66,10 +68,10 @@ export async function generateMetadata(
       images: [
         SITE_META.url +
           "/_next/image?url=" +
-          encodeURIComponent((post.cover_image as any).src.large) +
+          encodeURIComponent(coverImageUrl) +
           "&w=384&q=75",
-        (post.cover_image as any)?.dataURLs?.small,
-      ],
+        smallImage,
+      ].filter(Boolean),
     },
   };
 }

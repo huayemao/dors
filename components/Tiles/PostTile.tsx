@@ -1,11 +1,9 @@
-import { SITE_META } from "@/constants";
-import { cn, getDateString, isDataURL } from "@/lib/utils";
-import config from "next.config.mjs";
-import Image from "next/image";
+import { cn, getDateString } from "@/lib/utils";
 import Link from "next/link";
 import { Category } from "../Category";
 import Tag from "../Tag";
 import { BaseTag } from "@glint-ui/react";
+import { CoverImage } from "../CoverImage";
 
 type PostWithRelations = {
   id: number;
@@ -63,26 +61,14 @@ function PostTile({
           <div className="flex items-start gap-3 w-full">
             {/* 图片区域 */}
             <div className="flex-shrink-0">
-              {typeof url == "string" &&
-              (isDataURL(url) || !url.startsWith("/")) ? (
-                <img
-                  className="h-20 w-20 rounded-lg object-cover shadow"
-                  src={url}
-                  alt={post?.title || "featured image"}
-                  width="80"
-                  height="80"
-                />
-              ) : (
-                <Image
-                  unoptimized={config.output === "export"}
-                  className="h-20 w-20 rounded-lg object-cover shadow"
-                  src={url}
-                  alt={post.title || "Post image"}
-                  width="80"
-                  height="80"
-                  blurDataURL={blurDataURL}
-                />
-              )}
+              <CoverImage
+                src={url}
+                blurDataURL={blurDataURL}
+                alt={post?.title || "featured image"}
+                width={80}
+                height={80}
+                className="h-20 w-20 rounded-lg object-cover shadow"
+              />
             </div>
 
             {/* 内容区域 */}
@@ -136,7 +122,7 @@ function PostTile({
     );
   }
 
-  const cat = post.posts_category_links[0].categories;
+  const cat = post.posts_category_links?.[0]?.categories;
 
   return (
     <hgroup className="relative" key={id}>
@@ -163,28 +149,14 @@ function PostTile({
                       )
                   )}
               </div>
-              {typeof url == "string" &&
-              (isDataURL(url) || !url.startsWith("/")) ? (
-                <img
-                  className="rounded-xl w-[348px] h-[208px] object-cover"
-                  src={url}
-                  alt={post?.title || "featured image"}
-                  width="348"
-                  height="208"
-                />
-              ) : (
-                <Image
-                  className="rounded-xl w-[348px] h-[208px] object-cover"
-                  src={url}
-                  placeholder={(blurDataURL && "blur") || undefined}
-                  unoptimized={config.output === "export"}
-                  blurDataURL={blurDataURL}
-                  alt={post.title || SITE_META.name}
-                  quality={url.toString().includes(SITE_META.url) ? 100 : 80}
-                  width="348"
-                  height="208"
-                />
-              )}
+              <CoverImage
+                src={url}
+                blurDataURL={blurDataURL}
+                alt={post?.title || "featured image"}
+                width={348}
+                height={208}
+                className="rounded-xl w-[348px] h-[208px] object-cover"
+              />
             </div>
             <h3 className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6">
               {title}

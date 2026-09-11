@@ -1,8 +1,7 @@
-import { SITE_META } from "@/constants";
-import { cn, getDateString, isDataURL } from "@/lib/utils";
-import Image from "next/image";
+import { cn, getDateString } from "@/lib/utils";
 import Link from "next/link";
 import Tag from "../Tag";
+import { CoverImage } from "../CoverImage";
 
 type Post = {
   id: number;
@@ -25,7 +24,6 @@ interface Props {
 export function BookTile({ id, title, coverImage, posts, tags, type = "default", rounded = false, excerpt }: Props) {
   if (!title) return null;
 
-  const url = coverImage?.src?.large || coverImage?.dataURLs?.small;
   const blurDataURL = coverImage?.dataURLs?.blur;
 
   if (type === "mini") {
@@ -41,28 +39,14 @@ export function BookTile({ id, title, coverImage, posts, tags, type = "default",
           <div className="flex items-start gap-3 w-full">
             {/* 图片区域 */}
             <div className="flex-shrink-0">
-              {typeof url == "string" &&
-                (isDataURL(url) || !url.startsWith("/")) ? (
-                <img
-                  className="h-20 w-20 rounded-lg object-cover shadow"
-                  src={url}
-                  alt={title || "featured image"}
-                  width="80"
-                  height="80"
-                />
-              ) : (
-                <Image
-                  className="h-20 w-20 rounded-lg object-cover shadow"
-                  src={url}
-                  placeholder={(blurDataURL && "blur") || undefined}
-                  unoptimized={url.startsWith("/api")}
-                  blurDataURL={blurDataURL}
-                  alt={title || SITE_META.name}
-                  quality={url.toString().includes(SITE_META.url) ? 100 : 80}
-                  width="80"
-                  height="80"
-                />
-              )}
+              <CoverImage
+                src={coverImage}
+                blurDataURL={blurDataURL}
+                alt={title || "featured image"}
+                width={80}
+                height={80}
+                className="h-20 w-20 rounded-lg object-cover shadow"
+              />
             </div>
 
             {/* 内容区域 */}
@@ -134,28 +118,14 @@ export function BookTile({ id, title, coverImage, posts, tags, type = "default",
                   )
                 )}
               </div>
-              {typeof url == "string" &&
-                (isDataURL(url) || !url.startsWith("/")) ? (
-                <img
-                  className="rounded-xl w-[348px] h-[208px] object-cover"
-                  src={url}
-                  alt={title || "featured image"}
-                  width="348"
-                  height="208"
-                />
-              ) : (
-                <Image
-                  className="rounded-xl w-[348px] h-[208px] object-cover"
-                  src={url}
-                  placeholder={(blurDataURL && "blur") || undefined}
-                  unoptimized={url.startsWith("/api")}
-                  blurDataURL={blurDataURL}
-                  alt={title || SITE_META.name}
-                  quality={url.toString().includes(SITE_META.url) ? 100 : 80}
-                  width="348"
-                  height="208"
-                />
-              )}
+              <CoverImage
+                src={coverImage}
+                blurDataURL={blurDataURL}
+                alt={title || "featured image"}
+                width={348}
+                height={208}
+                className="rounded-xl w-[348px] h-[208px] object-cover"
+              />
             </div>
             <h3 className="font-heading text-lg font-medium text-muted-800 dark:text-white leading-6">
               {title}

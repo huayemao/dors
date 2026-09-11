@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg-3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#172554" />
+    </linearGradient>
+    <linearGradient id="aurora" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.25" />
+    </linearGradient>
+    <filter id="blur-3" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="80" />
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg-3)" />
+  <circle cx="350" cy="200" r="260" fill="#38bdf8" opacity="0.3" filter="url(#blur-3)" />
+  <circle cx="950" cy="300" r="300" fill="#6366f1" opacity="0.35" filter="url(#blur-3)" />
+  <path d="M0 250 Q 300 400, 700 220 T 1200 320 L 1200 630 L 0 630 Z" fill="url(#aurora)" />
+</svg>

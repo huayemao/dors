@@ -41,14 +41,19 @@ export async function updatePost(
     await updatePostTags(post, tagsIds);
   }
 
+  const currentCover = post?.cover_image as any;
   const shouldChangeCoverImage =
-    cover_image_url || !(post?.cover_image as any).dataURLs?.blur;
+    Boolean(cover_image_url) || !currentCover?.dataURLs?.blur;
 
-  const coverImage = shouldChangeCoverImage
-    ? await buildCoverImage(
-      cover_image_url || (post?.cover_image as any).src.large
-    )
-    : undefined;
+  let coverImage: any = undefined;
+  if (changePhoto === "on") {
+    coverImage = await buildRandomCoverImage();
+  } else if (shouldChangeCoverImage) {
+    const targetUrl = cover_image_url || currentCover?.src?.large;
+    if (targetUrl) {
+      coverImage = await buildCoverImage(targetUrl);
+    }
+  }
 
   const res = await prisma.posts.update({
     where: {
@@ -61,8 +66,7 @@ export async function updatePost(
       excerpt: typeof excerpt == "string" ? (excerpt as string) : undefined,
       content: content ? (content as string) : undefined,
       title: title ? (title as string) : undefined,
-      cover_image:
-        changePhoto === "on" ? await buildRandomCoverImage() : coverImage,
+      cover_image: coverImage !== undefined ? coverImage : undefined,
       updated_at: updated_at ? new Date(updated_at as string) : new Date(),
       created_at: created_at ? new Date(created_at as string) : undefined,
       toc: toc?.map(e => ({ id: Number(e) })) || undefined,
@@ -83,21 +87,25 @@ export async function updatePost(
 }
 
 export async function createPost(params: CreatePostPayload) {
-  const { content, excerpt, title, categoryId, tags, isProtected, type, toc } = params;
+  const { content, excerpt, title, categoryId, tags, isProtected, type, toc, cover_image_url } = params;
 
   let coverImage: any;
 
-  const images = content!.match(/!\[([^\]]+)\]\(([^)]+)\)/g);
-
-  if (images) {
-    const urlRegex =
-      /(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/;
-    const url = images[0].match(urlRegex)?.[0];
-    if (url) {
-      coverImage = await buildCoverImage(url);
-    } else {
-      coverImage = await buildRandomCoverImage();
+  if (cover_image_url) {
+    coverImage = await buildCoverImage(cover_image_url);
+  } else if (content) {
+    const images = content.match(/!\[([^\]]*)\]\(([^)]+)\)/g);
+    if (images && images.length > 0) {
+      const match = images[0].match(/!\[([^\]]*)\]\(([^)]+)\)/);
+      const url = match?.[2]?.trim();
+      if (url) {
+        coverImage = await buildCoverImage(url);
+      }
     }
+  }
+
+  if (!coverImage || !coverImage.src?.large) {
+    coverImage = await buildRandomCoverImage();
   }
 
   const post = await prisma.posts.create({
@@ -108,11 +116,11 @@ export async function createPost(params: CreatePostPayload) {
       title: title as string,
       created_at: new Date(),
       updated_at: new Date(),
-      posts_category_links: {
+      posts_category_links: categoryId ? {
         create: {
           category_id: parseInt(categoryId as string),
         },
-      },
+      } : undefined,
       cover_image: coverImage,
       protected: isProtected,
       toc: toc?.map(e => ({ id: Number(e) })) || undefined,
