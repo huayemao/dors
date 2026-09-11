@@ -72,19 +72,14 @@ const nextConfig = {
       },
     ]))
   },
+  serverExternalPackages: ["prisma", "shiki", 'vscode-oniguruma'],
   experimental: {
     proxyClientMaxBodySize: '20mb',
-    serverExternalPackages: ["prisma", "shiki", 'vscode-oniguruma'],
   },
   basePath:
     process.env.OUTPUT_MODE === "export" && process.env.GITHUB_PAGE
       ? "/dors"
       : "",
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
   reactStrictMode: true,
   async headers() {
     return [

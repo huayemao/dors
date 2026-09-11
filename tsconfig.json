@@ -21,7 +21,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
     "jsx": "react-jsx",
     "pretty": true,

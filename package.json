@@ -38,7 +38,7 @@
     "lucide-react": "^0.456.0",
     "magic-grid": "^3.4.7",
     "mime": "^4.0.3",
-    "next": "16.0.10",
+    "next": "16.3.4",
     "photoswipe": "^5.4.4",
     "plaiceholder": "^3.0.0",
     "pocketbase": "^0.26.8",
@@ -80,7 +80,7 @@
     "@types/xlsx": "^0.0.36",
     "autoprefixer": "^10.4.14",
     "eslint": "^9",
-    "eslint-config-next": "16.0.10",
+    "eslint-config-next": "16.3.4",
     "mdx": "^0.3.1",
     "postcss": "^8.4.21",
     "prisma": "^4.12.0",
@@ -89,11 +89,7 @@
   },
   "overrides": {
     "shiki": "0.10.1",
-    "vscode-oniguruma": "1.7.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@types/react": "19.2.7"
-    }
+    "vscode-oniguruma": "1.7.0",
+    "@types/react": "19.2.7"
   }
 }
