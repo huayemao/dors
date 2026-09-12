@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 import mime from "mime";
 import { ClientOnly } from "@/components/ClientOnly";
 import { FileManagerClient } from "@/components/FileManager/FileManagerClient";
-import { FileItem, FileGroupItem } from "@/components/FileManager/types";
+import { FileItem, FileGroupItem, GroupSelectType } from "@/components/FileManager/types";
+import { getReferencedFileNames } from "@/lib/server/files/references";
 
 const PER_PAGE = 24;
 
@@ -37,11 +38,15 @@ export default async function AdminFilesPage(props: PageProps) {
     });
   }
 
-  // 2. 分组条件
-  let parsedGroupId: number | null | "all" | "ungrouped" = "all";
+  // 2. 分组条件与引用状态过滤
+  let parsedGroupId: GroupSelectType = "all";
   if (groupParam === "ungrouped") {
     parsedGroupId = "ungrouped";
     whereAndClauses.push({ groupId: null });
+  } else if (groupParam === "unreferenced") {
+    parsedGroupId = "unreferenced";
+    const refNames = await getReferencedFileNames();
+    whereAndClauses.push({ name: { notIn: Array.from(refNames) } });
   } else if (groupParam && groupParam !== "all") {
     const gid = parseInt(groupParam, 10);
     if (!isNaN(gid)) {
@@ -117,8 +122,8 @@ export default async function AdminFilesPage(props: PageProps) {
       break;
   }
 
-  // 并行拉取列表、过滤总数、所有分组统计、全量文件总数、未分组文件总数
-  const [rawFiles, totalFilteredItems, rawGroups, totalCount, ungroupedCount] =
+  // 并行拉取列表、过滤总数、所有分组统计、全量文件总数、未分组文件总数、引用文件名集合
+  const [rawFiles, totalFilteredItems, rawGroups, totalCount, ungroupedCount, refFileNames] =
     await Promise.all([
       prisma.file.findMany({
         where: whereClause,
@@ -155,7 +160,14 @@ export default async function AdminFilesPage(props: PageProps) {
       }),
       prisma.file.count(),
       prisma.file.count({ where: { groupId: null } }),
+      getReferencedFileNames(),
     ]);
+
+  // 计算未被引用文件总数
+  const referencedInDbCount = await prisma.file.count({
+    where: { name: { in: Array.from(refFileNames) } },
+  });
+  const unreferencedCount = Math.max(0, totalCount - referencedInDbCount);
 
   await addMimeTypes(rawFiles);
 
@@ -191,6 +203,7 @@ export default async function AdminFilesPage(props: PageProps) {
           groups={formattedGroups}
           totalCount={totalCount}
           ungroupedCount={ungroupedCount}
+          unreferencedCount={unreferencedCount}
           currentPage={page}
           perPage={PER_PAGE}
           currentSearch={searchTerm}

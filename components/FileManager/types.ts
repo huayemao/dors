@@ -1,3 +1,5 @@
+export type GroupSelectType = number | null | "all" | "ungrouped" | "unreferenced";
+
 export interface FileGroupItem {
   id: number;
   name: string;
@@ -6,6 +8,7 @@ export interface FileGroupItem {
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
+
 
 export interface FileItem {
   id: number;

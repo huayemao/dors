@@ -7,3 +7,6 @@ allowBuilds:
   prisma: true
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - '@glint-ui/react@0.1.2'

@@ -15,8 +15,8 @@ importers:
         specifier: ^0.12.2
         version: 0.12.2
       '@glint-ui/react':
-        specifier: ^0.1.1
-        version: 0.1.1(@types/react@19.2.7)(next@16.3.4(@babel/core@7.28.5(supports-color@7.2.0))(@types/node@18.19.130)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(yaml@2.8.2)
+        specifier: ^0.1.2
+        version: 0.1.2(@types/react@19.2.7)(next@16.3.4(@babel/core@7.28.5(supports-color@7.2.0))(@types/node@18.19.130)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(yaml@2.8.2)
       '@headlessui/react':
         specifier: ^2.2.9
         version: 2.2.9(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -401,8 +401,8 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@glint-ui/react@0.1.1':
-    resolution: {integrity: sha512-QK9B2sGQhiKLHv2IVHbHx0rT8x4LuHuY2r5qiBr1f42NjMf9NJLMTAmGZj89FOYyvUAHSXqVDOB216GvaELNqg==}
+  '@glint-ui/react@0.1.2':
+    resolution: {integrity: sha512-kBDRfYEoiVDw9DonxyydgAJl0cak33L5Uc+fX/POSwHbG0tWoudKHy74+jtt03zhT0B6t8N2E7QqUfGeT0uBtA==}
     peerDependencies:
       next: '>=13'
       react: '>=18'
@@ -4118,7 +4118,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@glint-ui/react@0.1.1(@types/react@19.2.7)(next@16.3.4(@babel/core@7.28.5(supports-color@7.2.0))(@types/node@18.19.130)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(yaml@2.8.2)':
+  '@glint-ui/react@0.1.2(@types/react@19.2.7)(next@16.3.4(@babel/core@7.28.5(supports-color@7.2.0))(@types/node@18.19.130)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(yaml@2.8.2)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@headlessui/react': 2.2.9(react-dom@19.2.3(react@19.2.3))(react@19.2.3)

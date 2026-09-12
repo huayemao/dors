@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useTransition, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { FileItem, FileGroupItem } from "./types";
+import { FileItem, FileGroupItem, GroupSelectType } from "./types";
 import { GroupSidebar } from "./GroupSidebar";
 import { FileToolbar } from "./FileToolbar";
 import { FileGridView } from "./FileGridView";
@@ -15,6 +15,7 @@ import { FileEditName } from "../FileEditName";
 import { FileReuploadModal } from "../FileReuploadModal";
 import { Modal } from "../Base/Modal";
 import { BaseCard, BasePagination } from "@glint-ui/react";
+import { Link2OffIcon } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Props {
@@ -23,10 +24,11 @@ interface Props {
   groups: FileGroupItem[];
   totalCount: number;
   ungroupedCount: number;
+  unreferencedCount: number;
   currentPage: number;
   perPage: number;
   currentSearch: string;
-  currentGroupId: number | null | "all" | "ungrouped";
+  currentGroupId: GroupSelectType;
   currentSort: string;
   currentType: string;
 }
@@ -37,6 +39,7 @@ export function FileManagerClient({
   groups,
   totalCount,
   ungroupedCount,
+  unreferencedCount,
   currentPage,
   perPage,
   currentSearch,
@@ -118,13 +121,15 @@ export function FileManagerClient({
   }, [search]);
 
   // 分组切换
-  const handleSelectGroup = (groupId: number | null | "all" | "ungrouped") => {
+  const handleSelectGroup = (groupId: GroupSelectType) => {
     updateUrl({
       group:
         groupId === "all" || groupId === null
           ? null
           : groupId === "ungrouped"
           ? "ungrouped"
+          : groupId === "unreferenced"
+          ? "unreferenced"
           : String(groupId),
       page: "1",
     });
@@ -233,6 +238,7 @@ export function FileManagerClient({
               groups={groups}
               totalCount={totalCount}
               ungroupedCount={ungroupedCount}
+              unreferencedCount={unreferencedCount}
               selectedGroupId={currentGroupId}
               onSelectGroup={handleSelectGroup}
               onOpenCreateGroup={() => {
@@ -270,6 +276,21 @@ export function FileManagerClient({
               onBatchDelete={handleBatchDelete}
               onOpenUpload={() => setIsUploadModalOpen(true)}
             />
+
+            {/* 未被引用提示横幅 */}
+            {currentGroupId === "unreferenced" && (
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-200 animate-in fade-in duration-200">
+                <div className="flex items-center gap-2.5">
+                  <Link2OffIcon className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">正在查看未被引用的文件列表</span>
+                    <span className="text-amber-700/90 dark:text-amber-300/90 ml-1.5">
+                      本筛选共包含 {totalItems} 个文件未在任何文章正文或封面中被引用。您可以批量将它们移动到归档分组，或进行清理删除。
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 文件内容展示区 */}
             <div className={`transition-opacity duration-150 ${isPending ? "opacity-60" : "opacity-100"}`}>

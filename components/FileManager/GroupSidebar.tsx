@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FileGroupItem } from "./types";
+import { FileGroupItem, GroupSelectType } from "./types";
 import {
   FolderIcon,
   FolderPlusIcon,
@@ -11,6 +11,7 @@ import {
   Trash2Icon,
   TagIcon,
   CheckIcon,
+  Link2OffIcon,
 } from "lucide-react";
 import { BaseDropdown, BaseDropdownItem } from "@glint-ui/react";
 import toast from "react-hot-toast";
@@ -19,8 +20,9 @@ interface Props {
   groups: FileGroupItem[];
   totalCount: number;
   ungroupedCount: number;
-  selectedGroupId: number | null | "all" | "ungrouped";
-  onSelectGroup: (groupId: number | null | "all" | "ungrouped") => void;
+  unreferencedCount: number;
+  selectedGroupId: GroupSelectType;
+  onSelectGroup: (groupId: GroupSelectType) => void;
   onOpenCreateGroup: () => void;
   onOpenEditGroup: (group: FileGroupItem) => void;
   onRefresh: () => void;
@@ -30,6 +32,7 @@ export function GroupSidebar({
   groups,
   totalCount,
   ungroupedCount,
+  unreferencedCount,
   selectedGroupId,
   onSelectGroup,
   onOpenCreateGroup,
@@ -127,6 +130,30 @@ export function GroupSidebar({
             }`}
           >
             {ungroupedCount}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onSelectGroup("unreferenced")}
+          className={`w-full flex items-center justify-between px-3 py-2 text-xs font-medium rounded-xl transition-all ${
+            selectedGroupId === "unreferenced"
+              ? "bg-amber-500 text-white shadow-md shadow-amber-500/25 font-bold"
+              : "text-muted-700 dark:text-muted-200 hover:bg-muted-100 dark:hover:bg-muted-800"
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <Link2OffIcon className={`w-4 h-4 ${selectedGroupId === "unreferenced" ? "text-white" : "text-amber-500"}`} />
+            <span>未被引用</span>
+          </div>
+          <span
+            className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+              selectedGroupId === "unreferenced"
+                ? "bg-white/25 text-white"
+                : "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300"
+            }`}
+          >
+            {unreferencedCount}
           </span>
         </button>
       </div>
