@@ -13,7 +13,7 @@ export interface UploadedFile {
   markdown: string;
 }
 
-export async function processFileUpload(files: File[], uploadOriginal?: boolean): Promise<UploadedFile[]> {
+export async function processFileUpload(files: File[], uploadOriginal?: boolean, groupId?: number | null): Promise<UploadedFile[]> {
   const uploadedFiles: UploadedFile[] = [];
 
   for (const item of files) {
@@ -82,6 +82,7 @@ export async function processFileUpload(files: File[], uploadOriginal?: boolean)
           mimeType: processedMimeType,
           size: BigInt(processedSize),
           provider: metadata.provider,
+          groupId: groupId ? Number(groupId) : undefined,
           data: metadata.provider === 'database' ? processedBuffer : undefined,
         },
       });

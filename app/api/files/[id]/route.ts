@@ -124,16 +124,43 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         headers: { "Content-Type": "application/json" },
       });
     } else {
-      // JSON 格式，更新文件名
-      const { displayName } = await request.json();
+      // JSON 格式，更新文件名和/或分组
+      const body = await request.json();
+      const { displayName, groupId } = body;
 
-      if (!displayName || displayName.trim() === "") {
-        return new Response("显示文件名不能为空", { status: 400 });
+      const dataToUpdate: any = {};
+
+      if (displayName !== undefined) {
+        if (!displayName || displayName.trim() === "") {
+          return new Response("显示文件名不能为空", { status: 400 });
+        }
+        dataToUpdate.displayName = displayName.trim();
+      }
+
+      if (groupId !== undefined) {
+        if (groupId === null || groupId === "") {
+          dataToUpdate.groupId = null;
+        } else {
+          const parsedGid = parseInt(groupId, 10);
+          if (isNaN(parsedGid)) {
+            return new Response("无效的分组ID", { status: 400 });
+          }
+          dataToUpdate.groupId = parsedGid;
+        }
+      }
+
+      if (Object.keys(dataToUpdate).length === 0) {
+        return new Response("未提供任何更新内容", { status: 400 });
       }
 
       const updatedFile = await prisma.file.update({
         where: { id: fileId },
-        data: { displayName: displayName.trim() },
+        data: dataToUpdate,
+        include: {
+          group: {
+            select: { id: true, name: true, color: true },
+          },
+        },
       });
 
       revalidateTag('files', {});

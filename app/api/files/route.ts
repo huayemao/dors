@@ -75,7 +75,9 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const files = formData.getAll("files") as File[];
     const uploadOriginal = formData.get("uploadOriginal") === "true";
-    const uploadedFiles = await processFileUpload(files, uploadOriginal);
+    const groupIdStr = formData.get("groupId") as string;
+    const groupId = groupIdStr ? parseInt(groupIdStr, 10) : undefined;
+    const uploadedFiles = await processFileUpload(files, uploadOriginal, groupId);
     const markdown = uploadedFiles.map(file => file.markdown);
 
     return new Response(markdown.join("\n"), {

@@ -588,14 +588,28 @@ model settings {
   value Json
 }
 
+model FileGroup {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  color     String?  @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  files     File[]
+}
+
 model File {
-  id           Int      @id @default(autoincrement())
-  name         String   // 存储文件名（hash）
-  displayName  String   // 显示文件名（用户上传的原始文件名）
-  data         Bytes?   // 二进制数据（仅 database provider 使用）
+  id           Int        @id @default(autoincrement())
+  name         String     // 存储文件名（hash）
+  displayName  String     // 显示文件名（用户上传的原始文件名）
+  data         Bytes?     // 二进制数据（仅 database provider 使用）
   mimeType     String
   size         BigInt?
-  provider     String   @default("database") // 存储提供者：database 或 pocketbase
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now()) @updatedAt
+  provider     String     @default("database") // 存储提供者：database 或 pocketbase
+  groupId      Int?
+  group        FileGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+
+  @@index([groupId], map: "file_group_idx")
 }
+
