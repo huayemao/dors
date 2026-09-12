@@ -7,7 +7,7 @@ import {
   FooterLinkItem,
   DEFAULT_FOOTER_CONFIG,
   parseFooterConfig,
-} from "@/lib/server/services/settings";
+} from "@/lib/isomorphic/footer";
 import { BaseButton, BaseInput } from "@glint-ui/react";
 import toast from "react-hot-toast";
 import {
