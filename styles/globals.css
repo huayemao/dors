@@ -224,4 +224,8 @@ a {
   body {
     @apply bg-background text-foreground;
   }
+  .katex {
+    font-size: 1em;
+  }
 }
+

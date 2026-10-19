@@ -6,10 +6,8 @@
   @apply overflow-x-auto overflow-y-hidden py-2;
 }
 
-@media (max-width: 640px) {
-  .content :global(.katex) {
-    font-size: 0.85em;
-  }
+.content :global(.katex) {
+  font-size: 1em;
 }
 
 .content :global(.contains-task-list) {
